@@ -15,7 +15,7 @@ public class StereoVisionCalibrator : Singleton<StereoVisionCalibrator>
     private Texture oldLeftTexture, oldRightTexture;
     private bool oldLeftActive, oldRightActive;
     private Dictionary<KeyCode, Vector3> moveDict;
-    private const string savePrefix = "stereoVision_";
+    private const string FQN = "StereoVisionCalibrator";
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +29,7 @@ public class StereoVisionCalibrator : Singleton<StereoVisionCalibrator>
         {KeyCode.S, leftEyePlane.transform.forward},
         {KeyCode.D, -leftEyePlane.transform.right},
         };
-        LoadPositions();
+        Load();
     }
 
     // Update is called once per frame
@@ -83,7 +83,7 @@ public class StereoVisionCalibrator : Singleton<StereoVisionCalibrator>
         Debug.Log($"Done calibrating stereo vision, eye difference {diff.magnitude}m");
         leftEyePlane.transform.position += -diff / 2;
         rightEyePlane.transform.position += -diff / 2;
-        SavePositions();
+        Save();
 
         // revert initialization
         leftEyePlane.SetActive(oldLeftActive);
@@ -95,20 +95,35 @@ public class StereoVisionCalibrator : Singleton<StereoVisionCalibrator>
         yield break;
     }
 
-    private void SavePositions()
+    private void Save()
     {
         // saved flag
-        PlayerPrefs.SetInt(savePrefix, 1);
-        // TODO: Handle Player Prefx
+        PlayerPrefs.SetInt(FQN, 1);
+        PlayerPrefs.SetFloat($"{FQN}_left_position.x", leftEyePlane.transform.position.x);
+        PlayerPrefs.SetFloat($"{FQN}_left_position.y", leftEyePlane.transform.position.y);
+        PlayerPrefs.SetFloat($"{FQN}_left_position.z", leftEyePlane.transform.position.z);
+        PlayerPrefs.SetFloat($"{FQN}_right_position.x", rightEyePlane.transform.position.x);
+        PlayerPrefs.SetFloat($"{FQN}_right_position.y", rightEyePlane.transform.position.y);
+        PlayerPrefs.SetFloat($"{FQN}_right_position.z", rightEyePlane.transform.position.z);
+        PlayerPrefs.Save();
+        Debug.Log("Saved StereoVisionCalibration");
     }
 
-    private void LoadPositions()
+    private void Load()
     {
-        if (!PlayerPrefs.HasKey(savePrefix))
+        if (!PlayerPrefs.HasKey(FQN))
         {
+            Debug.LogWarning("Could not load StereoVision calibration: No preferences saved");
             return;
         }
-        // TODO: Handle Player Prefx
-
+        leftEyePlane.transform.position = new Vector3(
+            PlayerPrefs.GetFloat($"{FQN}_left_position.x"), 
+            PlayerPrefs.GetFloat($"{FQN}_left_position.y"), 
+            PlayerPrefs.GetFloat($"{FQN}_left_position.z"));
+        rightEyePlane.transform.position = new Vector3(
+            PlayerPrefs.GetFloat($"{FQN}_right_position.x"), 
+            PlayerPrefs.GetFloat($"{FQN}_right_position.y"), 
+            PlayerPrefs.GetFloat($"{FQN}_right_position.z"));
+        Debug.Log("Successfully loaded StereoVisionCalibration");
     }
 }

@@ -21,10 +21,8 @@ namespace Training.Calibration
         private new bool enabled
         {
             get
-            {
-                return requiredTrainingSteps.Contains(TutorialSteps.Instance.currentStep)
-              && requiredCalibrationSteps.Contains(calibrator.currentStep);
-            }
+            { return requiredTrainingSteps.Contains(TutorialSteps.Instance.currentStep) 
+                    && requiredCalibrationSteps.Contains(calibrator.currentStep); }
         }
 
         // Update is called once per frame
@@ -53,5 +51,4 @@ namespace Training.Calibration
             TutorialSteps.Instance.StopAudioClips();
         }
     }
-
 }

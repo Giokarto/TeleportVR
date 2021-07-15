@@ -150,7 +150,7 @@ namespace RudderPedals
             EnableControlManager.Instance.rightBioIKGroup.SetEnabled(true);
             UnityAnimusClient.Instance._myIKHead.enabled = true;
 
-            //WheelchairStateManager.Instance.SetVisibility(StateManager.Instance.currentState != StateManager.States.HUD);
+            WheelchairStateManager.Instance.SetVisibility(StateManager.Instance.currentState != StateManager.States.HUD);
 
             PedalDriver.Instance.enabled = true;
             //UnityAnimusClient.Instance.EnableMotor(oldMotorEnabled);

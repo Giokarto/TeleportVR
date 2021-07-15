@@ -383,6 +383,11 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
             {
                 return false;
             }
+            // only set vision when it's visible
+            if (StateManager.Instance.currentState != StateManager.States.HUD || StereoVisionCalibrator.Instance.calibrating)
+            {
+                return false;
+            }
 
             var currSample = currSamples.Samples[0];
             var currShape = currSample.DataShape;
@@ -465,7 +470,6 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 Mat yuv_right = yuv.rowRange(yuv.rows() / 2, yuv.rows());
                 render_plane(yuv_left, _leftTexture, _leftRenderer);
                 render_plane(yuv_right, _rightTexture, _rightRenderer);
-                InitUndistortion((int)_imageDims[0], (int)_imageDims[1] / 2);
             }
             else
             {
@@ -785,7 +789,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
             }
 #endif
 
-            //Debug.Log($"motor_set() motorAngles = [{ string.Join(", ", motorAngles.ConvertAll(x => x.ToString()).ToArray())}]");
+            Debug.Log($"motor_set() motorAngles = [{ string.Join(", ", motorAngles.ConvertAll(x => x.ToString()).ToArray())}]");
 
             motorMsg.Data.Clear();
             motorMsg.Data.Add(motorAngles);

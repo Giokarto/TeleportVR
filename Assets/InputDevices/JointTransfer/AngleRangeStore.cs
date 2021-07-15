@@ -81,11 +81,6 @@ namespace JointTransfer
             }
         }
 
-        void OnDestroy()
-        {
-            Save();
-        }
-
         private void Save()
         {
             foreach (var entry in minRotation)
