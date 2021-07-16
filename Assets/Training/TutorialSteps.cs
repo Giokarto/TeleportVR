@@ -19,39 +19,14 @@ namespace Training
             DONE
         }
 
-        private class StateMachine
-        {
-            public TrainingStep step
-            {
-                get { return _step; }
-                set
-                {
-                    if (onExit.ContainsKey(_step))
-                    {
-                        Debug.Log($"onExit: {_step}");
-                        onExit[_step](_step);
-                    }
-                    _step = value;
-                    if (onEnter.ContainsKey(_step))
-                    {
-                        Debug.Log($"onEnter: {_step}");
-                        onEnter[_step](_step);
-                    }
-                }
-            }
-
-            private TrainingStep _step;
-            public Dictionary<TrainingStep, Action<TrainingStep>> onEnter = new Dictionary<TrainingStep, Action<TrainingStep>>();
-            public Dictionary<TrainingStep, Action<TrainingStep>> onExit = new Dictionary<TrainingStep, Action<TrainingStep>>();
-        }
         public static TutorialSteps Instance;
 
         public TrainingStep currentStep
         {
-            get { return stateMachine.step; }
-            set { stateMachine.step = value; }
+            get { return stateMachine.State; }
+            set { stateMachine.State = value; }
         }
-        private StateMachine stateMachine = new StateMachine();
+        private StateMachine<TrainingStep> stateMachine = new StateMachine<TrainingStep>();
 
         public AudioClips.SGTraining senseGloveAudio;
         public AudioClips.Controller controllerAudio;
@@ -181,7 +156,8 @@ namespace Training
                 PublishNotification("Press the grip button to close the hand.");
 #endif
             };
-            stateMachine.onExit[TrainingStep.RIGHT_HAND] = (step) => {
+            stateMachine.onExit[TrainingStep.RIGHT_HAND] = (step) =>
+            {
                 rightCalibrator.PauseCalibration();
             };
 
