@@ -14,7 +14,7 @@ namespace RudderPedals
         private float readTimeout, refresh;
 
 
-        public SerialReader(string port = "COM6", int baudRate = 9600, float readTimeout = 0.01f, float refresh = 0.1f)
+        public SerialReader(string port = "COM6", int baudRate = 9600, float readTimeout = 0.01f, float refresh = 0.01f)
         {
             this.port = port;
             this.baudRate = baudRate;
@@ -79,12 +79,12 @@ namespace RudderPedals
                 }
 
                 // only publish if data is new
-                if (res != null && !res.Equals(data))
+                if (res != null && (data == null || !res.Equals(data)))
                 {
                     data = res;
                     callback(data);
                 }
-                yield return new WaitForSecondsRealtime(refresh);
+                yield return new WaitForEndOfFrame();
             }
         }
 

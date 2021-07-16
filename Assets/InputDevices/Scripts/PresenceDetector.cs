@@ -48,7 +48,7 @@ namespace RudderPedals
         public TrackerSwitcher rightGlove;
 
         private SerialReader pedalDetector;
-        private bool oldLeft = false, oldRight = false;
+        private bool oldLeft = false, oldRight = false, oldInit = true;
         private bool oldMotorEnabled = false;
         private Timer animationTimer;
 
@@ -84,7 +84,7 @@ namespace RudderPedals
             }
 
             bool left = lr[0], right = lr[1];
-            if ((!left || !right) && (oldLeft || oldRight))
+            if ((!left || !right) && (!oldInit || oldLeft || oldRight))
             {
                 Pause();
             }
@@ -95,6 +95,7 @@ namespace RudderPedals
 
             oldLeft = left;
             oldRight = right;
+            oldInit = true;
         }
 
         public bool Pause()
@@ -104,9 +105,9 @@ namespace RudderPedals
                 return false;
             }
 
-            Debug.Log("Paused");
             PauseMenu.Instance.show = true;
             isPaused = true;
+            Debug.Log("Paused");
 
             // Disable BioIK & wheelchair
             EnableControlManager.Instance.leftBioIKGroup.SetEnabled(false);
@@ -149,7 +150,7 @@ namespace RudderPedals
 
             PedalDriver.Instance.enabled = true;
             //UnityAnimusClient.Instance.EnableMotor(oldMotorEnabled);
-            
+
             AudioListener.pause = false;
 
             // switch gloves back to control mode
