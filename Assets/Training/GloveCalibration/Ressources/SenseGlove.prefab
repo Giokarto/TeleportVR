@@ -2114,6 +2114,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tag: RoboyArms
   name: hand_left
+  flipAxes: 
+  rotationMultiplier: 0.5
+  target: {fileID: 0}
 --- !u!1 &8044677146059970281
 GameObject:
   m_ObjectHideFlags: 0
@@ -2441,6 +2444,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tag: RoboyArms
   name: hand_right
+  flipAxes: 
+  rotationMultiplier: 0.5
+  target: {fileID: 0}
 --- !u!1 &8279627930831550894
 GameObject:
   m_ObjectHideFlags: 0

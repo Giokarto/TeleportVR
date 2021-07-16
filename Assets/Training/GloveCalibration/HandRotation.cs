@@ -4,12 +4,16 @@ using UnityEngine;
 
 public class HandRotation : MonoBehaviour
 {
-    public string tag, name;
 
-    private Transform target = null;
+    public enum Axis { X, Y, Z }
+    public string tag, name;
+    public Axis[] flipAxes;
+
+    [SerializeField, Range(0,1)] private float rotationMultiplier = 1;
+    [SerializeField]private Transform target = null;
     private GameObject newParent;
     private bool lastActiveSelf;
-    private Quaternion initialSelfRotation;
+    private Quaternion initialSelfRotation, initialTargetRotation;
     private Transform oldParent;
 
     // Start is called before the first frame update
@@ -30,12 +34,13 @@ public class HandRotation : MonoBehaviour
         newParent = new GameObject();
         oldParent = transform.parent;
     }
+
     void Init()
     {
         initialSelfRotation = transform.rotation;
+        initialTargetRotation = target.rotation;
         newParent.transform.SetParent(oldParent);
-        newParent.transform.position = transform.position;
-        newParent.transform.rotation = target.rotation;
+        newParent.transform.SetPositionAndRotation(transform.position, target.rotation);
         transform.SetParent(newParent.transform, true);
     }
 
@@ -44,6 +49,7 @@ public class HandRotation : MonoBehaviour
         transform.rotation = initialSelfRotation;
         transform.SetParent(oldParent, true);
     }
+
     // Update is called once per frame
     void Update()
     {
@@ -58,7 +64,24 @@ public class HandRotation : MonoBehaviour
 
         if (target != null)
         {
-            newParent.transform.rotation = target.rotation;
+            Quaternion diffRotation = target.rotation * Quaternion.Inverse(initialTargetRotation);
+            diffRotation.ToAngleAxis(out float angle, out Vector3 axis);
+            foreach (var a in flipAxes)
+            {
+                switch(a)
+                {
+                    case Axis.X:
+                        axis.x *= -1;
+                        break;
+                    case Axis.Y:
+                        axis.y *= -1;
+                        break;
+                    case Axis.Z:
+                        axis.z *= -1;
+                        break;
+                }
+            }
+            newParent.transform.rotation = Quaternion.AngleAxis(angle * rotationMultiplier, axis) * initialTargetRotation;
         }
 
         lastActiveSelf = gameObject.activeSelf;

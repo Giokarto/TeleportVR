@@ -179,11 +179,11 @@ namespace Training.Calibration
             {
                 case Pose.HandOpen:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.handOpen, queue: false);
-                    TutorialSteps.PublishNotification($"Open {lrName} your hand", calibrationParams.waitTime + calibrationParams.dwellTime);
+                    TutorialSteps.PublishNotification($"Open {lrName} your hand", Mathf.Max(audioClips.handOpen.length, calibrationParams.waitTime + calibrationParams.dwellTime));
                     break;
                 case Pose.HandClosed:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.handClosed, queue: false);
-                    TutorialSteps.PublishNotification($"Make a fist with your {lrName} hand", calibrationParams.waitTime + calibrationParams.dwellTime);
+                    TutorialSteps.PublishNotification($"Make a fist with your {lrName} hand", Mathf.Max(audioClips.handClosed.length, calibrationParams.waitTime + calibrationParams.dwellTime));
                     break;
                 //case Pose.FingersExt:
                 //    TutorialSteps.Instance.ScheduleAudioClip(fingersExt, queue: false);
@@ -195,15 +195,15 @@ namespace Training.Calibration
                 //    break;
                 case Pose.ThumbUp:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.thumbUp, queue: false);
-                    TutorialSteps.PublishNotification("Give me a thumbs up", calibrationParams.waitTime + calibrationParams.dwellTime);
+                    TutorialSteps.PublishNotification("Give me a thumbs up", Mathf.Max(audioClips.thumbUp.length, calibrationParams.waitTime + calibrationParams.dwellTime));
                     break;
                 case Pose.ThumbFlex:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.thumbFlex, queue: false);
-                    TutorialSteps.PublishNotification($"Flex your {lrName} thumb", calibrationParams.waitTime + calibrationParams.dwellTime);
+                    TutorialSteps.PublishNotification($"Flex your {lrName} thumb", Mathf.Max(audioClips.thumbFlex.length, calibrationParams.waitTime + calibrationParams.dwellTime));
                     break;
                 case Pose.AbdOut:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.abdOut, queue: false);
-                    TutorialSteps.PublishNotification($"Move your {lrName} thumb out", calibrationParams.waitTime + calibrationParams.dwellTime);
+                    TutorialSteps.PublishNotification($"Move your {lrName} thumb out", Mathf.Max(audioClips.abdOut.length, calibrationParams.waitTime + calibrationParams.dwellTime));
                     break;
                 //case Pose.NoThumbAbd:
                 //    TutorialSteps.Instance.ScheduleAudioClip(noThumbAbd, queue: false);
@@ -332,7 +332,7 @@ namespace Training.Calibration
                     case Step.TestInit:
                         {
                             TutorialSteps.Instance.ScheduleAudioClip(audioClips.test, queue: false);
-                            TutorialSteps.PublishNotification($"{lrName} thums up to continue", duration: 2 * testParams.dwellTime);
+                            TutorialSteps.PublishNotification($"{lrName} thums up to continue", audioClips.test.length + testParams.dwellTime);
                             handAnimator.SetInteger("handState", (int)Pose.ThumbUp);
 
                             currentStep = Step.Test;
@@ -375,8 +375,6 @@ namespace Training.Calibration
                 }
             }
         }
-
-        //#endif
 
         /// <summary>
         /// The given callback is called, once the calibration for this hand is done
