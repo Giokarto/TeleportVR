@@ -162,7 +162,12 @@ namespace Training.Calibration
             calibrationParams.dwellTimer.SetTimer(calibrationParams.dwellTime, CalibrationDwellDone);
 
             // test Timer
-            testParams.dwellTimer.SetTimer(testParams.dwellTime, () => currentStep = Step.Done);
+            testParams.dwellTimer.SetTimer(testParams.dwellTime, () =>
+            {
+                currentStep = Step.Done;
+                hand.SaveHandCalibration();
+                Debug.Log($"Saved {lrName} hand calibration");
+            });
             virtualHand.SetActive(false);
             calibrating = false;
             Debug.Log($"Awaiting connection with {lrName} SenseGlove... ");
@@ -171,19 +176,18 @@ namespace Training.Calibration
 
         private void ShowInstruction()
         {
-            string right = isRight ? "right" : "left";
-            Debug.Log($"Calibrating pose {currentPose} for {right} hand");
+            Debug.Log($"Calibrating pose {currentPose} for {lrName} hand");
             handAnimator.SetInteger("handState", (int)currentPose);
             currentStep = Step.Wait;
             switch (currentPose)
             {
                 case Pose.HandOpen:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.handOpen, queue: false);
-                    TutorialSteps.PublishNotification($"Open {right} your hand", calibrationParams.waitTime + calibrationParams.dwellTime);
+                    TutorialSteps.PublishNotification($"Open {lrName} your hand", calibrationParams.waitTime + calibrationParams.dwellTime);
                     break;
                 case Pose.HandClosed:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.handClosed, queue: false);
-                    TutorialSteps.PublishNotification($"Make a fist with your {right} hand", calibrationParams.waitTime + calibrationParams.dwellTime);
+                    TutorialSteps.PublishNotification($"Make a fist with your {lrName} hand", calibrationParams.waitTime + calibrationParams.dwellTime);
                     break;
                 //case Pose.FingersExt:
                 //    TutorialSteps.Instance.ScheduleAudioClip(fingersExt, queue: false);
@@ -199,11 +203,11 @@ namespace Training.Calibration
                     break;
                 case Pose.ThumbFlex:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.thumbFlex, queue: false);
-                    TutorialSteps.PublishNotification($"Flex your {right} thumb", calibrationParams.waitTime + calibrationParams.dwellTime);
+                    TutorialSteps.PublishNotification($"Flex your {lrName} thumb", calibrationParams.waitTime + calibrationParams.dwellTime);
                     break;
                 case Pose.AbdOut:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.abdOut, queue: false);
-                    TutorialSteps.PublishNotification($"Move your {right} thumb out", calibrationParams.waitTime + calibrationParams.dwellTime);
+                    TutorialSteps.PublishNotification($"Move your {lrName} thumb out", calibrationParams.waitTime + calibrationParams.dwellTime);
                     break;
                 //case Pose.NoThumbAbd:
                 //    TutorialSteps.Instance.ScheduleAudioClip(noThumbAbd, queue: false);
@@ -332,9 +336,6 @@ namespace Training.Calibration
                     // 3.5 finish calibration & init testing phase
                     case Step.TestInit:
                         {
-                            hand.SaveHandCalibration();
-                            virtualHand.SetActive(false);
-                            Debug.Log($"Saved Calibration Profiles for {lrName} hand");
 
                             TutorialSteps.Instance.ScheduleAudioClip(audioClips.test, queue: false);
                             TutorialSteps.PublishNotification($"{lrName} thums up to continue", duration: 2 * testParams.dwellTime);

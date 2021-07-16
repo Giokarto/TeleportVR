@@ -106,6 +106,15 @@ namespace Training
             }
         }
 
+        public bool IsAudioPlaying()
+        {
+            foreach (var source in audioSourceArray)
+            {
+                if (source.isPlaying) return true;
+            }
+            return false;
+        }
+
 
         /// <summary>
         /// Shows a message on the notification widget
@@ -260,15 +269,6 @@ namespace Training
 
         }
 
-        public bool IsAudioPlaying()
-        {
-            bool playing = false;
-            foreach (var source in audioSourceArray)
-            {
-                playing = playing || source.isPlaying;
-            }
-            return playing;
-        }
 
 
         void Update()

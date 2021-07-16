@@ -59,11 +59,6 @@ namespace RudderPedals
             StartCoroutine(pedalDetector.readAsyncContinously(OnUpdatePresence, OnError));
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-        }
-
         private bool[] ParseData(string data)
         {
             try
