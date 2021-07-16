@@ -32,7 +32,6 @@ public class HandRotation : MonoBehaviour
     }
     void Init()
     {
-        Debug.Log("Hand Rotation Init");
         initialSelfRotation = transform.rotation;
         newParent.transform.SetParent(oldParent);
         newParent.transform.position = transform.position;
@@ -42,7 +41,6 @@ public class HandRotation : MonoBehaviour
 
     void DeInit()
     {
-        Debug.Log("Hand Rotation DeInit");
         transform.rotation = initialSelfRotation;
         transform.SetParent(oldParent, true);
     }

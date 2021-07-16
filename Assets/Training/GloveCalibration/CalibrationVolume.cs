@@ -37,7 +37,6 @@ namespace Training.Calibration
             renderer.enabled = enabled;
             if (enabled && !lastEnabled)
             {
-                Debug.Log("OnTriggerEnter null");
                 OnTriggerEnter(null);
             }
             lastEnabled = enabled;

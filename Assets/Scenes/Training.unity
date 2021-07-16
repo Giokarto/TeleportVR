@@ -719,6 +719,7 @@ MonoBehaviour:
   requiredCalibrationSteps: 000000000100000002000000
   calibrator: {fileID: 1189526810}
   renderer: {fileID: 586467670}
+  collisionLayerIndex: 7
 --- !u!65 &586467669
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1076,6 +1077,7 @@ MonoBehaviour:
   requiredCalibrationSteps: 000000000100000002000000
   calibrator: {fileID: 902270246}
   renderer: {fileID: 780221222}
+  collisionLayerIndex: 7
 --- !u!1 &850975194
 GameObject:
   m_ObjectHideFlags: 0
@@ -1158,7 +1160,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e83acb7dfbb6aa241a2a457d03bc9a3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentStep: 0
   senseGloveAudio:
     leftArm: {fileID: 8300000, guid: 3b6623cc3bcf1884ca4601c52daf8364, type: 3}
     leftBall: {fileID: 8300000, guid: ed5d7c0e15325ce478a317ca85220212, type: 3}
@@ -3073,7 +3074,7 @@ PrefabInstance:
     - target: {fileID: 2524080348949635295, guid: 98f45770bb8941d48ac62301642e3296,
         type: 3}
       propertyPath: m_CullingMask.m_Bits
-      value: 1047
+      value: 1175
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 98f45770bb8941d48ac62301642e3296, type: 3}

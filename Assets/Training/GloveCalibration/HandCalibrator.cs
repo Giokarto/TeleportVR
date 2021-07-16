@@ -91,10 +91,7 @@ namespace Training.Calibration
 
         private readonly List<System.Action<Step>> doneCallbacks = new List<System.Action<Step>>();
 
-        private string lrName
-        {
-            get { return isRight ? "right" : "left"; }
-        }
+        private string lrName { get { return isRight ? "right" : "left"; } }
 
         private CalibrationPose[] LoadProfiles()
         {
@@ -155,7 +152,6 @@ namespace Training.Calibration
             {
                 throw new MissingComponentException($"Could not find {lrName} SG_SenseGloveHardware in Scene.");
             }
-
 
             // calibration timers
             calibrationParams.waitTimer.SetTimer(calibrationParams.waitTime, CalibrationWaitDone);
@@ -331,14 +327,13 @@ namespace Training.Calibration
                                 calibrationParams.dwellTimer.ResetTimer();
                             }
                             break;
-
                         }
                     // 3.5 finish calibration & init testing phase
                     case Step.TestInit:
                         {
-
                             TutorialSteps.Instance.ScheduleAudioClip(audioClips.test, queue: false);
                             TutorialSteps.PublishNotification($"{lrName} thums up to continue", duration: 2 * testParams.dwellTime);
+                            handAnimator.SetInteger("handState", (int)Pose.ThumbUp);
 
                             currentStep = Step.Test;
                             goto case Step.Test;
@@ -375,7 +370,6 @@ namespace Training.Calibration
                                 callback(currentStep);
                             }
                             break;
-
                         }
                     default: break;
                 }
