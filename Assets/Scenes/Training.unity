@@ -14391,6 +14391,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5117890474592376354, guid: 7ea387afbb9099245a52cdb032caf821,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5117890474592376354, guid: 7ea387afbb9099245a52cdb032caf821,
+        type: 3}
       propertyPath: showLaser
       value: 0
       objectReference: {fileID: 0}

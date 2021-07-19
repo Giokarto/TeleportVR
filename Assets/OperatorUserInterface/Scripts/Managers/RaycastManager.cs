@@ -30,6 +30,9 @@ public class RaycastManager : MonoBehaviour
     {
         cam = Camera.main;
 
+    }
+    public void DrawPointer()
+    {
         Material newMaterial = new Material(Shader.Find("Unlit/Color"));
         newMaterial.SetColor("_Color", color);
 
