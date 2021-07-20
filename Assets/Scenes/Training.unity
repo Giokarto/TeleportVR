@@ -199,8 +199,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c8d04ddeadd464429ec2951dd03b6ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   requiredTag: RoboyArms
   objectToRecolor: {fileID: 125511951}
   requiredSteps: 04000000
@@ -308,8 +308,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 044a446ec73b27a44b680850ebc9a1d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   height: 1
   heightDiff: 0.3
   speed: 1
@@ -545,8 +545,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c8d04ddeadd464429ec2951dd03b6ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   requiredTag: RoboyArms
   objectToRecolor: {fileID: 173185193}
   requiredSteps: 02000000
@@ -592,8 +592,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 044a446ec73b27a44b680850ebc9a1d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   height: 1
   heightDiff: 0.3
   speed: 1
@@ -1355,8 +1355,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bcdedc9c1f83fba43ab863e300633772, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   requiredTag: RoboyArms
   requiredTrainingSteps: 03000000
   requiredCalibrationSteps: 000000000100000002000000
@@ -1761,8 +1761,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0cb257e2aa559054ab5616b9062217e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   layerMask:
     serializedVersion: 2
     m_Bits: 2048
@@ -1877,8 +1877,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bcdedc9c1f83fba43ab863e300633772, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   requiredTag: RoboyArms
   requiredTrainingSteps: 05000000
   requiredCalibrationSteps: 000000000100000002000000
@@ -1964,8 +1964,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e83acb7dfbb6aa241a2a457d03bc9a3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   currentStep: 0
   senseGloveAudio:
     leftArm: {fileID: 8300000, guid: 3b6623cc3bcf1884ca4601c52daf8364, type: 3}
@@ -2369,8 +2369,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6106dfebf7e2b7b449eaeac9d31f1674, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   calibrationParams:
     maxError: 0.001
     waitTime: 5
@@ -2442,7 +2442,7 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
-  m_WarningMessage: 
+  m_WarningMessage:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
@@ -2521,8 +2521,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a18312e68dd1c7b4c8934912ccc7b350, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   requiredStep: 6
   requiredTag: RoboyArms
   objectToDisable: {fileID: 431924708}
@@ -2695,8 +2695,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7005e920860b73f42b0e6b1b551a3be4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   requiredTag: RoboyArms
   objectToRecolor: {fileID: 1159584230}
   requiredStep: 4
@@ -2741,8 +2741,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 044a446ec73b27a44b680850ebc9a1d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   height: 1
   heightDiff: 0.3
   speed: 2.5
@@ -2787,8 +2787,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6106dfebf7e2b7b449eaeac9d31f1674, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   calibrationParams:
     maxError: 0.001
     waitTime: 5
@@ -4176,7 +4176,7 @@ PrefabInstance:
     - target: {fileID: 1862123426708017985, guid: 4b37415c47200e54eb93a28b19210d94,
         type: 3}
       propertyPath: m_Mesh
-      value: 
+      value:
       objectReference: {fileID: 0}
     - target: {fileID: 4796851856389943074, guid: 4b37415c47200e54eb93a28b19210d94,
         type: 3}
@@ -4186,7 +4186,7 @@ PrefabInstance:
     - target: {fileID: 7596925778268359588, guid: 4b37415c47200e54eb93a28b19210d94,
         type: 3}
       propertyPath: m_Mesh
-      value: 
+      value:
       objectReference: {fileID: 0}
     - target: {fileID: 8360234189344328875, guid: 4b37415c47200e54eb93a28b19210d94,
         type: 3}
@@ -16251,8 +16251,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97b35914f0a116f43a43cb137f4b3812, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1 &4832439435684870982 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2778045968670912966, guid: dd44ad100f6174047a2ba7ae4b858705,
@@ -16269,8 +16269,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e62188adca544cf1b96ccf1630f15f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   DoNotTesselate: 0
   savedPos: {x: -169.00002, y: 66, z: 5.699992}
   savedUp: {x: 0, y: 1, z: 0}
@@ -16387,7 +16387,7 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
-  m_WarningMessage: 
+  m_WarningMessage:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
@@ -16988,3 +16988,4 @@ Transform:
   m_Father: {fileID: 677447467257208391}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+{"mode":"full","isActive":false}
