@@ -34,7 +34,7 @@ public class TrainingAudioManager : MonoBehaviour
     {
         var timeLeft = 0.0;
         //queue = false;
-        if (isAudioPlaying() && queue)
+        if (IsAudioPlaying() && queue)
         {
             timeLeft = prevDuration - (AudioSettings.dspTime - prevStart);
             if (timeLeft > 0) delay = timeLeft;
@@ -57,6 +57,15 @@ public class TrainingAudioManager : MonoBehaviour
 
     }
 
+
+    public void StopAudioClips()
+    {
+        foreach (var source in audioSourceArray)
+        {
+            source.Stop();
+        }
+    }
+
     ///// <summary>
     ///// Shows a message on the notification widget
     ///// </summary>
@@ -69,7 +78,7 @@ public class TrainingAudioManager : MonoBehaviour
     //    notificationWidget.ProcessRosMessage(toastrMessage);
     //}
 
-    public bool isAudioPlaying()
+    public bool IsAudioPlaying()
     {
         bool playing = false;
         foreach (var source in audioSourceArray)
