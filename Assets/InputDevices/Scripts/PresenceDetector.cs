@@ -39,7 +39,9 @@ namespace RudderPedals
                 }
             }
         }
-
+        [Tooltip("Serial port of the arduino")]
+        public string port = "COM6";
+        public int baudRate = 9600;
         [Tooltip("Time step to refresh presence detector in (seconds)")]
         public float presenceRefresh = 0.1f;
         public bool isPaused = false;
@@ -55,7 +57,7 @@ namespace RudderPedals
         // Start is called before the first frame update
         void Start()
         {
-            pedalDetector = new SerialReader(refresh: presenceRefresh);
+            pedalDetector = new SerialReader(port, baudRate, refresh: presenceRefresh);
             StartCoroutine(pedalDetector.readAsyncContinously(OnUpdatePresence, OnError));
         }
 
@@ -154,7 +156,7 @@ namespace RudderPedals
 
             PedalDriver.Instance.enabled = true;
             //UnityAnimusClient.Instance.EnableMotor(oldMotorEnabled);
-            
+
             AudioListener.pause = false;
 
             // switch gloves back to control mode

@@ -1,20 +1,20 @@
 # TeleportVR
 
-Teleport App WS 20/21
-
 ## How to install
-* Download the main branch of this repository
-* Open the Project with Unity 2020.3.1f1
-* Add the UnityPackage "UsedPlugins" from the Google Drive Folder https://drive.google.com/drive/folders/1b-Ez4EaQvI0c8lEPN2esZWvLFtbvm95R to the project. Not all of the plugins are needed, look at the Section "Plugins" for more information
-* Add the Animus SDK to the project (Version 2.3.2, newer versions might fix some bugs but might not be compatible) from https://animus.cyberanimus.com/login. Make sure to uncheck UnityAnimusClient.cs and ClientLogic.cs in the import process.
-* For the 4 error messages in Animus scripts, double click these error messages and comment the faulty lines out (lines should look like 'using Newtonsoft'). Might not be needed in newer Animus versions anymore.
-* In the Unity Project, add ANIMUS_USE_OPENCV to the Scripting Define Symbols in the Project settings
-* Add your credentials in the Script AnimusPasswordStore.cs
-* Open the scene Scenes/main
-* Enter your Robot name in the Editor by clicking on the GameObject ClientLogic in the Hierarchy window and set the name in the field 'Robot Name'
-* In the script AnimusUtilities.cs, insert the line `UnityAnimusClient.DisplayLatency(AverageLag, AverageFps);` in line 233
-* You are now be able to start and use the application!
-* For further functionality and support for more hardware, look at the section "Plugins"
+
+1. Download the main branch of this repository
+2. Open the Project with Unity 2020.3.1f1
+3. Add the UnityPackage `UsedPlugins`, `SenseGloveSDK v1_2` and `Rewired1.1.39.U2020_Trial` from the [Google Drive Folder](https://drive.google.com/drive/folders/1b-Ez4EaQvI0c8lEPN2esZWvLFtbvm95R) to the project. 
+Not all of the plugins are needed, look at the Section [Plugins](#plugins) for more information
+4. Add the Animus SDK to the project (>= Version 2.3.2, newer versions might fix some bugs but might not be compatible) from https://animus.cyberanimus.com/login. 
+Make sure to uncheck `UnityAnimusClient.cs` and `ClientLogic.cs` in the import process.
+5. In the Unity Project, add `ANIMUS_USE_OPENCV` to the Scripting Define Symbols in the Project settings
+6. Add your credentials in the Script `AnimusPasswordStore.cs`
+7. Open the scene Scenes/main
+8. Enter your Robot name in the Editor by clicking on the GameObject ClientLogic in the Hierarchy window and set the name in the field 'Robot Name'
+9. In the script AnimusUtilities.cs, insert the line `UnityAnimusClient.DisplayLatency(AverageLag, AverageFps);` in line 233
+1. You are now be able to start and use the application!
+1. For further functionality and support for more hardware, look at the section [Plugins](#plugins)
 
 ## Build Instructions
 The App can be run on a computer without VR, with a PC VR headset (tested with the Quest) in the Editor or in a build. Furthermore, it can run (without RosSharp) standalone on the Oculus Quest. To build it, select the plattform you want to use in the BuildSettings, select the scenes you want to have in the build (e.g. Training for PC VR and TrainingMobile) in the order 
@@ -62,7 +62,9 @@ The tutorial in the app explains how to use the app. I can recommend to use the 
 * When importing Animus, it is easy reimport the UnityAnimusClient.cs and ClientLogic.cs script. This will delete the current versions of the files and replace them with the animus versions. To get back to the version of the latest git commit, you can reset the changes to these scripts in git.
 
 ## Plugins
+
 ### RosSharp
+
 RosSharp is a Plugin that allows to use Ros in C#. It works on Windows and can work on Android. However, as it is using some dll's Animus is also using with different versions, the android app crashes when having Animus, Rossharp and Unity XR in the project. RosSharp is currently used for the Interface to the cage, and is thus needed if the cage is used. If the cage is not used, RosSharp can be removed, so that the App can run on android. To install or removed RosSharp, perform the following steps:
 
 Installation:
@@ -76,16 +78,34 @@ Removal:
 * (optional) Delete the Folder Assets/OperatorUserInterface/Plugins/RosSharp
 
 ### Portals
+
 The Portals Package can give out errors that will sometimes cause the building process to fail. It can be installed from the "UsedPackages" UnityPackage and can be removed by deleting the Folder Assets/OperatorUserInterface/Plugins/PortalsPackage
 
 ### SenseGlove
-If you want to use SenseGlove to controlle the position of each finger in Roboy's hand individually, you need to install the the package `SenseGloveSDK v1_2.unitypackage` from the [Google Drive Folder](https://drive.google.com/drive/folders/1b-Ez4EaQvI0c8lEPN2esZWvLFtbvm95R).
-Then set the Scripting Define Symbol in the project settings:
-* `SENSEGLOVE`
 
-Import all files from the package and start the Traning scene. If the SenseGloves were detected correctly on your system, Roboy's fingers will imitate the movement of your own ones.
+If you want to use SenseGlove hand controllers to individually control each of Roboy's fingers, you need to: 
+1. Install the the package `SenseGloveSDK v1_2.unitypackage` from the [Google Drive Folder](https://drive.google.com/drive/folders/1b-Ez4EaQvI0c8lEPN2esZWvLFtbvm95R).
+3. Then set the Scripting Define Symbol `SENSEGLOVE` in the player settings.
+4.  Import all files from the package and start the Training scene. 
+If the SenseGloves were detected correctly on your system, you'll be able to control Roboy's fingers.
+
+### Rudder Pedals
+
+To use the rudder pedals with presence detection, connect both the pedals and the arduino via USB to the host PC. Then follow these steps: 
+1. Make sure the unity package `Rewired` from the [Google Drive Folder](https://drive.google.com/drive/folders/1b-Ez4EaQvI0c8lEPN2esZWvLFtbvm95R) is installed.
+1. Set the scripting define symbol `RUDDER` in the player settings.
+2. Determine the arduino's assigned serial port. 
+	This can be done on Windows by running Device Manager where the Arduino 1010 should show up under `Ports (COM & LPT)`
+ 
+	![](img/device_manager.png)
+
+	In the above example the correct serial port would be `COM6`.
+4.  Enter the correct serial port in the `GameObject` in `Managers/PresenceDetector`in the `Main` scene.
+5.  Pause the game by taking any of your feet off the pedals. 
+(Known Issue: The game is only paused if both feet were one the pedals at some point in time before pausing.)
 
 ### Hardware
+
 If you want to use hardware that was implemented for the Vive Pro Eye and XTal, but is not used with the Oculus Quest, download the UnityPackage "UnusedHardarePlugins" from the Google Drive Folder https://drive.google.com/drive/folders/1b-Ez4EaQvI0c8lEPN2esZWvLFtbvm95R. In the Unity Project, add the corresponding symbols to the Scripting Define Symbols in the Project settings:
 * `TOBII`
 * `BHAPTICS`
@@ -93,4 +113,5 @@ If you want to use hardware that was implemented for the Vive Pro Eye and XTal, 
 * `UNITY_POST_PROCESSING_STACK_V2`
 
 ### Others
+
 There are a few more packages that I think can be removed without getting compile errors and installed via the UsedPlugins package, but I didn't try it. The plugins are the really old Showroom Assets/OperatorUserInterface/Plugins/PBR_Modern_room and the old Showrrom Assets/OperatorUserInterface/Plugins/ShowRoom and the current ShowRoom (will remove the visuals in the Trainings scene) Assets/OperatorUserInterface/Plugins/"_Creepy_Cat". Removing the Plugins might reduce building times.
