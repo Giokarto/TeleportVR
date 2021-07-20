@@ -2,25 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteAlways]
+[ExecuteInEditMode]
 public class PlayerPrefsManager : MonoBehaviour
 {
-
-    public bool clearPlayerPrefs = false;
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    public bool clearPrefs = false;
 
     // Update is called once per frame
     void Update()
     {
-        if (clearPlayerPrefs)
+        if (clearPrefs)
         {
-            PlayerPrefs.DeleteAll();
-            Debug.Log("Cleared PlayerPrefs");
-            clearPlayerPrefs = false;
+            clearPrefs = false;
+            PlayerPrefX.DeleteAll();
+            Debug.Log("Cleared all player prefs");
         }
     }
 }

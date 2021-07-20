@@ -6,8 +6,9 @@ using Widgets;
 
 public class InputManager : Singleton<InputManager>
 {
-    public List<UnityEngine.XR.InputDevice> controllerLeft = new List<UnityEngine.XR.InputDevice>();
-    public List<UnityEngine.XR.InputDevice> controllerRight = new List<UnityEngine.XR.InputDevice>();
+    public List<InputDevice> controllerLeft = new List<InputDevice>();
+    public Transform controllerLeftObj, controllerRightObj;
+    public List<InputDevice> controllerRight = new List<InputDevice>();
     public HandManager handManager;
 
     [SerializeField] VRGestureRecognizer vrGestureRecognizer;

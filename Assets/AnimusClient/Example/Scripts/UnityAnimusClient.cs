@@ -384,7 +384,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 return false;
             }
             // only set vision when it's visible
-            if (StateManager.Instance.currentState != StateManager.States.HUD || StereoVisionCalibrator.Instance.calibrating)
+            if (StateManager.Instance.currentState != StateManager.States.HUD 
+                || Training.Calibration.StereoVisionCalibrator.Instance.calibrating)
             {
                 return false;
             }

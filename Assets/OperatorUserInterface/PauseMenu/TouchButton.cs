@@ -11,7 +11,10 @@ public class TouchButton : MonoBehaviour
         set
         {
             _text = value;
-            textMeshPro.SetText(_text);
+            if (textMeshPro != null)
+            {
+                textMeshPro.SetText(_text);
+            }
         }
     }
 
@@ -21,7 +24,10 @@ public class TouchButton : MonoBehaviour
         set
         {
             _fontSize = value;
-            textMeshPro.fontSize = _fontSize;
+            if (textMeshPro != null)
+            {
+                textMeshPro.fontSize = _fontSize;
+            }
         }
     }
     public Color textColor
@@ -30,7 +36,10 @@ public class TouchButton : MonoBehaviour
         set
         {
             _textColor = value;
-            textMeshPro.color = _textColor;
+            if (textMeshPro != null)
+            {
+                textMeshPro.color = _textColor;
+            }
         }
     }
 
@@ -51,7 +60,7 @@ public class TouchButton : MonoBehaviour
         activationVolume = gameObject.GetComponentInChildren<TouchButtonActivationVolume>();
     }
 
-    public void OnTouchEnter(System.Action callback) 
+    public void OnTouchEnter(System.Action callback)
     {
         activationVolume.enterCallbacks.Add(callback);
     }
@@ -69,11 +78,5 @@ public class TouchButton : MonoBehaviour
     public void ClearOnTouchExit()
     {
         activationVolume.exitCallbacks.Clear();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

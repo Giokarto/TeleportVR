@@ -1145,6 +1145,7 @@ Transform:
   - {fileID: 431924709}
   - {fileID: 850975195}
   - {fileID: 269507375}
+  - {fileID: 2057823832}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2000,6 +2001,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RootOrder
       value: 57
+      objectReference: {fileID: 0}
+    - target: {fileID: 941267268207094691, guid: 9847a12d1092ff548a01bbd8fb25035a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1119977693709697299, guid: 9847a12d1092ff548a01bbd8fb25035a,
         type: 3}
@@ -3218,6 +3224,56 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4b37415c47200e54eb93a28b19210d94, type: 3}
+--- !u!1 &2057823831
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2057823832}
+  - component: {fileID: 2057823833}
+  m_Layer: 0
+  m_Name: StereoVisionCalibrator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2057823832
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057823831}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 885325820}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2057823833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2057823831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32653d08543246149b3ad7c8ea1241a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  calibrating: 0
+  leftCalibrationTexture: {fileID: 2800000, guid: 3bb62ee355250184a99624a6f82e7d0c,
+    type: 3}
+  rightCalibrationTexture: {fileID: 2800000, guid: bef19f65e7030d94c9fc0e70bdfa8142,
+    type: 3}
+  leftCalibrator: {fileID: 1189526810}
+  moveSpeed: 1
 --- !u!1 &2089667638
 GameObject:
   m_ObjectHideFlags: 0

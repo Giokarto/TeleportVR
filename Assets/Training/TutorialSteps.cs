@@ -15,6 +15,7 @@ namespace Training
             LEFT_HAND,
             RIGHT_ARM,
             RIGHT_HAND,
+            STEREO,
             WHEELCHAIR,
             DONE
         }
@@ -161,6 +162,22 @@ namespace Training
                 rightCalibrator.PauseCalibration();
             };
 
+            stateMachine.onEnter[TrainingStep.STEREO] = (step) =>
+            {
+                PublishNotification("Move your left controller until the two images match");
+#if SENSEGLOVE
+                PublishNotification("Give a thumbs up to confirm");
+#else
+                PublishNotification("Press A on the left controller to confirm");
+#endif
+                Training.Calibration.StereoVisionCalibrator.Instance.StartCalibration();
+                Training.Calibration.StereoVisionCalibrator.Instance.OnDone(diff => NextStep());
+            };
+            stateMachine.onExit[TrainingStep.STEREO] = (step) =>
+            {
+                Training.Calibration.StereoVisionCalibrator.Instance.StopCalibration();
+            };
+
             stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
             {
                 ScheduleAudioClip(driveJoystickAudio.drive, delay: 1);
@@ -177,7 +194,7 @@ namespace Training
             {
                 ScheduleAudioClip(miscAudio.ready, delay: 3);
             };
-            #endregion
+#endregion
         }
 
         public void ScheduleAudioClip(AudioClip clip, bool queue = false, double delay = 0)
@@ -295,7 +312,6 @@ namespace Training
             Debug.Log("current tutorial step: " + currentStep);
         }
 
-
         void Update()
         {
             if (startTraining && !IsAudioPlaying() && currentStep == TrainingStep.IDLE)
@@ -318,6 +334,4 @@ namespace Training
             }
         }
     }
-
-
 }

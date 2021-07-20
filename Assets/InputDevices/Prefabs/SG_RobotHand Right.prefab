@@ -3914,6 +3914,15 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 0
+  angleRangeStore: {fileID: 0}
+  hand: {fileID: 0}
+  angle: 0
+  input: 0
+  minAngle: 0
+  maxAngle: 0
+  initialRotation: 0
+  initialTarget: 0
+  initialized: 0
 --- !u!1 &477016404607088120
 GameObject:
   m_ObjectHideFlags: 0
@@ -4368,6 +4377,15 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 0
+  angleRangeStore: {fileID: 0}
+  hand: {fileID: 0}
+  angle: 0
+  input: 0
+  minAngle: 0
+  maxAngle: 0
+  initialRotation: 0
+  initialTarget: 0
+  initialized: 0
 --- !u!1 &477016404685554082
 GameObject:
   m_ObjectHideFlags: 0
@@ -4750,6 +4768,15 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 0
+  angleRangeStore: {fileID: 0}
+  hand: {fileID: 0}
+  angle: 0
+  input: 0
+  minAngle: 0
+  maxAngle: 0
+  initialRotation: 0
+  initialTarget: 0
+  initialized: 0
 --- !u!1 &477016404700660830
 GameObject:
   m_ObjectHideFlags: 0
@@ -6727,7 +6754,6 @@ GameObject:
   m_Component:
   - component: {fileID: 477016405200042367}
   - component: {fileID: 477016405200042304}
-  - component: {fileID: 477016405200042305}
   m_Layer: 0
   m_Name: HandModel
   m_TagString: Untagged
@@ -6794,19 +6820,6 @@ MonoBehaviour:
   - {fileID: 477016405667413535}
   - {fileID: 477016405129553665}
   - {fileID: 477016404775561292}
---- !u!65 &477016405200042305
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 477016405200042366}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.43019888, y: 0.12607609, z: 0.16043021}
-  m_Center: {x: 0.25614926, y: 0.015092385, z: 0.006809642}
 --- !u!1 &477016405260339513
 GameObject:
   m_ObjectHideFlags: 0
@@ -8819,6 +8832,15 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 0
+  angleRangeStore: {fileID: 0}
+  hand: {fileID: 0}
+  angle: 0
+  input: 0
+  minAngle: 0
+  maxAngle: 0
+  initialRotation: 0
+  initialTarget: 0
+  initialized: 0
 --- !u!1 &477016405652791245
 GameObject:
   m_ObjectHideFlags: 0
@@ -11511,6 +11533,7 @@ MonoBehaviour:
   joint: {fileID: 477016406326232553}
   isRight: 1
   axis: 0
+  angle: 0
 --- !u!1 &477016406356597810
 GameObject:
   m_ObjectHideFlags: 0
@@ -12423,6 +12446,15 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 0
+  angleRangeStore: {fileID: 0}
+  hand: {fileID: 0}
+  angle: 0
+  input: 0
+  minAngle: 0
+  maxAngle: 0
+  initialRotation: 0
+  initialTarget: 0
+  initialized: 0
 --- !u!1 &477016406545046859
 GameObject:
   m_ObjectHideFlags: 0
@@ -12725,6 +12757,15 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 0
+  angleRangeStore: {fileID: 0}
+  hand: {fileID: 0}
+  angle: 0
+  input: 0
+  minAngle: 0
+  maxAngle: 0
+  initialRotation: 0
+  initialTarget: 0
+  initialized: 0
 --- !u!1 &477016406629992767
 GameObject:
   m_ObjectHideFlags: 0

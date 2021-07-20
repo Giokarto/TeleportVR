@@ -24,18 +24,6 @@ namespace Training.Calibration
             Done,
         }
 
-        public enum Pose
-        {
-            HandOpen = 0,
-            HandClosed = 1,
-            //FingersExt = 2,
-            //FingersFlexed = 3,
-            ThumbUp = 4,
-            ThumbFlex = 5,
-            AbdOut = 6,
-            //NoThumbAbd = 7,
-        }
-
         [System.Serializable]
         public class Calibration
         {
@@ -79,39 +67,26 @@ namespace Training.Calibration
         public Step currentStep = Step.ShowInstruction;
         public bool calibrating = false;
 
+        public bool handFound
+        {
+            get { return hand.IsLinked; }
+        }
+
         private SG_SenseGloveHardware hand;
         private InterpolationSet_IMU interpolator;
         private CalibrationPose[] poses;
 
         // size is max Pose index
-        private readonly Vector3[][] poseValues = new Vector3[8][];
+        private Vector3[][] poseValues = new Vector3[8][];
         private readonly PoseBuffer poseStore = new PoseBuffer();
 
-        private Pose currentPose = Pose.HandOpen;
+        private HandPose currentPose = HandPose.HandOpen;
 
         private readonly List<System.Action<Step>> doneCallbacks = new List<System.Action<Step>>();
 
         private string lrName { get { return isRight ? "right" : "left"; } }
+        private readonly string FQN = typeof(HandCalibrator).FullName;
 
-        private CalibrationPose[] LoadProfiles()
-        {
-            if (!hand.IsLinked || interpolator == null)
-            {
-                throw new UnassignedReferenceException("Cannot load profiles for disconnected SenseGlove");
-            }
-            // order in this array needs to match the one in the Enum Pose
-            return new CalibrationPose[]
-            {
-             CalibrationPose.GetFullOpen(ref interpolator),
-             CalibrationPose.GetFullFist(ref interpolator),
-             CalibrationPose.GetOpenHand(ref interpolator),
-             CalibrationPose.GetFist(ref interpolator),
-             CalibrationPose.GetThumbsUp(ref interpolator),
-             CalibrationPose.GetThumbFlexed(ref interpolator),
-             CalibrationPose.GetThumbAbd(ref interpolator),
-             CalibrationPose.GetThumbNoAbd(ref interpolator)
-            };
-        }
         /// <summary> Get Calibration Values from the hardware, as the interpolation solver would. </summary>
         /// <returns></returns>
         public Vector3[] GetCalibrationValues()
@@ -152,6 +127,10 @@ namespace Training.Calibration
             {
                 throw new MissingComponentException($"Could not find {lrName} SG_SenseGloveHardware in Scene.");
             }
+            
+            // saving & loading
+            OnDone((step) => Save());
+            Load();
 
             // calibration timers
             calibrationParams.waitTimer.SetTimer(calibrationParams.waitTime, CalibrationWaitDone);
@@ -177,35 +156,35 @@ namespace Training.Calibration
             currentStep = Step.Wait;
             switch (currentPose)
             {
-                case Pose.HandOpen:
+                case HandPose.HandOpen:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.handOpen, queue: false);
                     TutorialSteps.PublishNotification($"Open {lrName} your hand", Mathf.Max(audioClips.handOpen.length, calibrationParams.waitTime + calibrationParams.dwellTime));
                     break;
-                case Pose.HandClosed:
+                case HandPose.HandClosed:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.handClosed, queue: false);
                     TutorialSteps.PublishNotification($"Make a fist with your {lrName} hand", Mathf.Max(audioClips.handClosed.length, calibrationParams.waitTime + calibrationParams.dwellTime));
                     break;
-                //case Pose.FingersExt:
+                //case HandPose.FingersExt:
                 //    TutorialSteps.Instance.ScheduleAudioClip(fingersExt, queue: false);
                 //    SendToast($"Extend your {right} fingers", waitTime + dwellTime);
                 //    break;
-                //case Pose.FingersFlexed:
+                //case HandPose.FingersFlexed:
                 //    TutorialSteps.Instance.ScheduleAudioClip(fingersFlexed, queue: false);
                 //    SendToast($"Flex your {right} fingers", waitTime + dwellTime);
                 //    break;
-                case Pose.ThumbUp:
+                case HandPose.ThumbUp:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.thumbUp, queue: false);
                     TutorialSteps.PublishNotification("Give me a thumbs up", Mathf.Max(audioClips.thumbUp.length, calibrationParams.waitTime + calibrationParams.dwellTime));
                     break;
-                case Pose.ThumbFlex:
+                case HandPose.ThumbFlex:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.thumbFlex, queue: false);
                     TutorialSteps.PublishNotification($"Flex your {lrName} thumb", Mathf.Max(audioClips.thumbFlex.length, calibrationParams.waitTime + calibrationParams.dwellTime));
                     break;
-                case Pose.AbdOut:
+                case HandPose.AbdOut:
                     TutorialSteps.Instance.ScheduleAudioClip(audioClips.abdOut, queue: false);
                     TutorialSteps.PublishNotification($"Move your {lrName} thumb out", Mathf.Max(audioClips.abdOut.length, calibrationParams.waitTime + calibrationParams.dwellTime));
                     break;
-                //case Pose.NoThumbAbd:
+                //case HandPose.NoThumbAbd:
                 //    TutorialSteps.Instance.ScheduleAudioClip(noThumbAbd, queue: false);
                 //    SendToast($"Move your {right} thumb up", waitTime + dwellTime);
                 //    break;
@@ -278,7 +257,7 @@ namespace Training.Calibration
         {
             // load old calibration if existing
             if (interpolator == null &&
-                hand.IsLinked &&
+                handFound &&
                 hand.GetInterpolationProfile(out interpolator))
             {
                 poses = LoadProfiles();
@@ -333,7 +312,7 @@ namespace Training.Calibration
                         {
                             TutorialSteps.Instance.ScheduleAudioClip(audioClips.test, queue: false);
                             TutorialSteps.PublishNotification($"{lrName} thums up to continue", audioClips.test.length + testParams.dwellTime);
-                            handAnimator.SetInteger("handState", (int)Pose.ThumbUp);
+                            handAnimator.SetInteger("handState", (int)HandPose.ThumbUp);
 
                             currentStep = Step.Test;
                             goto case Step.Test;
@@ -345,10 +324,8 @@ namespace Training.Calibration
                             {
                                 break;
                             }
-                            PoseBuffer buffer = new PoseBuffer(bufferSize: 2);
-                            buffer.AddPose(poseValues[(int)Pose.ThumbUp]);
-                            buffer.AddPose(GetCalibrationValues());
-                            float error = buffer.ComputeError();
+
+                            float error = PoseError(HandPose.ThumbUp);
                             testParams.dwellTimer.LetTimePass(Time.deltaTime);
                             if (error > testParams.maxError)
                             {
@@ -377,12 +354,81 @@ namespace Training.Calibration
         }
 
         /// <summary>
+        /// Computes the devation of the current hand position to any previously calibrated
+        /// HandPose
+        /// </summary>
+        /// <param name="pose">HandPose to compare to</param>
+        /// <returns>error between current pose and given one</returns>
+        public float PoseError(HandPose pose)
+        {
+            PoseBuffer buffer = new PoseBuffer(bufferSize: 2);
+            buffer.AddPose(poseValues[(int)pose]);
+            buffer.AddPose(GetCalibrationValues());
+            return buffer.ComputeError();
+        }
+
+        /// <summary>
         /// The given callback is called, once the calibration for this hand is done
         /// </summary>
         /// <param name="callback">called, when the calibration is done</param>
         public void OnDone(System.Action<Step> callback)
         {
             doneCallbacks.Add(callback);
+        }
+        
+        private CalibrationPose[] LoadProfiles()
+        {
+            if (!hand.IsLinked || interpolator == null)
+            {
+                throw new UnassignedReferenceException("Cannot load profiles for disconnected SenseGlove");
+            }
+            // order in this array needs to match the one in the Enum Pose
+            return new CalibrationPose[]
+            {
+             CalibrationPose.GetFullOpen(ref interpolator),
+             CalibrationPose.GetFullFist(ref interpolator),
+             CalibrationPose.GetOpenHand(ref interpolator),
+             CalibrationPose.GetFist(ref interpolator),
+             CalibrationPose.GetThumbsUp(ref interpolator),
+             CalibrationPose.GetThumbFlexed(ref interpolator),
+             CalibrationPose.GetThumbAbd(ref interpolator),
+             CalibrationPose.GetThumbNoAbd(ref interpolator)
+            };
+        }
+
+        private void Save()
+        {
+            PlayerPrefX.SetInt($"{FQN}.Length", poseValues.Length);
+            for (int i = 0; i < poseValues.Length; i++)
+            {
+                PlayerPrefX.SetInt($"{FQN}[{i}].Length", poseValues[i].Length);
+                for (int j = 0; j < poseValues[i].Length; i++)
+                {
+                    var id = $"{FQN}[{i}][{j}]";
+                    PlayerPrefX.SetVector3(id, poseValues[i][j]);
+                }
+            }
+        }
+        
+        private bool Load()
+        {
+            if (!PlayerPrefX.HasKey($"{FQN}.Length"))
+            {
+                return false;
+            }
+            var len = PlayerPrefX.GetInt($"{FQN}.Length");
+            var items = new Vector3[len][];
+            for (int i = 0; i < len; i++)
+            {
+                len = PlayerPrefX.GetInt($"{FQN}[{i}].Length");
+                items[i] = new Vector3[len];
+                for (int j = 0; j < poseValues[i].Length; i++)
+                {
+                    var id = $"{FQN}[{i}][{j}]";
+                    items[i][j] = PlayerPrefX.GetVector3(id);
+                }
+            }
+            return true;
         }
     }
 }

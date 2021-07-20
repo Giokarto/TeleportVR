@@ -22,7 +22,7 @@ namespace JointTransfer
         private Dictionary<string, Vector3> _minRotation;
         private Dictionary<string, Vector3> _maxRotation;
         private Training.Calibration.HandCalibrator calibrator;
-        private const string FQN = "JointTransfer.AngleRangeStore";
+        private readonly string FQN = typeof(AngleRangeStore).FullName;
 
         // Start is called before the first frame update
         void Start()
