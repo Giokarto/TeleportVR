@@ -91,16 +91,16 @@ If the SenseGloves were detected correctly on your system, you'll be able to con
 
 ### Rudder Pedals
 
-To use the rudder pedals with presence detection, connect both the pedals and the arduino via USB to the host PC. Then follow these steps: 
+To use the rudder pedals with presence detection, connect both the pedals and the Arduino via USB to the host PC. Then follow these steps: 
 1. Make sure the unity package `Rewired` from the [Google Drive Folder](https://drive.google.com/drive/folders/1b-Ez4EaQvI0c8lEPN2esZWvLFtbvm95R) is installed.
 1. Set the scripting define symbol `RUDDER` in the player settings.
-2. Determine the arduino's assigned serial port. 
-	This can be done on Windows by running Device Manager where the Arduino 1010 should show up under `Ports (COM & LPT)`
+2. Determine the Arduino's assigned serial port. 
+	This can be done on Windows by running Device Manager where the Arduino 101 should show up under `Ports (COM & LPT)`
  
 	![](img/device_manager.png)
 
 	In the above example the correct serial port would be `COM6`.
-4.  Enter the correct serial port in the `GameObject` in `Managers/PresenceDetector`in the `Main` scene.
+4.  Enter the correct serial port in the `GameObject` in `Managers/PresenceDetector` in the `Main` scene.
 5.  Pause the game by taking any of your feet off the pedals. 
 (Known Issue: The game is only paused if both feet were one the pedals at some point in time before pausing.)
 
