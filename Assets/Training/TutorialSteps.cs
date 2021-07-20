@@ -8,15 +8,13 @@ namespace Training
     {
         public static TutorialSteps Instance;
 
+        public TrainingAudioManager audioManager;
         public TrainingStep currentStep;
         public AudioClip welcome, imAria, headHowTo, leftArmHowTo, leftBall, rightArmHowTo, rightBall, handHowTo, hand2HowTo, driveHowTo, nod, wrongTrigger, portal, enterbtn, emergency, wrongGrip, wrongButton, siren, ready;
         public List<AudioClip> praisePhrases = new List<AudioClip>();
         public AudioSource[] audioSourceArray;
         public AudioSource sirenAudioSource;
         public bool waitingForNod = false;
-        int toggle;
-        double prevDuration = 0.0;
-        double prevStart = 0.0;
         TrainingStep lastCorrectedAtStep = TrainingStep.IDLE;
         bool trainingStarted = false, startTraining = true;
 
@@ -45,8 +43,8 @@ namespace Training
             _ = Instance;
             if (StateManager.Instance.TimesStateVisited(StateManager.States.Training) <= 1)
             {
-                ScheduleAudioClip(welcome, queue: true, delay: 1.0);
-                ScheduleAudioClip(imAria, queue: true);//, delay: 2.0);
+                audioManager.ScheduleAudioClip(welcome, queue: true, delay: 1.0);
+                audioManager.ScheduleAudioClip(imAria, queue: true);//, delay: 2.0);
 
                 PublishNotification("Welcome to Teleport VR!"); //\n" +
                                                                  //"Take a look around. " +
@@ -65,32 +63,32 @@ namespace Training
             //trainingStarted = false;
         }
 
-        public void ScheduleAudioClip(AudioClip clip, bool queue = false, double delay = 0)
-        {
-            var timeLeft = 0.0;
-            //queue = false;
-            if (isAudioPlaying() && queue)
-            {
-                timeLeft = prevDuration - (AudioSettings.dspTime - prevStart);
-                if (timeLeft > 0) delay = timeLeft;
-            }
+        //public void ScheduleAudioClip(AudioClip clip, bool queue = false, double delay = 0)
+        //{
+        //    var timeLeft = 0.0;
+        //    //queue = false;
+        //    if (isAudioPlaying() && queue)
+        //    {
+        //        timeLeft = prevDuration - (AudioSettings.dspTime - prevStart);
+        //        if (timeLeft > 0) delay = timeLeft;
+        //    }
             
 
-            if (queue) toggle = 1 - toggle;
-            audioSourceArray[toggle].clip = clip;
-            //if (queue)
-            //    prevStart = AudioSettings.dspTime + prevDuration + delay;
-            //else
-            prevStart = AudioSettings.dspTime + delay;
-            audioSourceArray[toggle].PlayScheduled(prevStart);
+        //    if (queue) toggle = 1 - toggle;
+        //    audioSourceArray[toggle].clip = clip;
+        //    //if (queue)
+        //    //    prevStart = AudioSettings.dspTime + prevDuration + delay;
+        //    //else
+        //    prevStart = AudioSettings.dspTime + delay;
+        //    audioSourceArray[toggle].PlayScheduled(prevStart);
 
-            //if (queue)
-            //    audioSourceArray[toggle].PlayScheduled(AudioSettings.dspTime + prevDuration + delay);
-            //else
-            //    audioSourceArray[toggle].PlayScheduled(AudioSettings.dspTime + delay);
-            prevDuration = (double)clip.samples / clip.frequency;
+        //    //if (queue)
+        //    //    audioSourceArray[toggle].PlayScheduled(AudioSettings.dspTime + prevDuration + delay);
+        //    //else
+        //    //    audioSourceArray[toggle].PlayScheduled(AudioSettings.dspTime + delay);
+        //    prevDuration = (double)clip.samples / clip.frequency;
 
-        }
+        //}
 
 
         /// <summary>
@@ -108,7 +106,7 @@ namespace Training
         public void PraiseUser()
         {
             Debug.Log("Praise");
-            ScheduleAudioClip(praisePhrases[Random.Range(0, praisePhrases.Count)]);
+            audioManager.ScheduleAudioClip(praisePhrases[Random.Range(0, praisePhrases.Count)]);
         }
 
         public void CorrectUser(string correctButton)
@@ -129,7 +127,7 @@ namespace Training
             Debug.Log("Correcting User");
             if (lastCorrectedAtStep != currentStep && (currentStep == TrainingStep.LEFT_ARM || currentStep == TrainingStep.RIGHT_ARM))
             {
-                ScheduleAudioClip(wrongTrigger);
+                audioManager.ScheduleAudioClip(wrongTrigger);
                 lastCorrectedAtStep = currentStep;
             }
         }
@@ -146,16 +144,16 @@ namespace Training
             Debug.Log("current step: " + currentStep);
             if (currentStep == TrainingStep.HEAD)
             {
-                ScheduleAudioClip(headHowTo);
+                audioManager.ScheduleAudioClip(headHowTo);
                 PublishNotification("Try moving your head around");
-                ScheduleAudioClip(nod, delay: 0);
+                audioManager.ScheduleAudioClip(nod, delay: 0);
                 waitingForNod = true;
 
             }
             else if (currentStep == TrainingStep.LEFT_ARM)
             {
-                ScheduleAudioClip(leftArmHowTo, queue: true);
-                ScheduleAudioClip(leftBall, queue: true);
+                audioManager.ScheduleAudioClip(leftArmHowTo, queue: true);
+                audioManager.ScheduleAudioClip(leftBall, queue: true);
                 PublishNotification("Press and hold the index trigger and try moving your left arm");
                 var colTF = PlayerRig.Instance.transform.position;
                 colTF.y -= 0.1f;
@@ -165,26 +163,26 @@ namespace Training
             }
             else if (currentStep == TrainingStep.LEFT_HAND)
             {
-                ScheduleAudioClip(handHowTo, queue: true, delay: 0);
+                audioManager.ScheduleAudioClip(handHowTo, queue: true, delay: 0);
                 PublishNotification("Press the grip button on the side to close the hand.");
             }
             else if (currentStep == TrainingStep.RIGHT_ARM)
             {
-                ScheduleAudioClip(rightArmHowTo, delay: 0);
-                ScheduleAudioClip(rightBall,queue: true);
+                audioManager.ScheduleAudioClip(rightArmHowTo, delay: 0);
+                audioManager.ScheduleAudioClip(rightBall,queue: true);
                 PublishNotification("Press and hold the index trigger and try moving your right arm");
                 //PublishNotification("To move your arm, hold down the hand trigger on the controller with your middle finger.");
                 handCollectables.Find("HandCollectableRight").gameObject.SetActive(true);
             }
             else if (currentStep == TrainingStep.RIGHT_HAND)
             {
-                ScheduleAudioClip(hand2HowTo, queue: true, delay: 0);
+                audioManager.ScheduleAudioClip(hand2HowTo, queue: true, delay: 0);
                 PublishNotification("Press the grip button to close the hand.");
             }
 
             else if (currentStep == TrainingStep.WHEELCHAIR)
             {
-                ScheduleAudioClip(driveHowTo, delay: 1);
+                audioManager.ScheduleAudioClip(driveHowTo, delay: 1);
                 //ScheduleAudioClip(emergency, queue: true);
                 
                 //sirenAudioSource.PlayDelayed(25.0f);
@@ -194,24 +192,24 @@ namespace Training
             }
             else if (currentStep == TrainingStep.DONE)
             {
-                ScheduleAudioClip(ready, delay: 3);
+                audioManager.ScheduleAudioClip(ready, delay: 3);
             }
         }
 
-        bool isAudioPlaying()
-        {
-            bool playing = false;
-            foreach (var source in audioSourceArray)
-            {
-                playing = playing || source.isPlaying;
-            }
-            return playing;
-        }
+        //bool isAudioPlaying()
+        //{
+        //    bool playing = false;
+        //    foreach (var source in audioSourceArray)
+        //    {
+        //        playing = playing || source.isPlaying;
+        //    }
+        //    return playing;
+        //}
 
         
         void Update()
         {
-            if (startTraining && !isAudioPlaying())
+            if (startTraining && !audioManager.isAudioPlaying())
             {
                 currentStep = TrainingStep.IDLE;
                 Debug.Log("moved to the next step");
@@ -219,7 +217,7 @@ namespace Training
                 startTraining = false;
                 //trainingStarted = true;
             }
-            if (currentStep == TrainingStep.DONE && !isAudioPlaying())
+            if (currentStep == TrainingStep.DONE && !audioManager.isAudioPlaying())
                 StateManager.Instance.GoToState(StateManager.States.HUD);
             //if (currentStep == TrainingStep.HEAD && !isAudioPlaying())
             //    waitingForNod = true;
