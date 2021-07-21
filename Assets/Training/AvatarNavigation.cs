@@ -2,21 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AvatarNavigation : MonoBehaviour
+namespace Training
 {
-    [SerializeField] private float speed = 3f;
-    [SerializeField] private Vector3 target;
-    // Start is called before the first frame update
-    void Start()
+    public class AvatarNavigation : MonoBehaviour
     {
-        target = transform.position;
+        public Vector3 target;
+        [Range(0, 10)] public float speed = 3;
+
+        // Start is called before the first frame update
+        void Start()
+        {
+            target = transform.position;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            transform.position = Vector3.MoveTowards(transform.position, target, Time.deltaTime * speed);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        transform.position = Vector3.MoveTowards(transform.position, target, Time.deltaTime * speed);
-    }
-
-    public void UpdateTarget(Vector3 _target) => target = _target;
 }

@@ -24,7 +24,7 @@ namespace Training.AudioClips
     }
 
     [System.Serializable]
-    public struct DriveWheelcair
+    public struct DriveWheelchair
     {
         public AudioClip start, forward, backwards, turn_left, turn_right;
     }

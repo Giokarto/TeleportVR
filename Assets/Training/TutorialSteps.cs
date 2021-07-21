@@ -16,6 +16,7 @@ namespace Training
             RIGHT_ARM,
             RIGHT_HAND,
             WHEELCHAIR,
+            PAUSE_MENU,
             DONE
         }
 
@@ -32,7 +33,7 @@ namespace Training
         public AudioClips.Misc miscAudio;
         public AudioClips.SGTraining senseGloveAudio;
         public AudioClips.Controller controllerAudio;
-        public AudioClips.DriveWheelcair driveWheelchairAudio;
+        public AudioClips.DriveWheelchair driveWheelchairAudio;
         public AudioClips.PauseMenu pauseMenuAudio;
 
         public List<AudioClip> praisePhrases = new List<AudioClip>();
@@ -40,6 +41,7 @@ namespace Training
         public AudioSource sirenAudioSource;
         public bool waitingForNod = false;
         public Calibration.HandCalibrator rightCalibrator, leftCalibrator;
+        public WheelchairTraining wheelChairTraining;
 
         //int toggle;
         //double prevDuration = 0.0;
@@ -165,19 +167,16 @@ namespace Training
 
             stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
             {
-                audioManager.ScheduleAudioClip(driveWheelchairAudio.start, delay: 1);
-                //ScheduleAudioClip(emergency, queue: true);
-
-                //sirenAudioSource.PlayDelayed(25.0f);
-                //sirenAudioSource.SetScheduledEndTime(AudioSettings.dspTime + 45.0f);
-                //ScheduleAudioClip(portal);
-                PublishNotification("Use left joystick to drive around");
+                wheelChairTraining.StartTraining();
+                wheelChairTraining.OnDone(() => NextStep());
             };
-            //stateMachine.onExit[TrainingStep.WHEELCHAIR] = () => { };
+            stateMachine.onExit[TrainingStep.WHEELCHAIR] = (step) => {
+                wheelChairTraining.StopTraining();
+            };
 
             stateMachine.onEnter[TrainingStep.DONE] = (step) =>
             {
-                audioManager.ScheduleAudioClip(miscAudio.ready, delay: 3);
+                audioManager.ScheduleAudioClip(miscAudio.ready);
             };
             #endregion
         }

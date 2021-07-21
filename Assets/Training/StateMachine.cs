@@ -11,12 +11,13 @@ namespace Training
             get { return _state; }
             set
             {
-                if (onExit.ContainsKey(_state))
+                bool sameState = EqualityComparer<T>.Default.Equals(_state, value);
+                if (onExit.ContainsKey(_state) && !sameState)
                 {
                     onExit[_state](_state);
                 }
                 _state = value;
-                if (onEnter.ContainsKey(_state))
+                if (onEnter.ContainsKey(_state) && !sameState)
                 {
                     onEnter[_state](_state);
                 }
@@ -32,5 +33,18 @@ namespace Training
             onEnter = new Dictionary<T, Action<T>>();
             onExit = new Dictionary<T, Action<T>>();
         }
+
+        //public void ForceTrigger(T state)
+        //{
+        //    if (onExit.ContainsKey(_state))
+        //    {
+        //        onExit[_state](_state);
+        //    }
+        //    _state = state;
+        //    if (onEnter.ContainsKey(_state))
+        //    {
+        //        onEnter[_state](_state);
+        //    }
+        //}
     }
 }
