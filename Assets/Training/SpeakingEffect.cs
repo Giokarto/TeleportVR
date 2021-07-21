@@ -26,11 +26,12 @@ public class SpeakingEffect : MonoBehaviour
         currentUpdateTime += Time.deltaTime;
         if (currentUpdateTime >= updateStep)
         {
-            currentUpdateTime = 0f;
-            clipLoudness = audioManager.GetCurrentAudioClipLoudness();           
+            currentUpdateTime = 0;
+            clipLoudness = audioManager.GetCurrentAudioClipLoudness();
         }
-        
-        transform.localScale = Vector3.Lerp(transform.localScale, originalScale + clipLoudness * scaleChange, scaleRate * Time.deltaTime); ;// originalScale + clipLoudness * scaleChange;
-       // Debug.LogWarning(clipLoudness);
+
+        transform.localScale = Vector3.Lerp(transform.localScale, originalScale + clipLoudness * scaleChange, scaleRate * Time.deltaTime);
+        // originalScale + clipLoudness * scaleChange;
+        // Debug.LogWarning(clipLoudness);
     }
 }

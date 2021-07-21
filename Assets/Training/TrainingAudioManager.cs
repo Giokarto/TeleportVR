@@ -17,18 +17,6 @@ public class TrainingAudioManager : MonoBehaviour
         clipSampleData = new float[sampleDataLength];
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 
     public void ScheduleAudioClip(AudioClip clip, bool queue = false, double delay = 0)
     {

@@ -45,6 +45,9 @@ Assets/Plugins/Editor/JetBrains*
 # exclude OpenCVForUnity
 /Assets/OpenCVForUnity/
 
+# exclude Ultimate 10 Shaders
+/Assets/Ultimate\ 10\ Plus\ Shaders/
+
 # exclude the OUI ThirdParty Assets
 Assets/OperatorUserInterface/ThirdParty/
 Assets/OperatorUserInterface/Plugins/
