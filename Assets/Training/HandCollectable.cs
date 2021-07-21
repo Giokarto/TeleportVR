@@ -33,7 +33,7 @@ namespace Training
             {
                 collectedSpheres++;
                 if (sound != null)
-                    TutorialSteps.Instance.ScheduleAudioClip(sound);
+                    TutorialSteps.Instance.audioManager.ScheduleAudioClip(sound);
                 gameObject.SetActive(false);
                 TutorialSteps.Instance.NextStep(praise: true);
                 Debug.Log("Object collected. Moving on.");
