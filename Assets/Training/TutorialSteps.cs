@@ -29,10 +29,11 @@ namespace Training
         }
         private StateMachine<TrainingStep> stateMachine = new StateMachine<TrainingStep>();
 
+        public AudioClips.Misc miscAudio;
         public AudioClips.SGTraining senseGloveAudio;
         public AudioClips.Controller controllerAudio;
-        public AudioClips.DriveJoystick driveJoystickAudio;
-        public AudioClips.Misc miscAudio;
+        public AudioClips.DriveWheelcair driveWheelchairAudio;
+        public AudioClips.PauseMenu pauseMenuAudio;
 
         public List<AudioClip> praisePhrases = new List<AudioClip>();
         //public AudioSource[] audioSourceArray;
@@ -164,7 +165,7 @@ namespace Training
 
             stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
             {
-                audioManager.ScheduleAudioClip(driveJoystickAudio.drive, delay: 1);
+                audioManager.ScheduleAudioClip(driveWheelchairAudio.start, delay: 1);
                 //ScheduleAudioClip(emergency, queue: true);
 
                 //sirenAudioSource.PlayDelayed(25.0f);

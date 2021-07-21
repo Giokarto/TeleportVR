@@ -7,6 +7,7 @@ using UnityEngine;
 /// It will start the slerp, if the rotational distance between the own rotation and the cameras rotation is bigger than a threshold angle (start slerp angle) and stops the slerp, if the distance is smaller than a second threshold (stop slerp angle).
 /// The threshold is bigger, if the menu is pointed at.
 /// </summary>
+[ExecuteAlways]
 public class SlerpToCamera : MonoBehaviour
 {
     // for timing the slerp
