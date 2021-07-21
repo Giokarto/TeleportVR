@@ -20,7 +20,15 @@ public class UI_Manager : Singleton<UI_Manager>
 
     private Vector2 pointerPos;
 
-    public enum PointerTechnique { PointerMouse, PointerViveController, PointerSenseGlove, PointerController, Auto };
+    public enum PointerTechnique
+    {
+        PointerMouse,
+        PointerViveController,
+        PointerSenseGlove,
+        PointerController,
+        Auto,
+        None
+    };
 
     [SerializeField] bool showLaser;
 
@@ -29,15 +37,22 @@ public class UI_Manager : Singleton<UI_Manager>
     public void Start()
     {
         // automatically switch between mouse or controller input based on the platform. I'm not sure if it is working
-        if (pointerTechnique == PointerTechnique.Auto) {
-            if (Application.platform == RuntimePlatform.Android) {
+#if SENSEGLOVE
+        pointerTechnique = PointerTechnique.None;
+#else
+        if (pointerTechnique == PointerTechnique.Auto)
+        {
+            if (Application.platform == RuntimePlatform.Android)
+            {
                 pointerTechnique = PointerTechnique.PointerController;
             }
-            else {
+            else
+            {
                 pointerTechnique = PointerTechnique.PointerMouse;
             }
             showLaser = pointerTechnique == PointerTechnique.PointerMouse;
         }
+#endif
         CreatePointer();
         cam = Camera.main;
         clickSound = this.GetComponent<AudioSource>();
@@ -75,13 +90,18 @@ public class UI_Manager : Singleton<UI_Manager>
         switch (pointerTechnique)
         {
             case PointerTechnique.PointerMouse:
+                raycastManager.DrawPointer();
                 pointer = this.gameObject.AddComponent<PointerMouse>();
-                return;                
+                return;
             case PointerTechnique.PointerSenseGlove:
+                raycastManager.DrawPointer();
                 pointer = this.gameObject.AddComponent<PointerSenseGlove>();
                 break;
             case PointerTechnique.PointerController:
+                raycastManager.DrawPointer();
                 pointer = this.gameObject.AddComponent<PointerController>();
+                break;
+            case PointerTechnique.None:
                 break;
             default:
                 throw new System.Exception("No pointer technique specified.");

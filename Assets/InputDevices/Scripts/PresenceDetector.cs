@@ -50,7 +50,7 @@ namespace RudderPedals
         public TrackerSwitcher rightGlove;
 
         private SerialReader pedalDetector;
-        private bool oldLeft = false, oldRight = false;
+        private bool oldLeft = false, oldRight = false, oldInit = true;
         private bool oldMotorEnabled = false;
         private Timer animationTimer;
 
@@ -59,11 +59,6 @@ namespace RudderPedals
         {
             pedalDetector = new SerialReader(port, baudRate, refresh: presenceRefresh);
             StartCoroutine(pedalDetector.readAsyncContinously(OnUpdatePresence, OnError));
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
         }
 
         private bool[] ParseData(string data)
@@ -91,7 +86,7 @@ namespace RudderPedals
             }
 
             bool left = lr[0], right = lr[1];
-            if ((!left || !right) && (oldLeft || oldRight))
+            if ((!left || !right) && (!oldInit || oldLeft || oldRight))
             {
                 Pause();
             }
@@ -102,6 +97,7 @@ namespace RudderPedals
 
             oldLeft = left;
             oldRight = right;
+            oldInit = true;
         }
 
         public bool Pause()
@@ -111,9 +107,9 @@ namespace RudderPedals
                 return false;
             }
 
-            Debug.Log("Paused");
             PauseMenu.Instance.show = true;
             isPaused = true;
+            Debug.Log("Paused");
 
             // Disable BioIK & wheelchair
             EnableControlManager.Instance.leftBioIKGroup.SetEnabled(false);
@@ -152,7 +148,7 @@ namespace RudderPedals
             EnableControlManager.Instance.rightBioIKGroup.SetEnabled(true);
             UnityAnimusClient.Instance._myIKHead.enabled = true;
 
-            //WheelchairStateManager.Instance.SetVisibility(StateManager.Instance.currentState != StateManager.States.HUD);
+            WheelchairStateManager.Instance.SetVisibility(StateManager.Instance.currentState != StateManager.States.HUD);
 
             PedalDriver.Instance.enabled = true;
             //UnityAnimusClient.Instance.EnableMotor(oldMotorEnabled);

@@ -17,30 +17,61 @@ namespace Training.Calibration
         public HandCalibrator calibrator;
         [Tooltip("Renderer of the current object")]
         public new MeshRenderer renderer;
+        public int collisionLayerIndex = 7;
 
         private new bool enabled
         {
             get
             {
                 return requiredTrainingSteps.Contains(TutorialSteps.Instance.currentStep)
-              && requiredCalibrationSteps.Contains(calibrator.currentStep);
+                  && requiredCalibrationSteps.Contains(calibrator.currentStep);
             }
         }
+        private bool lastEnabled = false;
+        private bool coroutineRunning = false;
 
         // Update is called once per frame
         void Update()
         {
             // only render the volume, if we're in the right calibration step(s)
             renderer.enabled = enabled;
+            if (enabled && !lastEnabled)
+            {
+                OnTriggerEnter(null);
+            }
+            lastEnabled = enabled;
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!enabled || !other.CompareTag(requiredTag) || TutorialSteps.Instance.audioManager.IsAudioPlaying())
+            // if other == null skip the tag comarison
+            if (!enabled || (other != null && !other.CompareTag(requiredTag)))
             {
                 return;
             }
-            calibrator.StartCalibration();
+
+            if (!coroutineRunning)
+            {
+                coroutineRunning = true;
+                StartCoroutine(CalibrateOnAudioDone());
+            }
+        }
+
+        private IEnumerator CalibrateOnAudioDone()
+        {
+            while (TutorialSteps.Instance.audioManager.IsAudioPlaying())
+            {
+                yield return new WaitForSeconds(0.5f);
+            }
+            var collider = gameObject.GetComponent<BoxCollider>();
+            var colliderPos = transform.position;
+            var colliderSize = Vector3.Scale(collider.size, transform.localScale);
+            var stillColliding = Physics.CheckBox(colliderPos, colliderSize / 2, transform.rotation, 1 << collisionLayerIndex);
+            if (enabled && stillColliding)
+            {
+                calibrator.StartCalibration();
+            }
+            coroutineRunning = false;
         }
 
         private void OnTriggerExit(Collider other)
@@ -53,5 +84,4 @@ namespace Training.Calibration
             TutorialSteps.Instance.audioManager.StopAudioClips();
         }
     }
-
 }
