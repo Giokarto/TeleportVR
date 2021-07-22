@@ -30,28 +30,39 @@ namespace Training
 
             stateMachine.onEnter[State.START] = (state) =>
             {
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(pauseMenuAudio.start, queue: true);
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(pauseMenuAudio.start, queue: true,
+                    onStart: () => TutorialSteps.PublishNotification("Lift one foot off the pedals", pauseMenuAudio.start.length)
+                    );
+
+
                 RudderPedals.PresenceDetector.Instance.canPause = true;
                 RudderPedals.PresenceDetector.Instance.pauseAudio = false;
                 RudderPedals.PresenceDetector.Instance.OnPause((s) => Next(), once: true);
-                PauseMenu.Instance.enabled = false;
+                PauseMenu.Instance.switchScene.enabled = false;
             };
 
             stateMachine.onEnter[State.PAUSE] = (state) =>
             {
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(pauseMenuAudio.paused);
+
                 Next();
             };
 
             stateMachine.onEnter[State.UNPAUSE] = (state) =>
             {
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(pauseMenuAudio.unpause, queue: true);
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(pauseMenuAudio.unpause, queue: true,
+                    onStart: () => TutorialSteps.PublishNotification("Put both feet back on the pedals", pauseMenuAudio.unpause.length)
+                    );
+
                 RudderPedals.PresenceDetector.Instance.OnUnpause((s) => Next(), once: true);
             };
 
             stateMachine.onEnter[State.TELEPORT] = (state) =>
             {
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(pauseMenuAudio.teleport);
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(pauseMenuAudio.teleport,
+                    onStart: () => TutorialSteps.PublishNotification("Go to the menu and touch the Control button", pauseMenuAudio.teleport.length)
+                    );
+
                 RudderPedals.PresenceDetector.Instance.OnPause((s) => Next(), once: true);
             };
 
@@ -59,7 +70,7 @@ namespace Training
             {
                 RudderPedals.PresenceDetector.Instance.canPause = true;
                 RudderPedals.PresenceDetector.Instance.pauseAudio = true;
-                PauseMenu.Instance.enabled = true;
+                PauseMenu.Instance.switchScene.enabled = true;
                 onDoneCallbacks.Call(State.DONE);
             };
         }

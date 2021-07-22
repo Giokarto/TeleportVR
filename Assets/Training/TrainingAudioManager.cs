@@ -18,7 +18,7 @@ public class TrainingAudioManager : MonoBehaviour
     }
 
 
-    public void ScheduleAudioClip(AudioClip clip, bool queue = false, double delay = 0)
+    public void ScheduleAudioClip(AudioClip clip, bool queue = false, double delay = 0, System.Action onStart = null, System.Action onEnd = null)
     {
         var timeLeft = 0.0;
         //queue = false;
@@ -35,7 +35,10 @@ public class TrainingAudioManager : MonoBehaviour
         //    prevStart = AudioSettings.dspTime + prevDuration + delay;
         //else
         prevStart = AudioSettings.dspTime + delay;
+
+        StartCoroutine(WaitAndCall((float)delay, onStart));
         audioSourceArray[toggle].PlayScheduled(prevStart);
+        StartCoroutine(WaitAndCall((float)(delay + clip.length), onEnd));
 
         //if (queue)
         //    audioSourceArray[toggle].PlayScheduled(AudioSettings.dspTime + prevDuration + delay);
@@ -43,6 +46,16 @@ public class TrainingAudioManager : MonoBehaviour
         //    audioSourceArray[toggle].PlayScheduled(AudioSettings.dspTime + delay);
         prevDuration = (double)clip.samples / clip.frequency;
 
+    }
+
+    private IEnumerator WaitAndCall(float waitTime, System.Action callback)
+    {
+        if (callback == null)
+        {
+            yield break;
+        }
+        yield return new WaitForSeconds(waitTime);
+        callback();
     }
 
 
@@ -93,7 +106,7 @@ public class TrainingAudioManager : MonoBehaviour
                 if (clipLoudness > maxClipLoudness)
                     maxClipLoudness = clipLoudness;
             }
-            
+
         }
         return maxClipLoudness;
     }

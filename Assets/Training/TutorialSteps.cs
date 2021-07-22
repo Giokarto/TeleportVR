@@ -78,9 +78,12 @@ namespace Training
 
             stateMachine.onEnter[TrainingStep.HEAD] = (step) =>
             {
-                audioManager.ScheduleAudioClip(miscAudio.head);
-                PublishNotification("Try moving your head around");
-                audioManager.ScheduleAudioClip(miscAudio.nod, delay: 0);
+                audioManager.ScheduleAudioClip(miscAudio.head,
+                    onStart: () => PublishNotification("Try moving your head around", miscAudio.head.length + 2)
+                    );
+                audioManager.ScheduleAudioClip(miscAudio.nod, queue: true,
+                    onStart: () => PublishNotification("Give me a nod to continue", miscAudio.nod.length + 2)
+                    );
                 waitingForNod = true;
             };
             // stop pause menu on 
@@ -94,7 +97,7 @@ namespace Training
 #if SENSEGLOVE
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftArm, queue: true);
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftBall, queue: true);
-                PublishNotification("Move youre left arm and try to touch the blue ball");
+                PublishNotification("Move your left arm and try to touch the blue ball");
 #else
                 ScheduleAudioClip(controllerAudio.leftArm, queue: true);
                 ScheduleAudioClip(controllerAudio.leftBall, queue: true);
@@ -116,7 +119,7 @@ namespace Training
 #if SENSEGLOVE
                 PublishNotification("Move your left hand into the blue box");
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftHandStart);
-                leftCalibrator.OnDone(step => Next());
+                leftCalibrator.OnDone(step => Next(), once: true);
 #else
                 ScheduleAudioClip(controllerAudio.leftHand, queue: true, delay: 0);
                 PublishNotification("Press the grip button on the side to close the hand.");
@@ -152,7 +155,7 @@ namespace Training
 #if SENSEGLOVE
                 PublishNotification("Move your right hand into the blue box");
                 audioManager.ScheduleAudioClip(senseGloveAudio.rightHandStart);
-                rightCalibrator.OnDone(step => Next());
+                rightCalibrator.OnDone(step => Next(), once: true);
 #else
                 ScheduleAudioClip(controllerAudio.rightHand, queue: true, delay: 0);
                 PublishNotification("Press the grip button to close the hand.");
@@ -165,17 +168,18 @@ namespace Training
 
             stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
             {
-                wheelChairTraining.OnDone((s) => Next());
+                wheelChairTraining.OnDone((s) => Next(), once: true);
                 wheelChairTraining.StartTraining();
             };
             stateMachine.onExit[TrainingStep.WHEELCHAIR] = (step) =>
             {
+
                 wheelChairTraining.StopTraining();
             };
 
             stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
             {
-                pauseMenuTraining.OnDone((s) => Next());
+                pauseMenuTraining.OnDone((s) => Next(), once: true);
                 pauseMenuTraining.StartTraining();
             };
             stateMachine.onExit[TrainingStep.PAUSE_MENU] = (step) =>
@@ -185,7 +189,7 @@ namespace Training
 
             stateMachine.onEnter[TrainingStep.DONE] = (step) =>
             {
-                audioManager.ScheduleAudioClip(miscAudio.ready);
+                //audioManager.ScheduleAudioClip(miscAudio.ready);
                 RudderPedals.PresenceDetector.Instance.canPause = true;
             };
             #endregion

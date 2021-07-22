@@ -23,63 +23,86 @@ namespace Training
 
         public AudioClips.DriveWheelchair driveWheelchairAudio;
 
-        private Callbacks<State> onDoneCallbacks;
+        private Callbacks<State> onDoneCallbacks = new Callbacks<State>();
+        private bool waitingForTrigger = false;
 
         // Start is called before the first frame update
         void Start()
         {
 
             currentState = State.START;
-            onDoneCallbacks = new Callbacks<State>();
+            ariaTrigger.TriggerEnterCallback((move) =>
+            {
+                Debug.Log($"move: {move}");
+                if (move < 0.01f && waitingForTrigger)
+                {
+                    Next();
+                }
+            });
 
             stateMachine.onEnter[State.FORWARD] = (state) =>
             {
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.start, queue: true);
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.forward, queue: true);
-                TutorialSteps.PublishNotification("Press the right pedal to go forward");
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.forward, queue: true,
+                    onStart: () => TutorialSteps.PublishNotification("Press the right pedal to go forward", driveWheelchairAudio.forward.length)
+                    );
 
                 ariaNavigation.target = forwardGoal.position;
-                ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
+                waitingForTrigger = true;
             };
+            stateMachine.onExit[State.FORWARD] = (state) => waitingForTrigger = false;
 
             stateMachine.onEnter[State.BACKWARD] = (state) =>
             {
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.backwards);
-                TutorialSteps.PublishNotification("Press the left pedal to go backward");
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.backwards,
+                    onStart: () => TutorialSteps.PublishNotification("Press the left pedal to go backward", driveWheelchairAudio.backwards.length)
+                    );
 
                 ariaNavigation.target = backwardGoal.position;
-                ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
+                waitingForTrigger = true;
+                //ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
             };
+            stateMachine.onExit[State.BACKWARD] = (state) => waitingForTrigger = false;
 
             stateMachine.onEnter[State.TURN_RIGHT] = (state) =>
             {
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.turn_right);
-                TutorialSteps.PublishNotification("Turn right");
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.turn_right,
+                    onStart: () => TutorialSteps.PublishNotification("Turn right", driveWheelchairAudio.turn_right.length)
+                    );
 
                 ariaNavigation.target = turnRightGoal.position;
-                ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
+                waitingForTrigger = true;
+                //ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
             };
+            stateMachine.onExit[State.TURN_RIGHT] = (state) => waitingForTrigger = false;
 
             stateMachine.onEnter[State.TURN_LEFT] = (state) =>
             {
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.turn_left);
-                TutorialSteps.PublishNotification("Turn left");
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.turn_left,
+                    onStart: () => TutorialSteps.PublishNotification("Turn left", driveWheelchairAudio.turn_left.length)
+                    );
 
                 ariaNavigation.target = turnLeftGoal.position;
-                ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
+                waitingForTrigger = true;
+                //ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
             };
+            stateMachine.onExit[State.TURN_LEFT] = (state) => waitingForTrigger = false;
 
             stateMachine.onEnter[State.DONE] = (state) =>
             {
-                ariaNavigation.target = initialGoal.position;
                 onDoneCallbacks.Call(State.DONE);
             };
         }
 
-        public void StartTraining() => currentState = State.FORWARD;
+        public void StartTraining()
+        {
+            currentState = State.START;
+            Next();
+        }
 
         public void StopTraining() => currentState = State.DONE;
 
         public void OnDone(System.Action<State> callback, bool once = false) => onDoneCallbacks.Add(callback, once);
     }
 }
+
