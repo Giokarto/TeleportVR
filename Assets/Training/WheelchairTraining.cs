@@ -80,7 +80,7 @@ namespace Training
         public void Next()
         {
             currentState++;
-            Debug.Log($"Current Wheelchair Tutorial Step {currentState}");
+            Debug.Log($"Current WheelchairTraining Step {currentState}");
         }
 
         public void StartTraining() => currentState = State.FORWARD;
