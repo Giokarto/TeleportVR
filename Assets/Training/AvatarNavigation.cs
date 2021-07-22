@@ -33,9 +33,9 @@ namespace Training
             {
                 detract = target - wheelchair.position;
                 float mag = detract.magnitude;
-                detract /= mag * mag;
-                // project to xz plane while keeping it's length
-                detract = Vector3.ProjectOnPlane(detract, Vector3.up).normalized * mag;
+                detract.Normalize();
+                // project to xz plane
+                detract = Vector3.ProjectOnPlane(detract, Vector3.up).normalized * 1 / mag;
 
             }
             transform.position = Vector3.MoveTowards(transform.position, target, attractSpeed * Time.deltaTime)

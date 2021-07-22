@@ -29,13 +29,13 @@ namespace Training
         /// <param name="other">The other colliding collider</param>
         private void OnTriggerEnter(Collider other)
         {
-            if (requiredSteps.Contains(TutorialSteps.Instance.currentStep) && other.CompareTag(requiredTag))
+            if (requiredSteps.Contains(TutorialSteps.Instance.currentState) && other.CompareTag(requiredTag))
             {
                 collectedSpheres++;
                 if (sound != null)
                     TutorialSteps.Instance.audioManager.ScheduleAudioClip(sound);
                 gameObject.SetActive(false);
-                TutorialSteps.Instance.NextStep(praise: true);
+                TutorialSteps.Instance.Next();
                 Debug.Log("Object collected. Moving on.");
             }
         }

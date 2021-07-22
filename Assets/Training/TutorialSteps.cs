@@ -5,7 +5,7 @@ using System;
 
 namespace Training
 {
-    public class TutorialSteps : MonoBehaviour
+    public class TutorialSteps : Automaton<TutorialSteps.TrainingStep>
     {
         public enum TrainingStep
         {
@@ -23,18 +23,10 @@ namespace Training
         public static TutorialSteps Instance;
 
         public TrainingAudioManager audioManager;
-        public TrainingStep currentStep
-        {
-            get { return stateMachine.State; }
-            set { stateMachine.State = value; }
-        }
-        private StateMachine<TrainingStep> stateMachine = new StateMachine<TrainingStep>();
 
         public AudioClips.Misc miscAudio;
         public AudioClips.SGTraining senseGloveAudio;
         public AudioClips.Controller controllerAudio;
-        public AudioClips.DriveWheelchair driveWheelchairAudio;
-        public AudioClips.PauseMenu pauseMenuAudio;
 
         public List<AudioClip> praisePhrases = new List<AudioClip>();
         //public AudioSource[] audioSourceArray;
@@ -42,6 +34,7 @@ namespace Training
         public bool waitingForNod = false;
         public Calibration.HandCalibrator rightCalibrator, leftCalibrator;
         public WheelchairTraining wheelChairTraining;
+        public PauseMenuTraining pauseMenuTraining;
 
         //int toggle;
         //double prevDuration = 0.0;
@@ -90,7 +83,12 @@ namespace Training
                 audioManager.ScheduleAudioClip(miscAudio.nod, delay: 0);
                 waitingForNod = true;
             };
-            //stateMachine.onExit[TrainingStep.HEAD] = () => { };
+            // stop pause menu on 
+            stateMachine.onExit[TrainingStep.HEAD] = (step) =>
+            {
+                RudderPedals.PresenceDetector.Instance.canPause = false;
+            };
+
             stateMachine.onEnter[TrainingStep.LEFT_ARM] = (step) =>
             {
 #if SENSEGLOVE
@@ -118,7 +116,7 @@ namespace Training
 #if SENSEGLOVE
                 PublishNotification("Move your left hand into the blue box");
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftHandStart);
-                leftCalibrator.OnDone(step => NextStep());
+                leftCalibrator.OnDone(step => Next());
 #else
                 ScheduleAudioClip(controllerAudio.leftHand, queue: true, delay: 0);
                 PublishNotification("Press the grip button on the side to close the hand.");
@@ -154,7 +152,7 @@ namespace Training
 #if SENSEGLOVE
                 PublishNotification("Move your right hand into the blue box");
                 audioManager.ScheduleAudioClip(senseGloveAudio.rightHandStart);
-                rightCalibrator.OnDone(step => NextStep());
+                rightCalibrator.OnDone(step => Next());
 #else
                 ScheduleAudioClip(controllerAudio.rightHand, queue: true, delay: 0);
                 PublishNotification("Press the grip button to close the hand.");
@@ -167,16 +165,28 @@ namespace Training
 
             stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
             {
+                wheelChairTraining.OnDone((s) => Next());
                 wheelChairTraining.StartTraining();
-                wheelChairTraining.OnDone(() => NextStep());
             };
-            stateMachine.onExit[TrainingStep.WHEELCHAIR] = (step) => {
+            stateMachine.onExit[TrainingStep.WHEELCHAIR] = (step) =>
+            {
                 wheelChairTraining.StopTraining();
+            };
+
+            stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
+            {
+                pauseMenuTraining.OnDone((s) => Next());
+                pauseMenuTraining.StartTraining();
+            };
+            stateMachine.onExit[TrainingStep.PAUSE_MENU] = (step) =>
+            {
+                pauseMenuTraining.StopTraining();
             };
 
             stateMachine.onEnter[TrainingStep.DONE] = (step) =>
             {
                 audioManager.ScheduleAudioClip(miscAudio.ready);
+                RudderPedals.PresenceDetector.Instance.canPause = true;
             };
             #endregion
         }
@@ -232,37 +242,25 @@ namespace Training
                     break;
             }
             Debug.Log("Correcting User");
-            if (lastCorrectedAtStep != currentStep && (currentStep == TrainingStep.LEFT_ARM || currentStep == TrainingStep.RIGHT_ARM))
+            if (lastCorrectedAtStep != currentState && (currentState == TrainingStep.LEFT_ARM || currentState == TrainingStep.RIGHT_ARM))
             {
                 audioManager.ScheduleAudioClip(miscAudio.wrongTrigger);
-                lastCorrectedAtStep = currentStep;
+                lastCorrectedAtStep = currentState;
             }
-        }
-
-        /// <summary>
-        /// Continues to the next step in the Tutorial
-        /// </summary>
-        /// <param name="praise"></param>
-        public void NextStep(bool praise = false)
-        {
-            //if (praise)
-            //    PraiseUser();
-            currentStep++;
-            Debug.Log("current tutorial step: " + currentStep);
         }
 
 
         void Update()
         {
-            if (startTraining && !audioManager.IsAudioPlaying() && currentStep == TrainingStep.IDLE)
+            if (startTraining && !audioManager.IsAudioPlaying() && currentState == TrainingStep.IDLE)
             {
-                currentStep = TrainingStep.IDLE;
+                currentState = TrainingStep.IDLE;
                 Debug.Log("Started Training");
-                NextStep();
+                Next();
                 startTraining = false;
                 //trainingStarted = true;
             }
-            if (currentStep == TrainingStep.DONE && !audioManager.IsAudioPlaying())
+            if (currentState == TrainingStep.DONE && !audioManager.IsAudioPlaying())
                 StateManager.Instance.GoToState(StateManager.States.HUD);
             //if (currentStep == TrainingStep.HEAD && !isAudioPlaying())
             //    waitingForNod = true;
@@ -270,7 +268,7 @@ namespace Training
             // allows to continue to the next step when pressing 'n'
             if (Input.GetKeyDown(KeyCode.N))
             {
-                NextStep();
+                Next();
             }
         }
     }

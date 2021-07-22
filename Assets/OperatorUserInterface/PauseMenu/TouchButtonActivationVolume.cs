@@ -4,39 +4,33 @@ using UnityEngine;
 
 public class TouchButtonActivationVolume : MonoBehaviour
 {
-    public List<System.Action> enterCallbacks = new List<System.Action>();
-    public List<System.Action> exitCallbacks = new List<System.Action>();
+    public Callbacks<string> enterCallbacks = new Callbacks<string>();
+    public Callbacks<string> exitCallbacks = new Callbacks<string>();
+
+    public new bool enabled = true;
 
     public string[] colliderTags;
 
-
     private void OnTriggerEnter(Collider other)
     {
-
-        if (!ColliderHasTags(other))
+        if (!ColliderHasTags(other) || !enabled)
             return;
-        Debug.Log("TouchButtonActivationVolume enter");
-        foreach(var callback in enterCallbacks)
-        {
-            callback();
-        }
+
+        enterCallbacks.Call(other.tag);
     }
 
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("TouchButtonActivationVolume exit");
-        if (!ColliderHasTags(other))
+        if (!ColliderHasTags(other) || !enabled)
             return;
-        foreach(var callback in exitCallbacks)
-        {
-            callback();
-        }
+
+        exitCallbacks.Call(other.tag);
     }
 
     private bool ColliderHasTags(Collider collider)
     {
-        foreach(var tag in colliderTags)
+        foreach (var tag in colliderTags)
         {
             if (collider.CompareTag(tag))
                 return true;

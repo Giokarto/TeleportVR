@@ -89,7 +89,7 @@ namespace Training.Calibration
 
         private Pose currentPose = Pose.HandOpen;
 
-        private readonly List<System.Action<Step>> doneCallbacks = new List<System.Action<Step>>();
+        private readonly Callbacks<Step> doneCallbacks = new Callbacks<Step>();
 
         private string lrName { get { return isRight ? "right" : "left"; } }
 
@@ -369,10 +369,7 @@ namespace Training.Calibration
                         {
                             calibrating = false;
                             completionWidget.active = false;
-                            foreach (var callback in doneCallbacks)
-                            {
-                                callback(currentStep);
-                            }
+                            doneCallbacks.Call(currentStep);
                             break;
                         }
                     default: break;
@@ -384,10 +381,7 @@ namespace Training.Calibration
         /// The given callback is called, once the calibration for this hand is done
         /// </summary>
         /// <param name="callback">called, when the calibration is done</param>
-        public void OnDone(System.Action<Step> callback)
-        {
-            doneCallbacks.Add(callback);
-        }
+        public void OnDone(System.Action<Step> callback, bool once = false) => doneCallbacks.Add(callback, once);
     }
 }
 

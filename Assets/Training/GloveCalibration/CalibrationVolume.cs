@@ -23,7 +23,7 @@ namespace Training.Calibration
         {
             get
             {
-                return requiredTrainingSteps.Contains(TutorialSteps.Instance.currentStep)
+                return requiredTrainingSteps.Contains(TutorialSteps.Instance.currentState)
                   && requiredCalibrationSteps.Contains(calibrator.currentStep);
             }
         }

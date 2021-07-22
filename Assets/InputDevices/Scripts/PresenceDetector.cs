@@ -39,12 +39,31 @@ namespace RudderPedals
                 }
             }
         }
+
         [Tooltip("Serial port of the arduino")]
         public string port = "COM6";
         public int baudRate = 9600;
         [Tooltip("Time step to refresh presence detector in (seconds)")]
         public float presenceRefresh = 0.1f;
         public bool isPaused = false;
+
+        // if the presence detector is allowed to pause / unpause the game
+        public bool canPause
+        {
+            get { return _canPause; }
+            set
+            {
+                // only set this if we're not paused so the operator cannot get stuck in the menu
+                if (isPaused)
+                {
+                    return;
+                }
+                _canPause = value;
+            }
+        }
+        private bool _canPause = true;
+        public bool pauseAudio = true;
+
 
         public TrackerSwitcher leftGlove;
         public TrackerSwitcher rightGlove;
@@ -54,11 +73,15 @@ namespace RudderPedals
         private bool oldMotorEnabled = false;
         private Timer animationTimer;
 
+        private Callbacks<bool> onPause, onUnpause;
+
         // Start is called before the first frame update
         void Start()
         {
             pedalDetector = new SerialReader(port, baudRate, refresh: presenceRefresh);
             StartCoroutine(pedalDetector.readAsyncContinously(OnUpdatePresence, OnError));
+            onPause = new Callbacks<bool>();
+            onUnpause = new Callbacks<bool>();
         }
 
         private bool[] ParseData(string data)
@@ -80,7 +103,7 @@ namespace RudderPedals
         private void OnUpdatePresence(string data)
         {
             bool[] lr = ParseData(data);
-            if (lr == null)
+            if (lr == null || !canPause)
             {
                 return;
             }
@@ -98,6 +121,11 @@ namespace RudderPedals
             oldLeft = left;
             oldRight = right;
             oldInit = true;
+        }
+        
+        private void OnError(string reason)
+        {
+            Debug.LogError(reason);
         }
 
         public bool Pause()
@@ -122,13 +150,18 @@ namespace RudderPedals
             oldMotorEnabled = UnityAnimusClient.Instance.motorEnabled;
             //UnityAnimusClient.Instance.EnableMotor(false);
 
-            AudioListener.pause = true;
+            if (pauseAudio)
+            {
+                AudioListener.pause = true;
+            }
 
             // switch gloves to paused mode
             leftGlove.SwitchControllers();
             leftGlove.ghostHand.SetActive(true);
             rightGlove.SwitchControllers();
             rightGlove.ghostHand.SetActive(true);
+
+            onPause.Call(true);
             return true;
         }
 
@@ -153,19 +186,22 @@ namespace RudderPedals
             PedalDriver.Instance.enabled = true;
             //UnityAnimusClient.Instance.EnableMotor(oldMotorEnabled);
 
-            AudioListener.pause = false;
+            if (pauseAudio)
+            {
+                AudioListener.pause = false;
+            }
 
             // switch gloves back to control mode
             leftGlove.SwitchControllers();
             leftGlove.ghostHand.SetActive(false);
             rightGlove.SwitchControllers();
             rightGlove.ghostHand.SetActive(false);
+
+            onUnpause.Call(false);
             return true;
         }
 
-        private void OnError(string reason)
-        {
-            Debug.LogError(reason);
-        }
+        public void OnPause(System.Action<bool> callback, bool once=false) => onPause.Add(callback, once);
+        public void OnUnpause(System.Action<bool> callback, bool once=false) => onUnpause.Add(callback, once);
     }
 }

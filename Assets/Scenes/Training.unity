@@ -307,7 +307,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {x: 0, y: 0, z: 0}
   attractSpeed: 3
-  detractSpeed: 0.06
+  detractSpeed: 0.08
 --- !u!1 &125511951
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,6 +848,54 @@ LightingSettings:
   m_PVRFilteringAtrousPositionSigmaDirect: 0.5
   m_PVRFilteringAtrousPositionSigmaIndirect: 2
   m_PVRFilteringAtrousPositionSigmaAO: 1
+--- !u!1 &515184334
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 515184336}
+  - component: {fileID: 515184335}
+  m_Layer: 0
+  m_Name: PauseMenuTraining
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &515184335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 515184334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e0cd52c3ecaee34cab2d5094339a09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pauseMenuAudio:
+    start: {fileID: 8300000, guid: 0b9f5f96d3342964b8c5785da1d30ccd, type: 3}
+    paused: {fileID: 8300000, guid: 1eb0fe5ae55c1dd4cbbbfd4514897a99, type: 3}
+    unpause: {fileID: 8300000, guid: ef547e59bd4e0814192e8a5bbd06267f, type: 3}
+    teleport: {fileID: 8300000, guid: 9ac6357f1b83f284891b68a606fa1332, type: 3}
+--- !u!4 &515184336
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 515184334}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 885325820}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &586467666
 GameObject:
   m_ObjectHideFlags: 0
@@ -979,7 +1027,7 @@ GameObject:
   m_Layer: 0
   m_Name: TurnRightGoal
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -991,7 +1039,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 606992923}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.87, y: 0.256, z: 0.53}
+  m_LocalPosition: {x: -1.87, y: 0.995, z: 0.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1326041509}
@@ -1305,7 +1353,7 @@ GameObject:
   m_Layer: 0
   m_Name: ForwardGoal
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1317,7 +1365,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 848127118}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.94, y: 0.256, z: 1.328}
+  m_LocalPosition: {x: -2.94, y: 0.995, z: 1.328}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1326041509}
@@ -1389,6 +1437,7 @@ Transform:
   - {fileID: 850975195}
   - {fileID: 269507375}
   - {fileID: 1326041509}
+  - {fileID: 515184336}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1432,17 +1481,6 @@ MonoBehaviour:
     rightBall: {fileID: 8300000, guid: 88c433869eb13d3448fc54c64d9021f2, type: 3}
     leftHand: {fileID: 8300000, guid: 17b759572d86e774a92332fb4aeed4f0, type: 3}
     rightHand: {fileID: 8300000, guid: a0c5c5f2fffbe3042ab0f9ae0557ac4e, type: 3}
-  driveWheelchairAudio:
-    start: {fileID: 8300000, guid: 59cdeacccb9899241b35a4d015b6a9cb, type: 3}
-    forward: {fileID: 8300000, guid: 694cac6456ce60842b5737d100dbf257, type: 3}
-    backwards: {fileID: 8300000, guid: cb20585760576cd419de048a3aa9f956, type: 3}
-    turn_left: {fileID: 8300000, guid: cc2f07e57d637dc448284f323a4944ff, type: 3}
-    turn_right: {fileID: 8300000, guid: e63aaf5ac65da9c42be2ecb7f5df3eb1, type: 3}
-  pauseMenuAudio:
-    start: {fileID: 8300000, guid: 0b9f5f96d3342964b8c5785da1d30ccd, type: 3}
-    paused: {fileID: 8300000, guid: 1eb0fe5ae55c1dd4cbbbfd4514897a99, type: 3}
-    unpause: {fileID: 8300000, guid: ef547e59bd4e0814192e8a5bbd06267f, type: 3}
-    teleport: {fileID: 8300000, guid: 9ac6357f1b83f284891b68a606fa1332, type: 3}
   praisePhrases:
   - {fileID: 8300000, guid: 6186b564e356cde4dad23657e0755342, type: 3}
   - {fileID: 8300000, guid: 1880334cee3f18449b2bfd31833108fe, type: 3}
@@ -1453,6 +1491,7 @@ MonoBehaviour:
   rightCalibrator: {fileID: 902270246}
   leftCalibrator: {fileID: 1189526810}
   wheelChairTraining: {fileID: 1326041510}
+  pauseMenuTraining: {fileID: 515184335}
   handCollectables: {fileID: 850975195}
   designatedArea: {fileID: 1159584230}
 --- !u!114 &885325825
@@ -1898,7 +1937,7 @@ GameObject:
   m_Layer: 0
   m_Name: TurnLeftGoal
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -1910,7 +1949,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1298954399}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.02, y: 0.256, z: 0.53}
+  m_LocalPosition: {x: -4.02, y: 0.995, z: 0.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1326041509}
@@ -3320,7 +3359,7 @@ GameObject:
   m_Layer: 0
   m_Name: InitialPosition
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -3443,7 +3482,7 @@ GameObject:
   m_Layer: 0
   m_Name: BackwardGoal
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -3455,7 +3494,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2104860375}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.94, y: 0.256, z: -0.495}
+  m_LocalPosition: {x: -2.94, y: 0.995, z: -0.495}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1326041509}

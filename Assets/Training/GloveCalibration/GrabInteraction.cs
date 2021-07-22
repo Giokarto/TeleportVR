@@ -23,9 +23,9 @@ namespace Training.Calibration
         // Update is called once per frame
         void Update()
         {
-            if (requiredSteps.Contains(TutorialSteps.Instance.currentStep) && grabable.IsGrabbed())
+            if (requiredSteps.Contains(TutorialSteps.Instance.currentState) && grabable.IsGrabbed())
             {
-                TutorialSteps.Instance.NextStep();
+                TutorialSteps.Instance.Next();
             }
         }
     }

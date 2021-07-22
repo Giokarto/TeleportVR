@@ -8,19 +8,19 @@ namespace Training
     {
 
         public string requiredTag;
-        private Dictionary<System.Action, bool> onTriggerEnter, onTriggerExit;
+        private Callbacks<string> onTriggerEnter, onTriggerExit;
 
         void Start()
         {
-            onTriggerEnter = new Dictionary<System.Action, bool>();
-            onTriggerExit = new Dictionary<System.Action, bool>();
+            onTriggerEnter = new Callbacks<string>();
+            onTriggerExit = new Callbacks<string>();
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if (other != null && other.CompareTag(requiredTag))
             {
-                Call(ref onTriggerEnter);
+                onTriggerEnter.Call(requiredTag);
             }
         }
 
@@ -28,37 +28,12 @@ namespace Training
         {
             if (other != null && other.CompareTag(requiredTag))
             {
-                Call(ref onTriggerExit);
+                onTriggerExit.Call(requiredTag);
             }
         }
 
-        private void Call(ref Dictionary<System.Action, bool> callbacks)
-        {
-            List<System.Action> toRemove = new List<System.Action>();
-            List<System.Action> toCall = new List<System.Action>(callbacks.Keys);
-            // three interations to make sure the collection is not modified while iterating 
-            foreach (var entry in callbacks)
-            {
-                if (entry.Value) toRemove.Add(entry.Key);
-            }
-            foreach(var key in toRemove)
-            {
-                callbacks.Remove(key);
-            }
-            foreach(var func in toCall)
-            {
-                func();
-            }
-        }
+        public void TriggerEnterCallback(System.Action<string> callback, bool once = false) => onTriggerEnter.Add(callback, once);
 
-        public void TriggerEnterCallback(System.Action callback, bool once = false)
-        {
-            onTriggerEnter[callback] = once;
-        }
-
-        public void TriggerExitCallback(System.Action callback, bool once = false)
-        {
-            onTriggerExit[callback] = once;
-        }
+        public void TriggerExitCallback(System.Action<string> callback, bool once = false) => onTriggerEnter.Add(callback, once);
     }
 }

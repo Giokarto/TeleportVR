@@ -14,7 +14,7 @@ namespace Training
             if (TutorialSteps.Instance != null)
             {
                 RaycastHit hit;
-                if (TutorialSteps.Instance.currentStep == 0 &&
+                if (TutorialSteps.Instance.currentState == 0 &&
                     Physics.Raycast(transform.position, -1 * transform.up, out hit, 50, layerMask))
                 {
                     hit.collider.GetComponent<TrainingsSphere>().WhileLookedAt(this);

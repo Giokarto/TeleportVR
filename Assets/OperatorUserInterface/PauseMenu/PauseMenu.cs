@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
+[ExecuteAlways]
 public class PauseMenu : Singleton<PauseMenu>
 {
     public bool show;
@@ -23,7 +23,7 @@ public class PauseMenu : Singleton<PauseMenu>
         switchScenePressed = RudderPedals.PresenceDetector.Instance.isPaused;
 
         // buttons init
-        switchScene.OnTouchEnter(() =>
+        switchScene.OnTouchEnter((t) =>
         {
             if (switchScenePressed) return;
 
@@ -45,7 +45,7 @@ public class PauseMenu : Singleton<PauseMenu>
                     break;
             }
         });
-        switchScene.OnTouchExit(() =>
+        switchScene.OnTouchExit((t) =>
         {
             switchScenePressed = false;
         });
