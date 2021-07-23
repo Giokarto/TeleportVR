@@ -206,9 +206,9 @@ namespace RudderPedals
                     - EnableControlManager.Instance.rightBioIKGroup.hand_segment.gameObject.transform.position).magnitude;
                 //Debug.Log($"{distLeft}, {distRight}");
 
+                PauseMenu.PauseMenu.Instance.matchHands.SetActive(true);
                 if (Mathf.Max(distLeft, distRight) > matchHandThreshold)
                 {
-                    PauseMenu.PauseMenu.Instance.matchHands.SetActive(true);
                     waitTimer.ResetTimer();
                 }
                 else

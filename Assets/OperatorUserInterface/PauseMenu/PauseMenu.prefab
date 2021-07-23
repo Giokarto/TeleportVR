@@ -310,7 +310,7 @@ PrefabInstance:
     - target: {fileID: 2715265698579436937, guid: dd44ad100f6174047a2ba7ae4b858705,
         type: 3}
       propertyPath: text
-      value: switching...
+      value: hold
       objectReference: {fileID: 0}
     - target: {fileID: 2715265698579436937, guid: dd44ad100f6174047a2ba7ae4b858705,
         type: 3}

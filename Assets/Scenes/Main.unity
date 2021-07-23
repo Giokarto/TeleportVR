@@ -9663,8 +9663,8 @@ MonoBehaviour:
     copyTransform: {fileID: 430358048}
     xrController: {fileID: 1199351587}
     ghostHand: {fileID: 1355872729}
-  matchHandThreshold: 0.1
-  waitTime: 5
+  matchHandThreshold: 0.25
+  waitTime: 3
 --- !u!1 &1311692030
 GameObject:
   m_ObjectHideFlags: 0
