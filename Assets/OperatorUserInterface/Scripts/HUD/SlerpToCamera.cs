@@ -16,7 +16,7 @@ public class SlerpToCamera : MonoBehaviour
     // slerp state
     private bool slerp = false;
 
-    [Tooltip("Speed to slerp back to camera rotation.")]    
+    [Tooltip("Speed to slerp back to camera rotation.")]
     public float slerpSpeed = 10f;
 
     [Header("Thresholds if pointed")]
@@ -34,7 +34,7 @@ public class SlerpToCamera : MonoBehaviour
     // Right now only one menu, so ill only look for bottom menu pointed
     [Tooltip("Pull the pointed attribute from menu.")]
     //public Menu bottomMenu;
-    
+
     // These angles are used as thresholds and exchanged according to the pointed attribute
     private float flexibleStartSlerpAngle;
     private float flexibleStopSlerpAngle;
@@ -59,17 +59,21 @@ public class SlerpToCamera : MonoBehaviour
         else
         {
         */
-            flexibleStartSlerpAngle = startSlerpAngleNotPointed;
-            flexibleStopSlerpAngle = stopSlerpAngleNotPointed;
+        flexibleStartSlerpAngle = startSlerpAngleNotPointed;
+        flexibleStopSlerpAngle = stopSlerpAngleNotPointed;
         /*
         }
         */
 
-        // copy translation
-        this.transform.position = Camera.main.transform.position;
+        try
+        {
+            // copy translation
+            this.transform.position = Camera.main.transform.position;
+            // follow rotation
+            CorrectRotation();
+        }
+        catch (System.NullReferenceException) { }
 
-        // follow rotation
-        CorrectRotation();        
     }
 
     /// <summary>
@@ -79,7 +83,7 @@ public class SlerpToCamera : MonoBehaviour
     {
         // Calc rotational distance
         float rotationalDistance = Quaternion.Angle(this.transform.rotation, Camera.main.transform.rotation);
-        
+
         // start slerp
         if (rotationalDistance >= flexibleStartSlerpAngle && slerp == false)
         {
