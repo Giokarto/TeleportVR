@@ -135,6 +135,11 @@ PrefabInstance:
       propertyPath: audioManager
       value: 
       objectReference: {fileID: 885325825}
+    - target: {fileID: 3877440989301208505, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
+        type: 3}
+      propertyPath: m_Radius
+      value: 189.20457
+      objectReference: {fileID: 0}
     - target: {fileID: 4163523356567103538, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
         type: 3}
       propertyPath: m_RootOrder
@@ -337,7 +342,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 125511951}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.3, y: 1.2, z: 0.5}
+  m_LocalPosition: {x: 0.533, y: 1.2, z: 0.522}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 850975195}
@@ -355,7 +360,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c8d04ddeadd464429ec2951dd03b6ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  requiredTag: RoboyArms
+  requiredTags:
+  - RoboyArms
+  - SeneGloveGrab
   objectToRecolor: {fileID: 125511951}
   requiredSteps: 04000000
   newColor: {r: 0, g: 1, b: 0, a: 0}
@@ -398,7 +405,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 125511951}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -496,7 +503,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 173185193}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.3, y: 1.2, z: 0.5}
+  m_LocalPosition: {x: -0.516, y: 1.2, z: 0.522}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 850975195}
@@ -510,7 +517,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 173185193}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -576,7 +583,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c8d04ddeadd464429ec2951dd03b6ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  requiredTag: RoboyArms
+  requiredTags:
+  - RoboyArms
+  - SeneGloveGrab
   objectToRecolor: {fileID: 173185193}
   requiredSteps: 02000000
   newColor: {r: 0, g: 1, b: 0, a: 0}
@@ -723,7 +732,7 @@ Transform:
   m_Children:
   - {fileID: 1095005448}
   m_Father: {fileID: 885325820}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &431924710
 BoxCollider:
@@ -1039,7 +1048,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 606992923}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.87, y: 0.995, z: 0.53}
+  m_LocalPosition: {x: -0.498, y: 0.995, z: 0.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1326041509}
@@ -1365,7 +1374,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 848127118}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.94, y: 0.995, z: 1.328}
+  m_LocalPosition: {x: -2.94, y: 0.995, z: 1.962}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1326041509}
@@ -1380,6 +1389,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 850975195}
+  - component: {fileID: 850975196}
   m_Layer: 0
   m_Name: HandCollectables
   m_TagString: Untagged
@@ -1394,15 +1404,27 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 850975194}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3, y: 0, z: -1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 173185194}
   - {fileID: 125511952}
   m_Father: {fileID: 885325820}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &850975196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 850975194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8fc6c1272f1c38488a0c8e15086777e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &885325819
 GameObject:
   m_ObjectHideFlags: 0
@@ -1433,8 +1455,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1159584231}
-  - {fileID: 431924709}
   - {fileID: 850975195}
+  - {fileID: 431924709}
   - {fileID: 269507375}
   - {fileID: 1326041509}
   - {fileID: 515184336}
@@ -1949,7 +1971,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1298954399}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.02, y: 0.995, z: 0.53}
+  m_LocalPosition: {x: -5.92, y: 0.995, z: 0.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1326041509}

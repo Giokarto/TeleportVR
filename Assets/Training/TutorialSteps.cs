@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using Widgets;
 using System;
@@ -40,13 +41,32 @@ namespace Training
         //double prevDuration = 0.0;
         //double prevStart = 0.0;
         TrainingStep lastCorrectedAtStep = TrainingStep.IDLE;
-        bool trainingStarted = false, startTraining = true;
+        private bool waitStarted = false, startTraining = true;
 
 
         [SerializeField] private Transform handCollectables;
 
         [SerializeField] private GameObject designatedArea;
 
+        private IEnumerator StartTrainingAfter(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            audioManager.ScheduleAudioClip(miscAudio.welcome, queue: true,
+                onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length + 2)
+                );
+            audioManager.ScheduleAudioClip(miscAudio.imAria, queue: true,
+                onStart: () => PublishNotification("I am Aria - your personal telepresence trainer.", miscAudio.imAria.length + 2),
+                onEnd: () =>
+                {
+                    currentState = TrainingStep.IDLE;
+                    Debug.Log("Started Training");
+                    Next();
+                    waitStarted = false;
+                    startTraining = true;
+                }
+            );
+
+        }
 
         void Start()
         {
@@ -55,15 +75,9 @@ namespace Training
             _ = Instance;
             if (StateManager.Instance.TimesStateVisited(StateManager.States.Training) <= 1)
             {
-                audioManager.ScheduleAudioClip(miscAudio.welcome, queue: true, delay: 1.0);
-                audioManager.ScheduleAudioClip(miscAudio.imAria, queue: true);//, delay: 2.0);
 
-                PublishNotification("Welcome to Teleport VR!"); //\n" +
-                                                                //"Take a look around. " +
-                                                                //"In the mirror you can see how you are controlling the Head of Roboy.\n" +
-                                                                //"Look at the blue sphere to get started!");
-                PublishNotification("I am Aria - your personal telepresence trainer.");
-
+                waitStarted = true;
+                StartCoroutine(StartTrainingAfter(5));
             }
             else
             {
@@ -103,10 +117,6 @@ namespace Training
                 ScheduleAudioClip(controllerAudio.leftBall, queue: true);
                 PublishNotification("Press and hold the index trigger and try moving your left arm");
 #endif
-                var colTF = PlayerRig.Instance.transform.position;
-                colTF.y -= 0.1f;
-                colTF.z += 0.2f;
-                handCollectables.transform.position = colTF;
                 handCollectables.Find("HandCollectableLeft").gameObject.SetActive(true);
             };
             stateMachine.onExit[TrainingStep.LEFT_ARM] = (step) =>
@@ -256,25 +266,24 @@ namespace Training
 
         void Update()
         {
-            if (startTraining && !audioManager.IsAudioPlaying() && currentState == TrainingStep.IDLE)
-            {
-                currentState = TrainingStep.IDLE;
-                Debug.Log("Started Training");
-                Next();
-                startTraining = false;
-                //trainingStarted = true;
-            }
-            if (currentState == TrainingStep.DONE && !audioManager.IsAudioPlaying())
-                StateManager.Instance.GoToState(StateManager.States.HUD);
+            //if (startTraining && !audioManager.IsAudioPlaying() && currentState == TrainingStep.IDLE && !waitStarted)
+            //{
+            //    waitStarted = true;
+            //    StartCoroutine(StartTrainingAfter(3f));
+            //}
+            //if (currentState == TrainingStep.DONE && !audioManager.IsAudioPlaying())
+            //    StateManager.Instance.GoToState(StateManager.States.HUD);
             //if (currentStep == TrainingStep.HEAD && !isAudioPlaying())
             //    waitingForNod = true;
 
             // allows to continue to the next step when pressing 'n'
             if (Input.GetKeyDown(KeyCode.N))
             {
+                StopAllCoroutines();
                 Next();
             }
         }
+
     }
 
 

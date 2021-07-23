@@ -179,7 +179,7 @@ namespace Training.Calibration
             {
                 case Pose.HandOpen:
                     TutorialSteps.Instance.audioManager.ScheduleAudioClip(audioClips.handOpen, queue: false);
-                    TutorialSteps.PublishNotification($"Open {lrName} your hand", Mathf.Max(audioClips.handOpen.length, calibrationParams.waitTime + calibrationParams.dwellTime));
+                    TutorialSteps.PublishNotification($"Open your {lrName} hand", Mathf.Max(audioClips.handOpen.length, calibrationParams.waitTime + calibrationParams.dwellTime));
                     break;
                 case Pose.HandClosed:
                     TutorialSteps.Instance.audioManager.ScheduleAudioClip(audioClips.handClosed, queue: false);
