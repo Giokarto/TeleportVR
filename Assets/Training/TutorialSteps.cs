@@ -16,6 +16,7 @@ namespace Training
             LEFT_HAND,
             RIGHT_ARM,
             RIGHT_HAND,
+            WORKSPACE_FIT,
             WHEELCHAIR,
             PAUSE_MENU,
             DONE
@@ -174,6 +175,11 @@ namespace Training
             stateMachine.onExit[TrainingStep.RIGHT_HAND] = (step) =>
             {
                 rightCalibrator.PauseCalibration();
+            };
+
+            stateMachine.onEnter[TrainingStep.WORKSPACE_FIT] = (step) =>
+            {
+
             };
 
             stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
