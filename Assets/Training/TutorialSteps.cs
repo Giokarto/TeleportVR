@@ -23,7 +23,7 @@ namespace Training
 
         public static TutorialSteps Instance;
 
-        public TrainingAudioManager audioManager;
+        public AudioManager audioManager;
 
         public AudioClips.Misc miscAudio;
         public AudioClips.SGTraining senseGloveAudio;
