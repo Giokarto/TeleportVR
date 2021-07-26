@@ -1,32 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using Widgets;
+using System;
 
 namespace Training
 {
-    public class TutorialSteps : MonoBehaviour//Singleton<TutorialSteps>
+    public class TutorialSteps : Automaton<TutorialSteps.TrainingStep>
     {
-        public static TutorialSteps Instance;
-
-        public TrainingStep currentStep;
-
-        public AudioClips.SGTraining senseGloveAudio;
-        public AudioClips.Controller controllerAudio;
-        public AudioClips.DriveJoystick driveJoystickAudio;
-        public AudioClips.Misc miscAudio;
-
-        public List<AudioClip> praisePhrases = new List<AudioClip>();
-        public AudioSource[] audioSourceArray;
-        public AudioSource sirenAudioSource;
-        public bool waitingForNod = false;
-        public Calibration.HandCalibrator rightCalibrator, leftCalibrator;
-
-        int toggle;
-        double prevDuration = 0.0;
-        double prevStart = 0.0;
-        TrainingStep lastCorrectedAtStep = TrainingStep.IDLE;
-        bool trainingStarted = false, startTraining = true;
-
         public enum TrainingStep
         {
             IDLE,
@@ -36,13 +17,56 @@ namespace Training
             RIGHT_ARM,
             RIGHT_HAND,
             WHEELCHAIR,
+            PAUSE_MENU,
             DONE
         }
+
+        public static TutorialSteps Instance;
+
+        public TrainingAudioManager audioManager;
+
+        public AudioClips.Misc miscAudio;
+        public AudioClips.SGTraining senseGloveAudio;
+        public AudioClips.Controller controllerAudio;
+
+        public List<AudioClip> praisePhrases = new List<AudioClip>();
+        //public AudioSource[] audioSourceArray;
+        public AudioSource sirenAudioSource;
+        public bool waitingForNod = false;
+        public Calibration.HandCalibrator rightCalibrator, leftCalibrator;
+        public WheelchairTraining wheelChairTraining;
+        public PauseMenuTraining pauseMenuTraining;
+
+        //int toggle;
+        //double prevDuration = 0.0;
+        //double prevStart = 0.0;
+        TrainingStep lastCorrectedAtStep = TrainingStep.IDLE;
+        private bool waitStarted = false, startTraining = true;
+
 
         [SerializeField] private Transform handCollectables;
 
         [SerializeField] private GameObject designatedArea;
 
+        private IEnumerator StartTrainingAfter(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            audioManager.ScheduleAudioClip(miscAudio.welcome, queue: true,
+                onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length + 2)
+                );
+            audioManager.ScheduleAudioClip(miscAudio.imAria, queue: true,
+                onStart: () => PublishNotification("I am Aria - your personal telepresence trainer.", miscAudio.imAria.length + 2),
+                onEnd: () =>
+                {
+                    currentState = TrainingStep.IDLE;
+                    Debug.Log("Started Training");
+                    Next();
+                    waitStarted = false;
+                    startTraining = true;
+                }
+            );
+
+        }
 
         void Start()
         {
@@ -51,15 +75,9 @@ namespace Training
             _ = Instance;
             if (StateManager.Instance.TimesStateVisited(StateManager.States.Training) <= 1)
             {
-                ScheduleAudioClip(miscAudio.welcome, queue: true, delay: 1.0);
-                ScheduleAudioClip(miscAudio.imAria, queue: true);//, delay: 2.0);
 
-                PublishNotification("Welcome to Teleport VR!"); //\n" +
-                                                                //"Take a look around. " +
-                                                                //"In the mirror you can see how you are controlling the Head of Roboy.\n" +
-                                                                //"Look at the blue sphere to get started!");
-                PublishNotification("I am Aria - your personal telepresence trainer.");
-
+                waitStarted = true;
+                StartCoroutine(StartTrainingAfter(5));
             }
             else
             {
@@ -69,43 +87,123 @@ namespace Training
             //currentStep = TrainingStep.RIGHT_HAND;
             //NextStep();
             //trainingStarted = false;
-        }
 
-        public void ScheduleAudioClip(AudioClip clip, bool queue = false, double delay = 0)
-        {
-            var timeLeft = 0.0;
-            //queue = false;
-            if (IsAudioPlaying() && queue)
+            #region StateDefinition
+
+            stateMachine.onEnter[TrainingStep.HEAD] = (step) =>
             {
-                timeLeft = prevDuration - (AudioSettings.dspTime - prevStart);
-                if (timeLeft > 0) delay = timeLeft;
-            }
-
-
-            if (queue) toggle = 1 - toggle;
-            audioSourceArray[toggle].clip = clip;
-            //if (queue)
-            //    prevStart = AudioSettings.dspTime + prevDuration + delay;
-            //else
-            prevStart = AudioSettings.dspTime + delay;
-            audioSourceArray[toggle].PlayScheduled(prevStart);
-
-            //if (queue)
-            //    audioSourceArray[toggle].PlayScheduled(AudioSettings.dspTime + prevDuration + delay);
-            //else
-            //    audioSourceArray[toggle].PlayScheduled(AudioSettings.dspTime + delay);
-            prevDuration = (double)clip.samples / clip.frequency;
-
-        }
-
-        public void StopAudioClips()
-        {
-            foreach (var source in audioSourceArray)
+                audioManager.ScheduleAudioClip(miscAudio.head,
+                    onStart: () => PublishNotification("Try moving your head around", miscAudio.head.length + 2)
+                    );
+                audioManager.ScheduleAudioClip(miscAudio.nod, queue: true,
+                    onStart: () => PublishNotification("Give me a nod to continue", miscAudio.nod.length + 2)
+                    );
+                waitingForNod = true;
+            };
+            // stop pause menu on 
+            stateMachine.onExit[TrainingStep.HEAD] = (step) =>
             {
-                source.Stop();
-            }
-        }
+                RudderPedals.PresenceDetector.Instance.canPause = false;
+            };
 
+            stateMachine.onEnter[TrainingStep.LEFT_ARM] = (step) =>
+            {
+#if SENSEGLOVE
+                audioManager.ScheduleAudioClip(senseGloveAudio.leftArm, queue: true);
+                audioManager.ScheduleAudioClip(senseGloveAudio.leftBall, queue: true);
+                PublishNotification("Move your left arm and try to touch the blue ball");
+#else
+                ScheduleAudioClip(controllerAudio.leftArm, queue: true);
+                ScheduleAudioClip(controllerAudio.leftBall, queue: true);
+                PublishNotification("Press and hold the index trigger and try moving your left arm");
+#endif
+                handCollectables.Find("HandCollectableLeft").gameObject.SetActive(true);
+            };
+            stateMachine.onExit[TrainingStep.LEFT_ARM] = (step) =>
+            {
+                handCollectables.Find("HandCollectableLeft").gameObject.SetActive(false);
+            };
+
+            stateMachine.onEnter[TrainingStep.LEFT_HAND] = (step) =>
+            {
+#if SENSEGLOVE
+                PublishNotification("Move your left hand into the blue box");
+                audioManager.ScheduleAudioClip(senseGloveAudio.leftHandStart);
+                leftCalibrator.OnDone(step => Next(), once: true);
+#else
+                ScheduleAudioClip(controllerAudio.leftHand, queue: true, delay: 0);
+                PublishNotification("Press the grip button on the side to close the hand.");
+#endif
+            };
+            stateMachine.onExit[TrainingStep.LEFT_HAND] = (step) =>
+            {
+                // force stop the calibration, if not done so already
+                leftCalibrator.PauseCalibration();
+            };
+
+            stateMachine.onEnter[TrainingStep.RIGHT_ARM] = (step) =>
+            {
+#if SENSEGLOVE
+                audioManager.ScheduleAudioClip(senseGloveAudio.rightArm);
+                audioManager.ScheduleAudioClip(senseGloveAudio.rightBall, queue: true);
+                PublishNotification("Move your right arm and try to touch the blue ball");
+#else
+                ScheduleAudioClip(controllerAudio.rightArm);
+                ScheduleAudioClip(controllerAudio.rightBall, queue: true);
+                //PublishNotification("To move your arm, hold down the hand trigger on the controller with your middle finger.");
+                PublishNotification("Press and hold the index trigger and try moving your right arm");
+#endif
+                handCollectables.Find("HandCollectableRight").gameObject.SetActive(true);
+            };
+            stateMachine.onExit[TrainingStep.RIGHT_ARM] = (step) =>
+            {
+                handCollectables.Find("HandCollectableRight").gameObject.SetActive(false);
+            };
+
+            stateMachine.onEnter[TrainingStep.RIGHT_HAND] = (step) =>
+            {
+#if SENSEGLOVE
+                PublishNotification("Move your right hand into the blue box");
+                audioManager.ScheduleAudioClip(senseGloveAudio.rightHandStart);
+                rightCalibrator.OnDone(step => Next(), once: true);
+#else
+                ScheduleAudioClip(controllerAudio.rightHand, queue: true, delay: 0);
+                PublishNotification("Press the grip button to close the hand.");
+#endif
+            };
+            stateMachine.onExit[TrainingStep.RIGHT_HAND] = (step) =>
+            {
+                rightCalibrator.PauseCalibration();
+            };
+
+            stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
+            {
+                wheelChairTraining.OnDone((s) => Next(), once: true);
+                wheelChairTraining.StartTraining();
+            };
+            stateMachine.onExit[TrainingStep.WHEELCHAIR] = (step) =>
+            {
+
+                wheelChairTraining.StopTraining();
+            };
+
+            stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
+            {
+                pauseMenuTraining.OnDone((s) => Next(), once: true);
+                pauseMenuTraining.StartTraining();
+            };
+            stateMachine.onExit[TrainingStep.PAUSE_MENU] = (step) =>
+            {
+                pauseMenuTraining.StopTraining();
+            };
+
+            stateMachine.onEnter[TrainingStep.DONE] = (step) =>
+            {
+                //audioManager.ScheduleAudioClip(miscAudio.ready);
+                RudderPedals.PresenceDetector.Instance.canPause = true;
+            };
+            #endregion
+        }
 
         /// <summary>
         /// Shows a message on the notification widget
@@ -139,7 +237,7 @@ namespace Training
         public void PraiseUser()
         {
             Debug.Log("Praise");
-            ScheduleAudioClip(praisePhrases[Random.Range(0, praisePhrases.Count)]);
+            audioManager.ScheduleAudioClip(praisePhrases[UnityEngine.Random.Range(0, praisePhrases.Count)]);
         }
 
         public void CorrectUser(string correctButton)
@@ -158,140 +256,34 @@ namespace Training
                     break;
             }
             Debug.Log("Correcting User");
-            if (lastCorrectedAtStep != currentStep && (currentStep == TrainingStep.LEFT_ARM || currentStep == TrainingStep.RIGHT_ARM))
+            if (lastCorrectedAtStep != currentState && (currentState == TrainingStep.LEFT_ARM || currentState == TrainingStep.RIGHT_ARM))
             {
-                ScheduleAudioClip(miscAudio.wrongTrigger);
-                lastCorrectedAtStep = currentStep;
+                audioManager.ScheduleAudioClip(miscAudio.wrongTrigger);
+                lastCorrectedAtStep = currentState;
             }
-        }
-
-        /// <summary>
-        /// Continues to the next step in the Tutorial
-        /// </summary>
-        /// <param name="praise"></param>
-        public void NextStep(bool praise = false)
-        {
-            //if (praise)
-            //    PraiseUser();
-            currentStep++;
-            Debug.Log("current tutorial step: " + currentStep);
-            switch (currentStep)
-            {
-                case TrainingStep.HEAD:
-                    ScheduleAudioClip(miscAudio.head);
-                    PublishNotification("Try moving your head around");
-                    ScheduleAudioClip(miscAudio.nod, delay: 0);
-                    waitingForNod = true;
-                    break;
-                case TrainingStep.LEFT_ARM:
-#if SENSEGLOVE
-                    ScheduleAudioClip(senseGloveAudio.leftArm, queue: true);
-                    ScheduleAudioClip(senseGloveAudio.leftBall, queue: true);
-                    PublishNotification("Move youre left arm and try to touch the blue ball");
-                    var colTF = PlayerRig.Instance.transform.position;
-                    colTF.y -= 0.1f;
-                    colTF.z += 0.2f;
-                    handCollectables.transform.position = colTF;
-                    handCollectables.Find("HandCollectableLeft").gameObject.SetActive(true);
-#else
-                    ScheduleAudioClip(controllerAudio.leftArm, queue: true);
-                    ScheduleAudioClip(controllerAudio.leftBall, queue: true);
-                    PublishNotification("Press and hold the index trigger and try moving your left arm");
-                    var colTF = PlayerRig.Instance.transform.position;
-                    colTF.y -= 0.1f;
-                    colTF.z += 0.2f;
-                    handCollectables.transform.position = colTF;
-                    handCollectables.Find("HandCollectableLeft").gameObject.SetActive(true);
-#endif
-                    break;
-                case TrainingStep.LEFT_HAND:
-#if SENSEGLOVE
-
-                    PublishNotification("Move your left hand into the blue box");
-                    ScheduleAudioClip(senseGloveAudio.leftHandStart);
-                    leftCalibrator.OnDone(step => NextStep());
-#else
-                    ScheduleAudioClip(controllerAudio.leftHand, queue: true, delay: 0);
-                    PublishNotification("Press the grip button on the side to close the hand.");
-#endif
-                    break;
-                case TrainingStep.RIGHT_ARM:
-#if SENSEGLOVE
-                    // force stop the calibration, if not done so already
-                    leftCalibrator.PauseCalibration();
-
-                    ScheduleAudioClip(senseGloveAudio.rightArm);
-                    ScheduleAudioClip(senseGloveAudio.rightBall, queue: true);
-                    PublishNotification("Move your right arm and try to touch the blue ball");
-                    handCollectables.Find("HandCollectableRight").gameObject.SetActive(true);
-#else
-                    ScheduleAudioClip(controllerAudio.rightArm);
-                    ScheduleAudioClip(controllerAudio.rightBall, queue: true);
-                    PublishNotification("Press and hold the index trigger and try moving your right arm");
-                    //PublishNotification("To move your arm, hold down the hand trigger on the controller with your middle finger.");
-                    handCollectables.Find("HandCollectableRight").gameObject.SetActive(true);
-#endif
-                    break;
-                case TrainingStep.RIGHT_HAND:
-#if SENSEGLOVE
-                    PublishNotification("Move your right hand into the blue box");
-                    ScheduleAudioClip(senseGloveAudio.rightHandStart);
-                    rightCalibrator.OnDone(step => NextStep());
-#else
-                    ScheduleAudioClip(controllerAudio.rightHand, queue: true, delay: 0);
-                    PublishNotification("Press the grip button to close the hand.");
-#endif
-                    break;
-                case TrainingStep.WHEELCHAIR:
-
-                    ScheduleAudioClip(driveJoystickAudio.drive, delay: 1);
-                    //ScheduleAudioClip(emergency, queue: true);
-
-                    //sirenAudioSource.PlayDelayed(25.0f);
-                    //sirenAudioSource.SetScheduledEndTime(AudioSettings.dspTime + 45.0f);
-                    //ScheduleAudioClip(portal);
-                    PublishNotification("Use left joystick to drive around");
-                    break;
-                case TrainingStep.DONE:
-                    ScheduleAudioClip(miscAudio.ready, delay: 3);
-                    break;
-                default: break;
-            }
-
-        }
-
-        public bool IsAudioPlaying()
-        {
-            bool playing = false;
-            foreach (var source in audioSourceArray)
-            {
-                playing = playing || source.isPlaying;
-            }
-            return playing;
         }
 
 
         void Update()
         {
-            if (startTraining && !IsAudioPlaying() && currentStep == TrainingStep.IDLE)
-            {
-                currentStep = TrainingStep.IDLE;
-                Debug.Log("Started Training");
-                NextStep();
-                startTraining = false;
-                //trainingStarted = true;
-            }
-            if (currentStep == TrainingStep.DONE && !IsAudioPlaying())
-                StateManager.Instance.GoToState(StateManager.States.HUD);
+            //if (startTraining && !audioManager.IsAudioPlaying() && currentState == TrainingStep.IDLE && !waitStarted)
+            //{
+            //    waitStarted = true;
+            //    StartCoroutine(StartTrainingAfter(3f));
+            //}
+            //if (currentState == TrainingStep.DONE && !audioManager.IsAudioPlaying())
+            //    StateManager.Instance.GoToState(StateManager.States.HUD);
             //if (currentStep == TrainingStep.HEAD && !isAudioPlaying())
             //    waitingForNod = true;
 
             // allows to continue to the next step when pressing 'n'
             if (Input.GetKeyDown(KeyCode.N))
             {
-                NextStep();
+                StopAllCoroutines();
+                Next();
             }
         }
+
     }
 
 

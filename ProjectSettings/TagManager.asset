@@ -40,6 +40,8 @@ TagManager:
   - XROffsetLeft
   - XROffsetRight
   - SeneGloveGrab
+  - RightHandCalibrator
+  - LeftHandCalibrator
   layers:
   - Default
   - TransparentFX
@@ -48,7 +50,7 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - UpperBody
   - RightEye
   - LeftEye
   - RoboyHead

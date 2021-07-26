@@ -20,13 +20,19 @@ namespace Training.AudioClips
     public struct SGHand
     {
         public AudioClip handOpen, handClosed, fingersExt, fingersFlexed,
-            thumbUp, thumbFlex, abdOut, noThumbAbd, test;
+            thumbUp, thumbFlex, abdOut, noThumbAbd, test, tooLargeChange;
     }
 
     [System.Serializable]
-    public struct DriveJoystick
+    public struct DriveWheelchair
     {
-        public AudioClip drive;
+        public AudioClip start_intro, start, forward, backwards, turn_left, turn_right_intro, turn_right;
+    }
+
+    [System.Serializable]
+    public struct PauseMenu
+    {
+        public AudioClip start, paused, unpause, teleport;
     }
 
     [System.Serializable]

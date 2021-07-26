@@ -5,7 +5,7 @@ namespace Training
 {
     public class HandCollectable : MonoBehaviour
     {
-        [SerializeField] private string requiredTag;
+        [SerializeField] private string[] requiredTags;
         [SerializeField] private GameObject objectToRecolor;
         [SerializeField] private TutorialSteps.TrainingStep[] requiredSteps;
         [SerializeField] private Color newColor;
@@ -29,15 +29,27 @@ namespace Training
         /// <param name="other">The other colliding collider</param>
         private void OnTriggerEnter(Collider other)
         {
-            if (requiredSteps.Contains(TutorialSteps.Instance.currentStep) && other.CompareTag(requiredTag))
+            if (requiredSteps.Contains(TutorialSteps.Instance.currentState) && AnyTagMatches(other))
             {
                 collectedSpheres++;
                 if (sound != null)
-                    TutorialSteps.Instance.ScheduleAudioClip(sound);
+                    TutorialSteps.Instance.audioManager.ScheduleAudioClip(sound);
                 gameObject.SetActive(false);
-                TutorialSteps.Instance.NextStep(praise: true);
-                Debug.Log("Object collected. Moving on.");
+                Debug.Log($"Object collected {other}. Moving on.");
+                TutorialSteps.Instance.Next();
             }
+        }
+
+        private bool AnyTagMatches(Collider other )
+        {
+            foreach(var tag in requiredTags)
+            {
+                if (other.CompareTag(tag))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

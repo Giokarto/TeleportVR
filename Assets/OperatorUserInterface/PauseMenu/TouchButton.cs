@@ -39,6 +39,11 @@ public class TouchButton : MonoBehaviour
     private string _text;
     private int _fontSize;
     private Color _textColor;
+    public new bool enabled
+    {
+        get { return activationVolume.enabled; }
+        set { activationVolume.enabled = value; }
+    }
 
     private TextMeshProUGUI textMeshPro;
     private TouchButtonActivationVolume activationVolume;
@@ -51,9 +56,9 @@ public class TouchButton : MonoBehaviour
         activationVolume = gameObject.GetComponentInChildren<TouchButtonActivationVolume>();
     }
 
-    public void OnTouchEnter(System.Action callback) 
+    public void OnTouchEnter(System.Action<string> callback,bool once= false)
     {
-        activationVolume.enterCallbacks.Add(callback);
+        activationVolume.enterCallbacks.Add(callback, once);
     }
 
     public void ClearOnTouchEnter()
@@ -61,9 +66,9 @@ public class TouchButton : MonoBehaviour
         activationVolume.enterCallbacks.Clear();
     }
 
-    public void OnTouchExit(System.Action callback)
+    public void OnTouchExit(System.Action<string> callback, bool once = false)
     {
-        activationVolume.exitCallbacks.Add(callback);
+        activationVolume.exitCallbacks.Add(callback, once);
     }
 
     public void ClearOnTouchExit()
@@ -71,9 +76,4 @@ public class TouchButton : MonoBehaviour
         activationVolume.exitCallbacks.Clear();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }
