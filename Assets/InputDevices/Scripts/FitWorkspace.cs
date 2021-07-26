@@ -4,29 +4,31 @@ using UnityEngine;
 
 public class FitWorkspace : MonoBehaviour
 {
-    public Transform body, head, controllers, leftHand, leftHandObjective, leftEye;
+    public Transform leftHand, leftHandObjective, rightHand, rightHandObjective, leftArm, rightArm;
 
     void Update()
     {
         if (Input.GetKey(KeyCode.F))
         {
-            Fit();
+            FitLeft();
+            FitRight();
         }
     }
 
-    /// <summary>
-    /// Scales this object such that the target x positon matches the hands
-    /// </summary>
-    public void Fit()
+    private void Fit(Transform hand, Transform objective, Transform target)
     {
-        float factor = leftHandObjective.position.x / leftHand.position.x;
-        Debug.Log($"Fitting workspace with factor {factor}");
-        // scale objects
-        Transform headParent = head.parent;
-        Vector3 leftEyePos = leftEye.position;
-        head.SetParent(body, true);
-        body.localScale *= factor;
-        head.SetParent(headParent, true);
-        controllers.position = new Vector3(controllers.position.x, controllers.position.y - leftEye.position.y + leftEyePos.y, controllers.position.z);
+        float factor = objective.position.x / hand.position.x;
+        Debug.Log($"Scaled {target} by {factor}");
+        target.localScale *= factor;
+    }
+
+    public void FitLeft()
+    {
+        Fit(leftHand, leftHandObjective, leftArm);
+    }
+
+    public void FitRight()
+    {
+        Fit(rightHand, rightHandObjective, rightArm);
     }
 }
