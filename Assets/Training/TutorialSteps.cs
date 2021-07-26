@@ -280,6 +280,7 @@ namespace Training
             if (Input.GetKeyDown(KeyCode.N))
             {
                 StopAllCoroutines();
+                audioManager.ClearQueue();
                 Next();
             }
         }

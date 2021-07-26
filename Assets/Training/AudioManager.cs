@@ -17,6 +17,9 @@ namespace Training
 
         // heap would be better here, but importing one from lib is a PITA
         private Dictionary<double, AudioData> priority;
+        // need to keep track of all running coroutines with onEnds to be called, 
+        // such that if onStart was called, onEnd will also always be.
+        private Dictionary<System.Action, Coroutine> onEndCallbacks;
 
         private float[] clipSampleData;
         private const int sampleDataLength = 1024;
@@ -25,6 +28,7 @@ namespace Training
         {
             clipSampleData = new float[sampleDataLength];
             priority = new Dictionary<double, AudioData>();
+            onEndCallbacks = new Dictionary<System.Action, Coroutine>();
         }
 
         private void Update()
@@ -38,9 +42,14 @@ namespace Training
             priority.Remove(pair.Key);
 
             StartCoroutine(WaitAndCall(0, data.onStart));
+
             audioSource.clip = data.clip;
             audioSource.Play();
-            StartCoroutine(WaitAndCall(data.clip.length, data.onEnd));
+            if (data.onEnd != null)
+            {
+                var handle = StartCoroutine(WaitAndCall(data.clip.length, data.onEnd));
+                onEndCallbacks[data.onEnd] = handle;
+            }
         }
 
         private KeyValuePair<double, AudioData> GetMinPriority()
@@ -63,8 +72,7 @@ namespace Training
         {
             if (!queue)
             {
-                priority.Clear();
-                audioSource.Stop();
+                StopAudioClips();
             }
             double start = Time.timeAsDouble + delay;
             priority[start] = new AudioData() { clip = clip, delay = delay, onStart = onStart, onEnd = onEnd, earliestStart = start };
@@ -77,13 +85,27 @@ namespace Training
                 yield break;
             }
             yield return new WaitForSeconds(waitTime);
+            onEndCallbacks.Remove(callback);
             callback();
         }
 
 
         public void StopAudioClips()
         {
+            foreach (var entry in onEndCallbacks)
+            {
+                StopCoroutine(entry.Value);
+                entry.Key();
+            }
+            onEndCallbacks.Clear();
+            priority.Clear();
             audioSource.Stop();
+        }
+
+        public void ClearQueue()
+        {
+            onEndCallbacks.Clear();
+            priority.Clear();
         }
 
         public bool IsAudioPlaying()
