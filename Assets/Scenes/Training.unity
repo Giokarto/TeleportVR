@@ -2033,10 +2033,12 @@ MonoBehaviour:
   ariaTrigger: {fileID: 1440138051}
   ariaNavigation: {fileID: 81686223}
   driveWheelchairAudio:
+    start_intro: {fileID: 8300000, guid: 05c6c37d990e944499a9056153196be6, type: 3}
     start: {fileID: 8300000, guid: 59cdeacccb9899241b35a4d015b6a9cb, type: 3}
     forward: {fileID: 8300000, guid: 694cac6456ce60842b5737d100dbf257, type: 3}
     backwards: {fileID: 8300000, guid: cb20585760576cd419de048a3aa9f956, type: 3}
     turn_left: {fileID: 8300000, guid: cc2f07e57d637dc448284f323a4944ff, type: 3}
+    turn_right_intro: {fileID: 8300000, guid: 5f1e4944e44407e42986e2124aa71e21, type: 3}
     turn_right: {fileID: 8300000, guid: e63aaf5ac65da9c42be2ecb7f5df3eb1, type: 3}
 --- !u!1001 &1355194868
 PrefabInstance:

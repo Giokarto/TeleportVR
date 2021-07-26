@@ -42,10 +42,11 @@ namespace Training
 
             stateMachine.onEnter[State.FORWARD] = (state) =>
             {
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.start, queue: true);
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.forward, queue: true,
-                    onStart: () => TutorialSteps.PublishNotification("Press the right pedal to go forward", driveWheelchairAudio.forward.length)
-                    );
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.start_intro, queue: true);
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.start, queue: true,
+                    onStart: () => TutorialSteps.PublishNotification("Press the right pedal to go forward", driveWheelchairAudio.start.length + 2)
+                );
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.forward, queue: true);
 
                 ariaNavigation.target = forwardGoal.position;
                 waitingForTrigger = true;
@@ -56,7 +57,7 @@ namespace Training
             {
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.backwards,
                     onStart: () => TutorialSteps.PublishNotification("Press the left pedal to go backward", driveWheelchairAudio.backwards.length)
-                    );
+                );
 
                 ariaNavigation.target = backwardGoal.position;
                 waitingForTrigger = true;
@@ -66,9 +67,10 @@ namespace Training
 
             stateMachine.onEnter[State.TURN_RIGHT] = (state) =>
             {
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.turn_right,
-                    onStart: () => TutorialSteps.PublishNotification("Turn right", driveWheelchairAudio.turn_right.length)
-                    );
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.turn_right_intro);
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.turn_right, queue: true,
+                    onStart: () => TutorialSteps.PublishNotification("Turn right", driveWheelchairAudio.turn_right_intro.length + 2)
+                );
 
                 ariaNavigation.target = turnRightGoal.position;
                 waitingForTrigger = true;
