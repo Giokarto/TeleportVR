@@ -6,11 +6,11 @@ using TMPro;
 
 namespace Widgets
 {
+    [ExecuteAlways]
     public class Completion : MonoBehaviour
     {
         public string text = "Calibrating";
-        [Range(0f, 1f)]
-        public float progress = 0;
+        [Range(0f, 1f)] public float progress = 0;
         public bool active = false;
         public Image image;
         public GameObject child;
@@ -20,7 +20,7 @@ namespace Widgets
         // Start is called before the first frame update
         void Start()
         {
-            tmp = GetComponentInChildren<TextMeshProUGUI>();
+            tmp = GetComponentInChildren<TextMeshProUGUI>(true);
         }
 
         // Update is called once per frame

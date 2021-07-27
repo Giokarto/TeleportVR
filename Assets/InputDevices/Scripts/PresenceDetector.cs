@@ -1,6 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace RudderPedals
 {
@@ -67,16 +67,20 @@ namespace RudderPedals
 
         public TrackerSwitcher leftGlove;
         public TrackerSwitcher rightGlove;
+        public float matchHandThreshold = 0.0f;
+        // time to wait until unpausing (seconds)
+        public float waitTime = 5f;
+        private Coroutine matchHandsCouroutine = null;
 
         private SerialReader pedalDetector;
+        private bool _leftPressed, _rightPressed;
         private bool oldLeft = false, oldRight = false, oldInit = true;
         private bool oldMotorEnabled = false;
-        private Timer animationTimer;
+        private Timer waitTimer;
 
         private Callbacks<bool> onPause, onUnpause;
 
-        // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             pedalDetector = new SerialReader(port, baudRate, refresh: presenceRefresh);
             StartCoroutine(pedalDetector.readAsyncContinously(OnUpdatePresence, OnError));
@@ -103,26 +107,28 @@ namespace RudderPedals
         private void OnUpdatePresence(string data)
         {
             bool[] lr = ParseData(data);
-            if (lr == null || !canPause)
+            if (lr == null)
             {
+                Debug.LogError("PresenceDectector OnPresenceUpdate got invalid data");
                 return;
             }
 
-            bool left = lr[0], right = lr[1];
-            if ((!left || !right) && (!oldInit || oldLeft || oldRight))
+            _leftPressed = lr[0];
+            _rightPressed = lr[1];
+            if ((!_leftPressed || !_rightPressed) && (!oldInit || oldLeft || oldRight))
             {
                 Pause();
             }
-            else if ((left && right) && isPaused)
+            else if ((_leftPressed && _rightPressed) && isPaused)
             {
-                Unpause();
+                TryUnpause();
             }
 
-            oldLeft = left;
-            oldRight = right;
+            oldLeft = _leftPressed;
+            oldRight = _rightPressed;
             oldInit = true;
         }
-        
+
         private void OnError(string reason)
         {
             Debug.LogError(reason);
@@ -135,7 +141,7 @@ namespace RudderPedals
                 return false;
             }
 
-            PauseMenu.Instance.show = true;
+            PauseMenu.PauseMenu.Instance.show = true;
             isPaused = true;
             Debug.Log("Paused");
 
@@ -165,6 +171,61 @@ namespace RudderPedals
             return true;
         }
 
+        public void TryUnpause()
+        {
+            if (!isPaused)
+            {
+                return;
+            }
+            waitTimer = new Timer();
+            waitTimer.SetTimer(waitTime, timeIsUp: () =>
+             {
+                 StopCoroutine(matchHandsCouroutine);
+                 matchHandsCouroutine = null;
+
+                 waitTimer.ResetTimer();
+                 PauseMenu.PauseMenu.Instance.matchHandsCompletion.active = false;
+                 PauseMenu.PauseMenu.Instance.matchHandsCompletion.progress = 0;
+                 PauseMenu.PauseMenu.Instance.matchHands.SetActive(false);
+                 Unpause();
+             });
+
+            if (matchHandsCouroutine == null)
+            {
+                matchHandsCouroutine = StartCoroutine(MatchHands());
+            }
+        }
+
+        private IEnumerator MatchHands()
+        {
+            while (_leftPressed && _rightPressed)
+            {
+                var distLeft = (leftGlove.ghostHand.transform.position
+                    - EnableControlManager.Instance.leftBioIKGroup.hand_segment.gameObject.transform.position).magnitude;
+                var distRight = (rightGlove.ghostHand.transform.position
+                    - EnableControlManager.Instance.rightBioIKGroup.hand_segment.gameObject.transform.position).magnitude;
+                //Debug.Log($"{distLeft}, {distRight}");
+
+                PauseMenu.PauseMenu.Instance.matchHands.SetActive(true);
+                if (Mathf.Max(distLeft, distRight) > matchHandThreshold)
+                {
+                    waitTimer.ResetTimer();
+                }
+                else
+                {
+                    waitTimer.LetTimePass(Time.deltaTime);
+                    PauseMenu.PauseMenu.Instance.matchHandsCompletion.active = true;
+                }
+                PauseMenu.PauseMenu.Instance.matchHandsCompletion.progress = waitTimer.GetFraction();
+
+                yield return new WaitForEndOfFrame();
+            }
+
+            //Debug.Log("stopped corountine, as one pedal is not pressed");
+            matchHandsCouroutine = null;
+        }
+
+
         public bool Unpause()
         {
             if (!isPaused)
@@ -173,7 +234,7 @@ namespace RudderPedals
             }
 
             Debug.Log("Unpaused");
-            PauseMenu.Instance.show = false;
+            PauseMenu.PauseMenu.Instance.show = false;
             isPaused = false;
 
             // Enable BioIK & wheelchair
@@ -201,7 +262,7 @@ namespace RudderPedals
             return true;
         }
 
-        public void OnPause(System.Action<bool> callback, bool once=false) => onPause.Add(callback, once);
-        public void OnUnpause(System.Action<bool> callback, bool once=false) => onUnpause.Add(callback, once);
+        public void OnPause(System.Action<bool> callback, bool once = false) => onPause.Add(callback, once);
+        public void OnUnpause(System.Action<bool> callback, bool once = false) => onUnpause.Add(callback, once);
     }
 }

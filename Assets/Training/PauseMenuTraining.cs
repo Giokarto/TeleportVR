@@ -38,7 +38,7 @@ namespace Training
                 RudderPedals.PresenceDetector.Instance.canPause = true;
                 RudderPedals.PresenceDetector.Instance.pauseAudio = false;
                 RudderPedals.PresenceDetector.Instance.OnPause((s) => Next(), once: true);
-                PauseMenu.Instance.switchScene.enabled = false;
+                PauseMenu.PauseMenu.Instance.switchScene.enabled = false;
             };
 
             stateMachine.onEnter[State.PAUSE] = (state) =>
@@ -70,7 +70,7 @@ namespace Training
             {
                 RudderPedals.PresenceDetector.Instance.canPause = true;
                 RudderPedals.PresenceDetector.Instance.pauseAudio = true;
-                PauseMenu.Instance.switchScene.enabled = true;
+                PauseMenu.PauseMenu.Instance.switchScene.enabled = true;
                 onDoneCallbacks.Call(State.DONE);
             };
         }

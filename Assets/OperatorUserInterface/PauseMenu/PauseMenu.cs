@@ -2,73 +2,89 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteAlways]
-public class PauseMenu : Singleton<PauseMenu>
+
+namespace PauseMenu
 {
-    public bool show;
-    public GameObject child;
-
-    [Header("UI Buttons")]
-    public TouchButton switchScene;
-
-    private bool switchScenePressed = false;
-    private bool oldWheelchairVisibility;
-
-
-    // Start is called before the first frame update
-    void Start()
+    [ExecuteAlways]
+    public class PauseMenu : Singleton<PauseMenu>
     {
-        // recover values presence detector when this script is reloaded
-        show = RudderPedals.PresenceDetector.Instance.isPaused;
-        switchScenePressed = RudderPedals.PresenceDetector.Instance.isPaused;
+        public bool show;
+        public GameObject child;
+        public float handMatchThreshold = 0.1f;
 
-        // buttons init
-        switchScene.OnTouchEnter((t) =>
+        [Header("UI Elements")]
+        public TouchButton switchScene;
+
+        public GameObject matchHands;
+        public Widgets.Completion matchHandsCompletion;
+
+
+        private bool switchScenePressed = false;
+        private bool oldWheelchairVisibility;
+
+
+        // Start is called before the first frame update
+        void Start()
         {
-            if (switchScenePressed) return;
+            // recover values presence detector when this script is reloaded
+            show = RudderPedals.PresenceDetector.Instance.isPaused;
+            switchScenePressed = RudderPedals.PresenceDetector.Instance.isPaused;
 
-            switchScenePressed = true;
-            switch (StateManager.Instance.currentState)
+            // buttons init
+            switchScene.OnTouchEnter((t) =>
             {
-                case StateManager.States.Training:
-                    Debug.Log("Changing scene to HUD");
-                    StateManager.Instance.GoToState(StateManager.States.HUD, () =>
-                    {
-                        oldWheelchairVisibility = WheelchairStateManager.Instance.visible;
-                        WheelchairStateManager.Instance.SetVisibility(true,
-                            StateManager.Instance.currentState == StateManager.States.HUD ? WheelchairStateManager.HUDAlpha : 1);
-                    });
-                    break;
-                case StateManager.States.HUD:
-                    Debug.Log("Changing scene to Traning");
-                    StateManager.Instance.GoToState(StateManager.States.Training);
-                    break;
-            }
-        });
-        switchScene.OnTouchExit((t) =>
-        {
-            switchScenePressed = false;
-        });
-    }
+                if (switchScenePressed) return;
 
-    // Update is called once per frame
-    void Update()
-    {
-        switch (StateManager.Instance.currentState)
-        {
-            case StateManager.States.Training:
-                switchScene.text = "Control";
-                break;
-            case StateManager.States.HUD:
-                switchScene.text = "Training";
-                break;
+                switchScenePressed = true;
+                switch (StateManager.Instance.currentState)
+                {
+                    case StateManager.States.Training:
+                        Debug.Log("Changing scene to HUD");
+                        StateManager.Instance.GoToState(StateManager.States.HUD, () =>
+                        {
+                            oldWheelchairVisibility = WheelchairStateManager.Instance.visible;
+                            WheelchairStateManager.Instance.SetVisibility(true,
+                                StateManager.Instance.currentState == StateManager.States.HUD ? WheelchairStateManager.HUDAlpha : 1);
+                        });
+                        break;
+                    case StateManager.States.HUD:
+                        Debug.Log("Changing scene to Traning");
+                        StateManager.Instance.GoToState(StateManager.States.Training);
+                        break;
+                }
+            });
+            switchScene.OnTouchExit((t) =>
+            {
+                switchScenePressed = false;
+            });
         }
-        child.SetActive(show);
+
+
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (Application.IsPlaying(gameObject))
+            {
+                switch (StateManager.Instance.currentState)
+                {
+                    case StateManager.States.Training:
+                        switchScene.text = "Control";
+                        break;
+                    case StateManager.States.HUD:
+                        switchScene.text = "Training";
+                        break;
+                }
+            }
+            child.SetActive(show);
+        }
+
+
+        private void OnDestroy()
+        {
+            switchScene.ClearOnTouchEnter();
+            switchScene.ClearOnTouchExit();
+        }
     }
 
-    private void OnDestroy()
-    {
-        switchScene.ClearOnTouchEnter();
-        switchScene.ClearOnTouchExit();
-    }
 }
