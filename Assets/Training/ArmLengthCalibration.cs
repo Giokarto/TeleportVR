@@ -45,21 +45,23 @@ namespace Training
             stateMachine.onEnter[State.LEFT] = (state) =>
             {
                 TutorialSteps.PublishNotification("Strech your left arm fully");
-                TutorialSteps.PublishNotification("Left thumbs up to continue");
-            };
-            stateMachine.onExit[State.LEFT] = (state) =>
-            {
-                FitLeft();
+                TutorialSteps.PublishNotification("Left thumbs up to calibrate");
+                UserInteractionManager.Instance.Confirm((b) =>
+                {
+                    FitLeft();
+                    Next();
+                }, once: true);
             };
 
             stateMachine.onEnter[State.RIGHT] = (state) =>
             {
                 TutorialSteps.PublishNotification("Strech your right arm fully");
-                TutorialSteps.PublishNotification("Right thumbs up to continue");
-            };
-            stateMachine.onExit[State.RIGHT] = (state) =>
-            {
-                FitRight();
+                TutorialSteps.PublishNotification("Right thumbs up to calibrate");
+                UserInteractionManager.Instance.Confirm((b) =>
+                {
+                    FitRight();
+                    Next();
+                }, once: true);
             };
 
             stateMachine.onEnter[State.DONE] = (state) =>
