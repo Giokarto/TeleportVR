@@ -635,6 +635,55 @@ MonoBehaviour:
   height: 1
   heightDiff: 0.3
   speed: 1
+--- !u!1 &191642075
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 191642076}
+  - component: {fileID: 191642077}
+  m_Layer: 0
+  m_Name: ArmLengthCalibration
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &191642076
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 191642075}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 885325820}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &191642077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 191642075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04205762d4c0b9b40971f1d9597fa403, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftHand: {fileID: 0}
+  leftHandObjective: {fileID: 0}
+  rightHand: {fileID: 0}
+  rightHandObjective: {fileID: 0}
+  leftArm: {fileID: 0}
+  rightArm: {fileID: 0}
 --- !u!1 &269507374
 GameObject:
   m_ObjectHideFlags: 0
@@ -1460,6 +1509,7 @@ Transform:
   - {fileID: 269507375}
   - {fileID: 1326041509}
   - {fileID: 515184336}
+  - {fileID: 191642076}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1514,6 +1564,7 @@ MonoBehaviour:
   leftCalibrator: {fileID: 1189526810}
   wheelChairTraining: {fileID: 1326041510}
   pauseMenuTraining: {fileID: 515184335}
+  armLengthCalibration: {fileID: 191642077}
   handCollectables: {fileID: 850975195}
   designatedArea: {fileID: 1159584230}
 --- !u!114 &885325825

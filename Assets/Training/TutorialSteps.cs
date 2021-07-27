@@ -16,7 +16,7 @@ namespace Training
             LEFT_HAND,
             RIGHT_ARM,
             RIGHT_HAND,
-            WORKSPACE_FIT,
+            ARM_LENGTH,
             WHEELCHAIR,
             PAUSE_MENU,
             DONE
@@ -37,6 +37,7 @@ namespace Training
         public Calibration.HandCalibrator rightCalibrator, leftCalibrator;
         public WheelchairTraining wheelChairTraining;
         public PauseMenuTraining pauseMenuTraining;
+        public ArmLengthCalibration armLengthCalibration;
 
         //int toggle;
         //double prevDuration = 0.0;
@@ -177,9 +178,10 @@ namespace Training
                 rightCalibrator.PauseCalibration();
             };
 
-            stateMachine.onEnter[TrainingStep.WORKSPACE_FIT] = (step) =>
+            stateMachine.onEnter[TrainingStep.ARM_LENGTH] = (step) =>
             {
-
+                armLengthCalibration.OnDone(state => Next(), once: true);
+                armLengthCalibration.StartCalibration();
             };
 
             stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>

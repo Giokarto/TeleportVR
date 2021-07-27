@@ -17,7 +17,7 @@ public class InputManager : Singleton<InputManager>
     private bool lastGrabRight;
     bool nodded, waiting;
 
-    void Start()
+    void Awake()
     {
         GetLeftController();
         GetRightController();
