@@ -39,7 +39,7 @@ namespace RudderPedals
                     yield break;
 
                 }
-                catch (Exception)
+                catch (System.IO.IOException)
                 {
                 Debug.LogError($"Could not open serial connection {port} @ {baudRate} in {retryRate}s");
                 }

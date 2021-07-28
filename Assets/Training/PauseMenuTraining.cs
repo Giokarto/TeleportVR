@@ -6,7 +6,6 @@ namespace Training
 {
     public class PauseMenuTraining : Automaton<PauseMenuTraining.State>
     {
-
         public enum State
         {
             INIT,

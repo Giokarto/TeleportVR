@@ -130,7 +130,7 @@ namespace RudderPedals
 
         public bool Pause()
         {
-            if (isPaused)
+            if (isPaused || !canPause)
             {
                 return false;
             }
