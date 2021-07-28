@@ -40,11 +40,6 @@ namespace RudderPedals
             }
         }
 
-        [Tooltip("Serial port of the arduino")]
-        public string port = "COM6";
-        public int baudRate = 9600;
-        [Tooltip("Time step to refresh presence detector in (seconds)")]
-        public float presenceRefresh = 0.1f;
         public bool isPaused = false;
 
         // if the presence detector is allowed to pause / unpause the game
@@ -72,7 +67,7 @@ namespace RudderPedals
         public float waitTime = 5f;
         private Coroutine matchHandsCouroutine = null;
 
-        private SerialReader pedalDetector;
+        public SerialReader pedalDetector;
         private bool _leftPressed, _rightPressed;
         private bool oldLeft = false, oldRight = false, oldInit = true;
         private bool oldMotorEnabled = false;
@@ -82,7 +77,6 @@ namespace RudderPedals
 
         void Awake()
         {
-            pedalDetector = new SerialReader(port, baudRate, refresh: presenceRefresh);
             StartCoroutine(pedalDetector.readAsyncContinously(OnUpdatePresence, OnError));
             onPause = new Callbacks<bool>();
             onUnpause = new Callbacks<bool>();

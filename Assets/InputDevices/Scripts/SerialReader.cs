@@ -6,34 +6,44 @@ using System.IO.Ports;
 
 namespace RudderPedals
 {
-    public class SerialReader
+    public class SerialReader : MonoBehaviour
     {
         private SerialPort stream;
-        private string port;
-        private int baudRate;
-        private float readTimeout, refresh;
+        [Tooltip("Serial port of the arduino")]
+        public string port = "COM6";
+        public int baudRate = 9600;
+        [Tooltip("Time step to refresh presence detector in (seconds)")]
 
+        public float readTimeout = 0.01f, refresh = 0;
+        [SerializeField] private bool connecting = false;
 
-        public SerialReader(string port = "COM6", int baudRate = 9600, float readTimeout = 0.01f, float refresh = 0.01f)
+        void Awake()
         {
-            this.port = port;
-            this.baudRate = baudRate;
-            this.readTimeout =0;
-            this.refresh = refresh;
+            StartCoroutine(TryConnection());
+        }
 
-            this.stream = new SerialPort(port, baudRate);
-            this.stream.ReadTimeout = (int)(1000 * readTimeout);
-            this.stream.DtrEnable = true;
-            this.stream.RtsEnable = true;
-            try
+        private IEnumerator TryConnection(float retryRate = 1)
+        {
+            connecting = true;
+            while (connecting)
             {
-                stream.Open();
-                Debug.Log($"Opened serial connection on {port} @ {baudRate}");
+                stream = new SerialPort(port, baudRate);
+                stream.ReadTimeout = (int)(1000 * readTimeout);
+                stream.DtrEnable = true;
+                stream.RtsEnable = true;
+                try
+                {
+                    stream.Open();
+                    Debug.Log($"Opened serial connection on {port} @ {baudRate}");
+                    connecting = false;
+                    yield break;
 
-            }
-            catch (System.IO.IOException)
-            {
-                Debug.LogError($"Error while opening serial connection on {port}@{baudRate}");
+                }
+                catch (Exception)
+                {
+                Debug.LogError($"Could not open serial connection {port} @ {baudRate} in {retryRate}s");
+                }
+                yield return new WaitForSeconds(retryRate);
             }
         }
 
@@ -45,45 +55,59 @@ namespace RudderPedals
             this.stream.Close();
         }
 
+
         public IEnumerator readAsyncContinously(Action<string> callback, Action<string> onError = null)
         {
             string data = null;
-            string res;
+            // Wait for serial to connect 
+            while (stream == null || !stream.IsOpen)
+            {
+                yield return new WaitForEndOfFrame();
+            }
             while (true)
             {
-                // request data
-                stream.WriteLine("GET");
-                stream.BaseStream.Flush();
-                res = null;
-                try
+                if (!connecting)
                 {
-                    res = stream.ReadLine();
-                }
-                catch (TimeoutException)
-                {
-                    res = null;
-                }
-                catch (InvalidOperationException)
-                {
-                    onError($"Serial port {port} @ {baudRate} is not open");
-                    yield break;
-                }
-
-                if (res.StartsWith("ERROR:"))
-                {
-                    if (onError != null)
+                    try
                     {
-                        onError(res);
+                        // request data
+                        stream.WriteLine("GET");
+                        stream.BaseStream.Flush();
+                        var res = stream.ReadLine();
+                        
+                        if (res != null)
+                        {
+                            if (res.StartsWith("ERROR:"))
+                            {
+                                if (onError != null)
+                                {
+                                    onError(res);
+                                }
+                                yield break;
+                            }
+
+                            // only publish if data is new
+                            if (data == null || !res.Equals(data))
+                            {
+                                data = res;
+                                callback(data);
+                            }
+
+                        }
                     }
-                    yield break;
+                    catch (TimeoutException)
+                    {
+                    }
+                    catch (Exception)
+                    {
+                        onError($"Serial port {port} @ {baudRate} is not open, tying to reconnect");
+                        if (!connecting)
+                        {
+                            StartCoroutine(TryConnection());
+                        }
+                    }
                 }
 
-                // only publish if data is new
-                if (res != null && (data == null || !res.Equals(data)))
-                {
-                    data = res;
-                    callback(data);
-                }
                 yield return new WaitForEndOfFrame();
             }
         }
