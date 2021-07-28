@@ -225,7 +225,8 @@ public class InputManager : Singleton<InputManager>
                     //}
                 }
 
-                // drive the wheelchair
+                //drive the wheelchair
+#if !SENSEGLOVE
                 if (//StateManager.Instance.currentState == StateManager.States.Construct || 
                     StateManager.Instance.currentState != StateManager.States.HUD)
                 {
@@ -267,6 +268,7 @@ public class InputManager : Singleton<InputManager>
                     // Show that the wheelchair is active in the state manager
                     WidgetInteraction.SetBodyPartActive(56, false);
                 }
+#endif
             }
             else
             {

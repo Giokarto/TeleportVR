@@ -69,12 +69,10 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
 
         casterRightWheel.transform.Rotate(-V_R / 0.1407802f * Time.deltaTime * 100f, 0f, 0f);
         casterLeftWheel.transform.Rotate(-V_R / 0.1407802f * Time.deltaTime * 100f, 0f, 0f);
-
     }
 
     private void FixedUpdate()
     {
-
         (x, y, theta) = diffdrive(V_L, V_R, drivingTime, L);
 
         //Debug.Log($"X: {x}, Y: {y} Theta: {theta}");
@@ -84,7 +82,6 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
 
         V_L = 0;
         V_R = 0;
-
     }
 
     private void Move()
