@@ -42,6 +42,8 @@ TagManager:
   - SeneGloveGrab
   - RightHandCalibrator
   - LeftHandCalibrator
+  - LeftObjective
+  - RightObjective
   layers:
   - Default
   - TransparentFX

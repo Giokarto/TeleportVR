@@ -84,37 +84,18 @@ namespace Training.Calibration
         private CalibrationPose[] poses;
 
         // size is max Pose index
-        private readonly Vector3[][] poseValues = new Vector3[8][];
+        public Vector3[][] poseValues = new Vector3[8][];
         private readonly PoseBuffer poseStore = new PoseBuffer();
 
         private Pose currentPose = Pose.HandOpen;
 
         private readonly Callbacks<Step> doneCallbacks = new Callbacks<Step>();
-
         private string lrName { get { return isRight ? "right" : "left"; } }
+        private string FQN { get { return typeof(HandCalibrator).FullName + lrName; } }
 
-        private CalibrationPose[] LoadProfiles()
-        {
-            if (!hand.IsLinked || interpolator == null)
-            {
-                throw new UnassignedReferenceException("Cannot load profiles for disconnected SenseGlove");
-            }
-            // order in this array needs to match the one in the Enum Pose
-            return new CalibrationPose[]
-            {
-             CalibrationPose.GetFullOpen(ref interpolator),
-             CalibrationPose.GetFullFist(ref interpolator),
-             CalibrationPose.GetOpenHand(ref interpolator),
-             CalibrationPose.GetFist(ref interpolator),
-             CalibrationPose.GetThumbsUp(ref interpolator),
-             CalibrationPose.GetThumbFlexed(ref interpolator),
-             CalibrationPose.GetThumbAbd(ref interpolator),
-             CalibrationPose.GetThumbNoAbd(ref interpolator)
-            };
-        }
         /// <summary> Get Calibration Values from the hardware, as the interpolation solver would. </summary>
         /// <returns></returns>
-        public Vector3[] GetCalibrationValues()
+        public Vector3[] GetCurrentPoseValues()
         {
             float[][] rawAngles = hand.GloveData.gloveValues;
             float[][] Nsensors = Interp4Sensors.NormalizeAngles(rawAngles);
@@ -152,6 +133,10 @@ namespace Training.Calibration
             {
                 throw new MissingComponentException($"Could not find {lrName} SG_SenseGloveHardware in Scene.");
             }
+
+            // saving & loading
+            OnDone((step) => Save());
+            Load();
 
             // calibration timers
             calibrationParams.waitTimer.SetTimer(calibrationParams.waitTime, CalibrationWaitDone);
@@ -234,7 +219,7 @@ namespace Training.Calibration
             poseStore.Clear();
 
             // calibrate the pose
-            Vector3[] handValues = GetCalibrationValues();
+            Vector3[] handValues = GetCurrentPoseValues();
             poseValues[(int)currentPose] = handValues;
             poses[(int)currentPose].CalibrateParameters(handValues, ref interpolator);
 
@@ -316,7 +301,7 @@ namespace Training.Calibration
                             completionWidget.text = "calibrating";
                             completionWidget.progress = calibrationParams.dwellTimer.GetFraction();
 
-                            poseStore.AddPose(GetCalibrationValues());
+                            poseStore.AddPose(GetCurrentPoseValues());
                             float error = poseStore.ComputeError();
                             if (error > calibrationParams.maxError)
                             {
@@ -351,7 +336,7 @@ namespace Training.Calibration
                             }
                             PoseBuffer buffer = new PoseBuffer(bufferSize: 2);
                             buffer.AddPose(poseValues[(int)Pose.ThumbUp]);
-                            buffer.AddPose(GetCalibrationValues());
+                            buffer.AddPose(GetCurrentPoseValues());
                             float error = buffer.ComputeError();
                             testParams.dwellTimer.LetTimePass(Time.deltaTime);
                             if (error > testParams.maxError)
@@ -382,6 +367,69 @@ namespace Training.Calibration
         /// </summary>
         /// <param name="callback">called, when the calibration is done</param>
         public void OnDone(System.Action<Step> callback, bool once = false) => doneCallbacks.Add(callback, once);
+
+        private CalibrationPose[] LoadProfiles()
+        {
+            if (!hand.IsLinked || interpolator == null)
+            {
+                throw new UnassignedReferenceException("Cannot load profiles for disconnected SenseGlove");
+            }
+            // order in this array needs to match the one in the Enum Pose
+            return new CalibrationPose[]
+            {
+             CalibrationPose.GetFullOpen(ref interpolator),
+             CalibrationPose.GetFullFist(ref interpolator),
+             CalibrationPose.GetOpenHand(ref interpolator),
+             CalibrationPose.GetFist(ref interpolator),
+             CalibrationPose.GetThumbsUp(ref interpolator),
+             CalibrationPose.GetThumbFlexed(ref interpolator),
+             CalibrationPose.GetThumbAbd(ref interpolator),
+             CalibrationPose.GetThumbNoAbd(ref interpolator)
+            };
+        }
+
+        private void Save()
+        {
+            PlayerPrefX.SetInt($"{FQN}.Length", poseValues.Length);
+            for (int i = 0; i < poseValues.Length; i++)
+            {
+                if (poseValues[i] == null)
+                {
+                    PlayerPrefX.SetInt($"{FQN}[{i}].Length", 0);
+                }
+                else
+                {
+                    PlayerPrefX.SetInt($"{FQN}[{i}].Length", poseValues[i].Length);
+                    for (int j = 0; j < poseValues[i].Length; j++)
+                    {
+                        var id = $"{FQN}[{i}][{j}]";
+                        PlayerPrefX.SetVector3(id, poseValues[i][j]);
+                    }
+                }
+            }
+        }
+
+        private bool Load()
+        {
+            if (!PlayerPrefX.HasKey($"{FQN}.Length"))
+            {
+                return false;
+            }
+            var len = PlayerPrefX.GetInt($"{FQN}.Length");
+            var items = new Vector3[len][];
+            for (int i = 0; i < len; i++)
+            {
+                len = PlayerPrefX.GetInt($"{FQN}[{i}].Length");
+                items[i] = new Vector3[len];
+                for (int j = 0; j < len; j++)
+                {
+                    var id = $"{FQN}[{i}][{j}]";
+                    items[i][j] = PlayerPrefX.GetVector3(id);
+                }
+            }
+            poseValues = items;
+            return true;
+        }
     }
 }
 

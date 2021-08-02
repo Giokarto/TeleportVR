@@ -26,12 +26,21 @@ namespace Widgets
         // Update is called once per frame
         void Update()
         {
-            progress = Mathf.Max(0, Mathf.Min(progress, 1));
+            progress = Mathf.Clamp01(progress);
             active &= progress > 0;
             child.SetActive(active);
             image.fillAmount = progress;
-
             tmp.text = text;
+        }
+
+        public void Set(float progress, string text = null)
+        {
+            active = progress > 0;
+            this.progress = Mathf.Clamp01(progress);
+            if (text != null)
+            {
+                tmp.text = text;
+            }
         }
     }
 
