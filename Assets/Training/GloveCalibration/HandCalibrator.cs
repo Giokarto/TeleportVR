@@ -84,7 +84,7 @@ namespace Training.Calibration
         private CalibrationPose[] poses;
 
         // size is max Pose index
-        public readonly Vector3[][] poseValues = new Vector3[8][];
+        public Vector3[][] poseValues = new Vector3[8][];
         private readonly PoseBuffer poseStore = new PoseBuffer();
 
         private Pose currentPose = Pose.HandOpen;
@@ -393,11 +393,18 @@ namespace Training.Calibration
             PlayerPrefX.SetInt($"{FQN}.Length", poseValues.Length);
             for (int i = 0; i < poseValues.Length; i++)
             {
-                PlayerPrefX.SetInt($"{FQN}[{i}].Length", poseValues[i].Length);
-                for (int j = 0; j < poseValues[i].Length; i++)
+                if (poseValues[i] == null)
                 {
-                    var id = $"{FQN}[{i}][{j}]";
-                    PlayerPrefX.SetVector3(id, poseValues[i][j]);
+                    PlayerPrefX.SetInt($"{FQN}[{i}].Length", 0);
+                }
+                else
+                {
+                    PlayerPrefX.SetInt($"{FQN}[{i}].Length", poseValues[i].Length);
+                    for (int j = 0; j < poseValues[i].Length; j++)
+                    {
+                        var id = $"{FQN}[{i}][{j}]";
+                        PlayerPrefX.SetVector3(id, poseValues[i][j]);
+                    }
                 }
             }
         }
@@ -414,12 +421,13 @@ namespace Training.Calibration
             {
                 len = PlayerPrefX.GetInt($"{FQN}[{i}].Length");
                 items[i] = new Vector3[len];
-                for (int j = 0; j < poseValues[i].Length; i++)
+                for (int j = 0; j < len; j++)
                 {
                     var id = $"{FQN}[{i}][{j}]";
                     items[i][j] = PlayerPrefX.GetVector3(id);
                 }
             }
+            poseValues = items;
             return true;
         }
     }

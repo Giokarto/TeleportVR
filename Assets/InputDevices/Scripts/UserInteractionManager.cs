@@ -13,75 +13,91 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
         KEYBOARD
     }
 
-    public InputDevice inputDevice;
+    public InputDevice inputDevice = InputDevice.SENSE_GLOVE;
     public UnityEngine.XR.InputDevice controllerLeft, controllerRight;
     public Widgets.Completion completionWidget;
     public HandCalibrator leftCalibrator, rightCalibrator;
 
-    private Callbacks<bool> onConfirmCallbacks, onAbortCallbacks;
+    private Callbacks<bool> onConfirmCallbacks;
 
     // SenseGlove params
     private const HandCalibrator.Pose confirmationPose = HandCalibrator.Pose.ThumbUp;
     private readonly Timer dwellTimer = new Timer();
     private const float confirmationPoseError = 0.5f, confirmationDwellTime = 3;
-    private Coroutine senseGloveConfirmRoutine;
+    private volatile Coroutine coroutine = null;
 
     // Start is called before the first frame update
     void Start()
     {
         onConfirmCallbacks = new Callbacks<bool>();
-        onAbortCallbacks = new Callbacks<bool>();
+        //onAbortCallbacks = new Callbacks<bool>();
     }
 
-    public void Confirm(Action<bool> onConfirm, bool once = true)
+    public void Confirm(Action<bool> onConfirm, bool left = true, bool once = true)
     {
         switch (inputDevice)
         {
             case InputDevice.SENSE_GLOVE:
-                if (senseGloveConfirmRoutine != null)
                 {
                     onConfirmCallbacks.Add(onConfirm, once);
+
+                    if (coroutine == null)
+                    {
+                        dwellTimer.SetTimer(confirmationDwellTime, () =>
+                        {
+                            Debug.Log("UserInteractionManager, SenseGlove done");
+                            StopCoroutine(coroutine);
+                            coroutine = null;
+                            completionWidget.Set(0);
+                            completionWidget.active = false;
+                            onConfirmCallbacks.Call(true);
+                        });
+                        coroutine = StartCoroutine(SenseGloveConfirm(left));
+                    }
                     break;
                 }
-                dwellTimer.SetTimer(confirmationDwellTime, () =>
-                {
-                    StopCoroutine(senseGloveConfirmRoutine);
-                    completionWidget.active = false;
-                    onConfirmCallbacks.Call(true);
-                });
-                completionWidget.active = true;
-                completionWidget.text = "hold";
-                StartCoroutine(SenseGloveConfirm());
-                break;
             case InputDevice.CONTROLERS:
                 throw new NotImplementedException();
             case InputDevice.KEYBOARD:
-                throw new NotImplementedException();
+                {
+                    onConfirmCallbacks.Add(onConfirm, once);
+                    if (coroutine == null)
+                    {
+                        coroutine = StartCoroutine(KeyboardConfirm());
+                    }
+                    break;
+                }
         }
     }
 
-    private IEnumerator SenseGloveConfirm()
+    private IEnumerator SenseGloveConfirm(bool left)
     {
-        PoseBuffer buffer = new PoseBuffer(bufferSize: 2);
-        buffer.AddPose(leftCalibrator.poseValues[(int)confirmationPose]);
-        buffer.AddPose(leftCalibrator.GetCurrentPoseValues());
-        float leftError = buffer.ComputeError();
-
-        buffer.Clear();
-        buffer.AddPose(rightCalibrator.poseValues[(int)confirmationPose]);
-        buffer.AddPose(rightCalibrator.GetCurrentPoseValues());
-        float rightError = buffer.ComputeError();
-
-        if (Mathf.Min(leftError, rightError) >= confirmationPoseError)
+        while (true)
         {
-            dwellTimer.ResetTimer();
+            PoseBuffer buffer = new PoseBuffer(bufferSize: 2);
+            if (left)
+            {
+                buffer.AddPose(leftCalibrator.poseValues[(int)confirmationPose]);
+                buffer.AddPose(leftCalibrator.GetCurrentPoseValues());
+            }
+            else
+            {
+                buffer.AddPose(rightCalibrator.poseValues[(int)confirmationPose]);
+                buffer.AddPose(rightCalibrator.GetCurrentPoseValues());
+            }
+
+            if (buffer.ComputeError() >= confirmationPoseError)
+            {
+                dwellTimer.ResetTimer();
+            }
+            else
+            {
+                dwellTimer.LetTimePass(Time.deltaTime);
+            }
+            completionWidget.progress = dwellTimer.GetFraction();
+            completionWidget.Set(dwellTimer.GetFraction(), "hold");
+            yield return new WaitForEndOfFrame();
         }
-        else
-        {
-            dwellTimer.LetTimePass(Time.deltaTime);
-        }
-        completionWidget.progress = dwellTimer.GetFraction();
-        yield return new WaitForEndOfFrame();
     }
 
     private void ControllerConfirm()
@@ -89,10 +105,19 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
 
     }
 
-    // TODO: Not yet implemented
-    public void Abort(Action onAbort, bool once = true)
+    private IEnumerator KeyboardConfirm()
     {
-
+        while (true)
+        {
+            if (Input.GetKey(KeyCode.C))
+            {
+                coroutine = null;
+                onConfirmCallbacks.Call(true);
+                yield break;
+            }
+            Debug.Log("Wait for keyboard");
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     public void OnDestroy()
