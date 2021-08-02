@@ -738,9 +738,18 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 //Debug.Log(segment.name);
                 if (segment.Joint != null)
                 {
+                    //Debug.Log($"{motorAngles.Count - 1}: {segment.gameObject.name} {segment.Joint.X.CurrentValue}");
                     motorAngles.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
                 }
             }
+            // Distribure angle on elbow_*_axis0 to axis0 and axis1 equally
+            const int elbowRightAxis0 = 6;
+            const int elbowLeftAxis0 = 14;
+            motorAngles[elbowRightAxis0 + 1] = -motorAngles[elbowRightAxis0] / 2;
+            motorAngles[elbowRightAxis0] /= 2;
+            motorAngles[elbowLeftAxis0 + 1] = motorAngles[elbowLeftAxis0] / 2;
+            motorAngles[elbowLeftAxis0] /= 2;
+
 
             // right, left
 #if SENSEGLOVE
