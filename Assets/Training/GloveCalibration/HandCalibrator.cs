@@ -424,7 +424,7 @@ namespace Training.Calibration
                 for (int j = 0; j < len; j++)
                 {
                     var id = $"{FQN}[{i}][{j}]";
-                    items[i][j] = PlayerPrefX.GetVector3(id);
+                    items[i][j] = PlayerPrefX.GetVector3(id, Vector3.zero);
                 }
             }
             poseValues = items;

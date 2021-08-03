@@ -15,11 +15,14 @@ public class PlayerPrefX : PlayerPrefs
         SetFloat($"{identifier}.z", obj.z);
     }
 
-    public static Vector3 GetVector3(string identifier)
+    public static Vector3 GetVector3(string identifier, Vector3 defaultValue)
     {
-        return new Vector3(GetFloat($"{identifier}.x"),
-                            GetFloat($"{identifier}.y"),
-                            GetFloat($"{identifier}.z"));
+        string x = $"{identifier}.x", y = $"{identifier}.y", z = $"{identifier}.z";
+        if (!HasKey(x) || !HasKey(y) || !HasKey(z))
+        {
+            return defaultValue;
+        }
+        return new Vector3(GetFloat(x), GetFloat(y), GetFloat(z));
     }
 
     //public static void SetArray<T>(string identifier, IList<T> items)
