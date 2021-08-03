@@ -164,22 +164,44 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 #if ANIMUS_USE_OPENCV
     private void InitUndistortion(int image_width, int image_height)
     {
-        double[,] dist =
+        double[,] dist, camera, newCamera;
+        if (image_width == 360 && image_height == 640)
         {
-            { -0.5947601442273787, 0.43119452571961653, -0.009862262587826071, 0.004039919442837182, -0.12390489647322672 }
-        };
-        double[,] camera =
+            dist = new double[,] {
+                { -0.26671108837192126, 0.07901518944619403, 0.00015571985524697281, 0.0006010997461545253, -0.01058019944621336 }
+            };
+            camera = new double[,] {
+                { 298.68813717678285, 0.0, 166.9743006819531 },
+                { 0.0, 298.0500351325468, 309.6193055827986 },
+                { 0.0, 0.0, 1.0 }
+            };
+            newCamera = new double[,] {
+                { 250.33721923828125, 0.0, 180.40019593524147 },
+                { 0.0, 240.51262156168622, 310.58069246672255 },
+                { 0.0, 0.0, 1.0 }
+            };
+        }
+        else if (image_width == 240 && image_height == 426)
         {
-            { 672.4823705060328, 0.0, 367.8944005808629 },
-            { 0.0, 683.3365860140323, 505.44937385818747 },
-            { 0.0, 0.0, 1.0 }
-        };
-        double[,] newCamera =
+            dist = new double[,] {
+                { -0.3410095060673586, 0.13663490491793673, 0.0029517164668326173, 0.0031498764503194074, -0.02582006181844203 }
+            };
+            camera = new double[,] {
+                { 226.1512419110776, 0.0, 109.29523311868192 },
+                { 0.0, 226.23590938020163, 205.63347777512897 },
+                { 0.0, 0.0, 1.0 }
+            };
+            newCamera = new double[,] {
+                { 183.4514923095703, 0.0, 110.754281606527 },
+                { 0.0, 165.92552947998047, 202.29188376754882 },
+                { 0.0, 0.0, 1.0 }
+            };
+        }
+        else
         {
-            { 549.1903686523438, 0.0, 371.1269680398036 },
-            { 0.0, 559.9528045654297, 487.2767511773709 },
-            { 0.0, 0.0, 1.0 }
-        };
+            throw new NotImplementedException();
+        }
+
         Mat distCoeffs = FillMat(dist);
         Mat cameraMatrix = FillMat(camera);
         Mat newCameraMatrix = FillMat(newCamera);
@@ -398,7 +420,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
             if (!initMats)
             {
-                yuv = new Mat((int)(currShape[1] * 1.5), (int)currShape[0], CvType.CV_8UC1);
+                yuv = new Mat((int)(currShape[1] * 1.5), (int)(currShape[0]), CvType.CV_8UC1);
                 rgb = new Mat();
                 initMats = true;
             }
@@ -492,8 +514,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         Mat rgb_l = new Mat(rgb.rows(), rgb.cols(), CvType.CV_8UC3);
 
         // undistort
-        Imgproc.remap(rgb, rgb_l, undistort.mapx, undistort.mapy, Imgproc.INTER_LINEAR, 0);
-        rgb_l = rgb;
+        Imgproc.remap(rgb, rgb_l, undistort.mapx, undistort.mapy, Imgproc.INTER_AREA, 0);
+        //rgb_l = rgb;
         // display
         Utils.matToTexture2D(rgb_l, texture);
         renderer.material.mainTexture = texture;
