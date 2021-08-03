@@ -24,10 +24,12 @@ namespace Training.Calibration.ArmLength
 
         private Callbacks<State> onDoneCallbacks = new Callbacks<State>();
         private bool latch = false;
+        private const string FQN = "Training.Calibration.ArmLength.ArmLength";
 
         void Start()
         {
             currentState = State.START;
+            Load();
 
             // get objectives
             foreach (var comp in PlayerRig.Instance.gameObject.GetComponentsInChildren<XROffset>())
@@ -59,13 +61,6 @@ namespace Training.Calibration.ArmLength
                         leftShoulder.position.y,
                         leftShoulder.position.z
                     );
-                    // move shoulder base to touchpoint
-                    var joint = rightShoulder.GetComponent<BioIK.BioJoint>();
-                    var jointPos = joint.GetDefaultPosition();
-                    jointPos.z += rightShoulder.position.x - leftArmTouchpoint.position.x;
-                    var jointOr = joint.GetDefaultRotation();
-                    joint.SetDefaultFrame(jointPos, jointOr);
-
                     Next();
                 }, once: true);
                 rightShoulderVolume.StartWaiting();
@@ -86,12 +81,6 @@ namespace Training.Calibration.ArmLength
                         rightShoulder.position.y,
                         rightShoulder.position.z
                     );
-                    // move shoulder base to touchpoint
-                    var joint = leftShoulder.GetComponent<BioIK.BioJoint>();
-                    var jointPos = joint.GetDefaultPosition();
-                    jointPos.z += leftShoulder.position.x - rightArmTouchpoint.position.x;
-                    var jointOr = joint.GetDefaultRotation();
-                    joint.SetDefaultFrame(jointPos, jointOr);
                     Next();
                 }, once: true);
                 leftShoulderVolume.StartWaiting();
@@ -126,6 +115,7 @@ namespace Training.Calibration.ArmLength
 
             stateMachine.onEnter[State.DONE] = (state) =>
             {
+                Save();
                 onDoneCallbacks.Call(State.DONE);
             };
             #endregion
@@ -160,5 +150,22 @@ namespace Training.Calibration.ArmLength
         public void StopCalibration() => currentState = State.DONE;
 
         public void OnDone(System.Action<State> callback, bool once = false) => onDoneCallbacks.Add(callback, once);
+
+
+        private void Save()
+        {
+            PlayerPrefX.SetVector3($"{FQN}_leftShoulderScale", leftShoulder.localScale);
+            PlayerPrefX.SetVector3($"{FQN}_leftArmTouchPoint_position", leftArmTouchpoint.position);
+            PlayerPrefX.SetVector3($"{FQN}_rightShoulderScale", rightShoulder.localScale);
+            PlayerPrefX.SetVector3($"{FQN}_rightArmTouchPoint_position", rightArmTouchpoint.position);
+        }
+
+        private void Load()
+        {
+            leftShoulder.localScale = PlayerPrefX.GetVector3($"{FQN}_leftShoulderScale", leftShoulder.localScale);
+            leftArmTouchpoint.position = PlayerPrefX.GetVector3($"{FQN}_leftArmTouchPoint_position", leftArmTouchpoint.position);
+            rightShoulder.localScale = PlayerPrefX.GetVector3($"{FQN}_rightShoulderScale", rightShoulder.localScale);
+            rightArmTouchpoint.position = PlayerPrefX.GetVector3($"{FQN}_rightArmTouchPoint_position", rightArmTouchpoint.position);
+        }
     }
 }
