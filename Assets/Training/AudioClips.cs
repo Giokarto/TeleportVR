@@ -36,6 +36,12 @@ namespace Training.AudioClips
     }
 
     [System.Serializable]
+    public struct ArmLength
+    {
+        public AudioClip start, scale_left, scale_right, touch_left, touch_right;
+    }
+
+    [System.Serializable]
     public struct Misc
     {
         public AudioClip welcome, imAria, head, nod, wrongTrigger, portal, enterButton,

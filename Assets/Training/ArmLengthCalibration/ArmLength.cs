@@ -9,6 +9,7 @@ namespace Training.Calibration.ArmLength
     {
         public enum State
         {
+            INIT,
             START,
             RIGHT_SHOULDER_TOUCH,
             LEFT_SHOULDER_TOUCH,
@@ -21,15 +22,14 @@ namespace Training.Calibration.ArmLength
             leftArmTouchpoint, rightArmTouchpoint;
 
         public StayInVolume leftShoulderVolume, rightShoulderVolume;
+        public AudioClips.ArmLength armLengthAudioClips;
 
         private Callbacks<State> onDoneCallbacks = new Callbacks<State>();
-        private bool latch = false;
         private const string FQN = "Training.Calibration.ArmLength.ArmLength";
 
         void Start()
         {
             currentState = State.START;
-            Load();
 
             // get objectives
             foreach (var comp in PlayerRig.Instance.gameObject.GetComponentsInChildren<XROffset>())
@@ -50,10 +50,21 @@ namespace Training.Calibration.ArmLength
             rightShoulder = GameObject.Find("shoulder_right_axis0").transform;
 
             #region StateDefinitions
+            stateMachine.onEnter[State.START] = (state) =>
+            {
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.start,
+                    onEnd: () => Next());
+            };
+
             stateMachine.onEnter[State.RIGHT_SHOULDER_TOUCH] = (state) =>
             {
-                TutorialSteps.PublishNotification("Touch your right shoulder with your left arm");
-
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.start);
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.touch_right,
+                    onStart: () =>
+                    {
+                        TutorialSteps.PublishNotification("Touch your right shoulder with your left arm");
+                        rightShoulderVolume.StartWaiting();
+                    }, queue: true);
                 rightShoulderVolume.OnDone((b) =>
                 {
                     leftArmTouchpoint.position = new Vector3(
@@ -63,7 +74,6 @@ namespace Training.Calibration.ArmLength
                     );
                     Next();
                 }, once: true);
-                rightShoulderVolume.StartWaiting();
             };
             stateMachine.onExit[State.RIGHT_SHOULDER_TOUCH] = (state) =>
             {
@@ -72,8 +82,12 @@ namespace Training.Calibration.ArmLength
 
             stateMachine.onEnter[State.LEFT_SHOULDER_TOUCH] = (state) =>
             {
-                TutorialSteps.PublishNotification("Touch your left shoulder with your right arm");
-
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.touch_left,
+                    onStart: () =>
+                    {
+                        TutorialSteps.PublishNotification("Touch your left shoulder with your right arm");
+                        leftShoulderVolume.StartWaiting();
+                    });
                 leftShoulderVolume.OnDone((b) =>
                 {
                     rightArmTouchpoint.position = new Vector3(
@@ -83,7 +97,6 @@ namespace Training.Calibration.ArmLength
                     );
                     Next();
                 }, once: true);
-                leftShoulderVolume.StartWaiting();
             };
             stateMachine.onExit[State.LEFT_SHOULDER_TOUCH] = (state) =>
             {
@@ -93,6 +106,7 @@ namespace Training.Calibration.ArmLength
 
             stateMachine.onEnter[State.LEFT_SCALE] = (state) =>
             {
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.scale_left);
                 TutorialSteps.PublishNotification("Strech your left arm fully");
                 TutorialSteps.PublishNotification("Left thumbs up to calibrate");
                 UserInteractionManager.Instance.Confirm((b) =>
@@ -104,6 +118,7 @@ namespace Training.Calibration.ArmLength
 
             stateMachine.onEnter[State.RIGHT_SCALE] = (state) =>
             {
+                TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.scale_right);
                 TutorialSteps.PublishNotification("Strech your right arm fully");
                 TutorialSteps.PublishNotification("Right thumbs up to calibrate");
                 UserInteractionManager.Instance.Confirm((b) =>
@@ -119,6 +134,8 @@ namespace Training.Calibration.ArmLength
                 onDoneCallbacks.Call(State.DONE);
             };
             #endregion
+
+            Load();
         }
 
         private void Fit(Transform hand, Transform objective, Transform shoulder, Transform touchPoint)
@@ -143,7 +160,7 @@ namespace Training.Calibration.ArmLength
 
         public void StartCalibration()
         {
-            currentState = State.START;
+            currentState = State.INIT;
             Next();
         }
 

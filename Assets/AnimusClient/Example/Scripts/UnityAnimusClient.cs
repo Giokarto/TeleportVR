@@ -37,6 +37,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
     // vision variables
     public bool stereovision = false;
+    public bool undistortion = true;
     public GameObject LeftEye;
     public GameObject RightEye;
     [SerializeField] private GameObject _leftPlane;
@@ -447,7 +448,10 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
                 if (stereovision)
                 {
-                    InitUndistortion((int)_imageDims[0], (int)_imageDims[1] / 2);
+                    if (undistortion)
+                    {
+                        InitUndistortion((int)_imageDims[0], (int)_imageDims[1] / 2);
+                    }
 
                     // only half of the vertical scale corresponds to the image for one eye
                     float scaleFactor = ((float)_imageDims[1] / 2) / (float)_imageDims[0];
@@ -472,7 +476,10 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 }
                 else
                 {
-                    InitUndistortion((int)_imageDims[0], (int)_imageDims[1]);
+                    if (undistortion)
+                    {
+                        InitUndistortion((int)_imageDims[0], (int)_imageDims[1]);
+                    }
 
                     float scaleFactor = (float)_imageDims[1] / (float)_imageDims[0];
                     _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
@@ -513,9 +520,15 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2RGB_I420);
         Mat rgb_l = new Mat(rgb.rows(), rgb.cols(), CvType.CV_8UC3);
 
-        // undistort
-        Imgproc.remap(rgb, rgb_l, undistort.mapx, undistort.mapy, Imgproc.INTER_AREA, 0);
-        //rgb_l = rgb;
+        if (undistortion)
+        {
+            // undistort
+            Imgproc.remap(rgb, rgb_l, undistort.mapx, undistort.mapy, Imgproc.INTER_LINEAR, 0);
+        }
+        else
+        {
+            rgb_l = rgb;
+        }
         // display
         Utils.matToTexture2D(rgb_l, texture);
         renderer.material.mainTexture = texture;

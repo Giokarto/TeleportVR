@@ -686,6 +686,12 @@ MonoBehaviour:
   rightArmTouchpoint: {fileID: 2144709274}
   leftShoulderVolume: {fileID: 1280255558}
   rightShoulderVolume: {fileID: 1113721188}
+  armLengthAudioClips:
+    start: {fileID: 8300000, guid: ea9ed6e2d7321e540bfb2e323b5b10f6, type: 3}
+    scale_left: {fileID: 8300000, guid: 140f2e294c51f9b4ba46a797839372c0, type: 3}
+    scale_right: {fileID: 8300000, guid: 0244e4bfcead83e4eb92aa80a247fbbe, type: 3}
+    touch_left: {fileID: 8300000, guid: bfa8a430440c37640a14241b2f217905, type: 3}
+    touch_right: {fileID: 8300000, guid: 96d7c8cdffb9a9244bd337481256cad1, type: 3}
 --- !u!1 &269507374
 GameObject:
   m_ObjectHideFlags: 0
