@@ -11,6 +11,8 @@ public class StateManager : Singleton<StateManager>
     public bool KillConstruct;
     public States currentState;
 
+    [SerializeField] private ClientLogic clientLogic;
+
     AdditiveSceneManager additiveSceneManager;
     ConstructFXManager constructFXManager;
     TransitionManager transitionManager;
@@ -93,6 +95,7 @@ public class StateManager : Singleton<StateManager>
                 break;
             case States.HUD:
                 transitionManager.StartTransition(true);
+                //additiveSceneManager.ChangeScene(Scenes.HUD, null, null, DelegateBeforeHudLoad, () =>
                 additiveSceneManager.ChangeScene(Scenes.HUD, null, null, DelegateBeforeHudLoad, () =>
                 {
                     onLoadDone?.Invoke();
@@ -101,7 +104,8 @@ public class StateManager : Singleton<StateManager>
                 break;
             case States.Training:
                 transitionManager.StartTransition(true);
-                additiveSceneManager.ChangeScene(Scenes.TRAINING, null, null, null, () =>
+                //additiveSceneManager.ChangeScene(Scenes.TRAINING, null, null, null, () =>
+                additiveSceneManager.ChangeScene(Scenes.TRAINING, null, null, DelegateBeforeTrainingLoad, () =>
                 {
                     DelegateAfterTrainingLoad();
                     onLoadDone?.Invoke();
@@ -231,8 +235,21 @@ public class StateManager : Singleton<StateManager>
                 }
             }
         }
+        Debug.Log("Presense indicator on");
+        clientLogic.unityClient.SetPresenceIndicatorOn(true);
 
 
+
+    }
+
+    void DelegateOnHudUnload()
+    {
+        Debug.Log("DelegateOnHudUnload");
+    }
+    void DelegateBeforeTrainingLoad()
+    {
+        Debug.Log("Presense indicator off");
+        clientLogic.unityClient.SetPresenceIndicatorOn(false);
     }
     #endregion
 }

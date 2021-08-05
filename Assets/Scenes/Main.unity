@@ -6915,6 +6915,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   KillConstruct: 0
   currentState: 0
+  clientLogic: {fileID: 1944402365}
 --- !u!114 &1002224003 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 507161609175307773, guid: 6883edd6e7804604baa8a1f46e804cfb,
@@ -7982,7 +7983,7 @@ PrefabInstance:
     - target: {fileID: 4980998344891865937, guid: b59642d167f28bc4c8cd55a5d0098223,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4980998344891865941, guid: b59642d167f28bc4c8cd55a5d0098223,
         type: 3}
@@ -13117,7 +13118,7 @@ PrefabInstance:
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
       propertyPath: requiredModalities.Array.size
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
@@ -13137,11 +13138,16 @@ PrefabInstance:
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
       propertyPath: requiredModalities.Array.data[3]
-      value: audition
+      value: emotion
       objectReference: {fileID: 0}
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
       propertyPath: requiredModalities.Array.data[4]
+      value: audition
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
+        type: 3}
+      propertyPath: requiredModalities.Array.data[5]
       value: voice
       objectReference: {fileID: 0}
     - target: {fileID: 7317224122723432400, guid: 771965c1243361a45a0d36cd14e1b3f9,

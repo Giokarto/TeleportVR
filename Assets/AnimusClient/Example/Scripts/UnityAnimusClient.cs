@@ -888,64 +888,69 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     // read out the currently pressed button combination and send it as a string via animus
     public Sample emotion_get()
     {
-        // convert the button combination to an int
-        var controlCombination = ((LeftButton1 ? 1 : 0) * 1) +
-                                 ((LeftButton2 ? 1 : 0) * 2) +
-                                 ((RightButton1 ? 1 : 0) * 4) +
-                                 ((RightButton2 ? 1 : 0) * 8);
-
-        // convert the button combination from an int representation to a string representation
-        switch (controlCombination)
+        if (currentEmotion.Equals(oldEmotion))
         {
-            case 0:
-                // All off
-                currentEmotion = "off";
-                break;
-            case 1:
-                // Left Button 1
-                currentEmotion = "A";
-                break;
-            case 2:
-                // Left Button 2
-                currentEmotion = "B";
-                break;
-            case 4:
-                // Right Button 1
-                currentEmotion = "Y";
-                break;
-            case 5:
-                // Right button 1 and left button 1
-                currentEmotion = "AY";
-                break;
-            case 6:
-                currentEmotion = "BY";
-                break;
-            case 8:
-                // Right Button 2
-                currentEmotion = "X";
-                break;
-            case 9:
-                currentEmotion = "AX";
-                break;
-            case 10:
-                // Right Button 2 and Left Button 2
-                currentEmotion = "BX";
-                break;
-            default:
-                Debug.Log("Unassigned Combination");
-                break;
+            currentEmotion = "neutral";
         }
+        //// convert the button combination to an int
+        //var controlCombination = ((LeftButton1 ? 1 : 0) * 1) +
+        //                         ((LeftButton2 ? 1 : 0) * 2) +
+        //                         ((RightButton1 ? 1 : 0) * 4) +
+        //                         ((RightButton2 ? 1 : 0) * 8);
+
+        //// convert the button combination from an int representation to a string representation
+        //switch (controlCombination)
+        //{
+        //    case 0:
+        //        // All off
+        //        currentEmotion = "off";
+        //        break;
+        //    case 1:
+        //        // Left Button 1
+        //        currentEmotion = "A";
+        //        break;
+        //    case 2:
+        //        // Left Button 2
+        //        currentEmotion = "B";
+        //        break;
+        //    case 4:
+        //        // Right Button 1
+        //        currentEmotion = "Y";
+        //        break;
+        //    case 5:
+        //        // Right button 1 and left button 1
+        //        currentEmotion = "AY";
+        //        break;
+        //    case 6:
+        //        currentEmotion = "BY";
+        //        break;
+        //    case 8:
+        //        // Right Button 2
+        //        currentEmotion = "X";
+        //        break;
+        //    case 9:
+        //        currentEmotion = "AX";
+        //        break;
+        //    case 10:
+        //        // Right Button 2 and Left Button 2
+        //        currentEmotion = "BX";
+        //        break;
+        //    default:
+        //        Debug.Log("Unassigned Combination");
+        //        break;
+        //}
 
 
         emotionMsg.Data = currentEmotion;
-        if (currentEmotion != "off")
-        {
-            // Display the current Emotion on the widget
-            EmotionManager.Instance.SetFaceByKey(currentEmotion);
-        }
+        //if (currentEmotion != "off")
+        //{
+        //    // Display the current Emotion on the widget
+        //    EmotionManager.Instance.SetFaceByKey(currentEmotion);
+        //}
 
         // send the emotion via animus to display it on the real robot
         emotionSample.Data = emotionMsg;
+        oldEmotion = currentEmotion;
         return emotionSample;
     }
 
@@ -958,6 +963,11 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         return true;
     }
 
+    public void SetPresenceIndicatorOn(bool on)
+    {
+        currentEmotion = on ? "tp_on" : "tp_off";
+
+    }
     // Utilities
 
     public static Vector3 Vector2Ros(Vector3 vector3)
