@@ -87,6 +87,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     public BioIK.BioIK _myIKBody;
     public BioIK.BioIK _myIKHead;
     private List<BioSegment> _actuatedJoints;
+    private List<float> latestJointValues;
     public bool motorEnabled;
     private float _lastUpdate;
 
@@ -156,6 +157,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
             camLeft.stereoTargetEye = StereoTargetEyeMask.Left;
         }
+
+        latestJointValues = new List<float>();
 
         // controls an led ring (optional)
         StartCoroutine(SendLEDCommand(LEDS_CONNECTING));
@@ -712,7 +715,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     // --------------------------Motor Modality-------------------------------------
     public bool motor_initialise()
     {
-        motorEnabled = true;
+        motorEnabled = false;
         _lastUpdate = 0;
         motorMsg = new Float32Array();
         motorSample = new Sample(DataMessage.Types.DataType.Float32Arr, motorMsg);
@@ -747,51 +750,75 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     /// <returns>Success.</returns>
     public Sample motor_get()
     {
-        if (!motorEnabled)
-        {
-            // Debug.Log("Motor modality not enabled");
-            return null;
-        }
-
         if (Time.time * 1000 - _lastUpdate > 50)
         {
-            //Debug.LogError("Motor modality enabled");
+            //Debug.Log($"motor enabled: {motorEnabled}");
             var motorAngles = new List<float>();
-
-            // head joints
-            foreach (var segment in _myIKHead.Segments)
+            // if motor not enabled - keep sending the last motor message with head pose looking down 
+            if (!motorEnabled)
             {
-                if (segment.Joint != null)
+                if (motorMsg.Data.Count>0)
                 {
-                    motorAngles.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
+                    // motorMsg.Data:
+                    // [0] -> head_axis0
+                    // [1] -> head_axis1
+                    // [2] -> head_axis2
+                    motorMsg.Data[0] = 0.6f;
+                    motorMsg.Data[1] = 0.0f;
+                    motorMsg.Data[2] = 0.0f;
                 }
+                else
+                {
+                    motorAngles = new List<float>(new float[29])
+                    {
+                        [0] = 0.6f
+                    };
+                    motorMsg.Data.Clear();
+                    motorMsg.Data.Add(motorAngles);
+                }
+                
             }
-
-            // torso joints
-            foreach (var segment in _myIKBody.Segments)
+            else
             {
-                //Debug.Log(segment.name);
-                if (segment.Joint != null)
+                //Debug.LogError("Motor modality enabled");
+                latestJointValues.Clear();
+                // head joints
+                foreach (var segment in _myIKHead.Segments)
                 {
-                    //Debug.Log($"{motorAngles.Count - 1}: {segment.gameObject.name} {segment.Joint.X.CurrentValue}");
-                    motorAngles.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
+
+                    if (segment.Joint != null)
+                    {
+                        motorAngles.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
+                        latestJointValues.Add((float)segment.Joint.X.CurrentValue);
+                    }
                 }
-            }
-            // Distribure angle on elbow_*_axis0 to axis0 and axis1 equally
-            const int elbowRightAxis0 = 6;
-            const int elbowLeftAxis0 = 14;
-            motorAngles[elbowRightAxis0 + 1] = -motorAngles[elbowRightAxis0] / 2;
-            motorAngles[elbowRightAxis0] /= 2;
-            motorAngles[elbowLeftAxis0 + 1] = motorAngles[elbowLeftAxis0] / 2;
-            motorAngles[elbowLeftAxis0] /= 2;
+
+                // torso joints
+                foreach (var segment in _myIKBody.Segments)
+                {
+                    //Debug.Log(segment.name);
+                    if (segment.Joint != null)
+                    {
+                        //Debug.Log($"{motorAngles.Count - 1}: {segment.gameObject.name} {segment.Joint.X.CurrentValue}");
+                        motorAngles.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
+                        latestJointValues.Add((float)segment.Joint.X.CurrentValue);
+                    }
+                }
+                // Distribure angle on elbow_*_axis0 to axis0 and axis1 equally
+                const int elbowRightAxis0 = 6;
+                const int elbowLeftAxis0 = 14;
+                motorAngles[elbowRightAxis0 + 1] = -motorAngles[elbowRightAxis0] / 2;
+                motorAngles[elbowRightAxis0] /= 2;
+                motorAngles[elbowLeftAxis0 + 1] = motorAngles[elbowLeftAxis0] / 2;
+                motorAngles[elbowLeftAxis0] /= 2;
 
 
-            // right, left
+                // right, left
 #if SENSEGLOVE
-            foreach (var step in InputManager.Instance.handManager.GetMotorPositions())
-            {
-                motorAngles.Add(step);
-            }
+                foreach (var step in InputManager.Instance.handManager.GetMotorPositions())
+                {
+                    motorAngles.Add(step);
+                }
 #else
             float left_open = 0, right_open = 0;
             if (InputManager.Instance.GetLeftController())
@@ -815,12 +842,12 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 #endif
 
 #if RUDDER
-            // wheelchair
-            Vector2 wheelcharDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
-            // left
-            motorAngles.Add(wheelcharDrive.x);
-            // right
-            motorAngles.Add(wheelcharDrive.y);
+                // wheelchair
+                Vector2 wheelcharDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
+                // left
+                motorAngles.Add(wheelcharDrive.x);
+                // right
+                motorAngles.Add(wheelcharDrive.y);
 
 #else
             Vector2 axis2D;
@@ -833,13 +860,16 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
             }
 #endif
 
+                motorMsg.Data.Clear();
+                motorMsg.Data.Add(motorAngles);
 
-            motorMsg.Data.Clear();
-            motorMsg.Data.Add(motorAngles);
-            motorSample.Data = motorMsg;
-            _lastUpdate = Time.time * 1000;
 
-            return motorSample;
+            }
+       
+        motorSample.Data = motorMsg;
+        _lastUpdate = Time.time * 1000;
+
+        return motorSample;
         }
 
         return null;
@@ -851,6 +881,11 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         StartCoroutine(SendLEDCommand(LEDS_OFF));
 
         return true;
+    }
+
+    public List<float> GetLatestJointValues()
+    {
+        return latestJointValues;
     }
 
     private void Update()
@@ -966,7 +1001,6 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     public void SetPresenceIndicatorOn(bool on)
     {
         currentEmotion = on ? "tp_on" : "tp_off";
-
     }
     // Utilities
 

@@ -119,10 +119,10 @@ public class InputManager : Singleton<InputManager>
     /// </summary>
     void Update()
     {
-        if (StateManager.Instance.currentState == StateManager.States.HUD)
-            UnityAnimusClient.Instance.EnableMotor(true);
-        else
-            UnityAnimusClient.Instance.EnableMotor(false);
+        //if (StateManager.Instance.currentState == StateManager.States.HUD)
+        //    UnityAnimusClient.Instance.EnableMotor(true);
+        //else
+        //    UnityAnimusClient.Instance.EnableMotor(false);
 
         if (!Widgets.WidgetInteraction.settingsAreActive)
         {

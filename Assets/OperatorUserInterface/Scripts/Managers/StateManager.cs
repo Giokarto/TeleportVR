@@ -18,6 +18,7 @@ public class StateManager : Singleton<StateManager>
     TransitionManager transitionManager;
     GameObject leftSenseGlove;
     GameObject rightSenseGlove;
+    BioIK.BioIK[] bioIks;
 
     List<StateManager.States> visitedStates = new List<States>();
     /// <summary>
@@ -42,6 +43,9 @@ public class StateManager : Singleton<StateManager>
         rightSenseGlove = GameObject.FindGameObjectWithTag("SenseGloveRight");
         leftSenseGlove.SetActive(false);
         rightSenseGlove.SetActive(false);
+
+        bioIks = FindObjectsOfType<BioIK.BioIK>();
+
         //additiveSceneManager.ChangeScene(Scenes.CONSTRUCT, null, null, DelegateBeforeConstructLoad, DelegateAfterConstructLoad);
         //currentState = States.Construct;
         additiveSceneManager.ChangeScene(Scenes.TRAINING, null, null, null, DelegateAfterTrainingLoad);
@@ -81,6 +85,9 @@ public class StateManager : Singleton<StateManager>
     {
         // TODO: not working because the wheelchair is overwriting the position but needed to reset the user
         //WheelchairStateManager.Instance.transform.position = Vector3.zero;
+        
+        // keep motor disabled at all times, only HUD can send motor commands which is set in the DelegateAfterHudLoad
+        clientLogic.unityClient.EnableMotor(false);
 
         switch (newState)
         {
@@ -98,6 +105,7 @@ public class StateManager : Singleton<StateManager>
                 //additiveSceneManager.ChangeScene(Scenes.HUD, null, null, DelegateBeforeHudLoad, () =>
                 additiveSceneManager.ChangeScene(Scenes.HUD, null, null, DelegateBeforeHudLoad, () =>
                 {
+                    DelegateAfterHudLoad();
                     onLoadDone?.Invoke();
                 });
                 currentState = States.HUD;
@@ -224,32 +232,76 @@ public class StateManager : Singleton<StateManager>
     void DelegateBeforeHudLoad()
     {
         print("DelegateBeforeHudLoad");
-        var bioIks = FindObjectsOfType<BioIK.BioIK>();
-        foreach (var body in bioIks)
+
+        // reset all joints to 0 before going to HUD
+        if (TimesStateVisited(States.HUD) == 0)
         {
-            foreach (var segment in body.Segments)
+            foreach (var body in bioIks)
             {
-                if (segment.Joint != null)
+
+                // switch to instantaneous movement type for BioIK so that the transition to joint targets 0 is immediate 
+                body.MotionType = BioIK.MotionType.Instantaneous;
+
+                foreach (var segment in body.Segments)
                 {
-                    segment.Joint.X.SetTargetValue(0.0);
+                    body.ResetPosture(segment);
+                }
+
+
+            }
+        }
+        else
+        {
+            // go to the latest joint targets before leaving HUD
+            var jointValues = clientLogic.unityClient.GetLatestJointValues();
+            if (jointValues.Count > 0)
+            {
+                int i = 0;
+                foreach (var body in bioIks)
+                {
+                    if (body.name.Contains("shadow"))
+                    {
+                        continue;
+                    }
+                    foreach (var segment in body.Segments)
+                    {
+                        if (segment.Joint != null)
+                        {
+                            //Debug.Log($"{body.name}: {segment.Joint.name} {i}");
+                            segment.Joint.X.SetTargetValue(jointValues[i]);
+
+                            i++;
+                        }
+                    }
                 }
             }
         }
         Debug.Log("Presense indicator on");
         clientLogic.unityClient.SetPresenceIndicatorOn(true);
 
+    }
 
-
+    void DelegateAfterHudLoad()
+    {
+        Debug.Log("DelegaterAfterHudLoad");
+        // switch back to realistic (slow) motion and enable motor
+        foreach (var body in bioIks)
+        {
+            body.MotionType = BioIK.MotionType.Realistic;
+        }
+        clientLogic.unityClient.EnableMotor(true);
     }
 
     void DelegateOnHudUnload()
     {
         Debug.Log("DelegateOnHudUnload");
     }
+
     void DelegateBeforeTrainingLoad()
     {
         Debug.Log("Presense indicator off");
         clientLogic.unityClient.SetPresenceIndicatorOn(false);
+        
     }
     #endregion
 }
