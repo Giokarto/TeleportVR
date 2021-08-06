@@ -1176,6 +1176,18 @@ MonoBehaviour:
   from: {fileID: 1944311499}
   to: {fileID: 234661944}
   axis: 0
+--- !u!114 &235385098 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4177823133090746529, guid: 8376e5037528d434cab49e987b7a4e72,
+    type: 3}
+  m_PrefabInstance: {fileID: 618619394}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cc329982edfc412a8a508a8e175eef1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &241402023 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -2139629574072368065, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -2699,7 +2711,7 @@ PrefabInstance:
         type: 3}
       propertyPath: SelectedSegment
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 235385098}
     - target: {fileID: 4177823132778806939, guid: 8376e5037528d434cab49e987b7a4e72,
         type: 3}
       propertyPath: Segments.Array.size
@@ -2804,6 +2816,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177823133090746528, guid: 8376e5037528d434cab49e987b7a4e72,
+        type: 3}
+      propertyPath: X.TargetValue
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177823133090746528, guid: 8376e5037528d434cab49e987b7a4e72,
+        type: 3}
+      propertyPath: X.CurrentValue
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177823133090746530, guid: 8376e5037528d434cab49e987b7a4e72,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177823133090746530, guid: 8376e5037528d434cab49e987b7a4e72,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177823133090746530, guid: 8376e5037528d434cab49e987b7a4e72,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4177823133118410545, guid: 8376e5037528d434cab49e987b7a4e72,
         type: 3}
