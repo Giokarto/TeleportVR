@@ -54,7 +54,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     private RepeatedField<uint> _imageDims;
 #if ANIMUS_USE_OPENCV
     private Mat yuv;
-    private Mat rgb;
+    private Mat rgb, rgb_l, yuv_left, yuv_right;
 #endif
 
     private bool initMats;
@@ -357,6 +357,11 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         _leftRenderer = _leftPlane.GetComponent<Renderer>();
         _rightRenderer = _rightPlane.GetComponent<Renderer>();
         _imageDims = new RepeatedField<uint>();
+
+        rgb = new Mat();
+        rgb_l = new Mat(rgb.rows(), rgb.cols(), CvType.CV_8UC3);
+
+
         visionEnabled = true;
 
         return visionEnabled;
@@ -386,6 +391,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         bool inHUD = currentScene == Scenes.HUD;
         _leftPlane.SetActive(inHUD);
         _rightPlane.SetActive(stereovision && inHUD);
+
+
     }
 
     /// <summary>
@@ -395,6 +402,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     /// <returns>Success of this method.</returns>
     public bool vision_set(ImageSamples currSamples)
     {
+        //return true;
         try
         {
             if (!bodyTransitionReady) return true;
@@ -447,7 +455,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 _imageDims = currShape;
                 Debug.Log($"Resize triggered. Setting texture resolution to {currShape[0]} x {currShape[1] / 2}");
                 Debug.Log($"Setting horizontal scale to {(float)_imageDims[0]} {(float)_imageDims[1] / 2}");
-
+                
 
                 if (stereovision)
                 {
@@ -458,12 +466,12 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
                     // only half of the vertical scale corresponds to the image for one eye
                     float scaleFactor = ((float)_imageDims[1] / 2) / (float)_imageDims[0];
-                    _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
-                                                                  _leftPlane.transform.localScale.y,
-                                                                  scaleFactor * _leftPlane.transform.localScale.x);
-                    _rightPlane.transform.localScale = new Vector3(_rightPlane.transform.localScale.x,
-                                                                  _rightPlane.transform.localScale.y,
-                                                                  scaleFactor * _rightPlane.transform.localScale.x);
+                    //_leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
+                    //                                              _leftPlane.transform.localScale.y,
+                    //                                              scaleFactor * _leftPlane.transform.localScale.x);
+                    //_rightPlane.transform.localScale = new Vector3(_rightPlane.transform.localScale.x,
+                    //                                              _rightPlane.transform.localScale.y,
+                    //                                              scaleFactor * _rightPlane.transform.localScale.x);
 
                     // the left texture is the upper half of the received image
                     _leftTexture = new Texture2D((int)_imageDims[0], (int)_imageDims[1] / 2, TextureFormat.RGB24, false)
@@ -498,8 +506,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
             if (stereovision)
             {
-                Mat yuv_left = yuv.rowRange(0, yuv.rows() / 2);
-                Mat yuv_right = yuv.rowRange(yuv.rows() / 2, yuv.rows());
+                yuv_left = yuv.rowRange(0, yuv.rows() / 2);
+                yuv_right = yuv.rowRange(yuv.rows() / 2, yuv.rows());
                 render_plane(yuv_left, _leftTexture, _leftRenderer);
                 render_plane(yuv_right, _rightTexture, _rightRenderer);
             }
@@ -519,9 +527,9 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
     void render_plane(Mat yuv, Texture2D texture, Renderer renderer)
     {
-        Mat rgb = new Mat();
+        //Mat rgb = new Mat();
         Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2RGB_I420);
-        Mat rgb_l = new Mat(rgb.rows(), rgb.cols(), CvType.CV_8UC3);
+        //Mat rgb_l = new Mat(rgb.rows(), rgb.cols(), CvType.CV_8UC3);
 
         if (undistortion)
         {
@@ -750,10 +758,11 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     /// <returns>Success.</returns>
     public Sample motor_get()
     {
-        if (Time.time * 1000 - _lastUpdate > 50)
+        var motorAngles = new List<float>();
+        //if (Time.time * 1000 - _lastUpdate > 50)
         {
             //Debug.Log($"motor enabled: {motorEnabled}");
-            var motorAngles = new List<float>();
+            
             // if motor not enabled - keep sending the last motor message with head pose looking down 
             if (!motorEnabled)
             {
