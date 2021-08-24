@@ -104,7 +104,7 @@ public class EnableControlManager : Singleton<EnableControlManager>
             rightController = InputManager.Instance.controllerRight[0];
             rightControllerFound = true;
         }
-        Debug.Log(rightControllerFound +"\t"+ leftControllerFound);
+        
         
     }
     // Start is called before the first frame update
@@ -120,7 +120,7 @@ public class EnableControlManager : Singleton<EnableControlManager>
     void Update()
     {
 
-        if (leftController == null || rightController == null)
+        if (leftController == null || rightController == null || !leftController.isValid || !rightController.isValid)
         {
             FindControllers();
         }
