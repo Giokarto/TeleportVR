@@ -247,40 +247,6 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         humanLeftHand = TrackingSpace.Find("LeftHandAnchor");
         humanRightHand = TrackingSpace.Find("RightHandAnchor");
 
-        // The code below might be needed if the Body Transition gets implemented again
-        // robotDriver = robotBody.GetComponent<NaoAnimusDriver>();
-        // if (robotDriver != null)
-        // {
-        // 	robotBase = robotDriver.topCamera.gameObject.transform.parent.transform;
-        // 	robotLeftHandObjective = robotDriver.leftHandTarget.transform;
-        // 	robotRightHandObjective = robotDriver.rightHandTarget.transform;
-        // 	bodyToBaseOffset = robotBase.position - robotBody.transform.position;
-        // }
-        // else
-        // {
-        // 	robotBase = robotBody.transform;
-        // 	bodyToBaseOffset = Vector3.zero;
-        // }
-        //
-        // var roboTransform = robotBody.transform;
-        // Vector3 startPos = roboTransform.position;
-        // Vector3 endPos = humanHead.position - bodyToBaseOffset;
-        // Vector3 startAngles = roboTransform.eulerAngles;
-
-        // 		for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / bodyTransitionDuration)
-        // 		{
-        // 			bodyToBaseOffset = robotBase.position - robotBody.transform.position;
-        // 			endPos = humanHead.position - bodyToBaseOffset;
-        // 			roboTransform.position = new Vector3(Mathf.SmoothStep(startPos.x, endPos.x, t),
-        // 												 Mathf.SmoothStep(startPos.y, endPos.y, t),
-        // 												 Mathf.SmoothStep(startPos.z, endPos.z, t));
-
-        // 			roboTransform.eulerAngles = new Vector3(Mathf.SmoothStep(startAngles.x, 0, t),
-        // 													Mathf.SmoothStep(startAngles.y, 0, t),
-        // 													Mathf.SmoothStep(startAngles.z, 0, t));
-        // 			yield return null;
-        // 		}
-
         bodyTransitionReady = true;
     }
 

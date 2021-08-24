@@ -50,6 +50,7 @@ public class EnableControlManager : Singleton<EnableControlManager>
             {
                 objective.enabled = enabled;
             }
+#if SENSEGLOVE
             foreach (var segment in hand_body.Segments)
             {
                 // toggle joints, not objective on hands as they are driven by custom scripts, not BioIK
@@ -58,6 +59,7 @@ public class EnableControlManager : Singleton<EnableControlManager>
                     segment.Joint.enabled = enabled;
                 }
             }
+#endif
         }
 
         public bool IsEnabled()
@@ -102,6 +104,8 @@ public class EnableControlManager : Singleton<EnableControlManager>
             rightController = InputManager.Instance.controllerRight[0];
             rightControllerFound = true;
         }
+        Debug.Log(rightControllerFound +"\t"+ leftControllerFound);
+        
     }
     // Start is called before the first frame update
     void Start()
@@ -115,6 +119,7 @@ public class EnableControlManager : Singleton<EnableControlManager>
     // Update is called once per frame
     void Update()
     {
+
         if (leftController == null || rightController == null)
         {
             FindControllers();
@@ -124,9 +129,16 @@ public class EnableControlManager : Singleton<EnableControlManager>
         {
             ReadControllers(leftBioIKGroup, leftController, true);
         }
+        else
+        {
+            leftBioIKGroup.SetEnabled(false);
+        }
         if (rightControllerFound)
         {
             ReadControllers(rightBioIKGroup, rightController, false);
+        } else
+        {
+            rightBioIKGroup.SetEnabled(false);
         }
     }
 
@@ -154,8 +166,8 @@ public class EnableControlManager : Singleton<EnableControlManager>
 #if SENSEGLOVE
         group.WeakSetEnabled(true);
 #else
-        group.WeakSetEnabled(_enabled>0.9f);
-        group.UpdateFingers(System.Convert.ToDouble(trigger));
+        group.SetEnabled(_enabled > 0.9f);
+        group.UpdateFingers(System.Convert.ToDouble(trigger)); 
 #endif
     }
 }
