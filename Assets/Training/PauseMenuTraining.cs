@@ -1,3 +1,4 @@
+#if RUDDER
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -81,3 +82,4 @@ namespace Training
         public void OnDone(System.Action<State> callback, bool once = false) => onDoneCallbacks.Add(callback, once);
     }
 }
+#endif

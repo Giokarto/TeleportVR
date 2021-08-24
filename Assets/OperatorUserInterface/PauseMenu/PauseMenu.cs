@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +27,7 @@ namespace PauseMenu
         // Start is called before the first frame update
         void Start()
         {
+#if RUDDER
             // recover values presence detector when this script is reloaded
             show = RudderPedals.PresenceDetector.Instance.isPaused;
             switchScenePressed = RudderPedals.PresenceDetector.Instance.isPaused;
@@ -57,6 +59,9 @@ namespace PauseMenu
             {
                 switchScenePressed = false;
             });
+#else
+        show = false;
+#endif
         }
 
 

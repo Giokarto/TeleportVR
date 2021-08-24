@@ -1,3 +1,4 @@
+#if RUDDER
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
@@ -260,3 +261,4 @@ namespace RudderPedals
         public void OnUnpause(System.Action<bool> callback, bool once = false) => onUnpause.Add(callback, once);
     }
 }
+#endif

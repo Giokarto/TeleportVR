@@ -36,7 +36,9 @@ namespace Training
         public bool waitingForNod = false;
         public Calibration.HandCalibrator rightCalibrator, leftCalibrator;
         public WheelchairTraining wheelChairTraining;
+#if RUDDER
         public PauseMenuTraining pauseMenuTraining;
+#endif
         public Calibration.ArmLength.ArmLength armLengthCalibration;
 
         //int toggle;
@@ -103,9 +105,12 @@ namespace Training
                 waitingForNod = true;
             };
             // stop pause menu on 
+
             stateMachine.onExit[TrainingStep.HEAD] = (step) =>
             {
+#if RUDDER
                 RudderPedals.PresenceDetector.Instance.canPause = false;
+#endif
             };
 
             stateMachine.onEnter[TrainingStep.LEFT_ARM] = (step) =>
@@ -115,8 +120,8 @@ namespace Training
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftBall, queue: true);
                 PublishNotification("Move your left arm and try to touch the blue ball");
 #else
-                ScheduleAudioClip(controllerAudio.leftArm, queue: true);
-                ScheduleAudioClip(controllerAudio.leftBall, queue: true);
+                audioManager.ScheduleAudioClip(controllerAudio.leftArm, queue: true);
+                audioManager.ScheduleAudioClip(controllerAudio.leftBall, queue: true);
                 PublishNotification("Press and hold the index trigger and try moving your left arm");
 #endif
                 handCollectables.Find("HandCollectableLeft").gameObject.SetActive(true);
@@ -133,7 +138,7 @@ namespace Training
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftHandStart);
                 leftCalibrator.OnDone(step => Next(), once: true);
 #else
-                ScheduleAudioClip(controllerAudio.leftHand, queue: true, delay: 0);
+                audioManager.ScheduleAudioClip(controllerAudio.leftHand, queue: true, delay: 0);
                 PublishNotification("Press the grip button on the side to close the hand.");
 #endif
             };
@@ -150,8 +155,8 @@ namespace Training
                 audioManager.ScheduleAudioClip(senseGloveAudio.rightBall, queue: true);
                 PublishNotification("Move your right arm and try to touch the blue ball");
 #else
-                ScheduleAudioClip(controllerAudio.rightArm);
-                ScheduleAudioClip(controllerAudio.rightBall, queue: true);
+                audioManager.ScheduleAudioClip(controllerAudio.rightArm);
+                audioManager.ScheduleAudioClip(controllerAudio.rightBall, queue: true);
                 //PublishNotification("To move your arm, hold down the hand trigger on the controller with your middle finger.");
                 PublishNotification("Press and hold the index trigger and try moving your right arm");
 #endif
@@ -169,7 +174,7 @@ namespace Training
                 audioManager.ScheduleAudioClip(senseGloveAudio.rightHandStart);
                 rightCalibrator.OnDone(step => Next(), once: true);
 #else
-                ScheduleAudioClip(controllerAudio.rightHand, queue: true, delay: 0);
+                audioManager.ScheduleAudioClip(controllerAudio.rightHand, queue: true, delay: 0);
                 PublishNotification("Press the grip button to close the hand.");
 #endif
             };
@@ -199,6 +204,7 @@ namespace Training
                 wheelChairTraining.StopTraining();
             };
 
+#if RUDDER
             stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
             {
                 pauseMenuTraining.OnDone((s) => Next(), once: true);
@@ -214,7 +220,8 @@ namespace Training
                 //audioManager.ScheduleAudioClip(miscAudio.ready);
                 RudderPedals.PresenceDetector.Instance.canPause = true;
             };
-            #endregion
+#endif
+#endregion
         }
 
         /// <summary>
@@ -257,7 +264,7 @@ namespace Training
             AudioClip audio;
             switch (correctButton)
             {
-                case "tigger":
+                case "trigger":
                     audio = miscAudio.wrongTrigger;
                     break;
                 case "grip":
