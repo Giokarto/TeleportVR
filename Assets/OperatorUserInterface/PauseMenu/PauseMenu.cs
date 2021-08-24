@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace PauseMenu
 {
-    [ExecuteAlways]
     public class PauseMenu : Singleton<PauseMenu>
     {
         public bool show;
