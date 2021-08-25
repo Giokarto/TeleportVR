@@ -10,6 +10,12 @@ public class StateManager : Singleton<StateManager>
     //For debugging: if true, disables all construct functionality in this script
     public bool KillConstruct;
     public States currentState;
+     
+    public float lastSwitch
+    {
+        get { return _lastSwitch; }
+    }
+    private float _lastSwitch = float.NegativeInfinity;
 
     [SerializeField] private ClientLogic clientLogic;
 
@@ -88,7 +94,7 @@ public class StateManager : Singleton<StateManager>
         
         // keep motor disabled at all times, only HUD can send motor commands which is set in the DelegateAfterHudLoad
         clientLogic.unityClient.EnableMotor(false);
-
+        _lastSwitch = Time.time;
         switch (newState)
         {
             case States.Construct:
