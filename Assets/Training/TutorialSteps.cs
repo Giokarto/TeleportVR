@@ -131,7 +131,7 @@ namespace Training
 #if SENSEGLOVE
                 PublishNotification("Move your left hand into the blue box");
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftHandStart);
-                leftCalibrator.OnDone(step => Next(), once: true);
+                leftCalibrator.OnDone(s => Next(), once: true);
 #else
                 ScheduleAudioClip(controllerAudio.leftHand, queue: true, delay: 0);
                 PublishNotification("Press the grip button on the side to close the hand.");
@@ -167,7 +167,7 @@ namespace Training
 #if SENSEGLOVE
                 PublishNotification("Move your right hand into the blue box");
                 audioManager.ScheduleAudioClip(senseGloveAudio.rightHandStart);
-                rightCalibrator.OnDone(step => Next(), once: true);
+                rightCalibrator.OnDone(s => Next(), once: true);
 #else
                 ScheduleAudioClip(controllerAudio.rightHand, queue: true, delay: 0);
                 PublishNotification("Press the grip button to close the hand.");
@@ -195,7 +195,6 @@ namespace Training
             };
             stateMachine.onExit[TrainingStep.WHEELCHAIR] = (step) =>
             {
-
                 wheelChairTraining.StopTraining();
             };
 

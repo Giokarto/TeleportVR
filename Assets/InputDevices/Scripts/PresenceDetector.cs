@@ -234,7 +234,7 @@ namespace RudderPedals
                 yield return new WaitForEndOfFrame();
             }
 
-            //Debug.Log("stopped corountine, as one pedal is not pressed");
+            Debug.Log("stopped hands match corountine, as at least one pedal is not pressed");
             matchHandsCouroutine = null;
         }
 

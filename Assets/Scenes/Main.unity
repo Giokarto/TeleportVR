@@ -10297,7 +10297,7 @@ MonoBehaviour:
       ps4_assignJoysticksByPS4JoyId: 1
       useSteamControllerSupport: 1
       logToScreen: 0
-      runInEditMode: 0
+      runInEditMode: 1
       allowInputInEditorSceneView: 0
       platformVars_windowsStandalone:
         disableKeyboard: 0

@@ -10,11 +10,12 @@ public class StateManager : Singleton<StateManager>
     //For debugging: if true, disables all construct functionality in this script
     public bool KillConstruct;
     public States currentState;
-     
+
     public float lastSwitch
     {
         get { return _lastSwitch; }
     }
+    public Dictionary<States, Callbacks<States>> onStateChanged;
     private float _lastSwitch = float.NegativeInfinity;
 
     [SerializeField] private ClientLogic clientLogic;
@@ -41,6 +42,11 @@ public class StateManager : Singleton<StateManager>
     /// </summary>
     void Start()
     {
+        onStateChanged = new Dictionary<States, Callbacks<States>>();
+        onStateChanged[States.HUD] = new Callbacks<States>();
+        onStateChanged[States.Construct] = new Callbacks<States>();
+        onStateChanged[States.Training] = new Callbacks<States>();
+
         constructFXManager = GameObject.FindGameObjectWithTag("ConstructFXManager").GetComponent<ConstructFXManager>();
         additiveSceneManager = GameObject.FindGameObjectWithTag("AdditiveSceneManager").GetComponent<AdditiveSceneManager>();
         transitionManager = GameObject.FindGameObjectWithTag("TransitionManager").GetComponent<TransitionManager>();
@@ -91,7 +97,7 @@ public class StateManager : Singleton<StateManager>
     {
         // TODO: not working because the wheelchair is overwriting the position but needed to reset the user
         //WheelchairStateManager.Instance.transform.position = Vector3.zero;
-        
+
         // keep motor disabled at all times, only HUD can send motor commands which is set in the DelegateAfterHudLoad
         clientLogic.unityClient.EnableMotor(false);
         _lastSwitch = Time.time;
@@ -103,6 +109,7 @@ public class StateManager : Singleton<StateManager>
                 {
                     DelegateAfterConstructLoad();
                     onLoadDone?.Invoke();
+                    onStateChanged[States.Construct].Call(States.Construct);
                 });
                 currentState = States.Construct;
                 break;
@@ -113,6 +120,7 @@ public class StateManager : Singleton<StateManager>
                 {
                     DelegateAfterHudLoad();
                     onLoadDone?.Invoke();
+                    onStateChanged[States.HUD].Call(States.HUD);
                 });
                 currentState = States.HUD;
                 break;
@@ -123,6 +131,7 @@ public class StateManager : Singleton<StateManager>
                 {
                     DelegateAfterTrainingLoad();
                     onLoadDone?.Invoke();
+                    onStateChanged[States.Training].Call(States.Training);
                 });
                 currentState = States.Training;
                 break;
@@ -307,7 +316,7 @@ public class StateManager : Singleton<StateManager>
     {
         Debug.Log("Presense indicator off");
         clientLogic.unityClient.SetPresenceIndicatorOn(false);
-        
+
     }
     #endregion
 }

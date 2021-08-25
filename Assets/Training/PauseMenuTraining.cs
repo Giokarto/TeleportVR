@@ -27,6 +27,8 @@ namespace Training
             currentState = State.INIT;
             onDoneCallbacks = new Callbacks<State>();
 
+            StateManager.Instance.onStateChanged[StateManager.States.HUD].Add((s) => StopTraining(), once: false);
+
             stateMachine.onEnter[State.START] = (state) =>
             {
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(pauseMenuAudio.start, queue: true,
