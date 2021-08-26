@@ -16,8 +16,9 @@ namespace Training
         
         public void Next()
         {
-            currentState = currentState.Next();
             Debug.Log($"Current {typeof(T).FullName} changed to {currentState}");
+            currentState = currentState.Next();
+            
         }
     }
 }

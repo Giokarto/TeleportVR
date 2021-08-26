@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414736, b: 0.12107852, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -465,8 +465,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
   angle: 0
   input: 0
   minAngle: 0
@@ -677,8 +675,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
   angle: 0
   input: 0
   minAngle: 0
@@ -1548,9 +1544,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df5a0eb137a94cd408b75c4336911fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stored: 0
-  handCalibratorTag: LeftHandCalibrator
-  SaveOnQuit: 1
 --- !u!114 &353984303 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -4912102914110776119, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -1622,8 +1615,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
   angle: 0
   input: 0
   minAngle: 0
@@ -2071,8 +2062,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
   angle: 0
   input: 0
   minAngle: 0
@@ -2192,8 +2181,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
   angle: 0
   input: 0
   minAngle: 0
@@ -5886,8 +5873,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
   angle: 0
   input: 0
   minAngle: 0
@@ -6066,12 +6051,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 477016405692801260, guid: 6883edd6e7804604baa8a1f46e804cfb,
     type: 3}
   m_PrefabInstance: {fileID: 477016406276132704}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &775728140 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4224313755524181482, guid: a2d0f229e31f2fd4491fdc8b46bb2ff6,
-    type: 3}
-  m_PrefabInstance: {fileID: 4224313755223982566}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &779283381 stripped
 MonoBehaviour:
@@ -6458,8 +6437,6 @@ MonoBehaviour:
   approximative: 0
   axis: 0
   invert: 0
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
   angle: 0
   input: 0
   minAngle: 0
@@ -6657,9 +6634,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df5a0eb137a94cd408b75c4336911fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stored: 0
-  handCalibratorTag: RightHandCalibrator
-  SaveOnQuit: 1
 --- !u!1 &935502828 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5220743749167930356, guid: 62144f27e4481434eb5df25761971f60,
@@ -7105,11 +7079,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0d29434256ce174a87cc11d615a8711, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  port: COM9
-  baudRate: 9600
-  readTimeout: 0.01
-  refresh: 0
-  connecting: 0
 --- !u!1 &1018115661 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4224313755280029611, guid: a2d0f229e31f2fd4491fdc8b46bb2ff6,
@@ -7151,8 +7120,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
   angle: 0
   input: 0
   minAngle: 0
@@ -7500,8 +7467,6 @@ MonoBehaviour:
   approximative: 0
   axis: 0
   invert: 0
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
   angle: 0
   input: 0
   minAngle: 0
@@ -9925,19 +9890,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8028d3c7da874841b7b85fad99e897f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isPaused: 0
-  pauseAudio: 1
-  leftGlove:
-    copyTransform: {fileID: 666088954}
-    xrController: {fileID: 6021411801494514841}
-    ghostHand: {fileID: 775728140}
-  rightGlove:
-    copyTransform: {fileID: 430358048}
-    xrController: {fileID: 6021411800947965129}
-    ghostHand: {fileID: 1355872729}
-  matchHandThreshold: 0.5
-  waitTime: 3
-  pedalDetector: {fileID: 1009321866}
 --- !u!1 &1311692030
 GameObject:
   m_ObjectHideFlags: 0
@@ -10127,12 +10079,6 @@ MonoBehaviour:
 --- !u!1 &1354218118 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 477016405479847398, guid: 6883edd6e7804604baa8a1f46e804cfb,
-    type: 3}
-  m_PrefabInstance: {fileID: 477016406276132704}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1355872729 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 477016405482387129, guid: 6883edd6e7804604baa8a1f46e804cfb,
     type: 3}
   m_PrefabInstance: {fileID: 477016406276132704}
   m_PrefabAsset: {fileID: 0}
@@ -11380,8 +11326,6 @@ MonoBehaviour:
   approximative: 0
   axis: 0
   invert: 0
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
   angle: 0
   input: 0
   minAngle: 0
@@ -11723,8 +11667,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
   angle: 0
   input: 0
   minAngle: 0
@@ -12134,8 +12076,6 @@ MonoBehaviour:
   approximative: 0
   axis: 0
   invert: 0
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
   angle: 0
   input: 0
   minAngle: 0
@@ -12178,8 +12118,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
   angle: 0
   input: 0
   minAngle: 0
@@ -12371,8 +12309,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
   angle: 0
   input: 0
   minAngle: 0
@@ -12865,8 +12801,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
   angle: 0
   input: 0
   minAngle: 0
@@ -13081,8 +13015,6 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
   angle: 0
   input: 0
   minAngle: 0
@@ -13155,7 +13087,7 @@ PrefabInstance:
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
@@ -13231,7 +13163,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1944402364}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6f22a5669377b559b7a27c87025aa96, type: 3}
   m_Name: 

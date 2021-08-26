@@ -1,3 +1,4 @@
+#if SENSEGLOVE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace Training.Calibration
             Dwell,
             TestInit,
             Test,
-            Done,
+            Done
         }
 
         public enum Pose
@@ -76,7 +77,7 @@ namespace Training.Calibration
         public AudioClips.SGHand audioClips;
 
         // inspector display variables
-        public Step currentStep = Step.ShowInstruction;
+        public Step currentStep = Step.None;// ShowInstruction;
         public bool calibrating = false;
 
         private SG_SenseGloveHardware hand;
@@ -433,3 +434,4 @@ namespace Training.Calibration
     }
 }
 
+#endif

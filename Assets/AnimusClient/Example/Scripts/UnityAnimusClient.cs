@@ -816,24 +816,25 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
             }
 #endif
 
-#if RUDDER
-                // wheelchair
-                Vector2 wheelcharDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
-                // left
-                motorAngles.Add(wheelcharDrive.x);
-                // right
-                motorAngles.Add(wheelcharDrive.y);
+//#if RUDDER
+                        
+            // wheelchair
+            Vector2 wheelchairDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
+            // left
+            motorAngles.Add(wheelchairDrive.x);
+            // right
+            motorAngles.Add(wheelchairDrive.y);
 
-#else
-            Vector2 axis2D;
-            if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
-                InputManager.Instance.controllerLeft[0]
-                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
-            {
-                motorAngles.Add(axis2D[0]);
-                motorAngles.Add(axis2D[1]);
-            }
-#endif
+//#else
+//            Vector2 axis2D;
+//            if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
+//                InputManager.Instance.controllerLeft[0]
+//                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
+//            {
+//                motorAngles.Add(axis2D[0]);
+//                motorAngles.Add(axis2D[1]);
+//            }
+//#endif
 
                 motorMsg.Data.Clear();
                 motorMsg.Data.Add(motorAngles);

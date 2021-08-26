@@ -30,9 +30,9 @@ namespace JointTransfer
         [Tooltip("If the output angle should be inverted")]
         public bool invert = false;
 
-        public AngleRangeStore angleRangeStore;
 
 #if SENSEGLOVE
+        public AngleRangeStore angleRangeStore;
         public SG_SenseGloveHardware hand;
 #endif
         public float angle;

@@ -9,21 +9,25 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
     public enum InputDevice
     {
         SENSE_GLOVE,
-        CONTROLERS,
+        CONTROLLERS,
         KEYBOARD
     }
 
-    public InputDevice inputDevice = InputDevice.SENSE_GLOVE;
+    public InputDevice inputDevice = InputDevice.CONTROLLERS;
     public UnityEngine.XR.InputDevice controllerLeft, controllerRight;
     public Widgets.Completion completionWidget;
-    public HandCalibrator leftCalibrator, rightCalibrator;
+   
 
     private Callbacks<bool> onConfirmCallbacks;
 
     // SenseGlove params
+#if SENSEGLOVE
+    public HandCalibrator leftCalibrator, rightCalibrator;
     private const HandCalibrator.Pose confirmationPose = HandCalibrator.Pose.ThumbUp;
+    private const float confirmationPoseError = 0.5f;
+#endif
+    private const float confirmationDwellTime = 3;
     private readonly Timer dwellTimer = new Timer();
-    private const float confirmationPoseError = 0.5f, confirmationDwellTime = 3;
     private volatile Coroutine coroutine = null;
 
     // Start is called before the first frame update
@@ -37,6 +41,7 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
     {
         switch (inputDevice)
         {
+#if SENSEGLOVE
             case InputDevice.SENSE_GLOVE:
                 {
                     onConfirmCallbacks.Add(onConfirm, once);
@@ -56,8 +61,14 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
                     }
                     break;
                 }
-            case InputDevice.CONTROLERS:
-                throw new NotImplementedException();
+#endif
+            case InputDevice.CONTROLLERS:
+                onConfirmCallbacks.Add(onConfirm, once);
+                if (coroutine == null)
+                {
+                    coroutine = StartCoroutine(ControllerConfirm());
+                }
+                break;
             case InputDevice.KEYBOARD:
                 {
                     onConfirmCallbacks.Add(onConfirm, once);
@@ -70,6 +81,7 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
         }
     }
 
+#if SENSEGLOVE
     private IEnumerator SenseGloveConfirm(bool left)
     {
         while (true)
@@ -99,10 +111,20 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
             yield return new WaitForEndOfFrame();
         }
     }
-
-    private void ControllerConfirm()
+#endif
+    private IEnumerator ControllerConfirm()
     {
-
+        while (true)
+        {
+            if(InputManager.Instance.GetAnyControllerBtnPressed())
+            {
+                coroutine = null;
+                onConfirmCallbacks.Call(true);
+                yield break;
+            }
+            Debug.Log("Wait for any button press on the controller");
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     private IEnumerator KeyboardConfirm()

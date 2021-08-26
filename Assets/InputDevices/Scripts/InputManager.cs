@@ -89,6 +89,31 @@ public class InputManager : Singleton<InputManager>
         return false;
     }
 
+    public bool GetAnyControllerBtnPressed()
+    {
+        var ret = false;
+        var ctrls = new List<bool> { true, false };
+        foreach (var left in ctrls) {
+            if (GetControllerAvailable(left))
+            {
+                GetController(left).TryGetFeatureValue(CommonUsages.primaryButton, out var btn1);
+                GetController(left).TryGetFeatureValue(CommonUsages.secondaryButton, out var btn2);
+                ret = ret || btn1 || btn2;
+            }
+        }  
+        return ret;
+    }
+
+    public Vector2 GetControllerJoystick(bool isLeft)
+    {
+        if (GetControllerAvailable(isLeft))
+        {
+            GetController(isLeft).TryGetFeatureValue(CommonUsages.primary2DAxis, out var joystick);
+            return joystick;
+        }
+        return Vector2.zero;
+    }
+
     void OnNodded()
     {
         nodded = true;
@@ -227,47 +252,48 @@ public class InputManager : Singleton<InputManager>
 
                 //drive the wheelchair
 #if !SENSEGLOVE
-                if (//StateManager.Instance.currentState == StateManager.States.Construct || 
-                    StateManager.Instance.currentState != StateManager.States.HUD)
-                {
-                    Vector2 joystick;
-                    if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out joystick))
-                    {
-                        bool wheelchairIsActive = joystick.sqrMagnitude > 0.01f;
+                //if (//StateManager.Instance.currentState == StateManager.States.Construct || 
+                //    StateManager.Instance.currentState != StateManager.States.HUD)
+                //{
+                //    Vector2 joystick;
+                //    if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out joystick))
+                //    {
+                //        bool wheelchairIsActive = joystick.sqrMagnitude > 0.01f;
 
-                        // Show that the wheelchair is active in the state manager
-                        WidgetInteraction.SetBodyPartActive(56, wheelchairIsActive);
+                //        // Show that the wheelchair is active in the state manager
+                //        WidgetInteraction.SetBodyPartActive(56, wheelchairIsActive);
 
-                        if (wheelchairIsActive)
-                        {
-                            if (StateManager.Instance.currentState == StateManager.States.Training &&
-                                Training.TutorialSteps.Instance.currentState == Training.TutorialSteps.TrainingStep.WHEELCHAIR)
-                            {
-                                Training.TutorialSteps.Instance.Next();
-                            }
-                        }
+                //        //if (wheelchairIsActive)
+                //        //{
+                //        //    if (StateManager.Instance.currentState == StateManager.States.Training &&
+                //        //        Training.TutorialSteps.Instance.currentState == Training.TutorialSteps.TrainingStep.WHEELCHAIR)
+                //        //    {
+                //        //        Training.TutorialSteps.Instance.Next();
+                //        //    }
+                //        //}
 
-                        float speed = 0.05f;
-                        // move forward or backwards
-                        DifferentialDriveControl.Instance.V_L = speed * joystick.y;
-                        DifferentialDriveControl.Instance.V_R = speed * joystick.y;
+                //        float speed = 0.05f;
+                //        // move forward or backwards
+                //        Debug.Log($"joystick y x: {joystick.y} {joystick.x}");
+                //        DifferentialDriveControl.Instance.V_L = speed * joystick.y;
+                //        DifferentialDriveControl.Instance.V_R = speed * joystick.y;
 
-                        //rotate
-                        if (joystick.x > 0)
-                        {
-                            DifferentialDriveControl.Instance.V_R -= 0.5f * speed * joystick.x;
-                        }
-                        else
-                        {
-                            DifferentialDriveControl.Instance.V_L += 0.5f * speed * joystick.x;
-                        }
-                    }
-                }
-                else
-                {
-                    // Show that the wheelchair is active in the state manager
-                    WidgetInteraction.SetBodyPartActive(56, false);
-                }
+                //        //rotate
+                //        if (joystick.x > 0)
+                //        {
+                //            DifferentialDriveControl.Instance.V_R -= 0.5f * speed * joystick.x;
+                //        }
+                //        else
+                //        {
+                //            DifferentialDriveControl.Instance.V_L += 0.5f * speed * joystick.x;
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    // Show that the wheelchair is active in the state manager
+                //    WidgetInteraction.SetBodyPartActive(56, false);
+                //}
 #endif
             }
             else
