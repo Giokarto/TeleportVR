@@ -28,8 +28,20 @@ public class Callbacks<T>
         }
         foreach (var func in toCall)
         {
-            func(argument);
+            try
+            {
+                func(argument);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning(e);
+            }
         }
+    }
+
+    public List<System.Action<T>> GetCallbacksCopy()
+    {
+        return new List<System.Action<T>>(callbacks.Keys);
     }
 
     public void Add(System.Action<T> callback, bool once = false) => callbacks[callback] = once;

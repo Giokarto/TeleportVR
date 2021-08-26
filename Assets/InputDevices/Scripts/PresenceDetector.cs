@@ -59,7 +59,7 @@ namespace RudderPedals
         private bool _canPause = true;
         public bool pauseAudio = true;
 
-
+        public StateManager stateManager;
         public TrackerSwitcher leftGlove;
         public TrackerSwitcher rightGlove;
         public float matchHandThreshold = 0.0f;
@@ -77,10 +77,21 @@ namespace RudderPedals
 
         void Awake()
         {
-            StartCoroutine(pedalDetector.readAsyncContinously(OnUpdatePresence, OnError));
+            StartCoroutine(pedalDetector.readAsyncContinously(callback: ParseData,
+            onError: (error) => Debug.LogError(error))
+            );
             onPause = new Callbacks<bool>();
             onUnpause = new Callbacks<bool>();
         }
+
+        void Start()
+        {
+            // when switching scenes make sure any MatchHands state is reset.
+            // This only occurs if switching via spacebar while MatchHands the process is running
+            stateManager.onStateChangeTo[StateManager.States.HUD].Add((s) => ResetMatchHands());
+            stateManager.onStateChangeTo[StateManager.States.Training].Add((s) => ResetMatchHands());
+        }
+
 
         void Update()
         {
@@ -101,33 +112,25 @@ namespace RudderPedals
             }
         }
 
-        private bool[] ParseData(string data)
+        private void ParseData(string data)
         {
             try
             {
-                if (data == null) return null;
                 string[] args = data.Split(',');
                 int leftInt = int.Parse(args[0]);
                 int rightInt = int.Parse(args[1]);
-                return new bool[] { leftInt != 0, rightInt != 0 };
+                UpdatePresence(leftInt != 0, rightInt != 0);
             }
             catch (System.Exception)
             {
-                return null;
+                Debug.LogError($"PresenceDectector could not parse serial data: {data}");
             }
         }
 
-        private void OnUpdatePresence(string data)
+        private void UpdatePresence(bool left, bool right)
         {
-            bool[] lr = ParseData(data);
-            if (lr == null)
-            {
-                Debug.LogError("PresenceDectector OnPresenceUpdate got invalid data");
-                return;
-            }
-
-            _leftPressed = lr[0];
-            _rightPressed = lr[1];
+            _leftPressed = left;
+            _rightPressed = right;
             if ((!_leftPressed || !_rightPressed) && (!oldInit || oldLeft || oldRight))
             {
                 Pause();
@@ -140,11 +143,6 @@ namespace RudderPedals
             oldLeft = _leftPressed;
             oldRight = _rightPressed;
             oldInit = true;
-        }
-
-        private void OnError(string reason)
-        {
-            Debug.LogError(reason);
         }
 
         public bool Pause()
@@ -190,16 +188,12 @@ namespace RudderPedals
             {
                 return;
             }
+            Debug.Log("TryUnpause");
+
             waitTimer = new Timer();
             waitTimer.SetTimer(waitTime, timeIsUp: () =>
              {
-                 StopCoroutine(matchHandsCouroutine);
-                 matchHandsCouroutine = null;
-
-                 waitTimer.ResetTimer();
-                 PauseMenu.PauseMenu.Instance.matchHandsCompletion.active = false;
-                 PauseMenu.PauseMenu.Instance.matchHandsCompletion.progress = 0;
-                 PauseMenu.PauseMenu.Instance.matchHands.SetActive(false);
+                 ResetMatchHands();
                  Unpause();
              });
 
@@ -207,6 +201,24 @@ namespace RudderPedals
             {
                 matchHandsCouroutine = StartCoroutine(MatchHands());
             }
+            else
+            {
+                Debug.Log("Match Hands Coroutine already running");
+            }
+        }
+
+        private void ResetMatchHands()
+        {
+            if (matchHandsCouroutine != null)
+            {
+                StopCoroutine(matchHandsCouroutine);
+                matchHandsCouroutine = null;
+            }
+
+            waitTimer.ResetTimer();
+            PauseMenu.PauseMenu.Instance.matchHandsCompletion.active = false;
+            PauseMenu.PauseMenu.Instance.matchHandsCompletion.progress = 0;
+            PauseMenu.PauseMenu.Instance.matchHands.SetActive(false);
         }
 
         private IEnumerator MatchHands()
@@ -223,6 +235,7 @@ namespace RudderPedals
                 if (Mathf.Max(distLeft, distRight) > matchHandThreshold)
                 {
                     waitTimer.ResetTimer();
+                    PauseMenu.PauseMenu.Instance.matchHandsCompletion.active = false;
                 }
                 else
                 {
@@ -234,8 +247,9 @@ namespace RudderPedals
                 yield return new WaitForEndOfFrame();
             }
 
-            Debug.Log("stopped hands match corountine, as at least one pedal is not pressed");
+            Debug.Log("Stopped hands match corountine, as at least one pedal is not pressed");
             matchHandsCouroutine = null;
+            ResetMatchHands();
         }
 
 
@@ -277,5 +291,11 @@ namespace RudderPedals
 
         public void OnPause(System.Action<bool> callback, bool once = false) => onPause.Add(callback, once);
         public void OnUnpause(System.Action<bool> callback, bool once = false) => onUnpause.Add(callback, once);
+
+
+        private void OnDestroy()
+        {
+            ResetMatchHands();
+        }
     }
 }

@@ -16,7 +16,6 @@ public class TouchButtonActivationVolume : MonoBehaviour
         if (!ColliderHasTags(other) || !enabled)
             return;
 
-        Debug.Log("pause menu activation enter");
         enterCallbacks.Call(other.tag);
     }
 

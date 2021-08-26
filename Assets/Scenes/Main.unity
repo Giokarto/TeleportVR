@@ -9927,6 +9927,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPaused: 0
   pauseAudio: 1
+  stateManager: {fileID: 1001686986}
   leftGlove:
     copyTransform: {fileID: 666088954}
     xrController: {fileID: 6021411801494514841}
