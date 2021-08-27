@@ -61,7 +61,7 @@ namespace PauseMenu
                 switchScenePressed = false;
             });
 #else
-            transform.parent.gameObject.SetActive(false);
+            transform.gameObject.SetActive(false);
             switchScene.gameObject.SetActive(false);
 #endif
         }

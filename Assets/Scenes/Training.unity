@@ -1532,7 +1532,6 @@ MonoBehaviour:
     wrongButton: {fileID: 8300000, guid: dd101467bffdd2a47b980d749cea707f, type: 3}
     siren: {fileID: 8300000, guid: d83cd71932fec4c4f9a767e07fd0a8b2, type: 3}
     ready: {fileID: 8300000, guid: ff0f400a272516847a51bd86fae0fe35, type: 3}
-    wheelchair_intro: {fileID: 8300000, guid: 05c6c37d990e944499a9056153196be6, type: 3}
   senseGloveAudio:
     leftArm: {fileID: 8300000, guid: 3b6623cc3bcf1884ca4601c52daf8364, type: 3}
     leftBall: {fileID: 8300000, guid: ed5d7c0e15325ce478a317ca85220212, type: 3}
@@ -2535,6 +2534,11 @@ PrefabInstance:
       propertyPath: show
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 941267266585776886, guid: 9847a12d1092ff548a01bbd8fb25035a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 941267268207094691, guid: 9847a12d1092ff548a01bbd8fb25035a,
         type: 3}
       propertyPath: m_IsActive
@@ -3185,6 +3189,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HudSlerpOrigin
       objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003510, guid: 9847a12d1092ff548a01bbd8fb25035a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6130103231093227460, guid: 9847a12d1092ff548a01bbd8fb25035a,
         type: 3}
       propertyPath: m_RootOrder
@@ -3244,6 +3253,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RootOrder
       value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 6557121354112471700, guid: 9847a12d1092ff548a01bbd8fb25035a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6593624477737994434, guid: 9847a12d1092ff548a01bbd8fb25035a,
         type: 3}
@@ -6326,12 +6340,16 @@ PrefabInstance:
       value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 138898, guid: 1dd393a52225142669572e09e907f13d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 138898, guid: 1dd393a52225142669572e09e907f13d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 438896, guid: 1dd393a52225142669572e09e907f13d, type: 3}
       propertyPath: m_RootOrder
-      value: 51
+      value: 47
       objectReference: {fileID: 0}
     - target: {fileID: 438896, guid: 1dd393a52225142669572e09e907f13d, type: 3}
       propertyPath: m_LocalScale.x
@@ -6393,6 +6411,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 8.49
       objectReference: {fileID: 0}
+    - target: {fileID: 2338896, guid: 1dd393a52225142669572e09e907f13d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: fff6cadfdfe58413c82890c8469ba28e, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1dd393a52225142669572e09e907f13d, type: 3}
 --- !u!4 &962314505325161179 stripped
