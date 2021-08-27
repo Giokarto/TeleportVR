@@ -406,6 +406,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         try
         {
             if (!bodyTransitionReady) return true;
+            if (StereoPlaneMover.Instance.showingImages) return true;
 
             if (!visionEnabled)
             {
@@ -508,8 +509,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
             {
                 yuv_left = yuv.rowRange(0, yuv.rows() / 2);
                 yuv_right = yuv.rowRange(yuv.rows() / 2, yuv.rows());
-                render_plane(yuv_left, _leftTexture, _leftRenderer);
-                render_plane(yuv_right, _rightTexture, _rightRenderer);
+                render_plane(yuv_left, _leftTexture, _leftRenderer, true);
+                render_plane(yuv_right, _rightTexture, _rightRenderer, false);
             }
             else
             {
@@ -525,7 +526,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         return true;
     }
 
-    void render_plane(Mat yuv, Texture2D texture, Renderer renderer)
+    void render_plane(Mat yuv, Texture2D texture, Renderer renderer, bool left = true)
     {
         //Mat rgb = new Mat();
         Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2RGB_I420);
@@ -542,6 +543,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         }
         // display
         Utils.matToTexture2D(rgb_l, texture);
+        // var name = left ? "left" : "right";
+        // System.IO.File.WriteAllBytes($"{name}_{leftIdx++}.jpg", texture.EncodeToJPG());
         renderer.material.mainTexture = texture;
     }
 

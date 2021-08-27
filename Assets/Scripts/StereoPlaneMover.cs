@@ -1,45 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[ExecuteAlways]
-public class StereoPlaneMover : MonoBehaviour
+public class StereoPlaneMover : Singleton<StereoPlaneMover>
 {
-    //public Transform leftImage, rightImage;
-    //public float operatorPupilDistance = 63;
-    //private Vector3 leftInitPos, rightInitPos;
-    //[SerializeField] private float calibratedEyeDistance = 60;
-
-    //// Start is called before the first frame update
-    //void Start()
-    //{
-    //    leftInitPos = leftImage.localPosition;
-    //    rightInitPos = rightImage.localPosition;
-    //}
-
-    //// Update is called once per frame
-    //void Update()
-    //{
-    //    var center = (leftInitPos + rightInitPos) / 2;
-    //    var factor = operatorPupilDistance / calibratedEyeDistance;
-    //    var l_dir = (leftInitPos - center) * factor;
-    //    l_dir.y = 0;
-    //    l_dir.z = 0;
-    //    var r_dir = (rightInitPos - center) * factor;
-    //    r_dir.y = 0;
-    //    r_dir.z = 0;
-    //    leftImage.localPosition = center + l_dir;
-    //    rightImage.localPosition = center + r_dir;
-    //}
     public Transform leftImage, rightImage;
+    public Texture2D leftCalibrationTexture, rightCalibrationTexture;
     public float horizontal = 1;
     public float vertical = 1;
-    public float diagonal = 1;
+    public float depth = 1;
+    public float keyStep = 0.1f;
+    public bool showingImages = false;
     private Vector3 leftInitPos, rightInitPos;
-    [SerializeField] private float calibratedEyeDistance = 60;
+    private Renderer leftRenderer, rightRenderer;
+    private Texture oldLeftTexture, oldRightTexture;
+    private bool oldLeftActive, oldRightActive;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        leftRenderer = leftImage.GetComponent<Renderer>();
+        rightRenderer = rightImage.GetComponent<Renderer>();
         leftInitPos = leftImage.localPosition;
         rightInitPos = rightImage.localPosition;
     }
@@ -47,10 +28,54 @@ public class StereoPlaneMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.H))
+        {
+            horizontal += keyStep * Time.deltaTime;
+        }
+        else if (Input.GetKey(KeyCode.J))
+        {
+            vertical += keyStep * Time.deltaTime;
+        }
+        else if (Input.GetKey(KeyCode.K))
+        {
+            vertical -= keyStep * Time.deltaTime;
+        }
+        else if (Input.GetKey(KeyCode.L))
+        {
+            horizontal -= keyStep * Time.deltaTime;
+        }
+        else if (Input.GetKeyDown(KeyCode.F))
+        {
+            if (!showingImages)
+            {
+                // init & save old values
+                oldLeftTexture = leftRenderer.material.mainTexture;
+                oldRightTexture = rightRenderer.material.mainTexture;
+                oldLeftActive = leftImage.gameObject.activeSelf;
+                oldRightActive = rightImage.gameObject.activeSelf;
+
+                leftRenderer.material.mainTexture = leftCalibrationTexture;
+                leftRenderer.material.SetTextureScale("_MainTex", new Vector2(0.1f, 0.1f));
+                rightRenderer.material.SetTextureScale("_MainTex", new Vector2(0.1f, 0.1f));
+                rightRenderer.material.mainTexture = rightCalibrationTexture;
+                leftImage.gameObject.SetActive(true);
+                rightImage.gameObject.SetActive(true);
+                showingImages = true;
+            }
+            else
+            {
+                // revert initialization
+                leftImage.gameObject.SetActive(oldLeftActive);
+                rightImage.gameObject.SetActive(oldRightActive);
+                leftRenderer.material.mainTexture = oldLeftTexture;
+                rightRenderer.material.mainTexture = oldRightTexture;
+                showingImages = false;
+            }
+        }
+        horizontal = Mathf.Max(horizontal, 0);
+        vertical = Mathf.Max(horizontal, 0);
         var center = (leftInitPos + rightInitPos) / 2;
-        var l_dir = (leftInitPos - center);
-        var r_dir = (rightInitPos - center);
-        leftImage.localPosition = center + new Vector3(l_dir.x * horizontal, l_dir.y * vertical, 0);
-        rightImage.localPosition = center + new Vector3(r_dir.x * horizontal, r_dir.y * vertical, 0);
+        leftImage.localPosition = center + new Vector3(-horizontal, vertical, depth);
+        rightImage.localPosition = center + new Vector3(horizontal, -vertical, depth);
     }
 }
