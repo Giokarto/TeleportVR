@@ -27,6 +27,7 @@ namespace PauseMenu
         // Start is called before the first frame update
         void Start()
         {
+
 #if RUDDER
             // recover values presence detector when this script is reloaded
             show = RudderPedals.PresenceDetector.Instance.isPaused;
@@ -60,7 +61,8 @@ namespace PauseMenu
                 switchScenePressed = false;
             });
 #else
-        show = false;
+            transform.parent.gameObject.SetActive(false);
+            switchScene.gameObject.SetActive(false);
 #endif
         }
 
@@ -69,7 +71,7 @@ namespace PauseMenu
         // Update is called once per frame
         void Update()
         {
-            if (Application.IsPlaying(gameObject))
+            if (Application.IsPlaying(gameObject) && gameObject.activeInHierarchy)
             {
                 switch (StateManager.Instance.currentState)
                 {
@@ -93,3 +95,4 @@ namespace PauseMenu
     }
 
 }
+//#endif
