@@ -49,6 +49,8 @@ namespace Widgets
                     {
                         //print(view);
                         ((IconView)view).SetIcon(currentIcon);
+                        if (!rosMessage.currentIconAlpha.Equals(""))
+                            ((IconView)view).SetIconAlpha(rosMessage.currentIconAlpha);
                         //print("Finito");
                     }
                 }

@@ -1,0 +1,12 @@
+{
+	"id": 21,
+	"type": "Icon",
+	"title": "MotionIcon",
+	"widgetPosition": "top",
+	"childWidgetId": 31,
+	"relativeChildPosition": "bottom",
+	"unfoldChildDwellTimer": 1.0,
+	"icons": [ "hand_up"],
+	"currentIcon": "hand_up",
+	"scale" : 1
+}
