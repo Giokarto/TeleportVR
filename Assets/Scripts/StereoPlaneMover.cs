@@ -73,7 +73,7 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
             }
         }
         horizontal = Mathf.Max(horizontal, 0);
-        vertical = Mathf.Max(horizontal, 0);
+        vertical = Mathf.Max(vertical, 0);
         var center = (leftInitPos + rightInitPos) / 2;
         leftImage.localPosition = center + new Vector3(-horizontal, vertical, depth);
         rightImage.localPosition = center + new Vector3(horizontal, -vertical, depth);
