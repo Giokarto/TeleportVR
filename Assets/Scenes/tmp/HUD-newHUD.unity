@@ -219,7 +219,7 @@ PrefabInstance:
     - target: {fileID: 920756496441446102, guid: a0155bba2e63b974d81938f0b724de6f,
         type: 3}
       propertyPath: m_Name
-      value: Hud-v2-SlerpOrigin
+      value: Hud-v2
       objectReference: {fileID: 0}
     - target: {fileID: 7352992138118275079, guid: a0155bba2e63b974d81938f0b724de6f,
         type: 3}
