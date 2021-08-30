@@ -52,6 +52,8 @@ namespace Training
                 onDoneCallbacks.Call(State.DONE);
             };
 
+            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => StopTraining(), once: true);
+
 #if RUDDER
             stateMachine.onEnter[State.FORWARD] = (state) =>
             {
@@ -63,7 +65,7 @@ namespace Training
                 ariaNavigation.target = forwardGoal.position;
                 waitingForTrigger = true;
             };
-            
+
 
             stateMachine.onEnter[State.BACKWARD] = (state) =>
             {
@@ -75,7 +77,7 @@ namespace Training
                 waitingForTrigger = true;
                 //ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
             };
-            
+
 
             stateMachine.onEnter[State.TURN_RIGHT] = (state) =>
             {
@@ -88,7 +90,7 @@ namespace Training
                 waitingForTrigger = true;
                 //ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
             };
-            
+
 
             stateMachine.onEnter[State.TURN_LEFT] = (state) =>
             {
@@ -107,7 +109,7 @@ namespace Training
                 audioManager.ScheduleAudioClip(joystickWheelchairAudio.howto, queue: true,
                     onStart: () => TutorialSteps.PublishNotification("Use the left joystick to drive around", joystickWheelchairAudio.howto.length + 2)
                 );
-                
+
                 audioManager.ScheduleAudioClip(joystickWheelchairAudio.front, queue: true);
                 ariaNavigation.target = forwardGoal.position;
                 waitingForTrigger = true;
@@ -125,7 +127,7 @@ namespace Training
 
             stateMachine.onEnter[State.TURN_RIGHT] = (state) =>
             {
-                
+
                 audioManager.ScheduleAudioClip(joystickWheelchairAudio.right, queue: false,
                     onStart: () => TutorialSteps.PublishNotification("Turn right", rudderWheelchairAudio.turn_right_intro.length + 2)
                 );
@@ -159,4 +161,3 @@ namespace Training
         public void OnDone(System.Action<State> callback, bool once = false) => onDoneCallbacks.Add(callback, once);
     }
 }
-

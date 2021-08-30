@@ -6,18 +6,17 @@ using UnityEngine;
 
 namespace PauseMenu
 {
-    [ExecuteAlways]
     public class PauseMenu : Singleton<PauseMenu>
     {
         public bool show;
         public GameObject child;
-        public float handMatchThreshold = 0.1f;
 
         [Header("UI Elements")]
         public TouchButton switchScene;
 
         public GameObject matchHands;
         public Widgets.Completion matchHandsCompletion;
+        public float minSwitchWait = 3f;
 
 
         private bool switchScenePressed = false;
@@ -36,7 +35,13 @@ namespace PauseMenu
             // buttons init
             switchScene.OnTouchEnter((t) =>
             {
-                if (switchScenePressed) return;
+                //Debug.Log($"switch Scene {switchScenePressed}");
+                //if (switchScenePressed) return;
+                if (Time.time - StateManager.Instance.lastSwitch < minSwitchWait)
+                {
+                    Debug.Log($"Attempted to switch scenes but button interaction was too early by {minSwitchWait - Time.time + StateManager.Instance.lastSwitch}s");
+                    return;
+                }
 
                 switchScenePressed = true;
                 switch (StateManager.Instance.currentState)
@@ -56,16 +61,11 @@ namespace PauseMenu
                         break;
                 }
             });
-            switchScene.OnTouchExit((t) =>
-            {
-                switchScenePressed = false;
-            });
 #else
             transform.gameObject.SetActive(false);
             switchScene.gameObject.SetActive(false);
 #endif
         }
-
 
 
         // Update is called once per frame

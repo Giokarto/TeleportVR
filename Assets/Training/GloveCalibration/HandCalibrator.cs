@@ -77,7 +77,7 @@ namespace Training.Calibration
         public AudioClips.SGHand audioClips;
 
         // inspector display variables
-        public Step currentStep = Step.None;// ShowInstruction;
+        public Step currentStep = Step.ShowInstruction;
         public bool calibrating = false;
 
         private SG_SenseGloveHardware hand;
@@ -153,6 +153,8 @@ namespace Training.Calibration
             virtualHand.SetActive(false);
             calibrating = false;
             Debug.Log($"Awaiting connection with {lrName} SenseGlove... ");
+
+            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => PauseCalibration(), once: true);
         }
         #endregion
 

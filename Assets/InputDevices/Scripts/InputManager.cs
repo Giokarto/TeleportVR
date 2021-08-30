@@ -100,7 +100,7 @@ public class InputManager : Singleton<InputManager>
                 GetController(left).TryGetFeatureValue(CommonUsages.secondaryButton, out var btn2);
                 ret = ret || btn1 || btn2;
             }
-        }  
+        }
         return ret;
     }
 
@@ -174,7 +174,7 @@ public class InputManager : Singleton<InputManager>
                 if (Training.TutorialSteps.Instance != null &&
                     StateManager.Instance.currentState == StateManager.States.Training)
                 {
-                    // check if the arm is grabbing 
+                    // check if the arm is grabbing
                     if (Training.TutorialSteps.Instance.currentState == Training.TutorialSteps.TrainingStep.LEFT_HAND)
                     {
                         if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out btn) &&
@@ -252,7 +252,7 @@ public class InputManager : Singleton<InputManager>
 
                 //drive the wheelchair
 #if !SENSEGLOVE
-                //if (//StateManager.Instance.currentState == StateManager.States.Construct || 
+                //if (//StateManager.Instance.currentState == StateManager.States.Construct ||
                 //    StateManager.Instance.currentState != StateManager.States.HUD)
                 //{
                 //    Vector2 joystick;
@@ -316,7 +316,7 @@ public class InputManager : Singleton<InputManager>
                     UnityAnimusClient.Instance.RightButton2 = btn;
                 }
 
-                if ( //StateManager.Instance.currentState == StateManager.States.Construct || 
+                if ( //StateManager.Instance.currentState == StateManager.States.Construct ||
                     StateManager.Instance.currentState == StateManager.States.Training)
                 {
                     if (Training.TutorialSteps.Instance.currentState == Training.TutorialSteps.TrainingStep.HEAD)
@@ -340,4 +340,3 @@ public class InputManager : Singleton<InputManager>
     }
 
 }
-

@@ -148,10 +148,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   show: 1
   child: {fileID: 6138654671649566930}
-  handMatchThreshold: 0.1
   switchScene: {fileID: 5257007332054213766}
   matchHands: {fileID: 8728879411835312775}
   matchHandsCompletion: {fileID: 3191040275516352754}
+  minSwitchWait: 1
 --- !u!1 &6138654671649566930
 GameObject:
   m_ObjectHideFlags: 0

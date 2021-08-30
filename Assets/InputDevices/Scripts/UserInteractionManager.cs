@@ -37,6 +37,21 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
         //onAbortCallbacks = new Callbacks<bool>();
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            if (coroutine != null)
+            {
+                dwellTimer.Finish();
+            }
+            else
+            {
+                onConfirmCallbacks.Call(true);
+            }
+        }
+    }
+
     public void Confirm(Action<bool> onConfirm, bool left = true, bool once = true)
     {
         switch (inputDevice)
@@ -137,7 +152,6 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
                 onConfirmCallbacks.Call(true);
                 yield break;
             }
-            Debug.Log("Wait for keyboard");
             yield return new WaitForEndOfFrame();
         }
     }

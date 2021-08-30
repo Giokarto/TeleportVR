@@ -11,6 +11,17 @@ public class StateManager : Singleton<StateManager>
     public bool KillConstruct;
     public States currentState;
 
+    public float lastSwitch
+    {
+        get { return _lastSwitch; }
+    }
+
+    // Callbacks called before the corresponding scene is loaded
+    // WARNING: On Scene loading all callbacks for a resective scene are cleared.
+    public Dictionary<States, Callbacks<States>> onStateChangeTo;
+
+    private float _lastSwitch = float.NegativeInfinity;
+
     [SerializeField] private ClientLogic clientLogic;
 
     AdditiveSceneManager additiveSceneManager;
@@ -30,11 +41,23 @@ public class StateManager : Singleton<StateManager>
     }
 
     /// <summary>
+    /// Called before all Start() methods. Initializes this class.
+    /// </summary>
+    private void Awake()
+    {
+        onStateChangeTo = new Dictionary<States, Callbacks<States>>();
+        onStateChangeTo[States.HUD] = new Callbacks<States>();
+        onStateChangeTo[States.Construct] = new Callbacks<States>();
+        onStateChangeTo[States.Training] = new Callbacks<States>();
+    }
+
+    /// <summary>
     /// Set reference to instances.
     /// Load construct as initial state.
     /// </summary>
     void Start()
     {
+
         constructFXManager = GameObject.FindGameObjectWithTag("ConstructFXManager").GetComponent<ConstructFXManager>();
         additiveSceneManager = GameObject.FindGameObjectWithTag("AdditiveSceneManager").GetComponent<AdditiveSceneManager>();
         transitionManager = GameObject.FindGameObjectWithTag("TransitionManager").GetComponent<TransitionManager>();
@@ -85,10 +108,10 @@ public class StateManager : Singleton<StateManager>
     {
         // TODO: not working because the wheelchair is overwriting the position but needed to reset the user
         //WheelchairStateManager.Instance.transform.position = Vector3.zero;
-        
+
         // keep motor disabled at all times, only HUD can send motor commands which is set in the DelegateAfterHudLoad
         clientLogic.unityClient.EnableMotor(false);
-
+        _lastSwitch = Time.time;
         switch (newState)
         {
             case States.Construct:
@@ -102,7 +125,6 @@ public class StateManager : Singleton<StateManager>
                 break;
             case States.HUD:
                 transitionManager.StartTransition(true);
-                //additiveSceneManager.ChangeScene(Scenes.HUD, null, null, DelegateBeforeHudLoad, () =>
                 additiveSceneManager.ChangeScene(Scenes.HUD, null, null, DelegateBeforeHudLoad, () =>
                 {
                     DelegateAfterHudLoad();
@@ -112,7 +134,6 @@ public class StateManager : Singleton<StateManager>
                 break;
             case States.Training:
                 transitionManager.StartTransition(true);
-                //additiveSceneManager.ChangeScene(Scenes.TRAINING, null, null, null, () =>
                 additiveSceneManager.ChangeScene(Scenes.TRAINING, null, null, DelegateBeforeTrainingLoad, () =>
                 {
                     DelegateAfterTrainingLoad();
@@ -160,6 +181,8 @@ public class StateManager : Singleton<StateManager>
             openMenuButton.GetChild(0).GetComponent<ButtonRigidbodyConstraint>().InitialState();
             openMenuButton.GetChild(1).GetComponent<FrameClickDetection>().highlightOff();
         }
+
+        onStateChangeTo[States.Construct].Call(States.Construct);
     }
 
     /// <summary>
@@ -279,6 +302,7 @@ public class StateManager : Singleton<StateManager>
         Debug.Log("Presense indicator on");
         clientLogic.unityClient.SetPresenceIndicatorOn(true);
 
+        onStateChangeTo[States.HUD].Call(States.HUD);
     }
 
     void DelegateAfterHudLoad()
@@ -301,7 +325,8 @@ public class StateManager : Singleton<StateManager>
     {
         Debug.Log("Presense indicator off");
         clientLogic.unityClient.SetPresenceIndicatorOn(false);
-        
+
+        onStateChangeTo[States.Training].Call(States.HUD);
     }
     #endregion
 }
