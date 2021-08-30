@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+[ExecuteAlways]
 public class GameConfig : Singleton<GameConfig>
 {
     [System.Serializable]
