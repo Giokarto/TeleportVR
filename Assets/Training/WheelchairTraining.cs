@@ -129,7 +129,7 @@ namespace Training
             {
 
                 audioManager.ScheduleAudioClip(joystickWheelchairAudio.right, queue: false,
-                    onStart: () => TutorialSteps.PublishNotification("Turn right", rudderWheelchairAudio.turn_right_intro.length + 2)
+                    onStart: () => TutorialSteps.PublishNotification("Turn right", joystickWheelchairAudio.right.length + 2)
                 );
 
                 ariaNavigation.target = turnRightGoal.position;
@@ -139,7 +139,7 @@ namespace Training
             stateMachine.onEnter[State.TURN_LEFT] = (state) =>
             {
                 audioManager.ScheduleAudioClip(joystickWheelchairAudio.left,
-                    onStart: () => TutorialSteps.PublishNotification("Turn left", rudderWheelchairAudio.turn_left.length)
+                    onStart: () => TutorialSteps.PublishNotification("Turn left", joystickWheelchairAudio.left.length + 2)
                     );
 
                 ariaNavigation.target = turnLeftGoal.position;

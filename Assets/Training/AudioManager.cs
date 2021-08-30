@@ -8,7 +8,7 @@ namespace Training
     public class AudioManager : MonoBehaviour
     {
         public AudioSource[] audioSourceArray;
-        int toggle;
+        int nextItemIdx;
         double prevDuration = 0.0;
         double prevStart = 0.0;
         private float[] clipSampleData;
@@ -62,12 +62,12 @@ namespace Training
                 if (timeLeft > 0) delay = timeLeft;
             }
 
-            if (queue) toggle = 1 - toggle;
-            audioSourceArray[toggle].clip = clip;
+            if (queue) nextItemIdx = (nextItemIdx + 1) % audioSourceArray.Length;
+            audioSourceArray[nextItemIdx].clip = clip;
 
             prevStart = AudioSettings.dspTime + delay;
-            audioSourceArray[toggle].PlayScheduled(prevStart);
-            //Debug.Log($"Audiosource #{toggle}: scheduled {clip.name} at {prevStart}");
+            audioSourceArray[nextItemIdx].PlayScheduled(prevStart);
+            Debug.Log($"Audiosource #{nextItemIdx}: scheduled {clip.name} at {prevStart}");
 
             prevDuration = (double)clip.samples / clip.frequency;
 
