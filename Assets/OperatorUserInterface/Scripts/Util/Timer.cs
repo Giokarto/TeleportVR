@@ -24,10 +24,19 @@ public class Timer
     {
         timer += deltaTime;
 
-        if (timer > duration)
+        if (timer >= duration)
         {
             timeIsUp();
         }
+    }
+    
+    /// <summary>
+    /// Finishs the timer, and calls timeIsUp function
+    /// </summary>
+    public void Finish()
+    {
+        timer = duration;
+        timeIsUp();
     }
 
     /// <summary>

@@ -31,6 +31,8 @@ namespace Training.Calibration.ArmLength
         {
             currentState = State.START;
 
+            StateManager.Instance.onStateChanged[StateManager.States.HUD].Add((s) => StopCalibration(), once: false);
+
             // get objectives
             foreach (var comp in PlayerRig.Instance.gameObject.GetComponentsInChildren<XROffset>())
             {

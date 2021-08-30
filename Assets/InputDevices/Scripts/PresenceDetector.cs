@@ -82,6 +82,25 @@ namespace RudderPedals
             onUnpause = new Callbacks<bool>();
         }
 
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                if (!isPaused)
+                {
+                    _leftPressed = false;
+                    _rightPressed = false;
+                    Pause();
+                }
+                else
+                {
+                    _leftPressed = true;
+                    _rightPressed = true;
+                    TryUnpause();
+                }
+            }
+        }
+
         private bool[] ParseData(string data)
         {
             try
@@ -215,7 +234,7 @@ namespace RudderPedals
                 yield return new WaitForEndOfFrame();
             }
 
-            //Debug.Log("stopped corountine, as one pedal is not pressed");
+            Debug.Log("stopped hands match corountine, as at least one pedal is not pressed");
             matchHandsCouroutine = null;
         }
 

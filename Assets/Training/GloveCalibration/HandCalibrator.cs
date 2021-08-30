@@ -152,6 +152,8 @@ namespace Training.Calibration
             virtualHand.SetActive(false);
             calibrating = false;
             Debug.Log($"Awaiting connection with {lrName} SenseGlove... ");
+
+            StateManager.Instance.onStateChanged[StateManager.States.HUD].Add((s) => PauseCalibration(), once: false);
         }
         #endregion
 
