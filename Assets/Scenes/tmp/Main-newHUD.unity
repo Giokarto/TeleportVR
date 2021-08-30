@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 860a66ca4259b384f9ec01b687f71c3c, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414736, b: 0.12107852, a: 1}
+  m_IndirectSpecularColor: {r: 0.0031048618, g: 0.0028006483, b: 0.0032835999, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -465,8 +465,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -677,8 +676,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -1622,8 +1620,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -2071,8 +2068,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -2192,8 +2188,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -5886,8 +5881,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -6458,8 +6452,7 @@ MonoBehaviour:
   approximative: 0
   axis: 0
   invert: 0
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -7151,8 +7144,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -7500,8 +7492,7 @@ MonoBehaviour:
   approximative: 0
   axis: 0
   invert: 0
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -9927,7 +9918,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPaused: 0
   pauseAudio: 1
-  stateManager: {fileID: 1001686986}
   leftGlove:
     copyTransform: {fileID: 666088954}
     xrController: {fileID: 6021411801494514841}
@@ -10298,7 +10288,7 @@ MonoBehaviour:
       ps4_assignJoysticksByPS4JoyId: 1
       useSteamControllerSupport: 1
       logToScreen: 0
-      runInEditMode: 1
+      runInEditMode: 0
       allowInputInEditorSceneView: 0
       platformVars_windowsStandalone:
         disableKeyboard: 0
@@ -11381,8 +11371,7 @@ MonoBehaviour:
   approximative: 0
   axis: 0
   invert: 0
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -11724,8 +11713,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -12135,8 +12123,7 @@ MonoBehaviour:
   approximative: 0
   axis: 0
   invert: 0
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -12179,8 +12166,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -12372,8 +12358,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 349765143}
-  hand: {fileID: 2115399780}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -12866,8 +12851,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -13082,8 +13066,7 @@ MonoBehaviour:
   approximative: 0
   axis: 2
   invert: 1
-  angleRangeStore: {fileID: 911402154}
-  hand: {fileID: 1002224003}
+  angleRangeStore: {fileID: 0}
   angle: 0
   input: 0
   minAngle: 0
@@ -13161,7 +13144,7 @@ PrefabInstance:
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
       propertyPath: robotName
-      value: Roboy2Xavier
+      value: Roboy3
       objectReference: {fileID: 0}
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
