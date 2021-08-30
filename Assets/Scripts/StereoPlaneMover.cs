@@ -3,17 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 public class StereoPlaneMover : Singleton<StereoPlaneMover>
 {
+    public bool showingImages = false;
     public Transform leftImage, rightImage;
     public Texture2D leftCalibrationTexture, rightCalibrationTexture;
+    [Header("IPD based calibration")]
+    [Range(20, 100)]
+    public float operatorIPD = 63.2f;
+
+    [Header("Manual Calibration")]
     public float horizontal = 1;
     public float vertical = 1;
     public float depth = 1;
     public float keyStep = 0.1f;
-    public bool showingImages = false;
+
+
     private Vector3 leftInitPos, rightInitPos;
     private Renderer leftRenderer, rightRenderer;
     private Texture oldLeftTexture, oldRightTexture;
     private bool oldLeftActive, oldRightActive;
+    private bool keyPressed = false;
 
 
     // Start is called before the first frame update
@@ -23,6 +31,15 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
         rightRenderer = rightImage.GetComponent<Renderer>();
         leftInitPos = leftImage.localPosition;
         rightInitPos = rightImage.localPosition;
+        UpdateIPD();
+    }
+
+    public void UpdateIPD()
+    {
+        // linear regression of user derived calibration values
+        // Study Data can be found here: https://docs.google.com/spreadsheets/d/17Bjk4q2Xs9SZGZ0OZsH9OgV_PBdQkzd_srlOClHPXj4/edit?usp=sharing 
+        horizontal = operatorIPD * 0.0170266812f - 0.6450280125f;
+        vertical = operatorIPD * 0.006009852773f - 0.1035260069f;
     }
 
     // Update is called once per frame
@@ -30,22 +47,27 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
     {
         if (Input.GetKey(KeyCode.H))
         {
+            keyPressed = true;
             horizontal += keyStep * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.J))
         {
+            keyPressed = true;
             vertical += keyStep * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.K))
         {
+            keyPressed = true;
             vertical -= keyStep * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.L))
         {
+            keyPressed = true;
             horizontal -= keyStep * Time.deltaTime;
         }
         else if (Input.GetKeyDown(KeyCode.F))
         {
+            keyPressed = true;
             if (!showingImages)
             {
                 // init & save old values
@@ -72,10 +94,18 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
                 showingImages = false;
             }
         }
+
+        if (!keyPressed)
+        {
+            UpdateIPD();
+        }
+
         horizontal = Mathf.Max(horizontal, 0);
         vertical = Mathf.Max(vertical, 0);
+
         var center = (leftInitPos + rightInitPos) / 2;
         leftImage.localPosition = center + new Vector3(-horizontal, vertical, depth);
         rightImage.localPosition = center + new Vector3(horizontal, -vertical, depth);
     }
+
 }
