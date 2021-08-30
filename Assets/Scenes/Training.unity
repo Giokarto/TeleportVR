@@ -931,6 +931,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e0cd52c3ecaee34cab2d5094339a09a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pauseMenuAudio:
+    start: {fileID: 0}
+    paused: {fileID: 0}
+    unpause: {fileID: 0}
+    teleport: {fileID: 0}
 --- !u!4 &515184336
 Transform:
   m_ObjectHideFlags: 0
@@ -1554,7 +1559,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e2207d182bac7c54699e705e20f9c0c7, type: 3}
   - {fileID: 8300000, guid: b27b73bfcc6fd5842bfbf8dbe05d5e61, type: 3}
   waitingForNod: 0
+  rightCalibrator: {fileID: 0}
+  leftCalibrator: {fileID: 0}
+  armLengthCalibration: {fileID: 0}
   wheelChairTraining: {fileID: 1326041510}
+  pauseMenuTraining: {fileID: 0}
   handCollectables: {fileID: 850975195}
   designatedArea: {fileID: 1159584230}
 --- !u!82 &885325822
@@ -4023,6 +4032,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputDevice: 1
   completionWidget: {fileID: 4832439435684870981}
+  leftCalibrator: {fileID: 0}
+  rightCalibrator: {fileID: 0}
 --- !u!4 &1409407287
 Transform:
   m_ObjectHideFlags: 0

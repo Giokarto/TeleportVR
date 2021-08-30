@@ -154,6 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f710bb4859f5c74185969eb2b74ebca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enabled: 1
+  colliderTags: []
 --- !u!1 &7354540337948593421
 GameObject:
   m_ObjectHideFlags: 0
@@ -680,3 +682,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71f2547318291a74a974c5c0756b77de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textMeshPro: {fileID: 8946070584373555303}
+  activationVolume: {fileID: 383961870637410472}

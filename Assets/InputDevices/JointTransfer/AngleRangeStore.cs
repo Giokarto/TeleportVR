@@ -1,4 +1,3 @@
-#if SENSEGLOVE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,6 +26,7 @@ namespace JointTransfer
 
         private const string FQN = "JointTransfer.AngleRangeStore";
 
+#if SENSEGLOVE
         // Start is called before the first frame update
         void Start()
         {
@@ -134,6 +134,6 @@ namespace JointTransfer
             _maxRotation = max;
             return true;
         }
+#endif
     }
 }
-#endif
