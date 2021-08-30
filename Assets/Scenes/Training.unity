@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1559,11 +1559,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e2207d182bac7c54699e705e20f9c0c7, type: 3}
   - {fileID: 8300000, guid: b27b73bfcc6fd5842bfbf8dbe05d5e61, type: 3}
   waitingForNod: 0
-  rightCalibrator: {fileID: 0}
-  leftCalibrator: {fileID: 0}
-  armLengthCalibration: {fileID: 0}
+  rightCalibrator: {fileID: 902270246}
+  leftCalibrator: {fileID: 1189526810}
+  armLengthCalibration: {fileID: 191642077}
   wheelChairTraining: {fileID: 1326041510}
-  pauseMenuTraining: {fileID: 0}
+  pauseMenuTraining: {fileID: 515184335}
   handCollectables: {fileID: 850975195}
   designatedArea: {fileID: 1159584230}
 --- !u!82 &885325822
@@ -4030,10 +4030,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8118b7a48c5fb8946ac0ce822738a57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputDevice: 1
+  inputDevice: 0
   completionWidget: {fileID: 4832439435684870981}
-  leftCalibrator: {fileID: 0}
-  rightCalibrator: {fileID: 0}
+  leftCalibrator: {fileID: 1189526810}
+  rightCalibrator: {fileID: 902270246}
 --- !u!4 &1409407287
 Transform:
   m_ObjectHideFlags: 0

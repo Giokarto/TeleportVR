@@ -35,14 +35,10 @@ namespace Training
         public List<AudioClip> praisePhrases = new List<AudioClip>();
 
         public bool waitingForNod = false;
-#if SENSEGLOVE
         public Calibration.HandCalibrator rightCalibrator, leftCalibrator;
         public Calibration.ArmLength.ArmLength armLengthCalibration;
-#endif
         public WheelchairTraining wheelChairTraining;
-#if RUDDER
         public PauseMenuTraining pauseMenuTraining;
-#endif
         
 
         //int toggle;

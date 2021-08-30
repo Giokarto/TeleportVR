@@ -8,7 +8,9 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
 {
     public enum InputDevice
     {
+#if SENSEGLOVE
         SENSE_GLOVE,
+#endif
         CONTROLLERS,
         KEYBOARD
     }
@@ -21,11 +23,9 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
     private Callbacks<bool> onConfirmCallbacks;
 
     // SenseGlove params
-#if SENSEGLOVE
     public HandCalibrator leftCalibrator, rightCalibrator;
     private const HandCalibrator.Pose confirmationPose = HandCalibrator.Pose.ThumbUp;
     private const float confirmationPoseError = 0.5f;
-#endif
     private const float confirmationDwellTime = 3;
     private readonly Timer dwellTimer = new Timer();
     private volatile Coroutine coroutine = null;
@@ -34,7 +34,11 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
     void Start()
     {
         onConfirmCallbacks = new Callbacks<bool>();
-        //onAbortCallbacks = new Callbacks<bool>();
+#if SENSEGLOVE
+        inputDevice = InputDevice.SENSE_GLOVE;
+#else
+        inputDevice = InputDevice.CONTROLLERS;
+#endif
     }
 
     void Update()
@@ -127,6 +131,7 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
         }
     }
 #endif
+
     private IEnumerator ControllerConfirm()
     {
         while (true)
@@ -137,7 +142,6 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
                 onConfirmCallbacks.Call(true);
                 yield break;
             }
-            Debug.Log("Wait for any button press on the controller");
             yield return new WaitForEndOfFrame();
         }
     }
