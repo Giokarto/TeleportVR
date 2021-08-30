@@ -40,6 +40,8 @@ namespace Training
                 }
             });
 
+            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => StopTraining(), once: true);
+
             stateMachine.onEnter[State.FORWARD] = (state) =>
             {
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(driveWheelchairAudio.start_intro, queue: true);

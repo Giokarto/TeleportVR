@@ -21,7 +21,6 @@ public class InputManager : Singleton<InputManager>
     {
         GetLeftController();
         GetRightController();
-
         vrGestureRecognizer.Nodded += OnNodded;
         vrGestureRecognizer.HeadShaken += OnHeadShaken;
     }
@@ -106,6 +105,11 @@ public class InputManager : Singleton<InputManager>
         waiting = true;
         nodded = false;
         yield return new WaitUntil(() => nodded);
+        // only advance step if we're still in the HEAD state
+        if (Training.TutorialSteps.Instance.currentState != Training.TutorialSteps.TrainingStep.HEAD)
+        {
+            yield break;
+        }
         waiting = false;
         {
             Debug.Log("moving on");

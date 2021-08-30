@@ -4,7 +4,7 @@
 
 1. Download the main branch of this repository
 2. Open the Project with Unity 2020.3.1f1
-3. Add the UnityPackage `UsedPlugins`, `SenseGloveSDK v1_2` and `Rewired1.1.39.U2020_Trial` from the [Google Drive Folder](https://drive.google.com/drive/folders/1b-Ez4EaQvI0c8lEPN2esZWvLFtbvm95R) to the project. 
+3. Add the UnityPackage `UsedPlugins`, `SenseGloveSDK v1_2`, `Rewired1.1.39.U2020_Trial` and `Ultimate 10 Shaders` from the [Google Drive Folder](https://drive.google.com/drive/folders/1b-Ez4EaQvI0c8lEPN2esZWvLFtbvm95R) to the project. 
 Not all of the plugins are needed, look at the Section [Plugins](#plugins) for more information
 4. Add the Animus SDK to the project (>= Version 2.3.2, newer versions might fix some bugs but might not be compatible) from https://animus.cyberanimus.com/login. 
 Make sure to uncheck `UnityAnimusClient.cs` and `ClientLogic.cs` in the import process.

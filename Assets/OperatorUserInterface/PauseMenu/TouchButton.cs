@@ -56,18 +56,18 @@ public class TouchButton : MonoBehaviour
         set { activationVolume.enabled = value; }
     }
 
-    private TextMeshProUGUI textMeshPro;
-    private TouchButtonActivationVolume activationVolume;
+    [SerializeField] private TextMeshProUGUI textMeshPro;
+    [SerializeField] private TouchButtonActivationVolume activationVolume;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         // Find relevant children
         textMeshPro = gameObject.GetComponentInChildren<TextMeshProUGUI>();
         activationVolume = gameObject.GetComponentInChildren<TouchButtonActivationVolume>();
     }
 
-    public void OnTouchEnter(System.Action<string> callback,bool once= false)
+    public void OnTouchEnter(System.Action<string> callback, bool once = false)
     {
         activationVolume.enterCallbacks.Add(callback, once);
     }
