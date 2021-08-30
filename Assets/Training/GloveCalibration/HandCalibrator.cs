@@ -153,7 +153,7 @@ namespace Training.Calibration
             calibrating = false;
             Debug.Log($"Awaiting connection with {lrName} SenseGlove... ");
 
-            StateManager.Instance.onStateChanged[StateManager.States.HUD].Add((s) => PauseCalibration(), once: false);
+            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => PauseCalibration(), once: true);
         }
         #endregion
 

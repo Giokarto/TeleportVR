@@ -32,8 +32,8 @@ namespace PauseMenu
             // buttons init
             switchScene.OnTouchEnter((t) =>
             {
-                Debug.Log($"switch Scene {switchScenePressed}");
-                if (switchScenePressed) return;
+                //Debug.Log($"switch Scene {switchScenePressed}");
+                //if (switchScenePressed) return;
                 if (Time.time - StateManager.Instance.lastSwitch < minSwitchWait)
                 {
                     Debug.Log($"Attempted to switch scenes but button interaction was too early by {minSwitchWait - Time.time + StateManager.Instance.lastSwitch}s");
@@ -57,10 +57,6 @@ namespace PauseMenu
                         StateManager.Instance.GoToState(StateManager.States.Training);
                         break;
                 }
-            });
-            switchScene.OnTouchExit((t) =>
-            {
-                switchScenePressed = false;
             });
         }
 

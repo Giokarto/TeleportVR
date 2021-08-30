@@ -40,7 +40,7 @@ namespace Training
                 }
             });
 
-            StateManager.Instance.onStateChanged[StateManager.States.HUD].Add((s) => StopTraining(), once: false);
+            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => StopTraining(), once: true);
 
             stateMachine.onEnter[State.FORWARD] = (state) =>
             {
