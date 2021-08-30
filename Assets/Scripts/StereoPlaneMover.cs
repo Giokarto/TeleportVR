@@ -1,14 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 public class StereoPlaneMover : Singleton<StereoPlaneMover>
 {
-    public bool showingImages = false;
+    public bool showingImages = false, manualCalibration = false;
+
     public Transform leftImage, rightImage;
     public Texture2D leftCalibrationTexture, rightCalibrationTexture;
-    [Header("IPD based calibration")]
-    [Range(20, 100)]
-    public float operatorIPD = 63.2f;
+
+    public float operatorIPD
+    {
+        get { return GameConfig.Instance.settings.OperatorIPD; }
+        set { GameConfig.Instance.settings.OperatorIPD = value; }
+    }
 
     [Header("Manual Calibration")]
     public float horizontal = 1;
@@ -21,7 +26,6 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
     private Renderer leftRenderer, rightRenderer;
     private Texture oldLeftTexture, oldRightTexture;
     private bool oldLeftActive, oldRightActive;
-    private bool keyPressed = false;
 
 
     // Start is called before the first frame update
@@ -47,27 +51,26 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
     {
         if (Input.GetKey(KeyCode.H))
         {
-            keyPressed = true;
+            manualCalibration = true;
             horizontal += keyStep * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.J))
         {
-            keyPressed = true;
+            manualCalibration = true;
             vertical += keyStep * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.K))
         {
-            keyPressed = true;
+            manualCalibration = true;
             vertical -= keyStep * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.L))
         {
-            keyPressed = true;
+            manualCalibration = true;
             horizontal -= keyStep * Time.deltaTime;
         }
         else if (Input.GetKeyDown(KeyCode.F))
         {
-            keyPressed = true;
             if (!showingImages)
             {
                 // init & save old values
@@ -95,7 +98,7 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
             }
         }
 
-        if (!keyPressed)
+        if (!manualCalibration)
         {
             UpdateIPD();
         }
