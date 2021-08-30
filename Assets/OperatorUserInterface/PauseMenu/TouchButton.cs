@@ -11,7 +11,18 @@ public class TouchButton : MonoBehaviour
         set
         {
             _text = value;
-            textMeshPro.SetText(_text);
+            TryGetComponent<TextMeshPro>(out var textMesh);
+            if (textMesh != null)
+                textMeshPro.SetText(_text);
+            else
+            {
+                var textObj = GetComponentInChildren<UnityEngine.UI.Text>();
+                if (textObj !=null)
+                {
+                    textObj.text = _text;
+                }
+
+            }
         }
     }
 

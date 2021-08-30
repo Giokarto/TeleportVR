@@ -69,10 +69,10 @@ namespace PauseMenu
                 switch (StateManager.Instance.currentState)
                 {
                     case StateManager.States.Training:
-                        switchScene.text = "Control";
+                        switchScene.text = "CONTROL";
                         break;
                     case StateManager.States.HUD:
-                        switchScene.text = "Training";
+                        switchScene.text = "TRAINING";
                         break;
                 }
             }
