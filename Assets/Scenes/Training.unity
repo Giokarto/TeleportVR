@@ -2428,10 +2428,10 @@ MonoBehaviour:
   joystickWheelchairAudio:
     start_intro: {fileID: 8300000, guid: b27b73bfcc6fd5842bfbf8dbe05d5e61, type: 3}
     howto: {fileID: 8300000, guid: 5c90c054be9d5d349b6b775d4f8189da, type: 3}
-    front: {fileID: 8300000, guid: b123931bca7ebcb41a4d31a7b5662eb0, type: 3}
-    back: {fileID: 8300000, guid: 656659f9a5ec7a54ab992c766c16c83c, type: 3}
-    left: {fileID: 8300000, guid: fafa7df00a29ea5478f4ade1cbfddfbc, type: 3}
-    right: {fileID: 8300000, guid: 5fa628669bda52141b29b6d21d7085e7, type: 3}
+    front: {fileID: 8300000, guid: 3df00dd206cbdbf4c9ebe12edc9a0ce4, type: 3}
+    back: {fileID: 8300000, guid: 653c5d68e91672d45abac2eb32942c46, type: 3}
+    left: {fileID: 8300000, guid: ad88ab48fd3063e4687e17174347be1e, type: 3}
+    right: {fileID: 8300000, guid: b6e7899da46fda84fb85e9c75d8f9e7f, type: 3}
 --- !u!1001 &1355194868
 PrefabInstance:
   m_ObjectHideFlags: 0
