@@ -74,12 +74,11 @@ namespace Training
 
         void Start()
         {
-            Debug.Log(StateManager.Instance.TimesStateVisited(StateManager.States.Training));
+            Debug.Log($"Training State visited {StateManager.Instance.TimesStateVisited(StateManager.States.Training)} times");
             // get a reference to this singleton, as scripts from other scenes are not able to do this
             _ = Instance;
             if (StateManager.Instance.TimesStateVisited(StateManager.States.Training) <= 1)
             {
-
                 waitStarted = true;
                 StartCoroutine(StartTrainingAfter(0));
             }
@@ -104,10 +103,9 @@ namespace Training
                     );
                 waitingForNod = true;
             };
-            // stop pause menu on 
-
             stateMachine.onExit[TrainingStep.HEAD] = (step) =>
             {
+                waitingForNod = false;
 #if RUDDER
                 RudderPedals.PresenceDetector.Instance.canPause = false;
 #endif
@@ -116,7 +114,7 @@ namespace Training
             stateMachine.onEnter[TrainingStep.LEFT_ARM] = (step) =>
             {
 #if SENSEGLOVE
-                audioManager.ScheduleAudioClip(senseGloveAudio.leftArm, queue: true);
+                audioManager.ScheduleAudioClip(senseGloveAudio.leftArm, queue: false);
                 //audioManager.ScheduleAudioClip(senseGloveAudio.leftBall, queue: true);
                 PublishNotification("Move your left arm and try to touch the blue ball");
 #else
@@ -137,10 +135,10 @@ namespace Training
             {
 #if SENSEGLOVE
                 PublishNotification("Move your left hand into the blue box");
-                audioManager.ScheduleAudioClip(senseGloveAudio.leftHandStart);
+                audioManager.ScheduleAudioClip(senseGloveAudio.leftHandStart, queue: false);
                 leftCalibrator.OnDone(s => Next(), once: true);
 #else
-                audioManager.ScheduleAudioClip(controllerAudio.leftHand, queue: true, delay: 0);
+                audioManager.ScheduleAudioClip(controllerAudio.leftHand, queue: false, delay: 0);
                 PublishNotification("Press the grip button on the side to close the hand.");
 #endif
             };
@@ -155,7 +153,7 @@ namespace Training
             stateMachine.onEnter[TrainingStep.RIGHT_ARM] = (step) =>
             {
 #if SENSEGLOVE
-                audioManager.ScheduleAudioClip(senseGloveAudio.rightArm);
+                audioManager.ScheduleAudioClip(senseGloveAudio.rightArm, queue: false);
                 //audioManager.ScheduleAudioClip(senseGloveAudio.rightBall, queue: true);
                 PublishNotification("Move your right arm and try to touch the blue ball");
 #else
@@ -176,32 +174,27 @@ namespace Training
             {
 #if SENSEGLOVE
                 PublishNotification("Move your right hand into the blue box");
-                audioManager.ScheduleAudioClip(senseGloveAudio.rightHandStart);
+                audioManager.ScheduleAudioClip(senseGloveAudio.rightHandStart, queue: false);
                 rightCalibrator.OnDone(s => Next(), once: true);
 #else
-                audioManager.ScheduleAudioClip(controllerAudio.rightHand, queue: true, delay: 0);
+                audioManager.ScheduleAudioClip(controllerAudio.rightHand, queue: false, delay: 0);
                 PublishNotification("Press the grip button to close the hand.");
 #endif
             };
-
 #if SENSEGLOVE
             stateMachine.onExit[TrainingStep.RIGHT_HAND] = (step) =>
             {
-
                 rightCalibrator.PauseCalibration();
-
             };
 
 
             stateMachine.onEnter[TrainingStep.ARM_LENGTH] = (step) =>
             {
-                //Next();
                 armLengthCalibration.OnDone(state => Next(), once: true);
                 armLengthCalibration.StartCalibration();
             };
             stateMachine.onExit[TrainingStep.ARM_LENGTH] = (step) =>
             {
-
                 armLengthCalibration.StopCalibration();
             };
 #endif
@@ -209,7 +202,6 @@ namespace Training
             stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
             {
                 wheelChairTraining.OnDone((s) => Next(), once: true);
-
                 wheelChairTraining.StartTraining();
             };
             stateMachine.onExit[TrainingStep.WHEELCHAIR] = (step) =>

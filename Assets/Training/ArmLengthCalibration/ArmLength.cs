@@ -141,7 +141,6 @@ namespace Training.Calibration.ArmLength
 
         private void Fit(Transform hand, Transform objective, Transform shoulder, Transform touchPoint)
         {
-
             float origArmLength = (hand.position - touchPoint.position).magnitude;
             float newArmLength = (objective.position - touchPoint.position).magnitude;
             float factor = newArmLength / origArmLength;
