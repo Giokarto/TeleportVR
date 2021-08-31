@@ -932,10 +932,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseMenuAudio:
-    start: {fileID: 0}
-    paused: {fileID: 0}
-    unpause: {fileID: 0}
-    teleport: {fileID: 0}
+    start: {fileID: 8300000, guid: 0b9f5f96d3342964b8c5785da1d30ccd, type: 3}
+    paused: {fileID: 8300000, guid: 1eb0fe5ae55c1dd4cbbbfd4514897a99, type: 3}
+    unpause: {fileID: 8300000, guid: ef547e59bd4e0814192e8a5bbd06267f, type: 3}
+    teleport: {fileID: 8300000, guid: 9ac6357f1b83f284891b68a606fa1332, type: 3}
 --- !u!4 &515184336
 Transform:
   m_ObjectHideFlags: 0

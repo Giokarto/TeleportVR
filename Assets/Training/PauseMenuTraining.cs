@@ -1,4 +1,3 @@
-#if RUDDER
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +20,7 @@ namespace Training
 
         private Callbacks<State> onDoneCallbacks;
 
+#if RUDDER
         // Start is called before the first frame update
         void Start()
         {
@@ -82,6 +82,6 @@ namespace Training
         public void StopTraining() => currentState = State.DONE;
 
         public void OnDone(System.Action<State> callback, bool once = false) => onDoneCallbacks.Add(callback, once);
+#endif
     }
 }
-#endif
