@@ -35,6 +35,14 @@ namespace Widgets
             image.enabled = false;
         }
 
+        public void SetIconAlpha(float alpha)
+        {
+            image = gameObject.GetComponentInChildren<RawImage>();
+            var c = image.color;
+            c.a = alpha;
+            image.color = c;
+        }
+
         /// <summary>
         /// Initializes view.
         /// </summary>

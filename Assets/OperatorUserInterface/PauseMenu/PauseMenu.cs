@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,18 +6,17 @@ using UnityEngine;
 
 namespace PauseMenu
 {
-    [ExecuteAlways]
     public class PauseMenu : Singleton<PauseMenu>
     {
         public bool show;
         public GameObject child;
-        public float handMatchThreshold = 0.1f;
 
         [Header("UI Elements")]
         public TouchButton switchScene;
 
         public GameObject matchHands;
         public Widgets.Completion matchHandsCompletion;
+        public float minSwitchWait = 3f;
 
 
         private bool switchScenePressed = false;
@@ -26,6 +26,7 @@ namespace PauseMenu
         // Start is called before the first frame update
         void Start()
         {
+#if RUDDER
             // recover values presence detector when this script is reloaded
             show = RudderPedals.PresenceDetector.Instance.isPaused;
             switchScenePressed = RudderPedals.PresenceDetector.Instance.isPaused;
@@ -33,7 +34,13 @@ namespace PauseMenu
             // buttons init
             switchScene.OnTouchEnter((t) =>
             {
-                if (switchScenePressed) return;
+                //Debug.Log($"switch Scene {switchScenePressed}");
+                //if (switchScenePressed) return;
+                if (Time.time - StateManager.Instance.lastSwitch < minSwitchWait)
+                {
+                    Debug.Log($"Attempted to switch scenes but button interaction was too early by {minSwitchWait - Time.time + StateManager.Instance.lastSwitch}s");
+                    return;
+                }
 
                 switchScenePressed = true;
                 switch (StateManager.Instance.currentState)
@@ -53,26 +60,25 @@ namespace PauseMenu
                         break;
                 }
             });
-            switchScene.OnTouchExit((t) =>
-            {
-                switchScenePressed = false;
-            });
+#else
+            switchScene.gameObject.SetActive(false);
+            transform.gameObject.SetActive(false);
+#endif
         }
-
 
 
         // Update is called once per frame
         void Update()
         {
-            if (Application.IsPlaying(gameObject))
+            if (Application.IsPlaying(gameObject) && gameObject.activeInHierarchy)
             {
                 switch (StateManager.Instance.currentState)
                 {
                     case StateManager.States.Training:
-                        switchScene.text = "Control";
+                        switchScene.text = "CONTROL";
                         break;
                     case StateManager.States.HUD:
-                        switchScene.text = "Training";
+                        switchScene.text = "TRAINING";
                         break;
                 }
             }

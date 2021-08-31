@@ -124,7 +124,13 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
     private Scenes currentScene = Scenes.NONE;
     private int rightIdx = 0, leftIdx = 0;
+    private AnimusManager.AnimusClientManager animusManager;
+    private bool inHUD = false;
 
+    public enum Modality
+    {
+        VISION, AUDITION, VOICE, MOTOR, EMOTION
+    }
     private struct Undistort
     {
         public Mat mapx, mapy;
@@ -163,6 +169,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         // controls an led ring (optional)
         StartCoroutine(SendLEDCommand(LEDS_CONNECTING));
         StartCoroutine(StartBodyTransition());
+
+        animusManager = ClientLogic.Instance.AnimusManager;
     }
 
 #if ANIMUS_USE_OPENCV
@@ -246,40 +254,6 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         // humanHead = TrackingSpace.Find("CenterEyeAnchor");
         humanLeftHand = TrackingSpace.Find("LeftHandAnchor");
         humanRightHand = TrackingSpace.Find("RightHandAnchor");
-
-        // The code below might be needed if the Body Transition gets implemented again
-        // robotDriver = robotBody.GetComponent<NaoAnimusDriver>();
-        // if (robotDriver != null)
-        // {
-        // 	robotBase = robotDriver.topCamera.gameObject.transform.parent.transform;
-        // 	robotLeftHandObjective = robotDriver.leftHandTarget.transform;
-        // 	robotRightHandObjective = robotDriver.rightHandTarget.transform;
-        // 	bodyToBaseOffset = robotBase.position - robotBody.transform.position;
-        // }
-        // else
-        // {
-        // 	robotBase = robotBody.transform;
-        // 	bodyToBaseOffset = Vector3.zero;
-        // }
-        //
-        // var roboTransform = robotBody.transform;
-        // Vector3 startPos = roboTransform.position;
-        // Vector3 endPos = humanHead.position - bodyToBaseOffset;
-        // Vector3 startAngles = roboTransform.eulerAngles;
-
-        // 		for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / bodyTransitionDuration)
-        // 		{
-        // 			bodyToBaseOffset = robotBase.position - robotBody.transform.position;
-        // 			endPos = humanHead.position - bodyToBaseOffset;
-        // 			roboTransform.position = new Vector3(Mathf.SmoothStep(startPos.x, endPos.x, t),
-        // 												 Mathf.SmoothStep(startPos.y, endPos.y, t),
-        // 												 Mathf.SmoothStep(startPos.z, endPos.z, t));
-
-        // 			roboTransform.eulerAngles = new Vector3(Mathf.SmoothStep(startAngles.x, 0, t),
-        // 													Mathf.SmoothStep(startAngles.y, 0, t),
-        // 													Mathf.SmoothStep(startAngles.z, 0, t));
-        // 			yield return null;
-        // 		}
 
         bodyTransitionReady = true;
     }
@@ -382,15 +356,15 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     private void SetDisplaystate()
     {
         Scenes s = AdditiveSceneManager.GetCurrentScene();
-        if (currentScene == s)
-        {
-            return;
-        }
+        //if (currentScene == s)
+        //{
+        //    return;
+        //}
         currentScene = s;
 
-        bool inHUD = currentScene == Scenes.HUD;
-        _leftPlane.SetActive(inHUD);
-        _rightPlane.SetActive(stereovision && inHUD);
+        inHUD = currentScene == Scenes.HUD;
+        _leftPlane.SetActive(inHUD && animusManager.openModalitiesSuccess);
+        _rightPlane.SetActive(stereovision && inHUD && animusManager.openModalitiesSuccess);
 
 
     }
@@ -853,24 +827,25 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
             }
 #endif
 
-#if RUDDER
-                // wheelchair
-                Vector2 wheelcharDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
-                // left
-                motorAngles.Add(wheelcharDrive.x);
-                // right
-                motorAngles.Add(wheelcharDrive.y);
+//#if RUDDER
+                        
+            // wheelchair
+            Vector2 wheelchairDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
+            // left
+            motorAngles.Add(wheelchairDrive.x);
+            // right
+            motorAngles.Add(wheelchairDrive.y);
 
-#else
-            Vector2 axis2D;
-            if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
-                InputManager.Instance.controllerLeft[0]
-                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
-            {
-                motorAngles.Add(axis2D[0]);
-                motorAngles.Add(axis2D[1]);
-            }
-#endif
+//#else
+//            Vector2 axis2D;
+//            if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
+//                InputManager.Instance.controllerLeft[0]
+//                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
+//            {
+//                motorAngles.Add(axis2D[0]);
+//                motorAngles.Add(axis2D[1]);
+//            }
+//#endif
 
                 motorMsg.Data.Clear();
                 motorMsg.Data.Add(motorAngles);
@@ -904,6 +879,12 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     {
         // Enable or disable the displays
         SetDisplaystate();
+
+        // update widgets
+        WidgetInteraction.MarkAnimusConnected(animusManager.connectedToRobotSuccess);
+        WidgetInteraction.MarkModalityConnected(Modality.AUDITION, animusManager.openModalitiesSuccess);
+        WidgetInteraction.MarkModalityConnected(Modality.VOICE, animusManager.openModalitiesSuccess);
+        WidgetInteraction.MarkModalityConnected(Modality.MOTOR, animusManager.openModalitiesSuccess && inHUD);
     }
 
     // --------------------------Voice Modality----------------------------------

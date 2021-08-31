@@ -31,6 +31,8 @@ namespace Training.Calibration.ArmLength
         {
             currentState = State.START;
 
+            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => StopCalibration(), once: true);
+
             // get objectives
             foreach (var comp in PlayerRig.Instance.gameObject.GetComponentsInChildren<XROffset>())
             {
@@ -58,7 +60,6 @@ namespace Training.Calibration.ArmLength
 
             stateMachine.onEnter[State.RIGHT_SHOULDER_TOUCH] = (state) =>
             {
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.start);
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.touch_right,
                     onStart: () =>
                     {

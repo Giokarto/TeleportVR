@@ -21,7 +21,7 @@ namespace Training.Calibration
             Dwell,
             TestInit,
             Test,
-            Done,
+            Done
         }
 
         public enum Pose
@@ -79,6 +79,7 @@ namespace Training.Calibration
         public Step currentStep = Step.ShowInstruction;
         public bool calibrating = false;
 
+#if SENSEGLOVE
         private SG_SenseGloveHardware hand;
         private InterpolationSet_IMU interpolator;
         private CalibrationPose[] poses;
@@ -152,6 +153,8 @@ namespace Training.Calibration
             virtualHand.SetActive(false);
             calibrating = false;
             Debug.Log($"Awaiting connection with {lrName} SenseGlove... ");
+
+            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => PauseCalibration(), once: true);
         }
         #endregion
 
@@ -430,6 +433,6 @@ namespace Training.Calibration
             poseValues = items;
             return true;
         }
+#endif
     }
 }
-

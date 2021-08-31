@@ -1,4 +1,5 @@
 ﻿using AnimusManager;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Widgets
@@ -30,11 +31,21 @@ namespace Widgets
             Invoke(function, 0);
         }
 
+        private static Dictionary<UnityAnimusClient.Modality, int> modalityMap = new Dictionary<UnityAnimusClient.Modality, int>()
+        {
+            { UnityAnimusClient.Modality.VOICE, 25 },
+            { UnityAnimusClient.Modality.AUDITION, 26},
+            { UnityAnimusClient.Modality.MOTOR, 21},
+            //{ UnityAnimusClient.Modality.VISION , 28},
+           // { UnityAnimusClient.Modality.EMOTION , 29}
+        };
+
+
         /// <summary>
-	/// allows to toggle if the explanation childWidgets with the attribute "trainingInfo" set to true 
-	/// are shown (by setting the showExplanation attribute to true) or not shown (by setting the showExplanation
-	/// attribute to false) 
-	///</summary>
+        /// allows to toggle if the explanation childWidgets with the attribute "trainingInfo" set to true 
+        /// are shown (by setting the showExplanation attribute to true) or not shown (by setting the showExplanation
+        /// attribute to false) 
+        ///</summary>
         public void ToggleInformation()
         {
             Widget widget = Manager.Instance.FindWidgetWithID(214);
@@ -175,6 +186,25 @@ namespace Widgets
             Widget wifiWidget = Manager.Instance.FindWidgetWithID(23);
             wifiWidget.GetContext().currentIcon = icon;
             wifiWidget.ProcessRosMessage(wifiWidget.GetContext());
+        }
+
+        public static void MarkAnimusConnected(bool connected)
+        {
+            var wifiWidget = Manager.Instance.FindWidgetWithID(23);
+            wifiWidget.GetContext().currentIconAlpha = connected ? 1f : 0.04f;
+            wifiWidget.ProcessRosMessage(wifiWidget.GetContext());
+        }
+
+        public static void MarkModalityConnected(UnityAnimusClient.Modality modality, bool connected)
+        {
+            modalityMap.TryGetValue(modality, out var id);
+            if (!id.Equals(null))
+            {
+                var widget = Manager.Instance.FindWidgetWithID(id);
+                widget.GetContext().currentIconAlpha = connected ? 1f : 0.04f;
+                widget.ProcessRosMessage(widget.GetContext());
+            }
+                
         }
 
         /// <summary>

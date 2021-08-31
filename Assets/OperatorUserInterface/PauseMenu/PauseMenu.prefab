@@ -116,7 +116,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &6138654670900758917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,10 +148,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   show: 1
   child: {fileID: 6138654671649566930}
-  handMatchThreshold: 0.1
   switchScene: {fileID: 5257007332054213766}
   matchHands: {fileID: 8728879411835312775}
   matchHandsCompletion: {fileID: 3191040275516352754}
+  minSwitchWait: 1
 --- !u!1 &6138654671649566930
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,9 +577,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7650628202100457475, guid: c1980608c7cd48b4f8da1ec14ad350c4,
         type: 3}
-      propertyPath: m_fontSizeBase
-      value: 4
+      propertyPath: m_fontSize
+      value: 36
       objectReference: {fileID: 0}
+    - target: {fileID: 7650628202100457475, guid: c1980608c7cd48b4f8da1ec14ad350c4,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee,
+        type: 2}
+    - target: {fileID: 7650628202100457475, guid: c1980608c7cd48b4f8da1ec14ad350c4,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 7650628202100457475, guid: c1980608c7cd48b4f8da1ec14ad350c4,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7650628202100457502, guid: c1980608c7cd48b4f8da1ec14ad350c4,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -781,6 +797,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSizeBase
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 7650628202100457475, guid: c1980608c7cd48b4f8da1ec14ad350c4,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7650628202100457475, guid: c1980608c7cd48b4f8da1ec14ad350c4,
         type: 3}

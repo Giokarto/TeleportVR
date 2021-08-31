@@ -20,12 +20,15 @@ namespace Training
 
         private Callbacks<State> onDoneCallbacks;
 
+#if RUDDER
         // Start is called before the first frame update
         void Start()
         {
             // neutral state, triggering no callbacks
             currentState = State.INIT;
             onDoneCallbacks = new Callbacks<State>();
+
+            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => StopTraining(), once: true);
 
             stateMachine.onEnter[State.START] = (state) =>
             {
@@ -79,5 +82,6 @@ namespace Training
         public void StopTraining() => currentState = State.DONE;
 
         public void OnDone(System.Action<State> callback, bool once = false) => onDoneCallbacks.Add(callback, once);
+#endif
     }
 }

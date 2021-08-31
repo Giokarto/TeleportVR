@@ -6,8 +6,8 @@
 	"childWidgetId": 92,
 	"relativeChildPosition": "bottom",
 	"unfoldChildDwellTimer": 1.0,
-	"icons": [ "Micro", "MicroDisabled" ],
-	"currentIcon": "Micro",
+	"icons": [ "mic", "Micro", "MicroDisabled" ],
+	"currentIcon": "mic",
 	"onActivate": "ToggleMicro",
 	"scale" : 1
 }
