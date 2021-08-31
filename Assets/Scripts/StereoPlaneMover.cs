@@ -22,6 +22,14 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
     public float keyStep = 0.1f;
 
 
+    [Header("Auto Calibration Values")]
+    // y = a * x + b
+    public float horizontal_a;
+    public float horizontal_b;
+    public float vertical_a;
+    public float vertical_b;
+
+
     private Vector3 leftInitPos, rightInitPos;
     private Renderer leftRenderer, rightRenderer;
     private Texture oldLeftTexture, oldRightTexture;
@@ -42,8 +50,8 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
     {
         // linear regression of user derived calibration values
         // Study Data can be found here: https://docs.google.com/spreadsheets/d/17Bjk4q2Xs9SZGZ0OZsH9OgV_PBdQkzd_srlOClHPXj4/edit?usp=sharing 
-        horizontal = operatorIPD * 0.0170266812f - 0.6450280125f;
-        vertical = operatorIPD * 0.006009852773f - 0.1035260069f;
+        horizontal = operatorIPD * horizontal_a + horizontal_b;
+        vertical = operatorIPD * vertical_a + vertical_b;
     }
 
     // Update is called once per frame
