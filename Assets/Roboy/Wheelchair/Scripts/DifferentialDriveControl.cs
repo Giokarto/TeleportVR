@@ -38,6 +38,7 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
 
     private void Update()
     {
+        // TODO: move keyboard controls outta here
         if (Input.GetKey(KeyCode.RightArrow))
         {
             V_L = 0.2f;

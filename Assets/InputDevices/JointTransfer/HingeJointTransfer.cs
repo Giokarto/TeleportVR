@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using BioIK;
 using System;
-#if SENSEGLOVE
 using SG;
-#endif
 
 
 namespace JointTransfer
@@ -30,11 +28,10 @@ namespace JointTransfer
         [Tooltip("If the output angle should be inverted")]
         public bool invert = false;
 
-        public AngleRangeStore angleRangeStore;
 
-#if SENSEGLOVE
+        public AngleRangeStore angleRangeStore;
         public SG_SenseGloveHardware hand;
-#endif
+
         public float angle;
         public float input, minAngle, maxAngle;
 
@@ -81,23 +78,24 @@ namespace JointTransfer
 
         private static float getRotationOnAxis(Quaternion rot, RotationAxis axis)
         {
-            return axis switch
+            switch (axis)
             {
-                RotationAxis.X => rot.eulerAngles.x,
-                RotationAxis.Y => rot.eulerAngles.y,
-                RotationAxis.Z => rot.eulerAngles.z,
-                _ => float.NaN,
-            };
+                case RotationAxis.X: return rot.eulerAngles.x;
+                case RotationAxis.Y: return rot.eulerAngles.y;
+                case RotationAxis.Z: return rot.eulerAngles.z;
+                default: return float.NaN;
+            }
         }
+
         private static float getRotationOnAxis(Vector3 rot, RotationAxis axis)
         {
-            return axis switch
+            switch(axis)
             {
-                RotationAxis.X => rot.x,
-                RotationAxis.Y => rot.y,
-                RotationAxis.Z => rot.z,
-                _ => float.NaN,
-            };
+                case RotationAxis.X: return rot.x;
+                case RotationAxis.Y: return rot.y;
+                case RotationAxis.Z: return rot.z;
+                default: return float.NaN;
+            }
         }
 
         private IEnumerator WaitAndInit(float seconds)

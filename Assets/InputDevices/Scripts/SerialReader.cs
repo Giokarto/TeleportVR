@@ -17,6 +17,7 @@ namespace RudderPedals
         public float readTimeout = 0.01f, refresh = 0;
         [SerializeField] private bool connecting = false;
 
+#if RUDDER
         void Awake()
         {
             StartCoroutine(TryConnection());
@@ -41,7 +42,7 @@ namespace RudderPedals
                 }
                 catch (System.IO.IOException)
                 {
-                Debug.LogError($"Could not open serial connection {port} @ {baudRate} in {retryRate}s");
+                    Debug.LogError($"Could not open serial connection {port} @ {baudRate} in {retryRate}s");
                 }
                 yield return new WaitForSeconds(retryRate);
             }
@@ -74,7 +75,7 @@ namespace RudderPedals
                         stream.WriteLine("GET");
                         stream.BaseStream.Flush();
                         var res = stream.ReadLine();
-                        
+
                         if (res != null)
                         {
                             if (res.StartsWith("ERROR:"))
@@ -112,6 +113,6 @@ namespace RudderPedals
             }
         }
 
+#endif
     }
-
 }

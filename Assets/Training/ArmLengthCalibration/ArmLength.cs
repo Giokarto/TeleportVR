@@ -60,7 +60,6 @@ namespace Training.Calibration.ArmLength
 
             stateMachine.onEnter[State.RIGHT_SHOULDER_TOUCH] = (state) =>
             {
-                TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.start);
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.touch_right,
                     onStart: () =>
                     {
