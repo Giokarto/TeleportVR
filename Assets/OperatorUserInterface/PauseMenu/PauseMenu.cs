@@ -26,7 +26,6 @@ namespace PauseMenu
         // Start is called before the first frame update
         void Start()
         {
-
 #if RUDDER
             // recover values presence detector when this script is reloaded
             show = RudderPedals.PresenceDetector.Instance.isPaused;
@@ -62,8 +61,8 @@ namespace PauseMenu
                 }
             });
 #else
-            transform.gameObject.SetActive(false);
             switchScene.gameObject.SetActive(false);
+            transform.gameObject.SetActive(false);
 #endif
         }
 
@@ -95,4 +94,3 @@ namespace PauseMenu
     }
 
 }
-//#endif

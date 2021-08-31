@@ -1,4 +1,3 @@
-#if RUDDER
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
@@ -76,6 +75,7 @@ namespace RudderPedals
 
         private Callbacks<bool> onPause, onUnpause;
 
+#if RUDDER
         void Awake()
         {
             StartCoroutine(pedalDetector.readAsyncContinously(callback: ParseData,
@@ -298,6 +298,6 @@ namespace RudderPedals
         {
             ResetMatchHands();
         }
+#endif
     }
 }
-#endif
