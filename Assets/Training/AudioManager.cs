@@ -73,6 +73,11 @@ namespace Training
                 {
                     source.Stop();
                 }
+                foreach (var entry in callbacks)
+                {
+                    StartCoroutine(WaitAndCall(0, entry.Value));
+                }
+                callbacks.Clear();
             }
             audioSourceArray[nextItemIdx].clip = clip;
 
@@ -80,7 +85,7 @@ namespace Training
 
             prevStart = AudioSettings.dspTime + delay;
             audioSourceArray[nextItemIdx].PlayScheduled(prevStart);
-            Debug.Log($"Audiosource #{nextItemIdx}: scheduled {clip.name} at {prevStart}");
+            // Debug.Log($"Audiosource #{nextItemIdx}: scheduled {clip.name} at {prevStart}");
 
             prevDuration = (double)clip.samples / clip.frequency;
 
