@@ -39,7 +39,7 @@ namespace Training
         public Calibration.ArmLength.ArmLength armLengthCalibration;
         public WheelchairTraining wheelChairTraining;
         public PauseMenuTraining pauseMenuTraining;
-        
+
 
         //int toggle;
         //double prevDuration = 0.0;
@@ -92,7 +92,7 @@ namespace Training
             //NextStep();
             //trainingStarted = false;
 
-#region StateDefinition
+            #region StateDefinition
 
             stateMachine.onEnter[TrainingStep.HEAD] = (step) =>
             {
@@ -190,7 +190,7 @@ namespace Training
 
                 rightCalibrator.PauseCalibration();
 
-        };
+            };
 
 
             stateMachine.onEnter[TrainingStep.ARM_LENGTH] = (step) =>
@@ -201,7 +201,7 @@ namespace Training
             };
             stateMachine.onExit[TrainingStep.ARM_LENGTH] = (step) =>
             {
-                
+
                 armLengthCalibration.StopCalibration();
             };
 #endif
@@ -209,7 +209,7 @@ namespace Training
             stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
             {
                 wheelChairTraining.OnDone((s) => Next(), once: true);
-               
+
                 wheelChairTraining.StartTraining();
             };
             stateMachine.onExit[TrainingStep.WHEELCHAIR] = (step) =>
@@ -240,7 +240,7 @@ namespace Training
                 audioManager.ScheduleAudioClip(miscAudio.enterButton, queue: true);
             };
 #endif
-#endregion
+            #endregion
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace Training
                     audio = miscAudio.wrongButton;
                     break;
             }
-           
+
             if (lastCorrectedAtStep != currentState && (currentState == TrainingStep.LEFT_ARM || currentState == TrainingStep.RIGHT_ARM))
             {
                 Debug.Log("Correcting User");
@@ -322,9 +322,11 @@ namespace Training
                 //audioManager.ClearQueue();
                 Next();
             }
+            else if (Input.GetKeyDown(KeyCode.B))
+            {
+                StopAllCoroutines();
+                Prev();
+            }
         }
-
     }
-
-
 }

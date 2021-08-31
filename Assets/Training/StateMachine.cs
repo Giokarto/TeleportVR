@@ -17,7 +17,7 @@ namespace Training
                     onExit[_state](_state);
                 }
                 _state = value;
-                if (onEnter.ContainsKey(_state) && !sameState)
+                if (onEnter.ContainsKey(_state) && !sameState && !silent)
                 {
                     onEnter[_state](_state);
                 }
@@ -27,11 +27,19 @@ namespace Training
         private T _state;
         public Dictionary<T, Action<T>> onEnter;
         public Dictionary<T, Action<T>> onExit;
+        private bool silent = false;
 
         public StateMachine()
         {
             onEnter = new Dictionary<T, Action<T>>();
             onExit = new Dictionary<T, Action<T>>();
+        }
+
+        public void GoNoEnterCallback(T state)
+        {
+            silent = true;
+            State = state;
+            silent = false;
         }
 
         //public void ForceTrigger(T state)

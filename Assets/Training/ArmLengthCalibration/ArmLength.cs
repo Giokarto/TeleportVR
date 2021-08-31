@@ -165,7 +165,7 @@ namespace Training.Calibration.ArmLength
             Next();
         }
 
-        public void StopCalibration() => currentState = State.DONE;
+        public void StopCalibration() => GoToNoEnterCallback(State.DONE);
 
         public void OnDone(System.Action<State> callback, bool once = false) => onDoneCallbacks.Add(callback, once);
 

@@ -155,7 +155,7 @@ namespace Training
             Next();
         }
 
-        public void StopTraining() => currentState = State.DONE;
+        public void StopTraining() => GoToNoEnterCallback(State.DONE);
 
         public void OnDone(System.Action<State> callback, bool once = false) => onDoneCallbacks.Add(callback, once);
     }
