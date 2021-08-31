@@ -6,8 +6,8 @@
 	"childWidgetId": 93,
 	"relativeChildPosition": "bottom",
 	"unfoldChildDwellTimer": 1.0,
-	"icons": [ "Speakers", "SpeakersOff" ],
-	"currentIcon": "Speakers",
+	"icons": [ "speaker","Speakers", "SpeakersOff" ],
+	"currentIcon": "speaker",
 	"onActivate": "ToggleSpeakers",
 	"scale" : 1
 }

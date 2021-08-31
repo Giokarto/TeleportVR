@@ -124,7 +124,13 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
     private Scenes currentScene = Scenes.NONE;
     private int rightIdx = 0, leftIdx = 0;
+    private AnimusManager.AnimusClientManager animusManager;
+    private bool inHUD = false;
 
+    public enum Modality
+    {
+        VISION, AUDITION, VOICE, MOTOR, EMOTION
+    }
     private struct Undistort
     {
         public Mat mapx, mapy;
@@ -163,6 +169,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         // controls an led ring (optional)
         StartCoroutine(SendLEDCommand(LEDS_CONNECTING));
         StartCoroutine(StartBodyTransition());
+
+        animusManager = ClientLogic.Instance.AnimusManager;
     }
 
 #if ANIMUS_USE_OPENCV
@@ -348,15 +356,15 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     private void SetDisplaystate()
     {
         Scenes s = AdditiveSceneManager.GetCurrentScene();
-        if (currentScene == s)
-        {
-            return;
-        }
+        //if (currentScene == s)
+        //{
+        //    return;
+        //}
         currentScene = s;
 
-        bool inHUD = currentScene == Scenes.HUD;
-        _leftPlane.SetActive(inHUD);
-        _rightPlane.SetActive(stereovision && inHUD);
+        inHUD = currentScene == Scenes.HUD;
+        _leftPlane.SetActive(inHUD && animusManager.openModalitiesSuccess);
+        _rightPlane.SetActive(stereovision && inHUD && animusManager.openModalitiesSuccess);
 
 
     }
@@ -868,6 +876,12 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     {
         // Enable or disable the displays
         SetDisplaystate();
+
+        // update widgets
+        WidgetInteraction.MarkAnimusConnected(animusManager.connectedToRobotSuccess);
+        WidgetInteraction.MarkModalityConnected(Modality.AUDITION, animusManager.openModalitiesSuccess);
+        WidgetInteraction.MarkModalityConnected(Modality.VOICE, animusManager.openModalitiesSuccess);
+        WidgetInteraction.MarkModalityConnected(Modality.MOTOR, animusManager.openModalitiesSuccess && inHUD);
     }
 
     // --------------------------Voice Modality----------------------------------
