@@ -9927,7 +9927,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPaused: 0
   pauseAudio: 1
-  stateManager: {fileID: 0}
+  stateManager: {fileID: 1001686986}
   leftGlove:
     copyTransform: {fileID: 666088954}
     xrController: {fileID: 6021411801494514841}
@@ -9936,7 +9936,7 @@ MonoBehaviour:
     copyTransform: {fileID: 430358048}
     xrController: {fileID: 6021411800947965129}
     ghostHand: {fileID: 2131390192}
-  matchHandThreshold: 0
+  matchHandThreshold: 0.2
   waitTime: 5
   pedalDetector: {fileID: 1009321866}
 --- !u!1 &1311692030
