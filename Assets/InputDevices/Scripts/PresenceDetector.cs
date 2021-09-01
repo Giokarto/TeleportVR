@@ -76,7 +76,7 @@ namespace RudderPedals
         public TrackerSwitcher rightGlove;
         public float matchHandThreshold = 0.0f;
         // time to wait until unpausing (seconds)
-        public float waitTime = 5f;
+        public float holdTime = 5f;
         private Coroutine matchHandsCouroutine = null;
 
         public SerialReader pedalDetector;
@@ -204,7 +204,7 @@ namespace RudderPedals
             Debug.Log("TryUnpause");
 
             waitTimer = new Timer();
-            waitTimer.SetTimer(waitTime, timeIsUp: () =>
+            waitTimer.SetTimer(holdTime, timeIsUp: () =>
              {
                  ResetMatchHands();
                  Unpause();

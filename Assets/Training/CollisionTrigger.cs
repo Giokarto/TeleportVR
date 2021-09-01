@@ -9,24 +9,13 @@ namespace Training
 
         public string requiredTag;
         public float stationaryThreshold = 0.01f;
-        private Callbacks<float> onTriggerEnter = new Callbacks<float>() , onTriggerExit = new Callbacks<float>();
-        private Vector3 prev1, prev2;
-
-        void Start()
-        {
-        }
-
-        void FixedUpdate()
-        {
-            prev2 = prev1;
-            prev1 = transform.position;
-        }
+        private Callbacks<Vector3> onTriggerEnter = new Callbacks<Vector3>() , onTriggerExit = new Callbacks<Vector3>();
 
         private void OnTriggerEnter(Collider other)
         {
             if (other != null && other.CompareTag(requiredTag))
             {
-                onTriggerEnter.Call((prev2 - transform.position).magnitude / Time.fixedDeltaTime);
+                onTriggerEnter.Call(transform.position);
             }
         }
 
@@ -34,12 +23,12 @@ namespace Training
         {
             if (other != null && other.CompareTag(requiredTag))
             {
-                onTriggerExit.Call((prev2 - transform.position).magnitude / Time.fixedDeltaTime);
+                onTriggerExit.Call(transform.position);
             }
         }
 
-        public void TriggerEnterCallback(System.Action<float> callback, bool once = false) => onTriggerEnter.Add(callback, once);
+        public void TriggerEnterCallback(System.Action<Vector3> callback, bool once = false) => onTriggerEnter.Add(callback, once);
 
-        public void TriggerExitCallback(System.Action<float> callback, bool once = false) => onTriggerEnter.Add(callback, once);
+        public void TriggerExitCallback(System.Action<Vector3> callback, bool once = false) => onTriggerEnter.Add(callback, once);
     }
 }

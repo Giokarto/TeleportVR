@@ -151,7 +151,7 @@ MonoBehaviour:
   switchScene: {fileID: 2961832793245544162}
   matchHands: {fileID: 8728879411835312775}
   matchHandsCompletion: {fileID: 3191040275516352754}
-  minSwitchWait: 1
+  minSwitchWait: 3
 --- !u!1 &6138654671944527488
 GameObject:
   m_ObjectHideFlags: 0

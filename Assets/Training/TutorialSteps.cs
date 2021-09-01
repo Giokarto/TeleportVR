@@ -55,9 +55,9 @@ namespace Training
         private IEnumerator StartTrainingAfter(float seconds)
         {
             yield return new WaitForSeconds(seconds);
-            // audioManager.ScheduleAudioClip(miscAudio.welcome, queue: false,
-            //    onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length)
-            //    );
+            audioManager.ScheduleAudioClip(miscAudio.welcome, queue: false,
+               onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length)
+               );
             audioManager.ScheduleAudioClip(miscAudio.imAria, queue: true,
                 onStart: () => PublishNotification("I am Aria - your personal telepresence trainer.", miscAudio.imAria.length + 2),
                 onEnd: () =>
