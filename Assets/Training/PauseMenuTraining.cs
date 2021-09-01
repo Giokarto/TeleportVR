@@ -33,7 +33,7 @@ namespace Training
             stateMachine.onEnter[State.START] = (state) =>
             {
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(pauseMenuAudio.start, queue: true,
-                    onStart: () => TutorialSteps.PublishNotification("Lift one foot off the pedals", pauseMenuAudio.start.length)
+                    onEnd: () => TutorialSteps.PublishNotification("Lift one foot off the pedals", pauseMenuAudio.start.length)
                     );
 
 
@@ -53,7 +53,7 @@ namespace Training
             stateMachine.onEnter[State.UNPAUSE] = (state) =>
             {
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(pauseMenuAudio.unpause, queue: true,
-                    onStart: () => TutorialSteps.PublishNotification("Put both feet back on the pedals", pauseMenuAudio.unpause.length)
+                    onEnd: () => TutorialSteps.PublishNotification("Put both feet back on the pedals", pauseMenuAudio.unpause.length)
                     );
 
                 RudderPedals.PresenceDetector.Instance.OnUnpause((s) => Next(), once: true);
@@ -62,7 +62,7 @@ namespace Training
             stateMachine.onEnter[State.TELEPORT] = (state) =>
             {
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(pauseMenuAudio.teleport,
-                    onStart: () => TutorialSteps.PublishNotification("Go to the menu and touch the Control button", pauseMenuAudio.teleport.length)
+                    onEnd: () => TutorialSteps.PublishNotification("Go to the menu and touch the Control button", pauseMenuAudio.teleport.length)
                     );
 
                 RudderPedals.PresenceDetector.Instance.OnPause((s) => Next(), once: true);
