@@ -36,7 +36,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     public Robot chosenDetails;
 
     // vision variables
-    public bool stereovision = false;
+    public bool stereovision = false; // controls if both vision planes are active
     public bool undistortion = true;
     public GameObject LeftEye;
     public GameObject RightEye;
@@ -151,6 +151,10 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
         var camRight = RightEye.transform.GetComponentInParent<Camera>();
         var camLeft = LeftEye.transform.GetComponentInParent<Camera>();
+#if PLATFORM_ANDROID
+        stereovision = false;
+#endif
+
         if (!stereovision)
         {
             camRight.stereoTargetEye = StereoTargetEyeMask.None;
@@ -431,8 +435,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 Debug.Log($"Resize triggered. Setting texture resolution to {currShape[0]} x {currShape[1] / 2}");
                 Debug.Log($"Setting horizontal scale to {(float)_imageDims[0]} {(float)_imageDims[1] / 2}");
                 
-
-                if (stereovision)
+                // we assume that the server is always sending stereo images. stereovision flag only control is both vision plane gameobjects are visible
+                //if (stereovision)
                 {
                     if (undistortion)
                     {
@@ -460,36 +464,36 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                         wrapMode = TextureWrapMode.Clamp
                     };
                 }
-                else
-                {
-                    if (undistortion)
-                    {
-                        InitUndistortion((int)_imageDims[0], (int)_imageDims[1]);
-                    }
+                //else
+                //{
+                //    if (undistortion)
+                //    {
+                //        InitUndistortion((int)_imageDims[0], (int)_imageDims[1]);
+                //    }
 
-                    float scaleFactor = (float)_imageDims[1] / (float)_imageDims[0];
-                    _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
-                                                                  _leftPlane.transform.localScale.y,
-                                                                  scaleFactor * _leftPlane.transform.localScale.x);
+                //    float scaleFactor = (float)_imageDims[1] / (float)_imageDims[0];
+                //    _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
+                //                                                  _leftPlane.transform.localScale.y,
+                //                                                  scaleFactor * _leftPlane.transform.localScale.x);
 
-                    _leftTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.RGB24, false)
-                    {
-                        wrapMode = TextureWrapMode.Clamp
-                    };
-                }
+                //    _leftTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.RGB24, false)
+                //    {
+                //        wrapMode = TextureWrapMode.Clamp
+                //    };
+                //}
             }
 
-            if (stereovision)
+            //if (stereovision)
             {
                 yuv_left = yuv.rowRange(0, yuv.rows() / 2);
                 yuv_right = yuv.rowRange(yuv.rows() / 2, yuv.rows());
                 render_plane(yuv_left, _leftTexture, _leftRenderer, true);
                 render_plane(yuv_right, _rightTexture, _rightRenderer, false);
             }
-            else
-            {
-                render_plane(yuv, _leftTexture, _leftRenderer);
-            }
+            //else
+            //{
+            //    render_plane(yuv, _leftTexture, _leftRenderer);
+            //}
 #endif
         }
         catch (Exception e)
