@@ -10,7 +10,7 @@ public class HandRotation : MonoBehaviour
     public Axis[] flipAxes;
 
     [SerializeField, Range(0,1)] private float rotationMultiplier = 1;
-    [SerializeField]private Transform target = null;
+    private Transform target = null;
     private GameObject newParent;
     private bool lastActiveSelf;
     private Quaternion initialSelfRotation, initialTargetRotation;

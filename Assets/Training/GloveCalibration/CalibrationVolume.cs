@@ -1,4 +1,3 @@
-#if SENSEGLOVE
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,6 +30,7 @@ namespace Training.Calibration
         private bool lastEnabled = false;
         private bool coroutineRunning = false;
 
+#if SENSEGLOVE
         // Update is called once per frame
         void Update()
         {
@@ -84,6 +84,6 @@ namespace Training.Calibration
             calibrator.PauseCalibration();
             TutorialSteps.Instance.audioManager.StopAudioClips();
         }
+#endif
     }
 }
-#endif
