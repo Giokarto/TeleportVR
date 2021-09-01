@@ -18,7 +18,7 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
     public InputDevice inputDevice = InputDevice.CONTROLLERS;
     public UnityEngine.XR.InputDevice controllerLeft, controllerRight;
     public Widgets.Completion completionWidget;
-   
+
 
     private Callbacks<bool> onConfirmCallbacks;
 
@@ -51,6 +51,7 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
             }
             else
             {
+                Cleanup();
                 onConfirmCallbacks.Call(true);
             }
         }
@@ -72,8 +73,7 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
                             Debug.Log("UserInteractionManager, SenseGlove done");
                             StopCoroutine(coroutine);
                             coroutine = null;
-                            completionWidget.Set(0);
-                            completionWidget.active = false;
+                            Cleanup();
                             onConfirmCallbacks.Call(true);
                         });
                         coroutine = StartCoroutine(SenseGloveConfirm(left));
@@ -98,6 +98,12 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
                     break;
                 }
         }
+    }
+
+    private void Cleanup()
+    {
+        completionWidget.Set(0);
+        completionWidget.active = false;
     }
 
 #if SENSEGLOVE
@@ -125,8 +131,15 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
             {
                 dwellTimer.LetTimePass(Time.deltaTime);
             }
-            completionWidget.progress = dwellTimer.GetFraction();
-            completionWidget.Set(dwellTimer.GetFraction(), "hold");
+            if (dwellTimer.active)
+            {
+                completionWidget.progress = dwellTimer.GetFraction();
+                completionWidget.Set(dwellTimer.GetFraction(), "hold");
+            }
+            else
+            {
+                completionWidget.Set(0);
+            }
             yield return new WaitForEndOfFrame();
         }
     }
@@ -136,7 +149,7 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
     {
         while (true)
         {
-            if(InputManager.Instance.GetAnyControllerBtnPressed())
+            if (InputManager.Instance.GetAnyControllerBtnPressed())
             {
                 coroutine = null;
                 onConfirmCallbacks.Call(true);

@@ -16,25 +16,37 @@ namespace RudderPedals
             [Tooltip("Ghost hand, shown when paused")]
             public GameObject ghostHand;
 
-            private Transform oldParent;
             private bool usingXR = false;
+            public Quaternion rotationOffset = Quaternion.identity;
+            public Vector3 positionOffset = Vector3.zero;
+
+            private Transform oldController;
+            private Vector3 oldPositionOffset;
+            private Quaternion oldRotationOffset;
 
             internal void SwitchControllers()
             {
                 if (usingXR)
                 {
-                    copyTransform.gameObject.transform.SetParent(oldParent);
-                    copyTransform.position = true;
-                    copyTransform.rotation = true;
+                    copyTransform.controller = oldController;
+                    copyTransform.positionOffset = oldPositionOffset;
+                    copyTransform.rotationOffset = oldRotationOffset;
                     usingXR = false;
                 }
                 else
                 {
-                    copyTransform.position = false;
-                    copyTransform.rotation = false;
-                    oldParent = copyTransform.gameObject.transform.parent;
-                    copyTransform.gameObject.transform.SetParent(xrController, true);
+                    oldController = copyTransform.controller;
+                    oldPositionOffset = copyTransform.positionOffset;
+                    oldRotationOffset = copyTransform.rotationOffset;
+                    
+                    // To determine this.rotationOffset and this.positionOffset  for tracked controllers, uncomment the following two lines.
+                    // var posDiff = copyTransform.gameObject.transform.position - xrController.position;
+                    // var rotDiff = Quaternion.Inverse(xrController.rotation) * copyTransform.gameObject.transform.rotation;
+                    // Debug.Log($"{xrController.gameObject.name}: posDiff: {posDiff}, rotDiff: {rotDiff.eulerAngles}");
 
+                    copyTransform.rotationOffset = rotationOffset;
+                    copyTransform.positionOffset = positionOffset;
+                    copyTransform.controller = xrController;
                     usingXR = true;
                 }
             }
@@ -64,7 +76,7 @@ namespace RudderPedals
         public TrackerSwitcher rightGlove;
         public float matchHandThreshold = 0.0f;
         // time to wait until unpausing (seconds)
-        public float waitTime = 5f;
+        public float holdTime = 5f;
         private Coroutine matchHandsCouroutine = null;
 
         public SerialReader pedalDetector;
@@ -192,7 +204,7 @@ namespace RudderPedals
             Debug.Log("TryUnpause");
 
             waitTimer = new Timer();
-            waitTimer.SetTimer(waitTime, timeIsUp: () =>
+            waitTimer.SetTimer(holdTime, timeIsUp: () =>
              {
                  ResetMatchHands();
                  Unpause();

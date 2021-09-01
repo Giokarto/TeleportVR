@@ -104,9 +104,8 @@ public class EnableControlManager : Singleton<EnableControlManager>
             rightController = InputManager.Instance.controllerRight[0];
             rightControllerFound = true;
         }
-        
-        
     }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -129,17 +128,18 @@ public class EnableControlManager : Singleton<EnableControlManager>
         {
             ReadControllers(leftBioIKGroup, leftController, true);
         }
-        else
-        {
-            leftBioIKGroup.SetEnabled(false);
-        }
+        //else
+        //{
+        //    leftBioIKGroup.SetEnabled(false);
+        //}
         if (rightControllerFound)
         {
             ReadControllers(rightBioIKGroup, rightController, false);
-        } else
-        {
-            rightBioIKGroup.SetEnabled(false);
         }
+        //else
+        //{
+        //    rightBioIKGroup.SetEnabled(false);
+        //}
     }
 
     void ReadControllers(BioIKGroup group, UnityEngine.XR.InputDevice controller, bool isLeft)

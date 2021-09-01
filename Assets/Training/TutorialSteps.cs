@@ -56,8 +56,8 @@ namespace Training
         {
             yield return new WaitForSeconds(seconds);
             audioManager.ScheduleAudioClip(miscAudio.welcome, queue: false,
-                onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length)
-                );
+               onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length)
+               );
             audioManager.ScheduleAudioClip(miscAudio.imAria, queue: true,
                 onStart: () => PublishNotification("I am Aria - your personal telepresence trainer.", miscAudio.imAria.length + 2),
                 onEnd: () =>
@@ -116,7 +116,7 @@ namespace Training
 #if SENSEGLOVE
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftArm, queue: false);
                 //audioManager.ScheduleAudioClip(senseGloveAudio.leftBall, queue: true);
-                PublishNotification("Move your left arm and try to touch the blue ball");
+                PublishNotification("Move your left arm and try to touch the blue ball", senseGloveAudio.leftArm.length + 2);
 #else
                 audioManager.ScheduleAudioClip(controllerAudio.leftArm, queue: false);
                 PublishNotification("Press and hold the index trigger and try moving your left arm");
@@ -134,12 +134,14 @@ namespace Training
             stateMachine.onEnter[TrainingStep.LEFT_HAND] = (step) =>
             {
 #if SENSEGLOVE
-                PublishNotification("Move your left hand into the blue box");
-                audioManager.ScheduleAudioClip(senseGloveAudio.leftHandStart, queue: false);
+                audioManager.ScheduleAudioClip(senseGloveAudio.leftHandStart, queue: true,
+                    onStart: () => PublishNotification("Move your left hand into the blue box", senseGloveAudio.leftHandStart.length + 2)
+                        );
                 leftCalibrator.OnDone(s => Next(), once: true);
 #else
-                audioManager.ScheduleAudioClip(controllerAudio.leftHand, queue: false, delay: 0);
-                PublishNotification("Press the grip button on the side to close the hand.");
+                audioManager.ScheduleAudioClip(controllerAudio.leftHand, queue: true,
+                    onStart: () => PublishNotification("Press the grip button on the side to close the hand.")
+                    );
 #endif
             };
             stateMachine.onExit[TrainingStep.LEFT_HAND] = (step) =>
@@ -154,10 +156,9 @@ namespace Training
             {
 #if SENSEGLOVE
                 audioManager.ScheduleAudioClip(senseGloveAudio.rightArm, queue: false);
-                //audioManager.ScheduleAudioClip(senseGloveAudio.rightBall, queue: true);
                 PublishNotification("Move your right arm and try to touch the blue ball");
 #else
-                audioManager.ScheduleAudioClip(controllerAudio.rightArm, queue: false);
+                audioManager.ScheduleAudioClip(controllerAudio.rightArm, queue: true);
                 PublishNotification("Press and hold the index trigger and try moving your right arm");
 #endif
 
@@ -173,12 +174,14 @@ namespace Training
             stateMachine.onEnter[TrainingStep.RIGHT_HAND] = (step) =>
             {
 #if SENSEGLOVE
-                PublishNotification("Move your right hand into the blue box");
-                audioManager.ScheduleAudioClip(senseGloveAudio.rightHandStart, queue: false);
+                audioManager.ScheduleAudioClip(senseGloveAudio.rightHandStart, queue: true,
+                    onStart: () => PublishNotification("Move your right hand into the blue box")
+                    );
                 rightCalibrator.OnDone(s => Next(), once: true);
 #else
-                audioManager.ScheduleAudioClip(controllerAudio.rightHand, queue: false, delay: 0);
-                PublishNotification("Press the grip button to close the hand.");
+                audioManager.ScheduleAudioClip(controllerAudio.rightHand, queue: true,
+                    onStart: () => PublishNotification("Press the grip button to close the hand.")
+                );
 #endif
             };
 #if SENSEGLOVE
@@ -241,7 +244,7 @@ namespace Training
         /// <param name="message">Text to display</param>
         /// <param name="duration">time in seconds to display for</param>
         /// <returns>if the given message was published, i.e. not already existing</returns>
-        public static bool PublishNotification(string message, float duration = 2f)
+        public static bool PublishNotification(string message, float duration = 4f)
         {
             byte[] color = new byte[] { 0x17, 0x17, 0x17, 0xff };
             ToastrWidget widget = (ToastrWidget)Manager.Instance.FindWidgetWithID(10);

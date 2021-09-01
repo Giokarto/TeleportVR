@@ -1072,7 +1072,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6499924806324918325}
   m_Layer: 5
-  m_Name: SenseGlove
+  m_Name: GhostHandHUD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2115,8 +2115,7 @@ MonoBehaviour:
   tag: RoboyArms
   name: hand_left
   flipAxes: 
-  rotationMultiplier: 0.5
-  target: {fileID: 0}
+  rotationMultiplier: 0.25
 --- !u!1 &8044677146059970281
 GameObject:
   m_ObjectHideFlags: 0
@@ -2445,8 +2444,7 @@ MonoBehaviour:
   tag: RoboyArms
   name: hand_right
   flipAxes: 
-  rotationMultiplier: 0.5
-  target: {fileID: 0}
+  rotationMultiplier: 0.25
 --- !u!1 &8279627930831550894
 GameObject:
   m_ObjectHideFlags: 0

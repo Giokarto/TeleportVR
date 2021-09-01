@@ -13,6 +13,9 @@ namespace JointTransfer
         [Tooltip("Whether to copy the global rotation from the controller")]
         public bool rotation = true;
 
+        public Quaternion rotationOffset = Quaternion.identity;
+        public Vector3 positionOffset = Vector3.zero;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -23,11 +26,12 @@ namespace JointTransfer
         {
             if (controller != null && position)
             {
-                transform.position =  controller.position;
+                transform.position = positionOffset + controller.position;
             }
             if (controller != null && rotation)
             {
-                transform.rotation =  controller.rotation;
+                transform.rotation = controller.rotation;
+                transform.localRotation *= rotationOffset;
             }
 
         }
