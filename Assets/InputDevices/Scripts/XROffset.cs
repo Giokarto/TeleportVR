@@ -81,10 +81,9 @@ public class XROffset : MonoBehaviour
         }
         transform.position = controller.position + offset;
 
+        transform.rotation = controller.rotation * Quaternion.Euler(orientationOffset);
         if (orientation.enabled)
         {
-            transform.rotation = controller.rotation * Quaternion.Euler(orientationOffset);
-
             float errorR = Quaternion.Angle(orientation.target.rotation, transform.rotation) * Mathf.Deg2Rad / Mathf.PI;
             float errorP = (orientation.target.position - transform.position).magnitude;
             errorP = Mathf.Clamp(errorP / position.maxDeviation, 0, 1);
