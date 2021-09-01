@@ -258,7 +258,7 @@ public class StateManager : Singleton<StateManager>
         
         if (TutorialSteps.Instance != null)
         {
-            TutorialSteps.Instance.audioManager.StopAudioClips();
+            TutorialSteps.Instance.audioManager.ResetAll();
         }
         // reset all joints to 0 before going to HUD
         if (TimesStateVisited(States.HUD) == 0)

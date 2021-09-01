@@ -700,7 +700,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     // --------------------------Motor Modality-------------------------------------
     public bool motor_initialise()
     {
-        motorEnabled = false;
+        //motorEnabled = false;
         _lastUpdate = 0;
         motorMsg = new Float32Array();
         motorSample = new Sample(DataMessage.Types.DataType.Float32Arr, motorMsg);

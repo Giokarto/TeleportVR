@@ -126,6 +126,13 @@ namespace Training
         }
 
 
+        public void ResetAll()
+        {
+            callbacks.Clear();
+            StopAudioClips();
+        }
+
+
         public bool IsAudioPlaying()
         {
             bool playing = false;
