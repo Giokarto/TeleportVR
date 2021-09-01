@@ -299,7 +299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {x: 0, y: 0, z: 0}
   attractSpeed: 3
-  detractSpeed: 0.08
+  detractSpeed: 0.07
 --- !u!1 &125511951
 GameObject:
   m_ObjectHideFlags: 0
