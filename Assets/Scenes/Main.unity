@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414736, b: 0.12107852, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2071,6 +2071,8 @@ MonoBehaviour:
   controller: {fileID: 191390495}
   position: 1
   rotation: 1
+  rotationOffset: {x: 0, y: 0, z: 0, w: 1}
+  positionOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &462967741 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8239695497852720116, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -5856,6 +5858,8 @@ MonoBehaviour:
   controller: {fileID: 1396532050}
   position: 1
   rotation: 1
+  rotationOffset: {x: 0, y: 0, z: 0, w: 1}
+  positionOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &668449997 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8980600751088966979, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -9971,13 +9975,17 @@ MonoBehaviour:
   stateManager: {fileID: 1001686986}
   leftGlove:
     copyTransform: {fileID: 666088954}
-    xrController: {fileID: 6021411801494514841}
+    xrController: {fileID: 2973487623935118567}
     ghostHand: {fileID: 824929305}
+    rotationOffset: {x: -0.2478937, y: 0.6904527, z: 0.6448576, w: -0.21443565}
+    positionOffset: {x: -0.045181513, y: -0.008742511, z: -0.0714463}
   rightGlove:
     copyTransform: {fileID: 430358048}
-    xrController: {fileID: 6021411800947965129}
+    xrController: {fileID: 1050015436466832394}
     ghostHand: {fileID: 2131390192}
-  matchHandThreshold: 0.2
+    rotationOffset: {x: -0.6570812, y: 0.15788999, z: 0.20204997, w: -0.708866}
+    positionOffset: {x: 0.036305383, y: -0.0042611957, z: -0.07620919}
+  matchHandThreshold: 0.5
   waitTime: 5
   pedalDetector: {fileID: 1009321866}
 --- !u!1 &1311692030
@@ -10217,7 +10225,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configName: config.json
   settings:
-    OperatorIPD: 63
+    OperatorIPD: 63.2
 --- !u!1 &1373856792 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 477016405502077816, guid: 6883edd6e7804604baa8a1f46e804cfb,
