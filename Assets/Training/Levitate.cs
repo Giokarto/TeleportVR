@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteAlways]
 public class Levitate : MonoBehaviour
 { 
     [SerializeField] private float height;

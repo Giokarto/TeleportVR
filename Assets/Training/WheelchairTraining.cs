@@ -10,8 +10,8 @@ namespace Training
         public enum State
         {
             START,
-            FORWARD,
             BACKWARD,
+            FORWARD,
             TURN_LEFT,
             TURN_RIGHT,
             DONE
@@ -33,10 +33,11 @@ namespace Training
         {
 
             currentState = State.START;
-            ariaTrigger.TriggerEnterCallback((move) =>
+            ariaTrigger.TriggerEnterCallback((pos) =>
             {
-                Debug.Log($"move: {move}");
-                if (move < 0.01f && waitingForTrigger)
+                var diff = (pos - ariaNavigation.target).magnitude;
+                Debug.Log($"Aria Trigger, posDiff: {diff}, waiting: {waitingForTrigger}");
+                if (diff < 1f && waitingForTrigger)
                 {
                     Next();
                 }
@@ -55,94 +56,130 @@ namespace Training
             };
 
 #if RUDDER
-            stateMachine.onEnter[State.FORWARD] = (state) =>
-            {
-                audioManager.ScheduleAudioClip(rudderWheelchairAudio.start_intro, queue: true);
-                audioManager.ScheduleAudioClip(rudderWheelchairAudio.start, queue: true,
-                    onStart: () => TutorialSteps.PublishNotification("Press the right pedal to go forward", rudderWheelchairAudio.start.length + 2)
-                );
-
-                ariaNavigation.target = forwardGoal.position;
-                waitingForTrigger = true;
-            };
-
-
             stateMachine.onEnter[State.BACKWARD] = (state) =>
             {
-                audioManager.ScheduleAudioClip(rudderWheelchairAudio.backwards,
-                    onStart: () => TutorialSteps.PublishNotification("Press the left pedal to go backward", rudderWheelchairAudio.backwards.length)
+                audioManager.ScheduleAudioClip(rudderWheelchairAudio.start_intro, queue: false);
+                audioManager.ScheduleAudioClip(rudderWheelchairAudio.start, queue: true,
+                    onStart: () =>
+                    {
+                        ariaNavigation.target = backwardGoal.position;
+                        TutorialSteps.PublishNotification("Press the left pedal to go backward");
+                        waitingForTrigger = true;
+                    },
+                    onEnd: () =>
+                    {
+                    }
+                );
+            };
+
+            stateMachine.onEnter[State.FORWARD] = (state) =>
+            {
+                audioManager.ScheduleAudioClip(rudderWheelchairAudio.forward,
+                    onStart: () =>
+                    {
+                        ariaNavigation.target = forwardGoal.position;
+                        waitingForTrigger = true;
+                        TutorialSteps.PublishNotification("Press the right pedal to go forward", rudderWheelchairAudio.backwards.length);
+                    },
+                    onEnd: () =>
+                    {
+                    }
                 );
 
-                ariaNavigation.target = backwardGoal.position;
-                waitingForTrigger = true;
-                //ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
             };
 
             stateMachine.onEnter[State.TURN_LEFT] = (state) =>
             {
                 audioManager.ScheduleAudioClip(rudderWheelchairAudio.turn_left,
-                    onStart: () => TutorialSteps.PublishNotification("Turn left", rudderWheelchairAudio.turn_left.length)
+                    onStart: () =>
+                    {
+                        ariaNavigation.target = turnLeftGoal.position;
+                        TutorialSteps.PublishNotification("Turn left", rudderWheelchairAudio.turn_left.length);
+                        waitingForTrigger = true;
+                    },
+                    onEnd: () =>
+                    {
+                    }
                     );
 
-                ariaNavigation.target = turnLeftGoal.position;
-                waitingForTrigger = true;
-                //ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
             };
 
             stateMachine.onEnter[State.TURN_RIGHT] = (state) =>
             {
                 audioManager.ScheduleAudioClip(rudderWheelchairAudio.turn_right_intro);
                 audioManager.ScheduleAudioClip(rudderWheelchairAudio.turn_right, queue: true,
-                    onStart: () => TutorialSteps.PublishNotification("Turn right", rudderWheelchairAudio.turn_right_intro.length + 2)
+                    onStart: () =>
+                    {
+                        ariaNavigation.target = turnRightGoal.position;
+                        TutorialSteps.PublishNotification("Turn right", rudderWheelchairAudio.turn_right_intro.length + 2);
+                        waitingForTrigger = true;
+                    }
                 );
-
-                ariaNavigation.target = turnRightGoal.position;
-                waitingForTrigger = true;
-                //ariaTrigger.TriggerEnterCallback((t) => Next(), once: true);
             };
 
 #else
-            stateMachine.onEnter[State.FORWARD] = (state) =>
-            {
-                audioManager.ScheduleAudioClip(rudderWheelchairAudio.start_intro, queue: false);
-                audioManager.ScheduleAudioClip(joystickWheelchairAudio.howto, queue: true,
-                    onStart: () => TutorialSteps.PublishNotification("Use the left joystick to drive around", joystickWheelchairAudio.howto.length + 2)
-                );
-
-                audioManager.ScheduleAudioClip(joystickWheelchairAudio.front, queue: true);
-                ariaNavigation.target = forwardGoal.position;
-                waitingForTrigger = true;
-            };
-
-
             stateMachine.onEnter[State.BACKWARD] = (state) =>
             {
-                audioManager.ScheduleAudioClip(joystickWheelchairAudio.back, queue: false,
-                    onStart: () => TutorialSteps.PublishNotification("Come get me in the back now"));
+                audioManager.ScheduleAudioClip(rudderWheelchairAudio.start_intro, queue: false);
+                audioManager.ScheduleAudioClip(joystickWheelchairAudio.howto, queue: true);
+                audioManager.ScheduleAudioClip(joystickWheelchairAudio.back, queue: true,
+                    onStart: () =>
+                    {
+                        ariaNavigation.target = backwardGoal.position;
+                        TutorialSteps.PublishNotification("Use the left joystick to drive back");
+                        waitingForTrigger = true;
+                    },
+                    onEnd: () =>
+                    {
+                    }
+            );
 
-                ariaNavigation.target = backwardGoal.position;
-                waitingForTrigger = true;
+            };
+
+            stateMachine.onEnter[State.FORWARD] = (state) =>
+            {
+                audioManager.ScheduleAudioClip(joystickWheelchairAudio.front, queue: false,
+                    onStart: () =>
+                    {
+                        ariaNavigation.target = forwardGoal.position;
+                        TutorialSteps.PublishNotification("Drive forwards");
+                        waitingForTrigger = true;
+                    },
+                    onEnd: () =>
+                    {
+                    }
+                );
             };
 
             stateMachine.onEnter[State.TURN_RIGHT] = (state) =>
             {
 
                 audioManager.ScheduleAudioClip(joystickWheelchairAudio.right, queue: false,
-                    onStart: () => TutorialSteps.PublishNotification("Turn right", joystickWheelchairAudio.right.length + 2)
+                    onStart: () =>
+                    {
+                        ariaNavigation.target = turnRightGoal.position;
+                        TutorialSteps.PublishNotification("Turn right", joystickWheelchairAudio.right.length + 2);
+                        waitingForTrigger = true;
+                    },
+                    onEnd: () =>
+                    {
+                    }
                 );
-
-                ariaNavigation.target = turnRightGoal.position;
-                waitingForTrigger = true;
             };
 
             stateMachine.onEnter[State.TURN_LEFT] = (state) =>
             {
                 audioManager.ScheduleAudioClip(joystickWheelchairAudio.left,
-                    onStart: () => TutorialSteps.PublishNotification("Turn left", joystickWheelchairAudio.left.length + 2)
-                    );
-
-                ariaNavigation.target = turnLeftGoal.position;
-                waitingForTrigger = true;
+                    onStart: () =>
+                    {
+                        ariaNavigation.target = turnLeftGoal.position;
+                        TutorialSteps.PublishNotification("Turn left", joystickWheelchairAudio.left.length + 2);
+                        waitingForTrigger = true;
+                    },
+                    onEnd: () =>
+                    {
+                    }
+                );
             };
 #endif
 

@@ -255,7 +255,11 @@ public class StateManager : Singleton<StateManager>
     void DelegateBeforeHudLoad()
     {
         print("DelegateBeforeHudLoad");
-
+        
+        if (TutorialSteps.Instance != null)
+        {
+            TutorialSteps.Instance.audioManager.StopAudioClips();
+        }
         // reset all joints to 0 before going to HUD
         if (TimesStateVisited(States.HUD) == 0)
         {

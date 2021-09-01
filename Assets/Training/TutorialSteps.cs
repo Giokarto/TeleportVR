@@ -56,8 +56,8 @@ namespace Training
         {
             yield return new WaitForSeconds(seconds);
             audioManager.ScheduleAudioClip(miscAudio.welcome, queue: false,
-                onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length)
-                );
+               onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length)
+               );
             audioManager.ScheduleAudioClip(miscAudio.imAria, queue: true,
                 onStart: () => PublishNotification("I am Aria - your personal telepresence trainer.", miscAudio.imAria.length + 2),
                 onEnd: () =>
@@ -118,7 +118,7 @@ namespace Training
 #if SENSEGLOVE
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftArm, queue: true);
                 //audioManager.ScheduleAudioClip(senseGloveAudio.leftBall, queue: true);
-                PublishNotification("Move your left arm and try to touch the blue ball");
+                PublishNotification("Move your left arm and try to touch the blue ball", senseGloveAudio.leftArm.length +2);
 #else
                 audioManager.ScheduleAudioClip(controllerAudio.leftArm, queue: false);
                 PublishNotification("Press and hold the index trigger and try moving your left arm");
@@ -136,7 +136,7 @@ namespace Training
             stateMachine.onEnter[TrainingStep.LEFT_HAND] = (step) =>
             {
 #if SENSEGLOVE
-                PublishNotification("Move your left hand into the blue box");
+                PublishNotification("Move your left hand into the blue box", senseGloveAudio.leftHandStart.length + 2);
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftHandStart);
                 leftCalibrator.OnDone(s => Next(), once: true);
 #else
@@ -249,7 +249,7 @@ namespace Training
         /// <param name="message">Text to display</param>
         /// <param name="duration">time in seconds to display for</param>
         /// <returns>if the given message was published, i.e. not already existing</returns>
-        public static bool PublishNotification(string message, float duration = 2f)
+        public static bool PublishNotification(string message, float duration = 4f)
         {
             byte[] color = new byte[] { 0x17, 0x17, 0x17, 0xff };
             ToastrWidget widget = (ToastrWidget)Manager.Instance.FindWidgetWithID(10);
