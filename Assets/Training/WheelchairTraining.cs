@@ -116,7 +116,7 @@ namespace Training
             stateMachine.onEnter[State.FORWARD] = (state) =>
             {
                 audioManager.ScheduleAudioClip(joystickWheelchairAudio.front, queue: false, 
-                    onStart: () => TutorialSteps.PublishNotification("Drive forwards"));
+                    onStart: () => TutorialSteps.PublishNotification("Drive forwards")
                 );
                 ariaNavigation.target = forwardGoal.position;
                 waitingForTrigger = true;
