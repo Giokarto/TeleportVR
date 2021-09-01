@@ -31,11 +31,12 @@ namespace Training
             }
             else
             {
-                detract = target - wheelchair.position;
-                float mag = detract.magnitude;
+                detract = transform.position - wheelchair.position;
+                // clamp to >= 1 such that detractive force cannot get too large
+                float mag = Mathf.Max(detract.magnitude, 1);
                 detract.Normalize();
                 // project to xz plane
-                detract = Vector3.ProjectOnPlane(detract, Vector3.up).normalized * 1 / mag;
+                detract = Vector3.ProjectOnPlane(detract, Vector3.up).normalized / mag;
 
             }
             transform.position = Vector3.MoveTowards(transform.position, target, attractSpeed * Time.deltaTime)
