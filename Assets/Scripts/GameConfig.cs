@@ -9,7 +9,7 @@ public class GameConfig : Singleton<GameConfig>
     [System.Serializable]
     public class PlayerSettings
     {
-        [Range(20, 120)]
+        [Range(40, 90)]
         public float OperatorIPD = 63;
     }
 
