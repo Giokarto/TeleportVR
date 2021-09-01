@@ -683,7 +683,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6103261333899003508}
   m_Layer: 5
-  m_Name: HUD-v2
+  m_Name: Hud-v2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1740,7 +1740,7 @@ PrefabInstance:
     - target: {fileID: 6138654670900758918, guid: 8df5b9eb96169a141b2b5e1f96806075,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.657
+      value: 0.557
       objectReference: {fileID: 0}
     - target: {fileID: 6138654670900758918, guid: 8df5b9eb96169a141b2b5e1f96806075,
         type: 3}

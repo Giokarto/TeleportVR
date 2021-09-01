@@ -178,7 +178,7 @@ PrefabInstance:
     - target: {fileID: 6087389295465485392, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.8058766
+      value: 0.83823234
       objectReference: {fileID: 0}
     - target: {fileID: 7092463258604815620, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
         type: 3}
@@ -1091,7 +1091,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcdedc9c1f83fba43ab863e300633772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  requiredTag: RoboyArms
+  requiredTag: LeftObjective
   requiredTrainingSteps: 03000000
   requiredCalibrationSteps: 000000000100000002000000
   calibrator: {fileID: 1189526810}
@@ -1105,7 +1105,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 586467666}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -1413,7 +1413,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 780221219}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -1479,7 +1479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcdedc9c1f83fba43ab863e300633772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  requiredTag: RoboyArms
+  requiredTag: RightObjective
   requiredTrainingSteps: 05000000
   requiredCalibrationSteps: 000000000100000002000000
   calibrator: {fileID: 902270246}
@@ -3076,7 +3076,7 @@ PrefabInstance:
     - target: {fileID: 5186647129993632168, guid: ff93477a43d01414e9266374532dd9db,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 150
+      value: 175
       objectReference: {fileID: 0}
     - target: {fileID: 5186647129993632168, guid: ff93477a43d01414e9266374532dd9db,
         type: 3}
@@ -3226,7 +3226,7 @@ PrefabInstance:
     - target: {fileID: 8044677145955229664, guid: ff93477a43d01414e9266374532dd9db,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -150
+      value: -175
       objectReference: {fileID: 0}
     - target: {fileID: 8044677145955229664, guid: ff93477a43d01414e9266374532dd9db,
         type: 3}
@@ -3267,6 +3267,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -253.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8044677146349341786, guid: ff93477a43d01414e9266374532dd9db,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -245
       objectReference: {fileID: 0}
     - target: {fileID: 8044677146349341786, guid: ff93477a43d01414e9266374532dd9db,
         type: 3}

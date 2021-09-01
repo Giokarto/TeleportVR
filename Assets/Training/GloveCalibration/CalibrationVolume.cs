@@ -30,32 +30,44 @@ namespace Training.Calibration
         private bool lastEnabled = false;
         private bool coroutineRunning = false;
 
+        private bool colliding = false;
+
 #if SENSEGLOVE
         // Update is called once per frame
         void Update()
         {
             // only render the volume, if we're in the right calibration step(s)
             renderer.enabled = enabled;
-            if (enabled && !lastEnabled)
-            {
-                OnTriggerEnter(null);
-            }
+            //if (enabled && !lastEnabled)
+            //{
+            //    OnTriggerEnter(null);
+            //}
             lastEnabled = enabled;
         }
 
         private void OnTriggerEnter(Collider other)
         {
             // if other == null skip the tag comarison
-            if (!enabled || (other != null && !other.CompareTag(requiredTag)))
+            if (!enabled || !other.CompareTag(requiredTag))
             {
                 return;
             }
-
+            Debug.Log("on trigger enter");
+            colliding = true;
             if (!coroutineRunning)
             {
                 coroutineRunning = true;
                 StartCoroutine(CalibrateOnAudioDone());
             }
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (!enabled || !other.CompareTag(requiredTag))
+            {
+                return;
+            }
+            colliding = true;
         }
 
         private IEnumerator CalibrateOnAudioDone()
@@ -64,12 +76,9 @@ namespace Training.Calibration
             {
                 yield return new WaitForSeconds(0.5f);
             }
-            var collider = gameObject.GetComponent<BoxCollider>();
-            var colliderPos = transform.position;
-            var colliderSize = Vector3.Scale(collider.size, transform.localScale);
-            var stillColliding = Physics.CheckBox(colliderPos, colliderSize / 2, transform.rotation, 1 << collisionLayerIndex);
-            if (enabled && stillColliding)
+            if (enabled && colliding)
             {
+                Debug.Log("starting calibration");
                 calibrator.StartCalibration();
             }
             coroutineRunning = false;
@@ -81,6 +90,7 @@ namespace Training.Calibration
             {
                 return;
             }
+            colliding = false;
             calibrator.PauseCalibration();
             TutorialSteps.Instance.audioManager.StopAudioClips();
         }
