@@ -141,7 +141,6 @@ namespace Training.Calibration.ArmLength
 
         private void Fit(Transform hand, Transform objective, Transform shoulder, Transform touchPoint)
         {
-
             float origArmLength = (hand.position - touchPoint.position).magnitude;
             float newArmLength = (objective.position - touchPoint.position).magnitude;
             float factor = newArmLength / origArmLength;
@@ -165,7 +164,7 @@ namespace Training.Calibration.ArmLength
             Next();
         }
 
-        public void StopCalibration() => currentState = State.DONE;
+        public void StopCalibration() => GoToNoEnterCallback(State.DONE);
 
         public void OnDone(System.Action<State> callback, bool once = false) => onDoneCallbacks.Add(callback, once);
 

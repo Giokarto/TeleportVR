@@ -38,11 +38,11 @@ namespace RudderPedals
                     oldController = copyTransform.controller;
                     oldPositionOffset = copyTransform.positionOffset;
                     oldRotationOffset = copyTransform.rotationOffset;
-                    
+
                     // To determine this.rotationOffset and this.positionOffset  for tracked controllers, uncomment the following two lines.
-                    // var posDiff = copyTransform.gameObject.transform.position - xrController.position;
-                    // var rotDiff = Quaternion.Inverse(xrController.rotation) * copyTransform.gameObject.transform.rotation;
-                    // Debug.Log($"{xrController.gameObject.name}: posDiff: {posDiff}, rotDiff: {rotDiff.eulerAngles}");
+                    //var posDiff = copyTransform.gameObject.transform.position - xrController.position;
+                    //var rotDiff = Quaternion.Inverse(xrController.rotation) * copyTransform.gameObject.transform.rotation;
+                    //Debug.Log($"{xrController.gameObject.name}: posDiff: {posDiff}, rotDiff: {rotDiff.eulerAngles}");
 
                     copyTransform.rotationOffset = rotationOffset;
                     copyTransform.positionOffset = positionOffset;

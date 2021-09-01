@@ -14,7 +14,7 @@ namespace Training
         private float[] clipSampleData;
         private int sampleDataLength = 1024;
         SortedDictionary<double, System.Action> callbacks = new SortedDictionary<double, System.Action>();
-        
+
 
         private void Awake()
         {
@@ -62,22 +62,56 @@ namespace Training
                 if (timeLeft > 0) delay = timeLeft;
             }
 
-            if (queue) nextItemIdx = (nextItemIdx + 1) % audioSourceArray.Length;
+            if (queue)
+            {
+                nextItemIdx = (nextItemIdx + 1) % audioSourceArray.Length;
+            }
+            else
+            {
+                // TODO: This breaks if any clip with queue = false has delay > 0
+                foreach (var source in audioSourceArray)
+                {
+                    source.Stop();
+                }
+                foreach (var entry in callbacks)
+                {
+                    StartCoroutine(WaitAndCall(0, entry.Value));
+                }
+                callbacks.Clear();
+            }
             audioSourceArray[nextItemIdx].clip = clip;
+
+
 
             prevStart = AudioSettings.dspTime + delay;
             audioSourceArray[nextItemIdx].PlayScheduled(prevStart);
-            Debug.Log($"Audiosource #{nextItemIdx}: scheduled {clip.name} at {prevStart}");
+            // Debug.Log($"Audiosource #{nextItemIdx}: scheduled {clip.name} at {prevStart}");
 
             prevDuration = (double)clip.samples / clip.frequency;
 
             if (onStart != null)
             {
-                callbacks.Add(prevStart, onStart);
+                try
+                {
+                    callbacks.Add(prevStart, onStart);
+                }
+                catch (System.ArgumentException)
+                {
+                    callbacks.Remove(prevStart);
+                    callbacks.Add(prevStart, onStart);
+                }
             }
             if (onEnd != null)
             {
-                callbacks.Add(prevStart + prevDuration, onEnd);
+                try
+                {
+                    callbacks.Add(prevStart + prevDuration, onEnd);
+                }
+                catch (System.ArgumentException)
+                {
+                    callbacks.Remove(prevStart);
+                    callbacks.Add(prevStart, onStart);
+                }
             }
         }
 

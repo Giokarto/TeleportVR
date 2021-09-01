@@ -93,7 +93,8 @@ public class InputManager : Singleton<InputManager>
     {
         var ret = false;
         var ctrls = new List<bool> { true, false };
-        foreach (var left in ctrls) {
+        foreach (var left in ctrls)
+        {
             if (GetControllerAvailable(left))
             {
                 GetController(left).TryGetFeatureValue(CommonUsages.primaryButton, out var btn1);
@@ -132,11 +133,11 @@ public class InputManager : Singleton<InputManager>
         nodded = false;
         yield return new WaitUntil(() => nodded);
         waiting = false;
+        if (Training.TutorialSteps.Instance.waitingForNod)
         {
-            Debug.Log("moving on");
+            Debug.Log("user confirmed");
             Training.TutorialSteps.Instance.Next();
         }
-        Debug.Log("user confirmed");
     }
 
     /// <summary>

@@ -13,12 +13,26 @@ namespace Training
             get { return stateMachine.State; }
             set { stateMachine.State = value; }
         }
-        
+
         public void Next()
         {
-            var newState = currentState.Next();
-            Debug.Log($"Current {typeof(T).FullName} transition {currentState} -> {newState}");
-            currentState = newState;
+            ChangeState(currentState.Next());
+        }
+
+        public void Prev()
+        {
+            ChangeState(currentState.Prev());
+        }
+
+        private void ChangeState(T next)
+        {
+            Debug.Log($"Current {typeof(T).FullName} transition {currentState} -> {next}");
+            currentState = next;
+        }
+
+        public void GoToNoEnterCallback(T state)
+        {
+            stateMachine.GoNoEnterCallback(state);
         }
     }
 }
