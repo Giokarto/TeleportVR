@@ -91,11 +91,27 @@ namespace Training
 
             if (onStart != null)
             {
-                callbacks.Add(prevStart, onStart);
+                try
+                {
+                    callbacks.Add(prevStart, onStart);
+                }
+                catch (System.ArgumentException)
+                {
+                    callbacks.Remove(prevStart);
+                    callbacks.Add(prevStart, onStart);
+                }
             }
             if (onEnd != null)
             {
-                callbacks.Add(prevStart + prevDuration, onEnd);
+                try
+                {
+                    callbacks.Add(prevStart + prevDuration, onEnd);
+                }
+                catch (System.ArgumentException)
+                {
+                    callbacks.Remove(prevStart);
+                    callbacks.Add(prevStart, onStart);
+                }
             }
         }
 

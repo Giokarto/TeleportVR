@@ -154,7 +154,7 @@ namespace Training.Calibration
             calibrating = false;
             Debug.Log($"Awaiting connection with {lrName} SenseGlove... ");
 
-            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => PauseCalibration(), once: true);
+            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) =>StopCailbration(), once: true);
         }
         #endregion
 
@@ -254,11 +254,20 @@ namespace Training.Calibration
         public void PauseCalibration()
         {
             Debug.Log("pause calibration");
+            completionWidget.Set(0);
             calibrating = false;
             calibrationParams.dwellTimer.ResetTimer();
             calibrationParams.waitTimer.ResetTimer();
             testParams.dwellTimer.ResetTimer();
             virtualHand.SetActive(false);
+        }
+        public void StopCailbration()
+        {
+            Debug.Log("stop calibration");
+            currentStep = Step.ShowInstruction;
+            currentPose = Pose.HandOpen;
+            handAnimator.SetInteger("handState", (int)currentPose);
+            PauseCalibration();
         }
 
         // Update is called once per frame

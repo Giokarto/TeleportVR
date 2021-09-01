@@ -27,11 +27,12 @@ namespace Training
 
         private Callbacks<State> onDoneCallbacks = new Callbacks<State>();
         private bool waitingForTrigger = false;
+        private Vector3 initialAriaTarget;
 
         // Start is called before the first frame update
         void Start()
         {
-
+            initialAriaTarget = ariaNavigation.target;
             currentState = State.START;
             ariaTrigger.TriggerEnterCallback((pos) =>
             {
@@ -192,7 +193,11 @@ namespace Training
             Next();
         }
 
-        public void StopTraining() => GoToNoEnterCallback(State.DONE);
+        public void StopTraining()
+        {
+            GoToNoEnterCallback(State.DONE);
+            ariaNavigation.target = initialAriaTarget;
+        }
 
         public void OnDone(System.Action<State> callback, bool once = false) => onDoneCallbacks.Add(callback, once);
     }

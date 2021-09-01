@@ -148,7 +148,7 @@ namespace Training
             {
 #if SENSEGLOVE
                 // force stop the calibration, if not done so already
-                leftCalibrator.PauseCalibration();
+                leftCalibrator.StopCailbration();
 #endif
             };
 
@@ -187,7 +187,7 @@ namespace Training
 #if SENSEGLOVE
             stateMachine.onExit[TrainingStep.RIGHT_HAND] = (step) =>
             {
-                rightCalibrator.PauseCalibration();
+                rightCalibrator.StopCailbration();
             };
 
 
