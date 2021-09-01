@@ -38,10 +38,6 @@ namespace Training.Calibration
         {
             // only render the volume, if we're in the right calibration step(s)
             renderer.enabled = enabled;
-            //if (enabled && !lastEnabled)
-            //{
-            //    OnTriggerEnter(null);
-            //}
             lastEnabled = enabled;
         }
 

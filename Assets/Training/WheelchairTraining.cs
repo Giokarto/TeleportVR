@@ -36,7 +36,7 @@ namespace Training
             ariaTrigger.TriggerEnterCallback((move) =>
             {
                 Debug.Log($"Aria Trigger, moved: {move}, waiting: {waitingForTrigger}");
-                if (move < 0.01f && waitingForTrigger)
+                if (move < 0.1f && waitingForTrigger)
                 {
                     Next();
                 }
