@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414736, b: 0.12107852, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10038,7 +10038,7 @@ MonoBehaviour:
     rotationOffset: {x: -0.6570812, y: 0.15788999, z: 0.20204997, w: -0.708866}
     positionOffset: {x: 0.036305383, y: -0.0042611957, z: -0.07620919}
   matchHandThreshold: 0.5
-  waitTime: 5
+  holdTime: 5
   pedalDetector: {fileID: 1009321866}
 --- !u!1 &1311692030
 GameObject:
@@ -10277,7 +10277,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configName: config.json
   settings:
-    OperatorIPD: 59
+    OperatorIPD: 60.1
 --- !u!1 &1373856792 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 477016405502077816, guid: 6883edd6e7804604baa8a1f46e804cfb,
@@ -13285,7 +13285,7 @@ PrefabInstance:
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
@@ -13361,7 +13361,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1944402364}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6f22a5669377b559b7a27c87025aa96, type: 3}
   m_Name: 
