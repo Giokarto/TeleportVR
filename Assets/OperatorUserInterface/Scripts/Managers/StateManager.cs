@@ -261,11 +261,13 @@ public class StateManager : Singleton<StateManager>
             TutorialSteps.Instance.audioManager.ResetAll();
         }
         // reset all joints to 0 before going to HUD
-        if (TimesStateVisited(States.HUD) == 0)
+        Debug.Log($"Number of times hud visited: {TimesStateVisited(States.HUD)}");
+        // TODO: investigate why we need to set 1 instead of 0 here
+        if (TimesStateVisited(States.HUD) == 1)
         {
+            Debug.Log("resetting robot body");
             foreach (var body in bioIks)
             {
-
                 // switch to instantaneous movement type for BioIK so that the transition to joint targets 0 is immediate 
                 body.MotionType = BioIK.MotionType.Instantaneous;
 
@@ -273,8 +275,6 @@ public class StateManager : Singleton<StateManager>
                 {
                     body.ResetPosture(segment);
                 }
-
-
             }
         }
         else

@@ -54,12 +54,13 @@ namespace Widgets
             }
 
             dwellTimerImage = gameObject.GetComponentInChildren<Image>();
-            
-            if (WidgetInteraction.Instance.allowDwellTime) {
+
+            if (WidgetInteraction.Instance.allowDwellTime)
+            {
                 keepChildUnfoldedTimer = new Timer();
             }
             dwellTimer = new Timer();
-            
+
             // set x and y position of the widget, z position can be ignored
             transform.localPosition = new Vector3(xPositionOffset, yPositionOffset, 0);
 
@@ -82,20 +83,23 @@ namespace Widgets
         /// <summary>
         /// If the child is folded in, unfold it, else fold it in.
         /// </summary>
-        public void ToggleChildFold() {
-            if (childIsActive) {
+        public void ToggleChildFold()
+        {
+            if (childIsActive)
+            {
                 FoldChildIn();
             }
-            else {
+            else
+            {
                 UnfoldChild();
             }
         }
 
         /// <summary>
         /// Sets child widget position according to parents values and visibility active
-	/// checks showExplanation attribute of the WidgetInteraction instance to determine
-	/// if the explanation childwidgets (childWidgets with the attribute trainingInfo = true)
-	/// should be shown or not.  
+        /// checks showExplanation attribute of the WidgetInteraction instance to determine
+        /// if the explanation childwidgets (childWidgets with the attribute trainingInfo = true)
+        /// should be shown or not.  
         /// </summary>
         public void UnfoldChild()
         {
@@ -106,9 +110,9 @@ namespace Widgets
             }
 
             childIsActive = true;
-            
-            if (childWidget !=null && ( WidgetInteraction.Instance.showExplanations || !childWidget.trainingInfo)) 
-	    {
+
+            if (childWidget != null && (WidgetInteraction.Instance.showExplanations || !childWidget.trainingInfo))
+            {
                 childWidget.GetView().SetParentView(this);
                 childWidget.GetView().ShowView(relativeChildPosition);
             }
@@ -176,7 +180,8 @@ namespace Widgets
         {
             isLookedAt = true;
 
-            if (keepChildUnfoldedTimer != null) {
+            if (keepChildUnfoldedTimer != null)
+            {
                 keepChildUnfoldedTimer.SetTimer(keepOpenDuration, FoldChildIn);
             }
             keepChildUnfolded = false;
@@ -210,7 +215,8 @@ namespace Widgets
                 OnSelectionChildExit();
             }
 
-            if (keepChildUnfoldedTimer != null) {
+            if (keepChildUnfoldedTimer != null)
+            {
                 keepChildUnfoldedTimer.ResetTimer();
             }
             keepChildUnfolded = true;
@@ -288,7 +294,7 @@ namespace Widgets
             {
                 dehighlight(51);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.V))
             {
                 highlight(52);
@@ -297,7 +303,7 @@ namespace Widgets
             {
                 dehighlight(52);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.B))
             {
                 highlight(53);
@@ -306,7 +312,7 @@ namespace Widgets
             {
                 dehighlight(53);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.N))
             {
                 highlight(54);
@@ -315,7 +321,7 @@ namespace Widgets
             {
                 dehighlight(54);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.M))
             {
                 highlight(55);
@@ -324,7 +330,7 @@ namespace Widgets
             {
                 dehighlight(55);
             }
-            
+
             if (Input.GetKeyDown(KeyCode.X))
             {
                 highlight(56);
@@ -334,7 +340,7 @@ namespace Widgets
                 dehighlight(56);
             }
         }
-        
+
         /// <summary>
         /// highlight changes the icon/ outlining of the body part to white
         /// </summary>
@@ -342,6 +348,10 @@ namespace Widgets
         public void highlight(int id)
         {
             Widget widget = Manager.Instance.FindWidgetWithID(id);
+            if (widget == null)
+            {
+                return;
+            }
             widget.GetContext().currentIcon = widget.GetContext().icons[1];
             widget.ProcessRosMessage(widget.GetContext());
         }
@@ -353,6 +363,10 @@ namespace Widgets
         public void dehighlight(int id)
         {
             Widget widget = Manager.Instance.FindWidgetWithID(id);
+            if (widget == null)
+            {
+                return;
+            }
             widget.GetContext().currentIcon = widget.GetContext().icons[0];
             widget.ProcessRosMessage(widget.GetContext());
         }
