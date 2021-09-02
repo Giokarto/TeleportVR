@@ -158,10 +158,10 @@ public class EnableControlManager : Singleton<EnableControlManager>
         }
         int i = isLeft ? 0 : 1;
         // Show that the arm is active in the state manager
-        WidgetInteraction.SetBodyPartActive(53 - i, _enabled > 0.9f);
+        //WidgetInteraction.SetBodyPartActive(53 - i, _enabled > 0.9f);
 
         // Show that the fingers are active in the state manager
-        WidgetInteraction.SetBodyPartActive(55 - i, trigger);
+        //WidgetInteraction.SetBodyPartActive(55 - i, trigger);
 
 #if SENSEGLOVE
         group.WeakSetEnabled(true);

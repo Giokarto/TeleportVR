@@ -97,7 +97,7 @@ namespace Widgets
                 }
             }
 
-            Debug.LogWarning("No widget with id " + id + " found.");
+            //Debug.LogWarning("No widget with id " + id + " found.");
             return null;
         }
     }
