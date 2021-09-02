@@ -13,22 +13,25 @@ public class StartCalibrator : MonoBehaviour
     public Transform eye;
     [Tooltip("Goal eye transform after calibration")]
     public Transform goal;
-    
+
     [Tooltip("Number of seconds after game start, calibration should occurr (seconds)")]
     public float calibrationTime = 2;
     private bool calibrated = false;
 
-    void Update()
+    void Start()
     {
-        if (!calibrated && Time.time >= calibrationTime)
-        {
-
-            // Change transfrom position
-            Vector3 move = goal.position - eye.position;
-            transform.position += move;
-
-            calibrated = true;
-            Debug.Log($"Calibration done, moved: {move}");
-        }
+        StartCoroutine(WaitAndCalibrate(calibrationTime));
     }
+
+    private IEnumerator WaitAndCalibrate(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        // Change transfrom position
+        Vector3 move = goal.position - eye.position;
+        transform.position += move;
+
+        calibrated = true;
+        Debug.Log($"Calibration done, moved: {move}");
+    }
+
 }

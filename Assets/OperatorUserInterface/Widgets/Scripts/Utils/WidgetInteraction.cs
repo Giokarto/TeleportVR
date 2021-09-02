@@ -204,7 +204,7 @@ namespace Widgets
                 widget.GetContext().currentIconAlpha = connected ? 1f : 0.04f;
                 widget.ProcessRosMessage(widget.GetContext());
             }
-                
+
         }
 
         /// <summary>
@@ -270,7 +270,7 @@ namespace Widgets
         {
             ChangeIcon(46);
         }
-        
+
         /// <summary>
         /// change the icon on activate. Changes from green to yellow, yellow to red, red to green
         /// </summary>
@@ -295,11 +295,14 @@ namespace Widgets
 
         public static void SetBodyPartActive(int id, bool active)
         {
-            Widget widget = Manager.Instance.FindWidgetWithID(id);
-            int iconNr = active ? 1 : 0;
-            widget.GetContext().currentIcon = widget.GetContext().icons[iconNr];
-            widget.ProcessRosMessage(widget.GetContext());
-        }
+            try
+            {
+                Widget widget = Manager.Instance.FindWidgetWithID(id);
+                int iconNr = active ? 1 : 0;
+                widget.GetContext().currentIcon = widget.GetContext().icons[iconNr];
+                widget.ProcessRosMessage(widget.GetContext());
+            } catch (System.Exception) { }
+       }
 
         /// <summary>
         /// Close the cage, if ROSSHARP is active
