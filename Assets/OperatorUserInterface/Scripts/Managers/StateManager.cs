@@ -11,11 +11,25 @@ public class StateManager : Singleton<StateManager>
     public bool KillConstruct;
     public States currentState;
 
+    public float lastSwitch
+    {
+        get { return _lastSwitch; }
+    }
+
+    // Callbacks called before the corresponding scene is loaded
+    // WARNING: On Scene loading all callbacks for a resective scene are cleared.
+    public Dictionary<States, Callbacks<States>> onStateChangeTo;
+
+    private float _lastSwitch = float.NegativeInfinity;
+
+    [SerializeField] private ClientLogic clientLogic;
+
     AdditiveSceneManager additiveSceneManager;
     ConstructFXManager constructFXManager;
     TransitionManager transitionManager;
     GameObject leftSenseGlove;
     GameObject rightSenseGlove;
+    BioIK.BioIK[] bioIks;
 
     List<StateManager.States> visitedStates = new List<States>();
     /// <summary>
@@ -27,11 +41,23 @@ public class StateManager : Singleton<StateManager>
     }
 
     /// <summary>
+    /// Called before all Start() methods. Initializes this class.
+    /// </summary>
+    private void Awake()
+    {
+        onStateChangeTo = new Dictionary<States, Callbacks<States>>();
+        onStateChangeTo[States.HUD] = new Callbacks<States>();
+        onStateChangeTo[States.Construct] = new Callbacks<States>();
+        onStateChangeTo[States.Training] = new Callbacks<States>();
+    }
+
+    /// <summary>
     /// Set reference to instances.
     /// Load construct as initial state.
     /// </summary>
     void Start()
     {
+
         constructFXManager = GameObject.FindGameObjectWithTag("ConstructFXManager").GetComponent<ConstructFXManager>();
         additiveSceneManager = GameObject.FindGameObjectWithTag("AdditiveSceneManager").GetComponent<AdditiveSceneManager>();
         transitionManager = GameObject.FindGameObjectWithTag("TransitionManager").GetComponent<TransitionManager>();
@@ -40,6 +66,9 @@ public class StateManager : Singleton<StateManager>
         rightSenseGlove = GameObject.FindGameObjectWithTag("SenseGloveRight");
         leftSenseGlove.SetActive(false);
         rightSenseGlove.SetActive(false);
+
+        bioIks = FindObjectsOfType<BioIK.BioIK>();
+
         //additiveSceneManager.ChangeScene(Scenes.CONSTRUCT, null, null, DelegateBeforeConstructLoad, DelegateAfterConstructLoad);
         //currentState = States.Construct;
         additiveSceneManager.ChangeScene(Scenes.TRAINING, null, null, null, DelegateAfterTrainingLoad);
@@ -69,31 +98,47 @@ public class StateManager : Singleton<StateManager>
                 break;
         }
     }
-    
+
     /// <summary>
     /// Load the specified state.
     /// </summary>
     /// <param name="newState">The name of the state the state that should be loaded.</param>
-    public void GoToState(States newState)
+    /// <param name="onLoadDone">Callback to be executed once scene switching is done</param>
+    public void GoToState(States newState, System.Action onLoadDone = null)
     {
         // TODO: not working because the wheelchair is overwriting the position but needed to reset the user
         //WheelchairStateManager.Instance.transform.position = Vector3.zero;
-        
+
+        // keep motor disabled at all times, only HUD can send motor commands which is set in the DelegateAfterHudLoad
+        clientLogic.unityClient.EnableMotor(false);
+        _lastSwitch = Time.time;
         switch (newState)
         {
             case States.Construct:
                 transitionManager.StartTransition(false);
-                additiveSceneManager.ChangeScene(Scenes.CONSTRUCT, null, null, DelegateBeforeConstructLoad, DelegateAfterConstructLoad);
+                additiveSceneManager.ChangeScene(Scenes.CONSTRUCT, null, null, DelegateBeforeConstructLoad, () =>
+                {
+                    DelegateAfterConstructLoad();
+                    onLoadDone?.Invoke();
+                });
                 currentState = States.Construct;
                 break;
             case States.HUD:
                 transitionManager.StartTransition(true);
-                additiveSceneManager.ChangeScene(Scenes.HUD, null, null, DelegateBeforeHudLoad, null);
+                additiveSceneManager.ChangeScene(Scenes.HUD, null, null, DelegateBeforeHudLoad, () =>
+                {
+                    DelegateAfterHudLoad();
+                    onLoadDone?.Invoke();
+                });
                 currentState = States.HUD;
                 break;
             case States.Training:
                 transitionManager.StartTransition(true);
-                additiveSceneManager.ChangeScene(Scenes.TRAINING, null, null, null, DelegateAfterTrainingLoad);
+                additiveSceneManager.ChangeScene(Scenes.TRAINING, null, null, DelegateBeforeTrainingLoad, () =>
+                {
+                    DelegateAfterTrainingLoad();
+                    onLoadDone?.Invoke();
+                });
                 currentState = States.Training;
                 break;
             default:
@@ -136,8 +181,10 @@ public class StateManager : Singleton<StateManager>
             openMenuButton.GetChild(0).GetComponent<ButtonRigidbodyConstraint>().InitialState();
             openMenuButton.GetChild(1).GetComponent<FrameClickDetection>().highlightOff();
         }
+
+        onStateChangeTo[States.Construct].Call(States.Construct);
     }
-    
+
     /// <summary>
     /// Logic that is executed right before the Trainings scene is loaded.
     /// Gets the reference to the TutorialSteps script.
@@ -190,17 +237,17 @@ public class StateManager : Singleton<StateManager>
         if (!KillConstruct)
         {
             Destroy(GameObject.FindGameObjectWithTag("MainMenu"));
-#if SENSEGLOVE
-            leftSenseGlove.GetComponentInChildren<SenseGlove_Object>().StopBrakes();
-            rightSenseGlove.GetComponentInChildren<SenseGlove_Object>().StopBrakes();
-            leftSenseGlove.SetActive(false);
-            rightSenseGlove.SetActive(false);
-#endif
+            //#if SENSEGLOVE
+            //            leftSenseGlove.GetComponentInChildren<SenseGlove_Object>().StopBrakes();
+            //            rightSenseGlove.GetComponentInChildren<SenseGlove_Object>().StopBrakes();
+            //            leftSenseGlove.SetActive(false);
+            //            rightSenseGlove.SetActive(false);
+            //#endif
 
             constructFXManager.ToggleEffects(false);
         }
     }
-    
+
     /// <summary>
     /// Logic that is executed right before the construc scene is loaded.
     /// Enables both sense gloves and the OpenMenuButton
@@ -208,19 +255,82 @@ public class StateManager : Singleton<StateManager>
     void DelegateBeforeHudLoad()
     {
         print("DelegateBeforeHudLoad");
-        var bioIks = FindObjectsOfType<BioIK.BioIK>();
-        foreach (var body in bioIks)
+        
+        if (TutorialSteps.Instance != null)
         {
-            foreach (var segment in body.Segments)
+            TutorialSteps.Instance.audioManager.ResetAll();
+        }
+        // reset all joints to 0 before going to HUD
+        Debug.Log($"Number of times hud visited: {TimesStateVisited(States.HUD)}");
+        // TODO: investigate why we need to set 1 instead of 0 here
+        if (TimesStateVisited(States.HUD) == 1)
+        {
+            Debug.Log("resetting robot body");
+            foreach (var body in bioIks)
             {
-                if (segment.Joint != null)
+                // switch to instantaneous movement type for BioIK so that the transition to joint targets 0 is immediate 
+                body.MotionType = BioIK.MotionType.Instantaneous;
+
+                foreach (var segment in body.Segments)
                 {
-                    segment.Joint.X.SetTargetValue(0.0);
+                    body.ResetPosture(segment);
                 }
             }
         }
-        
-        
+        else
+        {
+            // go to the latest joint targets before leaving HUD
+            var jointValues = clientLogic.unityClient.GetLatestJointValues();
+            if (jointValues.Count > 0)
+            {
+                int i = 0;
+                foreach (var body in bioIks)
+                {
+                    if (body.name.Contains("shadow"))
+                    {
+                        continue;
+                    }
+                    foreach (var segment in body.Segments)
+                    {
+                        if (segment.Joint != null)
+                        {
+                            //Debug.Log($"{body.name}: {segment.Joint.name} {i}");
+                            segment.Joint.X.SetTargetValue(jointValues[i]);
+
+                            i++;
+                        }
+                    }
+                }
+            }
+        }
+        Debug.Log("Presense indicator on");
+        clientLogic.unityClient.SetPresenceIndicatorOn(true);
+
+        onStateChangeTo[States.HUD].Call(States.HUD);
+    }
+
+    void DelegateAfterHudLoad()
+    {
+        Debug.Log("DelegaterAfterHudLoad");
+        // switch back to realistic (slow) motion and enable motor
+        foreach (var body in bioIks)
+        {
+            body.MotionType = BioIK.MotionType.Realistic;
+        }
+        clientLogic.unityClient.EnableMotor(true);
+    }
+
+    void DelegateOnHudUnload()
+    {
+        Debug.Log("DelegateOnHudUnload");
+    }
+
+    void DelegateBeforeTrainingLoad()
+    {
+        Debug.Log("Presense indicator off");
+        clientLogic.unityClient.SetPresenceIndicatorOn(false);
+
+        onStateChangeTo[States.Training].Call(States.HUD);
     }
     #endregion
 }

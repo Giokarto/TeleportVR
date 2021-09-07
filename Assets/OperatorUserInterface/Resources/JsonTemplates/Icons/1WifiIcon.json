@@ -1,0 +1,12 @@
+{
+	"id": 23,
+	"type": "Icon",
+	"title": "WifiIcon",
+	"widgetPosition": "top",
+	"childWidgetId": 33,
+	"relativeChildPosition": "bottom",
+	"unfoldChildDwellTimer": 1.0,
+	"icons": ["wifiwhite", "WifiGreen", "WifiYellow", "WifiRed" ],
+	"currentIcon": "wifiwhite",
+	"scale" : 1
+}

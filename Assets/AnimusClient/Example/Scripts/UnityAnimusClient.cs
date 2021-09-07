@@ -11,6 +11,7 @@ using BioIK;
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ImgprocModule;
 using OpenCVForUnity.UnityUtils;
+using OpenCVForUnity.Calib3dModule;
 #endif
 using UnityEngine;
 using UnityEngine.Networking;
@@ -36,6 +37,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
     // vision variables
     public bool stereovision = false;
+    public bool undistortion = true;
     public GameObject LeftEye;
     public GameObject RightEye;
     [SerializeField] private GameObject _leftPlane;
@@ -52,7 +54,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     private RepeatedField<uint> _imageDims;
 #if ANIMUS_USE_OPENCV
     private Mat yuv;
-    private Mat rgb;
+    private Mat rgb, rgb_l, yuv_left, yuv_right;
 #endif
 
     private bool initMats;
@@ -85,7 +87,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     public BioIK.BioIK _myIKBody;
     public BioIK.BioIK _myIKHead;
     private List<BioSegment> _actuatedJoints;
-    private bool motorEnabled;
+    private List<float> latestJointValues;
+    public bool motorEnabled;
     private float _lastUpdate;
 
     private bool bodyTransitionReady;
@@ -119,8 +122,26 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     private const string LEDS_CONNECTED = "robot_established";
     private const string LEDS_IS_CONNECTED = "if_connected";
 
+    private Scenes currentScene = Scenes.NONE;
+    private int rightIdx = 0, leftIdx = 0;
+    private AnimusManager.AnimusClientManager animusManager;
+    private bool inHUD = false;
+
+    public enum Modality
+    {
+        VISION, AUDITION, VOICE, MOTOR, EMOTION
+    }
+    private struct Undistort
+    {
+        public Mat mapx, mapy;
+    }
+
+    private Undistort undistort;
+
     public void Start()
     {
+
+
         motorEnabled = false;
         visionEnabled = false;
         auditionEnabled = false;
@@ -143,11 +164,85 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
             camLeft.stereoTargetEye = StereoTargetEyeMask.Left;
         }
 
+        latestJointValues = new List<float>();
+
         // controls an led ring (optional)
         StartCoroutine(SendLEDCommand(LEDS_CONNECTING));
         StartCoroutine(StartBodyTransition());
+
+        animusManager = ClientLogic.Instance.AnimusManager;
     }
 
+#if ANIMUS_USE_OPENCV
+    private void InitUndistortion(int image_width, int image_height)
+    {
+        double[,] dist, camera, newCamera;
+        if (image_width == 360 && image_height == 640)
+        {
+            dist = new double[,] {
+                { -0.26671108837192126, 0.07901518944619403, 0.00015571985524697281, 0.0006010997461545253, -0.01058019944621336 }
+            };
+            camera = new double[,] {
+                { 298.68813717678285, 0.0, 166.9743006819531 },
+                { 0.0, 298.0500351325468, 309.6193055827986 },
+                { 0.0, 0.0, 1.0 }
+            };
+            newCamera = new double[,] {
+                { 250.33721923828125, 0.0, 180.40019593524147 },
+                { 0.0, 240.51262156168622, 310.58069246672255 },
+                { 0.0, 0.0, 1.0 }
+            };
+        }
+        else if (image_width == 240 && image_height == 426)
+        {
+            dist = new double[,] {
+                { -0.3410095060673586, 0.13663490491793673, 0.0029517164668326173, 0.0031498764503194074, -0.02582006181844203 }
+            };
+            camera = new double[,] {
+                { 226.1512419110776, 0.0, 109.29523311868192 },
+                { 0.0, 226.23590938020163, 205.63347777512897 },
+                { 0.0, 0.0, 1.0 }
+            };
+            newCamera = new double[,] {
+                { 183.4514923095703, 0.0, 110.754281606527 },
+                { 0.0, 165.92552947998047, 202.29188376754882 },
+                { 0.0, 0.0, 1.0 }
+            };
+        }
+        else
+        {
+            throw new NotImplementedException();
+        }
+
+        Mat distCoeffs = FillMat(dist);
+        Mat cameraMatrix = FillMat(camera);
+        Mat newCameraMatrix = FillMat(newCamera);
+
+        Mat mapx = new Mat();
+        Mat mapy = new Mat();
+        // compute undistortion mapping & cache result
+        Mat identity = Mat.eye(3, 3, CvType.CV_32FC1);
+        Calib3d.initUndistortRectifyMap(cameraMatrix, distCoeffs, identity, newCameraMatrix,
+            new Size(image_width, image_height), CvType.CV_32FC1, mapx, mapy);
+
+        undistort.mapx = mapx;
+        undistort.mapy = mapy;
+    }
+
+    private Mat FillMat(double[,] values)
+    {
+        int rows = values.GetLength(0), cols = values.GetLength(1);
+        Mat mat = new Mat(rows, cols, CvType.CV_32FC1);
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                mat.put(i, j, values[i, j]);
+            }
+        }
+        return mat;
+    }
+#endif
 
     IEnumerator StartBodyTransition()
     {
@@ -159,40 +254,6 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         // humanHead = TrackingSpace.Find("CenterEyeAnchor");
         humanLeftHand = TrackingSpace.Find("LeftHandAnchor");
         humanRightHand = TrackingSpace.Find("RightHandAnchor");
-        
-        // The code below might be needed if the Body Transition gets implemented again
-        // robotDriver = robotBody.GetComponent<NaoAnimusDriver>();
-        // if (robotDriver != null)
-        // {
-        // 	robotBase = robotDriver.topCamera.gameObject.transform.parent.transform;
-        // 	robotLeftHandObjective = robotDriver.leftHandTarget.transform;
-        // 	robotRightHandObjective = robotDriver.rightHandTarget.transform;
-        // 	bodyToBaseOffset = robotBase.position - robotBody.transform.position;
-        // }
-        // else
-        // {
-        // 	robotBase = robotBody.transform;
-        // 	bodyToBaseOffset = Vector3.zero;
-        // }
-        //
-        // var roboTransform = robotBody.transform;
-        // Vector3 startPos = roboTransform.position;
-        // Vector3 endPos = humanHead.position - bodyToBaseOffset;
-        // Vector3 startAngles = roboTransform.eulerAngles;
-
-        // 		for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / bodyTransitionDuration)
-        // 		{
-        // 			bodyToBaseOffset = robotBase.position - robotBody.transform.position;
-        // 			endPos = humanHead.position - bodyToBaseOffset;
-        // 			roboTransform.position = new Vector3(Mathf.SmoothStep(startPos.x, endPos.x, t),
-        // 												 Mathf.SmoothStep(startPos.y, endPos.y, t),
-        // 												 Mathf.SmoothStep(startPos.z, endPos.z, t));
-
-        // 			roboTransform.eulerAngles = new Vector3(Mathf.SmoothStep(startAngles.x, 0, t),
-        // 													Mathf.SmoothStep(startAngles.y, 0, t),
-        // 													Mathf.SmoothStep(startAngles.z, 0, t));
-        // 			yield return null;
-        // 		}
 
         bodyTransitionReady = true;
     }
@@ -236,7 +297,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
     /// <summary>
     /// Setup the displays to display the received image(s) from animus.
-    /// </summary>
+    // </summary>
     /// <returns>The success of this method.</returns>
     public bool vision_initialise()
     {
@@ -270,6 +331,11 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         _leftRenderer = _leftPlane.GetComponent<Renderer>();
         _rightRenderer = _rightPlane.GetComponent<Renderer>();
         _imageDims = new RepeatedField<uint>();
+
+        rgb = new Mat();
+        rgb_l = new Mat(rgb.rows(), rgb.cols(), CvType.CV_8UC3);
+
+
         visionEnabled = true;
 
         return visionEnabled;
@@ -281,7 +347,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     /// <returns>Both eye textures.</returns>
     public Texture2D[] GetVisionTextures()
     {
-        return new[] {_leftTexture, _rightTexture};
+        return new[] { _leftTexture, _rightTexture };
     }
 
     /// <summary>
@@ -289,17 +355,18 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     /// </summary>
     private void SetDisplaystate()
     {
-        if (AdditiveSceneManager.GetCurrentScene() == Scenes.HUD)
-        {
-            if (stereovision)
-                _rightPlane.SetActive(true);
-            _leftPlane.SetActive(true);
-        }
-        else
-        {
-            _rightPlane.SetActive(false);
-            _leftPlane.SetActive(false);
-        }
+        Scenes s = AdditiveSceneManager.GetCurrentScene();
+        //if (currentScene == s)
+        //{
+        //    return;
+        //}
+        currentScene = s;
+
+        inHUD = currentScene == Scenes.HUD;
+        _leftPlane.SetActive(inHUD && animusManager.openModalitiesSuccess);
+        _rightPlane.SetActive(stereovision && inHUD && animusManager.openModalitiesSuccess);
+
+
     }
 
     /// <summary>
@@ -309,9 +376,11 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     /// <returns>Success of this method.</returns>
     public bool vision_set(ImageSamples currSamples)
     {
+        //return true;
         try
         {
             if (!bodyTransitionReady) return true;
+            if (StereoPlaneMover.Instance.showingImages) return true;
 
             if (!visionEnabled)
             {
@@ -323,15 +392,22 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
             {
                 return false;
             }
+            // only set vision when it's visible
+            if (StateManager.Instance.currentState != StateManager.States.HUD)
+            {
+                return false;
+            }
 
             var currSample = currSamples.Samples[0];
             var currShape = currSample.DataShape;
 
             var all_bytes = currSample.Data.ToByteArray();
 #if ANIMUS_USE_OPENCV
+
+
             if (!initMats)
             {
-                yuv = new Mat((int) (currShape[1] * 1.5), (int) currShape[0], CvType.CV_8UC1);
+                yuv = new Mat((int)(currShape[1] * 1.5), (int)(currShape[0]), CvType.CV_8UC1);
                 rgb = new Mat();
                 initMats = true;
             }
@@ -348,41 +424,55 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
             yuv.put(0, 0, all_bytes);
 
-            Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2BGR_I420);
-            if (_imageDims.Count == 0 || currShape[0] != _imageDims[0] || currShape[1] != _imageDims[1] ||
-                currShape[2] != _imageDims[2])
+            // resize triggered
+            if (_imageDims.Count == 0 || currShape[0] != _imageDims[0] || currShape[1] != _imageDims[1] || currShape[2] != _imageDims[2])
             {
                 _imageDims = currShape;
-                var scaleX = (float) _imageDims[0] / (float) _imageDims[1];
-
-                Debug.Log("Resize triggered. Setting texture resolution to " + currShape[0] + "x" + currShape[1]);
-                Debug.Log("Setting horizontal scale to " + scaleX + " " + (float) _imageDims[0] + " " +
-                          (float) _imageDims[1]);
-
-                UnityEngine.Vector3 currentScale = _leftPlane.transform.localScale;
-                currentScale.x = scaleX;
-                currentScale.z /= scaleX;
+                Debug.Log($"Resize triggered. Setting texture resolution to {currShape[0]} x {currShape[1] / 2}");
+                Debug.Log($"Setting horizontal scale to {(float)_imageDims[0]} {(float)_imageDims[1] / 2}");
+                
 
                 if (stereovision)
                 {
-                    _leftPlane.transform.localScale = currentScale;
+                    if (undistortion)
+                    {
+                        InitUndistortion((int)_imageDims[0], (int)_imageDims[1] / 2);
+                    }
+
+                    // only half of the vertical scale corresponds to the image for one eye
+                    float scaleFactor = ((float)_imageDims[1] / 2) / (float)_imageDims[0];
+                    //_leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
+                    //                                              _leftPlane.transform.localScale.y,
+                    //                                              scaleFactor * _leftPlane.transform.localScale.x);
+                    //_rightPlane.transform.localScale = new Vector3(_rightPlane.transform.localScale.x,
+                    //                                              _rightPlane.transform.localScale.y,
+                    //                                              scaleFactor * _rightPlane.transform.localScale.x);
+
                     // the left texture is the upper half of the received image
-                    _leftTexture = new Texture2D(rgb.width(), rgb.height() / 2, TextureFormat.ARGB32, false)
+                    _leftTexture = new Texture2D((int)_imageDims[0], (int)_imageDims[1] / 2, TextureFormat.RGB24, false)
                     {
                         wrapMode = TextureWrapMode.Clamp
                     };
 
-                    _rightPlane.transform.localScale = currentScale;
                     // the right texture is the lower half of the received image
-                    _rightTexture = new Texture2D(rgb.width(), rgb.height() / 2, TextureFormat.ARGB32, false)
+                    _rightTexture = new Texture2D((int)_imageDims[0], (int)_imageDims[1] / 2, TextureFormat.RGB24, false)
                     {
                         wrapMode = TextureWrapMode.Clamp
                     };
                 }
                 else
                 {
-                    _leftPlane.transform.localScale = currentScale;
-                    _leftTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.ARGB32, false)
+                    if (undistortion)
+                    {
+                        InitUndistortion((int)_imageDims[0], (int)_imageDims[1]);
+                    }
+
+                    float scaleFactor = (float)_imageDims[1] / (float)_imageDims[0];
+                    _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
+                                                                  _leftPlane.transform.localScale.y,
+                                                                  scaleFactor * _leftPlane.transform.localScale.x);
+
+                    _leftTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.RGB24, false)
                     {
                         wrapMode = TextureWrapMode.Clamp
                     };
@@ -391,33 +481,14 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
             if (stereovision)
             {
-                // loop over the left and the right eye
-                for (int i = 0; i < 2; i++)
-                {
-                    if (i == 0)
-                    {
-                        // display the left image
-                        Mat rgb_l = rgb.rowRange(0, rgb.rows() / 2);
-                        Utils.matToTexture2D(rgb_l, _leftTexture);
-                        _leftRenderer.material.mainTexture = _leftTexture;
-                    }
-                    else if (i == 1)
-                    {
-                        // display the right image
-                        Mat rgb_r = rgb.rowRange(rgb.rows() / 2, rgb.rows());
-                        Utils.matToTexture2D(rgb_r, _rightTexture);
-                        _rightRenderer.material.mainTexture = _rightTexture;
-                    }
-                    else
-                    {
-                        print("Unknown image source: " + currSample.Source);
-                    }
-                }
+                yuv_left = yuv.rowRange(0, yuv.rows() / 2);
+                yuv_right = yuv.rowRange(yuv.rows() / 2, yuv.rows());
+                render_plane(yuv_left, _leftTexture, _leftRenderer, true);
+                render_plane(yuv_right, _rightTexture, _rightRenderer, false);
             }
             else
             {
-                Utils.matToTexture2D(rgb, _leftTexture);
-                _leftRenderer.material.mainTexture = _leftTexture;
+                render_plane(yuv, _leftTexture, _leftRenderer);
             }
 #endif
         }
@@ -427,6 +498,28 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         }
 
         return true;
+    }
+
+    void render_plane(Mat yuv, Texture2D texture, Renderer renderer, bool left = true)
+    {
+        //Mat rgb = new Mat();
+        Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2RGB_I420);
+        //Mat rgb_l = new Mat(rgb.rows(), rgb.cols(), CvType.CV_8UC3);
+
+        if (undistortion)
+        {
+            // undistort
+            Imgproc.remap(rgb, rgb_l, undistort.mapx, undistort.mapy, Imgproc.INTER_LINEAR, 0);
+        }
+        else
+        {
+            rgb_l = rgb;
+        }
+        // display
+        Utils.matToTexture2D(rgb_l, texture);
+        // var name = left ? "left" : "right";
+        // System.IO.File.WriteAllBytes($"{name}_{leftIdx++}.jpg", texture.EncodeToJPG());
+        renderer.material.mainTexture = texture;
     }
 
     /// <summary>
@@ -541,7 +634,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     /// <returns>Success.</returns>
     public bool proprioception_set(Float32Array currSample)
     {
-        print("Proprio: " + currSample.Data);
+        //print("Proprio: " + currSample.Data);
         // check if the float array contains information for the 6 body parts
         if (currSample.CalculateSize() >= 6)
         {
@@ -574,12 +667,12 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     {
         // get the instance of the widget with this id
         Widget widget = Manager.Instance.FindWidgetWithID(id);
-        if ((int) (currSample.Data[position]) == -1)
+        if ((int)(currSample.Data[position]) == -1)
         {
             // float equal to -1 then the widget changes to the icon/color at position 1 in the json file (yellow)
             widget.GetContext().currentIcon = widget.GetContext().icons[1];
         }
-        else if ((int) (currSample.Data[position]) == 0)
+        else if ((int)(currSample.Data[position]) == 0)
         {
             // float equal to 0 then the widget changes to the icon/color at position 0 in the json file (green)
             widget.GetContext().currentIcon = widget.GetContext().icons[0];
@@ -607,7 +700,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     // --------------------------Motor Modality-------------------------------------
     public bool motor_initialise()
     {
-        motorEnabled = true;
+        //motorEnabled = false;
         _lastUpdate = 0;
         motorMsg = new Float32Array();
         motorSample = new Sample(DataMessage.Types.DataType.Float32Arr, motorMsg);
@@ -642,37 +735,77 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     /// <returns>Success.</returns>
     public Sample motor_get()
     {
-        if (!motorEnabled)
+        var motorAngles = new List<float>();
+        //if (Time.time * 1000 - _lastUpdate > 50)
         {
-            Debug.Log("Motor modality not enabled");
-            return null;
-        }
-
-        if (Time.time * 1000 - _lastUpdate > 50)
-        {
-            //Debug.LogError("Motor modality enabled");
-            var motorAngles = new List<float>();
-
-            // head joints
-            foreach (var segment in _myIKHead.Segments)
+            //Debug.Log($"motor enabled: {motorEnabled}");
+            
+            // if motor not enabled - keep sending the last motor message with head pose looking down 
+            if (!motorEnabled)
             {
-                if (segment.Joint != null)
+                if (motorMsg.Data.Count>0)
                 {
-                    motorAngles.Add((float) segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
+                    // motorMsg.Data:
+                    // [0] -> head_axis0
+                    // [1] -> head_axis1
+                    // [2] -> head_axis2
+                    motorMsg.Data[0] = 0.6f;
+                    motorMsg.Data[1] = 0.0f;
+                    motorMsg.Data[2] = 0.0f;
                 }
+                else
+                {
+                    motorAngles = new List<float>(new float[29])
+                    {
+                        [0] = 0.6f
+                    };
+                    motorMsg.Data.Clear();
+                    motorMsg.Data.Add(motorAngles);
+                }
+                
             }
-
-            // torso joints
-            foreach (var segment in _myIKBody.Segments)
+            else
             {
-                //Debug.Log(segment.name);
-                if (segment.Joint != null)
+                //Debug.LogError("Motor modality enabled");
+                latestJointValues.Clear();
+                // head joints
+                foreach (var segment in _myIKHead.Segments)
                 {
-                    motorAngles.Add((float) segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
-                }
-            }
 
-            // left hand, right hand
+                    if (segment.Joint != null)
+                    {
+                        motorAngles.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
+                        latestJointValues.Add((float)segment.Joint.X.CurrentValue);
+                    }
+                }
+
+                // torso joints
+                foreach (var segment in _myIKBody.Segments)
+                {
+                    //Debug.Log(segment.name);
+                    if (segment.Joint != null)
+                    {
+                        //Debug.Log($"{motorAngles.Count - 1}: {segment.gameObject.name} {segment.Joint.X.CurrentValue}");
+                        motorAngles.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
+                        latestJointValues.Add((float)segment.Joint.X.CurrentValue);
+                    }
+                }
+                // Distribure angle on elbow_*_axis0 to axis0 and axis1 equally
+                const int elbowRightAxis0 = 6;
+                const int elbowLeftAxis0 = 14;
+                motorAngles[elbowRightAxis0 + 1] = -motorAngles[elbowRightAxis0] / 2;
+                motorAngles[elbowRightAxis0] /= 2;
+                motorAngles[elbowLeftAxis0 + 1] = motorAngles[elbowLeftAxis0] / 2;
+                motorAngles[elbowLeftAxis0] /= 2;
+
+
+                // right, left
+#if SENSEGLOVE
+                foreach (var step in InputManager.Instance.handManager.GetMotorPositions())
+                {
+                    motorAngles.Add(step);
+                }
+#else
             float left_open = 0, right_open = 0;
             if (InputManager.Instance.GetLeftController())
                 InputManager.Instance.controllerLeft[0]
@@ -682,30 +815,48 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 InputManager.Instance.controllerRight[0]
                     .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
 
-            motorAngles.Add(left_open);
-            motorAngles.Add(right_open);
 
+            // 4 values for right and left
+            for (int i = 0; i < 4; i++)
+            {
+                motorAngles.Add(right_open);
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                motorAngles.Add(left_open);
+            }
+#endif
+
+//#if RUDDER
+                        
             // wheelchair
-            Vector2 axis2D;
-            if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
-                InputManager.Instance.controllerLeft[0]
-                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
-            {
-                motorAngles.Add(axis2D[0]);
-                motorAngles.Add(axis2D[1]);
-            }
-            else
-            {
-                motorAngles.Add(0);
-                motorAngles.Add(0);
-            }
+            Vector2 wheelchairDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
+            // left
+            motorAngles.Add(wheelchairDrive.x);
+            // right
+            motorAngles.Add(wheelchairDrive.y);
 
-            motorMsg.Data.Clear();
-            motorMsg.Data.Add(motorAngles);
-            motorSample.Data = motorMsg;
-            _lastUpdate = Time.time * 1000;
+//#else
+//            Vector2 axis2D;
+//            if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
+//                InputManager.Instance.controllerLeft[0]
+//                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
+//            {
+//                motorAngles.Add(axis2D[0]);
+//                motorAngles.Add(axis2D[1]);
+//            }
+//#endif
 
-            return motorSample;
+                motorMsg.Data.Clear();
+                motorMsg.Data.Add(motorAngles);
+
+
+            }
+       
+        motorSample.Data = motorMsg;
+        _lastUpdate = Time.time * 1000;
+
+        return motorSample;
         }
 
         return null;
@@ -719,10 +870,21 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         return true;
     }
 
+    public List<float> GetLatestJointValues()
+    {
+        return latestJointValues;
+    }
+
     private void Update()
     {
         // Enable or disable the displays
         SetDisplaystate();
+
+        // update widgets
+        WidgetInteraction.MarkAnimusConnected(animusManager.connectedToRobotSuccess);
+        WidgetInteraction.MarkModalityConnected(Modality.AUDITION, animusManager.openModalitiesSuccess);
+        WidgetInteraction.MarkModalityConnected(Modality.VOICE, animusManager.openModalitiesSuccess);
+        WidgetInteraction.MarkModalityConnected(Modality.MOTOR, animusManager.openModalitiesSuccess && inHUD);
     }
 
     // --------------------------Voice Modality----------------------------------
@@ -754,64 +916,69 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     // read out the currently pressed button combination and send it as a string via animus
     public Sample emotion_get()
     {
-        // convert the button combination to an int
-        var controlCombination = ((LeftButton1 ? 1 : 0) * 1) +
-                                 ((LeftButton2 ? 1 : 0) * 2) +
-                                 ((RightButton1 ? 1 : 0) * 4) +
-                                 ((RightButton2 ? 1 : 0) * 8);
-
-        // convert the button combination from an int representation to a string representation
-        switch (controlCombination)
+        if (currentEmotion.Equals(oldEmotion))
         {
-            case 0:
-                // All off
-                currentEmotion = "off";
-                break;
-            case 1:
-                // Left Button 1
-                currentEmotion = "A";
-                break;
-            case 2:
-                // Left Button 2
-                currentEmotion = "B";
-                break;
-            case 4:
-                // Right Button 1
-                currentEmotion = "Y";
-                break;
-            case 5:
-                // Right button 1 and left button 1
-                currentEmotion = "AY";
-                break;
-            case 6:
-                currentEmotion = "BY";
-                break;
-            case 8:
-                // Right Button 2
-                currentEmotion = "X";
-                break;
-            case 9:
-                currentEmotion = "AX";
-                break;
-            case 10:
-                // Right Button 2 and Left Button 2
-                currentEmotion = "BX";
-                break;
-            default:
-                Debug.Log("Unassigned Combination");
-                break;
+            currentEmotion = "neutral";
         }
+        //// convert the button combination to an int
+        //var controlCombination = ((LeftButton1 ? 1 : 0) * 1) +
+        //                         ((LeftButton2 ? 1 : 0) * 2) +
+        //                         ((RightButton1 ? 1 : 0) * 4) +
+        //                         ((RightButton2 ? 1 : 0) * 8);
+
+        //// convert the button combination from an int representation to a string representation
+        //switch (controlCombination)
+        //{
+        //    case 0:
+        //        // All off
+        //        currentEmotion = "off";
+        //        break;
+        //    case 1:
+        //        // Left Button 1
+        //        currentEmotion = "A";
+        //        break;
+        //    case 2:
+        //        // Left Button 2
+        //        currentEmotion = "B";
+        //        break;
+        //    case 4:
+        //        // Right Button 1
+        //        currentEmotion = "Y";
+        //        break;
+        //    case 5:
+        //        // Right button 1 and left button 1
+        //        currentEmotion = "AY";
+        //        break;
+        //    case 6:
+        //        currentEmotion = "BY";
+        //        break;
+        //    case 8:
+        //        // Right Button 2
+        //        currentEmotion = "X";
+        //        break;
+        //    case 9:
+        //        currentEmotion = "AX";
+        //        break;
+        //    case 10:
+        //        // Right Button 2 and Left Button 2
+        //        currentEmotion = "BX";
+        //        break;
+        //    default:
+        //        Debug.Log("Unassigned Combination");
+        //        break;
+        //}
 
 
         emotionMsg.Data = currentEmotion;
-        if (currentEmotion != "off")
-        {
-            // Display the current Emotion on the widget
-            EmotionManager.Instance.SetFaceByKey(currentEmotion);
-        }
+        //if (currentEmotion != "off")
+        //{
+        //    // Display the current Emotion on the widget
+        //    EmotionManager.Instance.SetFaceByKey(currentEmotion);
+        //}
 
         // send the emotion via animus to display it on the real robot
         emotionSample.Data = emotionMsg;
+        oldEmotion = currentEmotion;
         return emotionSample;
     }
 
@@ -824,6 +991,10 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         return true;
     }
 
+    public void SetPresenceIndicatorOn(bool on)
+    {
+        currentEmotion = on ? "tp_on" : "tp_off";
+    }
     // Utilities
 
     public static Vector3 Vector2Ros(Vector3 vector3)

@@ -50,7 +50,8 @@ namespace Widgets
         #endregion
 
         #region Icon
-        public string currentIcon;      
+        public string currentIcon;
+        public float currentIconAlpha;
         public string[] icons;
         #endregion
         
@@ -76,10 +77,11 @@ namespace Widgets
         /// <param name="graphDatapoint"></param>
         /// <param name="graphTimestamp"></param>
         /// <param name="graphColor"></param>
-        private RosJsonMessage(int id, string currentIcon)
+        private RosJsonMessage(int id, string currentIcon, float currentIconAlpha=1)
         {
             this.id = id;
             this.currentIcon = currentIcon;
+            this.currentIconAlpha = currentIconAlpha;
         }
         
         /// <summary>

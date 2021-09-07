@@ -37,6 +37,13 @@ TagManager:
   - WidgetsBottomRight
   - RoboyCollider
   - Tutorial
+  - XROffsetLeft
+  - XROffsetRight
+  - SeneGloveGrab
+  - RightHandCalibrator
+  - LeftHandCalibrator
+  - LeftObjective
+  - RightObjective
   layers:
   - Default
   - TransparentFX
@@ -45,7 +52,7 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - UpperBody
   - RightEye
   - LeftEye
   - RoboyHead

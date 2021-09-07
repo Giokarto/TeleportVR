@@ -18,6 +18,23 @@ Assets/Plugins/Editor/JetBrains*
 /[Mm]emoryCaptures/
 #exclude all ProjectSettings
 /[Pp]rojectSettings/
+/[Uu]ser[Ss]ettings/*
+/UserSettings
+
+/Assets/Rewired/
+
+# exclude SenseGlove SDK
+/Assets/SenseGlove/
+
+/Assets/SenseGlove/
+/Assets/SenseGlove.meta
+/Assets/Rewired/
+/Assets/Rewired.meta
+
+/Assets/SenseGlove/
+/Assets/SenseGlove.meta
+/Assets/Rewired/
+/Assets/Rewired.meta
 
 # exclude the Animus SDK
 /Assets/AnimusClient/
@@ -27,6 +44,9 @@ Assets/Plugins/Editor/JetBrains*
 
 # exclude OpenCVForUnity
 /Assets/OpenCVForUnity/
+
+# exclude Ultimate 10 Shaders
+/Assets/Ultimate\ 10\ Plus\ Shaders/
 
 # exclude the OUI ThirdParty Assets
 Assets/OperatorUserInterface/ThirdParty/

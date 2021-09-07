@@ -29,21 +29,24 @@ public class ClientLogic : Singleton<ClientLogic>
 
     IEnumerator ClientManagerLogic()
     {
+        
         // Yield for 10 frames to allow other scripts to initialise first
         if (_count < 10)
         {
             _count++;
             yield return null;
         }
-
+        
         // Step 1 - Login user
         print(AnimusManager);
         AnimusManager.LoginUser(AccountEmail, AccountPassword);
         while (!AnimusManager.loginResultAvailable)
-        {
+        {         
             yield return null;
         }
-        if (!AnimusManager.loginSuccess) yield break;
+        if (!AnimusManager.loginSuccess) {
+            yield break;        
+        }
         Debug.Log("Login successful.");
 
         // Step 2 - Search for connectable robots
@@ -81,7 +84,8 @@ public class ClientLogic : Singleton<ClientLogic>
         if (_chosenRobot == null)
         {
             Debug.Log($"Robot {robotName} not found");
-            WidgetInteraction.SetAnimusStatus("WifiRed", $"Robot {robotName} not found");
+            
+            //WidgetInteraction.SetAnimusStatus("WifiRed", $"Robot {robotName} not found");
             yield break;
         }
 
@@ -97,6 +101,8 @@ public class ClientLogic : Singleton<ClientLogic>
             yield return null;
         }
         if (!AnimusManager.connectedToRobotSuccess) yield break;
+        
+
 
         // Step 5 - Starting all modalities
         AnimusManager.OpenModalities(requiredModalities);

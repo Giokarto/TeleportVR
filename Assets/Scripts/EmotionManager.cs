@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class EmotionManager : Singleton<EmotionManager>
 {
+#if ROSSHARP
     private RoboyAnimator faceAnimator;
-
+#endif
     private static Dictionary<int, string> intToEmotion = new Dictionary<int, string>()
     {
         {0, "idle"},
@@ -85,6 +86,7 @@ public class EmotionManager : Singleton<EmotionManager>
     /// <param name="emotion"></param>
     public void SetFace(string emotion)
     {
+#if ROSSHARP
         if (faceAnimator == null)
         {
             faceAnimator = FindObjectOfType<RoboyAnimator>();
@@ -97,5 +99,6 @@ public class EmotionManager : Singleton<EmotionManager>
 
         faceAnimator.SetEmotion(emotion);
         print("Set emotion " + emotion);
+#endif
     }
 }

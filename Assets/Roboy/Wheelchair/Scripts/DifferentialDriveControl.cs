@@ -38,30 +38,31 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
 
     private void Update()
     {
+        // TODO: move keyboard controls outta here
         if (Input.GetKey(KeyCode.RightArrow))
         {
-            V_L = 0.2f;
-            V_R = 0.1f;
+            V_L = 0.02f;
+            V_R = 0.01f;
             abc = transform.rotation.y;
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
-            V_L = 0.1f;
-            V_R = 0.2f;
+            V_L = 0.01f;
+            V_R = 0.02f;
 
         }
         else if (Input.GetKey(KeyCode.UpArrow))
         {
-            V_L = 0.2f;
-            V_R = 0.2f;
+            V_L = 0.02f;
+            V_R = 0.02f;
 
             abc = 0f;
 
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            V_L = -0.2f;
-            V_R = -0.2f;
+            V_L = -0.02f;
+            V_R = -0.02f;
         }
 
         frontRightWheel.transform.Rotate(-V_R / 0.1407802f * Time.deltaTime * 100f, 0f, 0f);
@@ -69,12 +70,10 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
 
         casterRightWheel.transform.Rotate(-V_R / 0.1407802f * Time.deltaTime * 100f, 0f, 0f);
         casterLeftWheel.transform.Rotate(-V_R / 0.1407802f * Time.deltaTime * 100f, 0f, 0f);
-
     }
 
     private void FixedUpdate()
     {
-
         (x, y, theta) = diffdrive(V_L, V_R, drivingTime, L);
 
         //Debug.Log($"X: {x}, Y: {y} Theta: {theta}");
@@ -84,7 +83,6 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
 
         V_L = 0;
         V_R = 0;
-
     }
 
     private void Move()

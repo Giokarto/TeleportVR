@@ -70,7 +70,7 @@ namespace Widgets
 
             if (childWidget == null)
             {
-                Debug.LogWarning("Child widget not found.");
+                //Debug.LogWarning("Child widget not found.");
             }
         }
 
