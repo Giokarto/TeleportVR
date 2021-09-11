@@ -11,6 +11,9 @@ public class GameConfig : Singleton<GameConfig>
     {
         [Range(40, 90)]
         public float OperatorIPD = 63;
+        public bool OperatorManualOverwrite = false;
+        public float OperatorHorizontal = 0;
+        public float OperatorVertical = 0;
     }
 
     public string configName = "config.json";
@@ -34,9 +37,9 @@ public class GameConfig : Singleton<GameConfig>
         }
     }
 
-    private void WriteSettings()
+    public void WriteSettings()
     {
-        var json = JsonUtility.ToJson(settings);
+        var json = JsonUtility.ToJson(settings, prettyPrint: true);
         Debug.Log($"Wrote GameSettings to: {path}");
         File.WriteAllText(path, json);
     }

@@ -95,7 +95,7 @@ namespace Training
                     onStart: () =>
                     {
                         ariaNavigation.target = turnLeftGoal.position;
-                        TutorialSteps.PublishNotification("Turn left", rudderWheelchairAudio.turn_left.length);
+                        TutorialSteps.PublishNotification("Turn left and follow me", rudderWheelchairAudio.turn_left.length);
                         waitingForTrigger = true;
                     },
                     onEnd: () =>
@@ -112,7 +112,7 @@ namespace Training
                     onStart: () =>
                     {
                         ariaNavigation.target = turnRightGoal.position;
-                        TutorialSteps.PublishNotification("Turn right", rudderWheelchairAudio.turn_right_intro.length + 2);
+                        TutorialSteps.PublishNotification("Turn right and follow me", rudderWheelchairAudio.turn_right_intro.length + 2);
                         waitingForTrigger = true;
                     }
                 );

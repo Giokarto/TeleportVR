@@ -107,7 +107,10 @@ namespace Training
             {
                 waitingForNod = false;
 #if RUDDER
-                RudderPedals.PresenceDetector.Instance.canPause = false;
+                if (StateManager.Instance.currentState == StateManager.States.Training)
+                {
+                    RudderPedals.PresenceDetector.Instance.canPause = false;
+                }
 #endif
             };
 

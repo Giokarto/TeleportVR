@@ -333,7 +333,7 @@ namespace Training.Calibration
                             Debug.Log($"Saved Calibration Profiles for {lrName} hand");
 
                             TutorialSteps.Instance.audioManager.ScheduleAudioClip(audioClips.test, queue: false);
-                            TutorialSteps.PublishNotification($"{lrName} thums up to continue", audioClips.test.length + testParams.dwellTime);
+                            TutorialSteps.PublishNotification($"{lrName} thumbs up to continue", audioClips.test.length + testParams.dwellTime);
                             handAnimator.SetInteger("handState", (int)Pose.ThumbUp);
 
                             currentStep = Step.Test;

@@ -4,16 +4,10 @@ using UnityEngine;
 
 public class StereoPlaneMover : Singleton<StereoPlaneMover>
 {
-    public bool showingImages = false, manualCalibration = false;
 
     public Transform leftImage, rightImage;
     public Texture2D leftCalibrationTexture, rightCalibrationTexture;
 
-    public float operatorIPD
-    {
-        get { return GameConfig.Instance.settings.OperatorIPD; }
-        set { GameConfig.Instance.settings.OperatorIPD = value; }
-    }
 
     [Header("Manual Calibration")]
     public float horizontal = 1;
@@ -35,6 +29,8 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
     private Texture oldLeftTexture, oldRightTexture;
     private bool oldLeftActive, oldRightActive;
 
+    public bool showingImages = false;
+    [SerializeField] private bool manualCalibration = false, dirtySettings = false;
 
     // Start is called before the first frame update
     void Start()
@@ -48,10 +44,22 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
 
     public void UpdateIPD()
     {
-        // linear regression of user derived calibration values
-        // Study Data can be found here: https://docs.google.com/spreadsheets/d/17Bjk4q2Xs9SZGZ0OZsH9OgV_PBdQkzd_srlOClHPXj4/edit?usp=sharing 
-        horizontal = operatorIPD * horizontal_a + horizontal_b;
-        vertical = operatorIPD * vertical_a + vertical_b;
+        if (GameConfig.Instance.settings.OperatorManualOverwrite)
+        {
+            // if manually saved settings use those
+            horizontal = GameConfig.Instance.settings.OperatorHorizontal;
+            vertical = GameConfig.Instance.settings.OperatorVertical;
+            manualCalibration = true;
+        }
+        else
+        {
+            // linear regression of user derived calibration values
+            // Study Data can be found here: https://docs.google.com/spreadsheets/d/17Bjk4q2Xs9SZGZ0OZsH9OgV_PBdQkzd_srlOClHPXj4/edit?usp=sharing 
+            horizontal = GameConfig.Instance.settings.OperatorIPD * horizontal_a + horizontal_b;
+            vertical = GameConfig.Instance.settings.OperatorIPD * vertical_a + vertical_b;
+        }
+        horizontal = Mathf.Max(horizontal, 0);
+        vertical = Mathf.Max(vertical, 0);
     }
 
     // Update is called once per frame
@@ -59,21 +67,25 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
     {
         if (Input.GetKey(KeyCode.H))
         {
+            dirtySettings = true;
             manualCalibration = true;
             horizontal += keyStep * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.J))
         {
+            dirtySettings = true;
             manualCalibration = true;
             vertical += keyStep * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.K))
         {
+            dirtySettings = true;
             manualCalibration = true;
             vertical -= keyStep * Time.deltaTime;
         }
         else if (Input.GetKey(KeyCode.L))
         {
+            dirtySettings = true;
             manualCalibration = true;
             horizontal -= keyStep * Time.deltaTime;
         }
@@ -106,13 +118,17 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
             }
         }
 
-        if (!manualCalibration)
+        if (dirtySettings)
         {
-            UpdateIPD();
+            Debug.Log("Overwrote IPD calibration");
+            GameConfig.Instance.settings.OperatorVertical = vertical;
+            GameConfig.Instance.settings.OperatorHorizontal = horizontal;
+            GameConfig.Instance.settings.OperatorManualOverwrite = true;
+            GameConfig.Instance.WriteSettings();
+            dirtySettings = false;
         }
 
-        horizontal = Mathf.Max(horizontal, 0);
-        vertical = Mathf.Max(vertical, 0);
+        UpdateIPD();
 
         var center = (leftInitPos + rightInitPos) / 2;
         leftImage.localPosition = center + new Vector3(-horizontal, vertical, depth);
