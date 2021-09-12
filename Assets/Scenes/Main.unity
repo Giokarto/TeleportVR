@@ -10278,7 +10278,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configName: config.json
   settings:
-    OperatorIPD: 67
+    OperatorIPD: 60.4
     OperatorManualOverwrite: 0
     OperatorHorizontal: 1.1434817
     OperatorVertical: 0.56064826
