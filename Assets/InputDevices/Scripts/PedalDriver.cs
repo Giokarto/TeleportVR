@@ -125,7 +125,10 @@ namespace RudderPedals
 
         private void Awake()
         {
+#if RUDDER
+            
             player = ReInput.players.GetPlayer(playerId);
+#endif       
             velocityMap.preWrapMode = WrapMode.Clamp;
             velocityMap.postWrapMode = WrapMode.Clamp;
             angularVelocityMap.preWrapMode = WrapMode.Clamp;
