@@ -468,14 +468,18 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                     }
 
                     float scaleFactor = (float)_imageDims[1] / (float)_imageDims[0];
-                    _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
-                                                                  _leftPlane.transform.localScale.y,
-                                                                  scaleFactor * _leftPlane.transform.localScale.x);
+                    //_leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
+                    //                                              _leftPlane.transform.localScale.y,
+                    //                                              scaleFactor * _leftPlane.transform.localScale.x);
 
-                    _leftTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.RGB24, false)
+                    _leftTexture = new Texture2D((int)_imageDims[0], (int)_imageDims[1], TextureFormat.RGB24, false)
                     {
                         wrapMode = TextureWrapMode.Clamp
                     };
+                    //_leftTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.RGB24, false)
+                    //{
+                    //    wrapMode = TextureWrapMode.Clamp
+                    //};
                 }
             }
 
