@@ -7,6 +7,8 @@ public class OrientationTracker : MonoBehaviour
 
     public Transform objectToTrack;
     public Vector3 axis;
+    public Vector3 offset = Vector3.zero;
+    public bool swap = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,8 +17,8 @@ public class OrientationTracker : MonoBehaviour
     void Update()
     {
         var orn = objectToTrack.transform.rotation.eulerAngles;
-        orn -= new Vector3(0,-270.0f,0);
-        transform.rotation = Quaternion.Euler(orn.z, orn.y, -orn.x);
+        orn -= offset;// new Vector3(0,-270.0f,0);
+        transform.rotation = swap ? Quaternion.Euler(orn.z, orn.y, -orn.x) : Quaternion.Euler(orn.x, orn.y, orn.z);
         //Debug.Log(transform.rotation.eulerAngles);
 
     }
