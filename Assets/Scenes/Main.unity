@@ -1624,7 +1624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3379f8b7ab35724b965e26351c2004e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  streamingSize: {x: 1280, y: 720}
+  streamingSize: {x: 640, y: 360}
   depth: 0
   antiAliasing: 1
 --- !u!114 &347209463
@@ -13793,8 +13793,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 045786cf504bd7347842d6948241cbd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  urlSignaling: http://localhost
-  signalingType: Unity.RenderStreaming.Signaling.HttpSignaling
+  urlSignaling: ws://192.168.1.113
+  signalingType: Unity.RenderStreaming.Signaling.WebSocketSignaling
   iceServers:
   - credential: 
     credentialType: 0

@@ -60,11 +60,17 @@ EditorBuildSettings:
     path: Assets/Scenes/Test/RosTest.unity
     guid: c788338c4d434f640a4951f1882b8d55
   - enabled: 0
-    path: Assets/Scenes/Philip/EmptyScene.unity
-    guid: fc157fbd8744c4f43a0a0ae18c52fc32
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
     path: Assets/Scenes/TrainingMobile.unity
     guid: c43dc1cd0ab917841b0aefc9e8b753e6
+  - enabled: 0
+    path: Assets/Samples/Unity Render Streaming/3.1.0-exp.1/Example/Receiver/Receiver.unity
+    guid: d6a3fc68a1f7c05429fd88cc859bfaa1
+  - enabled: 0
+    path: Assets/Samples/Unity Render Streaming/3.1.0-exp.1/Example/Broadcast/Broadcast.unity
+    guid: f47df8540d2ee994196abbd7365855f2
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: e7b0686d0e93c8149a14068d0ef7311d,
       type: 2}
