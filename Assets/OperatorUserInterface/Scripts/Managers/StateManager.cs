@@ -191,7 +191,7 @@ public class StateManager : Singleton<StateManager>
     /// </summary>
     void DelegateAfterTrainingLoad()
     {
-        TutorialSteps.Instance = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TutorialSteps>();
+       // TutorialSteps.Instance = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TutorialSteps>();
     }
 
     /// <summary>

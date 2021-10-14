@@ -10278,10 +10278,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configName: config.json
   settings:
-    OperatorIPD: 60.4
+    OperatorIPD: 63.2
     OperatorManualOverwrite: 0
-    OperatorHorizontal: 1.1434817
-    OperatorVertical: 0.56064826
+    OperatorHorizontal: 0.10705636
+    OperatorVertical: 0.15518166
 --- !u!1 &1373856792 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 477016405502077816, guid: 6883edd6e7804604baa8a1f46e804cfb,

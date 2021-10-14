@@ -30,7 +30,7 @@ namespace Training
             timer += Time.deltaTime;
             if (timer > dwellTime)
             {
-                TutorialSteps.Instance.Next();
+                TutorialSteps.Instance.automaton.Next();
                 raycaster.enabled = false;
             }
             else
