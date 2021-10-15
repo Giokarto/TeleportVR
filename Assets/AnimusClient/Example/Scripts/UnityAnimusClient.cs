@@ -126,6 +126,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     private int rightIdx = 0, leftIdx = 0;
     private AnimusManager.AnimusClientManager animusManager;
     private bool inHUD = false;
+    float emotionStamp = 0;
 
     public enum Modality
     {
@@ -140,7 +141,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
     public void Start()
     {
-
+        emotion_initialise();
 
         motorEnabled = false;
         visionEnabled = false;
@@ -408,6 +409,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
             if (!initMats)
             {
                 yuv = new Mat((int)(currShape[1] * 1.5), (int)(currShape[0]), CvType.CV_8UC1);
+                
                 rgb = new Mat();
                 initMats = true;
             }
@@ -468,11 +470,11 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                     }
 
                     float scaleFactor = (float)_imageDims[1] / (float)_imageDims[0];
-                    _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
-                                                                  _leftPlane.transform.localScale.y,
-                                                                  scaleFactor * _leftPlane.transform.localScale.x);
+                    //_leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
+                    //                                              _leftPlane.transform.localScale.y,
+                    //                                              scaleFactor * _leftPlane.transform.localScale.x);
 
-                    _leftTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.RGB24, false)
+                    _leftTexture = new Texture2D((int)_imageDims[0], (int)_imageDims[1], TextureFormat.RGB24, false)
                     {
                         wrapMode = TextureWrapMode.Clamp
                     };
@@ -503,7 +505,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     void render_plane(Mat yuv, Texture2D texture, Renderer renderer, bool left = true)
     {
         //Mat rgb = new Mat();
-        Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2RGB_I420);
+        //Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2RGB_I420);
+        Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_BGR2RGB);
         //Mat rgb_l = new Mat(rgb.rows(), rgb.cols(), CvType.CV_8UC3);
 
         if (undistortion)
@@ -885,6 +888,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         WidgetInteraction.MarkModalityConnected(Modality.AUDITION, animusManager.openModalitiesSuccess);
         WidgetInteraction.MarkModalityConnected(Modality.VOICE, animusManager.openModalitiesSuccess);
         WidgetInteraction.MarkModalityConnected(Modality.MOTOR, animusManager.openModalitiesSuccess && inHUD);
+        
     }
 
     // --------------------------Voice Modality----------------------------------
@@ -916,66 +920,97 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     // read out the currently pressed button combination and send it as a string via animus
     public Sample emotion_get()
     {
+        //Debug.Log("emotion_get");
+        if (InputManager.Instance.GetControllerBtn(UnityEngine.XR.CommonUsages.primaryButton,true) && inHUD && Time.time - emotionStamp > 2)
+        {
+            currentEmotion = "shy";
+            emotionStamp = Time.time;
+            //Debug.Log("emotion: shy");
+        }
+        else if (InputManager.Instance.GetControllerBtn(UnityEngine.XR.CommonUsages.secondaryButton, true) && inHUD && Time.time - emotionStamp > 2)
+        {
+            currentEmotion = "blink";
+            emotionStamp = Time.time;
+            //Debug.Log("emotion: blink");
+        }
         if (currentEmotion.Equals(oldEmotion))
         {
             currentEmotion = "neutral";
         }
-        //// convert the button combination to an int
-        //var controlCombination = ((LeftButton1 ? 1 : 0) * 1) +
-        //                         ((LeftButton2 ? 1 : 0) * 2) +
-        //                         ((RightButton1 ? 1 : 0) * 4) +
-        //                         ((RightButton2 ? 1 : 0) * 8);
-
-        //// convert the button combination from an int representation to a string representation
-        //switch (controlCombination)
+        //else
         //{
-        //    case 0:
-        //        // All off
-        //        currentEmotion = "off";
-        //        break;
-        //    case 1:
-        //        // Left Button 1
-        //        currentEmotion = "A";
-        //        break;
-        //    case 2:
-        //        // Left Button 2
-        //        currentEmotion = "B";
-        //        break;
-        //    case 4:
-        //        // Right Button 1
-        //        currentEmotion = "Y";
-        //        break;
-        //    case 5:
-        //        // Right button 1 and left button 1
-        //        currentEmotion = "AY";
-        //        break;
-        //    case 6:
-        //        currentEmotion = "BY";
-        //        break;
-        //    case 8:
-        //        // Right Button 2
-        //        currentEmotion = "X";
-        //        break;
-        //    case 9:
-        //        currentEmotion = "AX";
-        //        break;
-        //    case 10:
-        //        // Right Button 2 and Left Button 2
-        //        currentEmotion = "BX";
-        //        break;
-        //    default:
-        //        Debug.Log("Unassigned Combination");
-        //        break;
+        //    if (LeftButton1)
+        //    {
+        //        currentEmotion = "shy";
+        //        Debug.Log("emotion: shy");
+        //    }
+        //    else if (LeftButton2)
+        //    {
+        //        currentEmotion = "blink";
+        //        Debug.Log("emotion: blink");
+        //    }
+        //}
+        //else
+        //{
+        //    if (inHUD && currentEmotion != "tp_on" && currentEmotion != "tp_off")
+        //    {
+        //        // convert the button combination to an int
+        //        var controlCombination = ((LeftButton1 ? 1 : 0) * 1) +
+        //                                 ((LeftButton2 ? 1 : 0) * 2) +
+        //                                 ((RightButton1 ? 1 : 0) * 4) +
+        //                                 ((RightButton2 ? 1 : 0) * 8);
+
+        //        switch (controlCombination)
+        //        {
+        //            case 1:
+        //                // Left Button 1
+        //                currentEmotion = "shy";
+        //                break;
+        //            case 2:
+        //                // Left Button 2
+        //                currentEmotion = "hearts";
+        //                break;
+        //            case 4:
+        //                // Right Button 1
+        //                currentEmotion = "blink";
+        //                break;
+        //            //case 5:
+        //            //    // Right button 1 and left button 1
+        //            //    currentEmotion = "AY";
+        //            //    break;
+        //            //case 6:
+        //            //    currentEmotion = "BY";
+        //            //    break;
+        //            case 8:
+        //                // Right Button 2
+        //                currentEmotion = "hypno_color";
+        //                break;
+        //            //case 9:
+        //            //    currentEmotion = "AX";
+        //            //    break;
+        //            //case 10:
+        //            //    // Right Button 2 and Left Button 2
+        //            //    currentEmotion = "BX";
+        //            //    break;
+        //            default:
+        //                Debug.Log("Unassigned Combination");
+        //                currentEmotion = "neutral";
+        //                break;
+        //        }
+        //    }
+            
+
+
         //}
 
-
         emotionMsg.Data = currentEmotion;
+        if (currentEmotion != "neutral") Debug.Log(currentEmotion);
         //if (currentEmotion != "off")
         //{
         //    // Display the current Emotion on the widget
         //    EmotionManager.Instance.SetFaceByKey(currentEmotion);
         //}
-
+        
         // send the emotion via animus to display it on the real robot
         emotionSample.Data = emotionMsg;
         oldEmotion = currentEmotion;

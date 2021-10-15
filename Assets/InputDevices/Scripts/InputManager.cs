@@ -145,6 +145,8 @@ public class InputManager : Singleton<InputManager>
     /// </summary>
     void Update()
     {
+
+        //UnityAnimusClient.Instance.emotion_get();
         //if (StateManager.Instance.currentState == StateManager.States.HUD)
         //    UnityAnimusClient.Instance.EnableMotor(true);
         //else
@@ -166,10 +168,12 @@ public class InputManager : Singleton<InputManager>
                 if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out btn))
                 {
                     UnityAnimusClient.Instance.LeftButton1 = btn;
+                    //UnityAnimusClient.Instance.currentEmotion = "shy";
                 }
                 if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn))
                 {
                     UnityAnimusClient.Instance.LeftButton2 = btn;
+                    //UnityAnimusClient.Instance.currentEmotion = "hearts";
                 }
 
                 if (Training.TutorialSteps.Instance != null &&
