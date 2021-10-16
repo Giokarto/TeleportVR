@@ -7,8 +7,8 @@ using System;
 
 namespace Training
 {
-    //public class TutorialSteps : Automaton<TutorialSteps.TrainingStep>
-    public class TutorialSteps : Singleton<TutorialSteps> // Automaton<TutorialSteps.TrainingStep>
+    public class TutorialSteps : Automaton<TutorialSteps.TrainingStep>
+    //public class TutorialSteps : Singleton<TutorialSteps> // Automaton<TutorialSteps.TrainingStep>
     {
         public enum TrainingStep
         {
@@ -26,7 +26,7 @@ namespace Training
             DONE
         }
 
-        //public static TutorialSteps Instance;
+        public static TutorialSteps Instance;
 
         public AudioManager audioManager;
 
@@ -41,7 +41,7 @@ namespace Training
         public Calibration.ArmLength.ArmLength armLengthCalibration;
         public WheelchairTraining wheelChairTraining;
         public PauseMenuTraining pauseMenuTraining;
-        public Automaton<TrainingStep> automaton;
+        //public Automaton<TrainingStep> automaton;
 
         //int toggle;
         //double prevDuration = 0.0;
@@ -60,16 +60,16 @@ namespace Training
         {
             waitStarted = true;
             yield return new WaitForSeconds(seconds);
-            //audioManager.ScheduleAudioClip(miscAudio.welcome, queue: false,
-            //   onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length)
-            //   );
+            audioManager.ScheduleAudioClip(miscAudio.welcome, queue: false,
+               onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length)
+               );
             audioManager.ScheduleAudioClip(miscAudio.imAria, queue: true,
                 onStart: () => PublishNotification("I am Aria - your personal telepresence trainer.", miscAudio.imAria.length + 2),
                 onEnd: () =>
                 {
-                    automaton.currentState = TrainingStep.IDLE;
+                    currentState = TrainingStep.IDLE;
                     Debug.Log("Started Training");
-                    automaton.Next();
+                    Next();
                     waitStarted = false;
                     Debug.Log("Started false");
                     startTraining = true;
@@ -80,9 +80,11 @@ namespace Training
 
         void Start()
         {
+            //automaton = this;
             Debug.Log($"Training State visited {StateManager.Instance.TimesStateVisited(StateManager.States.Training)} times");
             // get a reference to this singleton, as scripts from other scenes are not able to do this
-            //_ = Instance;
+            _ = Instance;
+            Instance = this;
 
             //currentState = TrainingStep.IDLE;
             //if (StateManager.Instance.TimesStateVisited(StateManager.States.Training) <= 1)
@@ -101,7 +103,7 @@ namespace Training
 
             #region StateDefinition
 
-            automaton.stateMachine.onEnter[TrainingStep.HEAD] = (step) =>
+            stateMachine.onEnter[TrainingStep.HEAD] = (step) =>
             {
                 audioManager.ScheduleAudioClip(miscAudio.head,
                     onStart: () => PublishNotification("Try moving your head around", miscAudio.head.length)
@@ -111,7 +113,7 @@ namespace Training
                     );
                 waitingForNod = true;
             };
-            automaton.stateMachine.onExit[TrainingStep.HEAD] = (step) =>
+            stateMachine.onExit[TrainingStep.HEAD] = (step) =>
             {
                 waitingForNod = false;
 #if RUDDER
@@ -122,7 +124,7 @@ namespace Training
 #endif
             };
 
-            automaton.stateMachine.onEnter[TrainingStep.LEFT_ARM] = (step) =>
+            stateMachine.onEnter[TrainingStep.LEFT_ARM] = (step) =>
             {
 #if SENSEGLOVE
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftArm, queue: false);
@@ -137,25 +139,25 @@ namespace Training
                     onStart: () => handCollectables.Find("HandCollectableLeft").gameObject.SetActive(true));
 
             };
-            automaton.stateMachine.onExit[TrainingStep.LEFT_ARM] = (step) =>
+            stateMachine.onExit[TrainingStep.LEFT_ARM] = (step) =>
             {
                 handCollectables.Find("HandCollectableLeft").gameObject.SetActive(false);
             };
 
-            automaton.stateMachine.onEnter[TrainingStep.LEFT_HAND] = (step) =>
+            stateMachine.onEnter[TrainingStep.LEFT_HAND] = (step) =>
             {
 #if SENSEGLOVE
                 audioManager.ScheduleAudioClip(senseGloveAudio.leftHandStart, queue: true,
                     onStart: () => PublishNotification("Move your left hand into the blue box", senseGloveAudio.leftHandStart.length + 2)
                         );
-                leftCalibrator.OnDone(s => automaton.Next(), once: true);
+                leftCalibrator.OnDone(s => Next(), once: true);
 #else
                 audioManager.ScheduleAudioClip(controllerAudio.leftHand, queue: true,
                     onStart: () => PublishNotification("Press the grip button on the side to close the hand.")
                     );
 #endif
             };
-            automaton.stateMachine.onExit[TrainingStep.LEFT_HAND] = (step) =>
+            stateMachine.onExit[TrainingStep.LEFT_HAND] = (step) =>
             {
 #if SENSEGLOVE
                 // force stop the calibration, if not done so already
@@ -163,7 +165,7 @@ namespace Training
 #endif
             };
 
-            automaton.stateMachine.onEnter[TrainingStep.RIGHT_ARM] = (step) =>
+            stateMachine.onEnter[TrainingStep.RIGHT_ARM] = (step) =>
             {
 #if SENSEGLOVE
                 audioManager.ScheduleAudioClip(senseGloveAudio.rightArm, queue: false);
@@ -177,18 +179,18 @@ namespace Training
                     onStart: () => handCollectables.Find("HandCollectableRight").gameObject.SetActive(true));
 
             };
-            automaton.stateMachine.onExit[TrainingStep.RIGHT_ARM] = (step) =>
+            stateMachine.onExit[TrainingStep.RIGHT_ARM] = (step) =>
             {
                 handCollectables.Find("HandCollectableRight").gameObject.SetActive(false);
             };
 
-            automaton.stateMachine.onEnter[TrainingStep.RIGHT_HAND] = (step) =>
+            stateMachine.onEnter[TrainingStep.RIGHT_HAND] = (step) =>
             {
 #if SENSEGLOVE
                 audioManager.ScheduleAudioClip(senseGloveAudio.rightHandStart, queue: true,
                     onStart: () => PublishNotification("Move your right hand into the blue box")
                     );
-                rightCalibrator.OnDone(s => automaton.Next(), once: true);
+                rightCalibrator.OnDone(s => Next(), once: true);
 #else
                 audioManager.ScheduleAudioClip(controllerAudio.rightHand, queue: true,
                     onStart: () => PublishNotification("Press the grip button to close the hand.")
@@ -196,51 +198,51 @@ namespace Training
 #endif
             };
 #if SENSEGLOVE
-            automaton.stateMachine.onExit[TrainingStep.RIGHT_HAND] = (step) =>
+            stateMachine.onExit[TrainingStep.RIGHT_HAND] = (step) =>
             {
                 rightCalibrator.StopCailbration();
             };
 
 
-            automaton.stateMachine.onEnter[TrainingStep.ARM_LENGTH] = (step) =>
+            stateMachine.onEnter[TrainingStep.ARM_LENGTH] = (step) =>
             {
-                armLengthCalibration.OnDone(state => automaton.Next(), once: true);
+                armLengthCalibration.OnDone(state => Next(), once: true);
                 armLengthCalibration.StartCalibration();
             };
-            automaton.stateMachine.onExit[TrainingStep.ARM_LENGTH] = (step) =>
+            stateMachine.onExit[TrainingStep.ARM_LENGTH] = (step) =>
             {
                 armLengthCalibration.StopCalibration();
             };
 #endif
 
-            automaton.stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
+            stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
             {
-                wheelChairTraining.OnDone((s) => automaton.Next(), once: true);
+                wheelChairTraining.OnDone((s) => Next(), once: true);
                 wheelChairTraining.StartTraining();
             };
-            automaton.stateMachine.onExit[TrainingStep.WHEELCHAIR] = (step) =>
+            stateMachine.onExit[TrainingStep.WHEELCHAIR] = (step) =>
             {
                 wheelChairTraining.StopTraining();
             };
 
 #if RUDDER
-            automaton.stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
+            stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
             {
-                pauseMenuTraining.OnDone((s) => automaton.Next(), once: true);
+                pauseMenuTraining.OnDone((s) => Next(), once: true);
                 pauseMenuTraining.StartTraining();
             };
-            automaton.stateMachine.onExit[TrainingStep.PAUSE_MENU] = (step) =>
+            stateMachine.onExit[TrainingStep.PAUSE_MENU] = (step) =>
             {
                 pauseMenuTraining.StopTraining();
             };
 
-            automaton.stateMachine.onEnter[TrainingStep.DONE] = (step) =>
+            stateMachine.onEnter[TrainingStep.DONE] = (step) =>
             {
                 //audioManager.ScheduleAudioClip(miscAudio.ready);
                 RudderPedals.PresenceDetector.Instance.canPause = true;
             };
 #else
-            automaton.stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
+            stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
             {
                 PraiseUser();
                 audioManager.ScheduleAudioClip(miscAudio.enterButton, queue: true);
@@ -300,11 +302,11 @@ namespace Training
                     break;
             }
 
-            if (lastCorrectedAtStep != automaton.currentState && (automaton.currentState == TrainingStep.LEFT_ARM || automaton.currentState == TrainingStep.RIGHT_ARM))
+            if (lastCorrectedAtStep != currentState && (currentState == TrainingStep.LEFT_ARM || currentState == TrainingStep.RIGHT_ARM))
             {
                 Debug.Log("Correcting User");
                 audioManager.ScheduleAudioClip(miscAudio.wrongTrigger);
-                lastCorrectedAtStep = automaton.currentState;
+                lastCorrectedAtStep = currentState;
             }
         }
 
@@ -326,15 +328,15 @@ namespace Training
             {
                 StopAllCoroutines();
                 //audioManager.ClearQueue();
-                automaton.Next();
+                Next();
             }
             else if (Input.GetKeyDown(KeyCode.B))
             {
                 StopAllCoroutines();
-                automaton.Prev();
+                Prev();
             }
 
-            if (InputManager.Instance.GetControllerBtn(CommonUsages.primaryButton, false) && !waitStarted)// (automaton.stateMachine.State == TrainingStep.IDLE || automaton.stateMachine.State == TrainingStep.DONE))
+            if (InputManager.Instance.GetControllerBtn(CommonUsages.primaryButton, false) && !waitStarted)// (stateMachine.State == TrainingStep.IDLE || stateMachine.State == TrainingStep.DONE))
             {
                 waitStarted = true;
                 Debug.Log("Started true");

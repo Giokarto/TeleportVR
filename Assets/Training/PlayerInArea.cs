@@ -14,10 +14,10 @@ namespace Training
         /// <param name="other"></param>
         private void OnTriggerEnter(Collider other)
         {
-            if (TutorialSteps.Instance.automaton.currentState == requiredStep && other.CompareTag(requiredTag))
+            if (TutorialSteps.Instance.currentState == requiredStep && other.CompareTag(requiredTag))
             {
                 Debug.Log(requiredTag + " " + other.tag);
-                TutorialSteps.Instance.automaton.Next();
+                TutorialSteps.Instance.Next();
                 if (objectToDisable != null)
                 {
                     objectToDisable.SetActive(false);
