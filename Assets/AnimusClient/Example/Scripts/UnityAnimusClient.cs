@@ -505,8 +505,10 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     void render_plane(Mat yuv, Texture2D texture, Renderer renderer, bool left = true)
     {
         //Mat rgb = new Mat();
-        //Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2RGB_I420);
-        Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_BGR2RGB);
+        Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2RGB_I420);
+        //Debug.Log("rgb: " + rgb.size());
+        //Debug.Log("yuv: " + yuv.size());
+        //Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_BGR2RGB);
         //Mat rgb_l = new Mat(rgb.rows(), rgb.cols(), CvType.CV_8UC3);
 
         if (undistortion)
