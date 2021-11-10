@@ -18,6 +18,7 @@ public class EnableControlManager : MonoBehaviour
         public BioIK.BioIK hand_body;
         public UnityEngine.XR.InputDevice controller;
         bool enabled;
+        bool colliding;
 
         public ControllerStruct(BioSegment _segment, BioIK.BioIK _body, UnityEngine.XR.InputDevice _inputDevice)
         {
@@ -25,6 +26,7 @@ public class EnableControlManager : MonoBehaviour
             hand_body = _body;
             controller = _inputDevice;
             enabled = false;
+            colliding = false;
         }
 
         public void SetController(InputDevice newController)
@@ -32,9 +34,15 @@ public class EnableControlManager : MonoBehaviour
             controller = newController;
         }
 
+        public void SetColliding(bool _colliding)
+        {
+            colliding = _colliding;
+        }
+
         public void SetEnabled(bool _enabled)
         {
-            enabled = _enabled;
+            //if (colliding) return;
+            enabled = _enabled && !colliding;
             //if (enabled)
             //{
             //    controller.SendHapticImpulse(0, 0.005f);
@@ -52,7 +60,7 @@ public class EnableControlManager : MonoBehaviour
 
         public bool IsEnabled()
         {
-            return enabled;
+            return enabled && !colliding;
         }
 
         public void UpdateFingers(double value)
@@ -139,6 +147,11 @@ public class EnableControlManager : MonoBehaviour
             device.UpdateFingers(System.Convert.ToDouble(trigger));
 
         }
+    }
+
+    public void isColliding(int id, bool colliding)
+    {
+        controllers[id].SetColliding(colliding);
     }
 
 

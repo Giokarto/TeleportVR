@@ -247,18 +247,18 @@ public class InputManager : Singleton<InputManager>
 
                         float speed = 0.05f;
                         // move forward or backwards
-                        DifferentialDriveControl.Instance.V_L = speed * joystick.y;
-                        DifferentialDriveControl.Instance.V_R = speed * joystick.y;
+                        //DifferentialDriveControl.Instance.V_L = speed * joystick.y;
+                        //DifferentialDriveControl.Instance.V_R = speed * joystick.y;
 
-                        //rotate
-                        if (joystick.x > 0)
-                        {
-                            DifferentialDriveControl.Instance.V_R -= 0.5f * speed * joystick.x;
-                        }
-                        else
-                        {
-                            DifferentialDriveControl.Instance.V_L += 0.5f * speed * joystick.x;
-                        }
+                        ////rotate
+                        //if (joystick.x > 0)
+                        //{
+                        //    DifferentialDriveControl.Instance.V_R -= 0.5f * speed * joystick.x;
+                        //}
+                        //else
+                        //{
+                        //    DifferentialDriveControl.Instance.V_L += 0.5f * speed * joystick.x;
+                        //}
                     }
                 }
                 else
@@ -271,8 +271,8 @@ public class InputManager : Singleton<InputManager>
             {
                 if (UnityAnimusClient.Instance != null)
                 {
-                    UnityAnimusClient.Instance.LeftButton1 = Input.GetKeyDown(KeyCode.F);
-                    UnityAnimusClient.Instance.LeftButton2 = Input.GetKeyDown(KeyCode.R);
+                    //UnityAnimusClient.Instance.LeftButton1 = Input.GetKeyDown(KeyCode.F);
+                   // UnityAnimusClient.Instance.LeftButton2 = Input.GetKeyDown(KeyCode.R);
                 }
             }
             if (GetRightController())
@@ -303,8 +303,8 @@ public class InputManager : Singleton<InputManager>
             {
                 if (UnityAnimusClient.Instance != null)
                 {
-                    UnityAnimusClient.Instance.RightButton1 = Input.GetKeyDown(KeyCode.G);
-                    UnityAnimusClient.Instance.RightButton2 = Input.GetKeyDown(KeyCode.T);
+                    //UnityAnimusClient.Instance.RightButton1 = Input.GetKeyDown(KeyCode.G);
+                    //UnityAnimusClient.Instance.RightButton2 = Input.GetKeyDown(KeyCode.T);
                 }
             }
         }
