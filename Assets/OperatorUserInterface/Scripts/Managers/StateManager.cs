@@ -37,7 +37,7 @@ public class StateManager : Singleton<StateManager>
     /// </summary>
     public enum States
     {
-        HUD, Construct, Training
+        HUD, Construct, Training, AmbulantCare
     }
 
     /// <summary>
@@ -91,7 +91,10 @@ public class StateManager : Singleton<StateManager>
                 GoToState(States.HUD);
                 break;
             case States.Training:
-                GoToState(States.HUD);
+                GoToState(States.AmbulantCare);
+                break;
+            case States.AmbulantCare:
+                GoToState(States.Training);
                 break;
             default:
                 Debug.LogWarning("Unhandled State: Please specify the next State after " + currentState);
@@ -140,6 +143,11 @@ public class StateManager : Singleton<StateManager>
                     onLoadDone?.Invoke();
                 });
                 currentState = States.Training;
+                break;
+            case States.AmbulantCare:
+                transitionManager.StartTransition(true);
+                additiveSceneManager.ChangeScene(Scenes.APARTMENT, null, null, null, null);
+                currentState = States.AmbulantCare;
                 break;
             default:
                 Debug.LogWarning("Unhandled State: Please specify the next State after " + currentState);

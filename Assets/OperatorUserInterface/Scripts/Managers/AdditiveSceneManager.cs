@@ -8,7 +8,8 @@ public enum Scenes {
     NONE,
     HUD,
     CONSTRUCT,
-    TRAINING
+    TRAINING,
+    APARTMENT
 }
 
 public class AdditiveSceneManager : MonoBehaviour
@@ -44,7 +45,7 @@ public class AdditiveSceneManager : MonoBehaviour
     /// <returns></returns>
     public static bool CurrentSceneContainsHud()
     {
-        return currentScene == Scenes.HUD || currentScene == Scenes.TRAINING;
+        return currentScene == Scenes.HUD || currentScene == Scenes.TRAINING || currentScene == Scenes.APARTMENT;
     }
 
     /// <summary>
@@ -62,6 +63,9 @@ public class AdditiveSceneManager : MonoBehaviour
                 break;
             case 3:
                 currentScene = Scenes.TRAINING;
+                break;
+            case 4:
+                currentScene = Scenes.APARTMENT;
                 break;
         }
     }
@@ -90,6 +94,8 @@ public class AdditiveSceneManager : MonoBehaviour
                 return 2;
             case Scenes.TRAINING:
                 return 3;
+            case Scenes.APARTMENT:
+                return 4;
             default:
                 return -1;
         }

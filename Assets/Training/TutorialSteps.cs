@@ -87,16 +87,16 @@ namespace Training
             Instance = this;
 
             //currentState = TrainingStep.IDLE;
-            //if (StateManager.Instance.TimesStateVisited(StateManager.States.Training) <= 1)
-            //{
+            if (StateManager.Instance.TimesStateVisited(StateManager.States.Training) <= 1)
+            {
 
-            //    StartCoroutine(StartTrainingAfter(0));
-            //}
-            //else
-            //{
-            //    Debug.Log("Training routine skipped.");
-            //    startTraining = false;
-            //}
+                StartCoroutine(StartTrainingAfter(0));
+            }
+            else
+            {
+                Debug.Log("Training routine skipped.");
+                startTraining = false;
+            }
             //currentStep = TrainingStep.RIGHT_HAND;
             //NextStep();
             //trainingStarted = false;

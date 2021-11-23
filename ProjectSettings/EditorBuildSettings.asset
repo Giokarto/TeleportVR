@@ -60,11 +60,14 @@ EditorBuildSettings:
     path: Assets/Scenes/Test/RosTest.unity
     guid: c788338c4d434f640a4951f1882b8d55
   - enabled: 0
-    path: Assets/Scenes/Philip/EmptyScene.unity
+    path: 
     guid: fc157fbd8744c4f43a0a0ae18c52fc32
   - enabled: 0
     path: Assets/Scenes/TrainingMobile.unity
     guid: c43dc1cd0ab917841b0aefc9e8b753e6
+  - enabled: 1
+    path: Assets/Scenes/AmbulantCare.unity
+    guid: 08108854213e4ec418a9d29910a4268d
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: e7b0686d0e93c8149a14068d0ef7311d,
       type: 2}

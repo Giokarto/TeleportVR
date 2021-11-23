@@ -279,6 +279,27 @@ PrefabInstance:
     - {fileID: 1695877941, guid: 51c8c3c70e8d76b4e8a623c6fc012867, type: 3}
     - {fileID: 1695877943, guid: 51c8c3c70e8d76b4e8a623c6fc012867, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 51c8c3c70e8d76b4e8a623c6fc012867, type: 3}
+--- !u!1 &81686218 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7092463259047807504, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
+    type: 3}
+  m_PrefabInstance: {fileID: 81686217}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &81686219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81686218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 126a523aef284784f8c5fb7bf5dbbe14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioManager: {fileID: 885325825}
+  updateStep: 0.1
+  scaleRate: 3
 --- !u!1 &81686222 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7092463259208583631, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
@@ -2750,7 +2771,7 @@ MonoBehaviour:
   backwardGoal: {fileID: 2104860376}
   turnLeftGoal: {fileID: 1298954400}
   turnRightGoal: {fileID: 2066250465}
-  ariaTrigger: {fileID: 1440138051}
+  ariaTrigger: {fileID: 0}
   ariaNavigation: {fileID: 81686223}
   audioManager: {fileID: 885325825}
   rudderWheelchairAudio:
@@ -2924,18 +2945,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1440138051 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2057314206576800453, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
-    type: 3}
-  m_PrefabInstance: {fileID: 81686217}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 431e0a908dac2c946ba190a740d1f50f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1648506631 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8402433253024601644, guid: 4b37415c47200e54eb93a28b19210d94,
