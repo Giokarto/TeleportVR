@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -178,7 +178,7 @@ PrefabInstance:
     - target: {fileID: 6087389295465485392, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.8497759
+      value: 0.8497789
       objectReference: {fileID: 0}
     - target: {fileID: 7092463258604815620, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
         type: 3}
@@ -537,6 +537,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HUD-v2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003510, guid: ec5fe212e99d405439368b3702ba1ef0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec5fe212e99d405439368b3702ba1ef0, type: 3}
@@ -1159,6 +1164,75 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 586467666}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &621920094
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6103261333899003508, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003508, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003508, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003508, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003508, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003508, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003508, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003508, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003508, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003508, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003508, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003510, guid: e88644bfe9082a64281a514a3773206d,
+        type: 3}
+      propertyPath: m_Name
+      value: Hud-v2-network
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e88644bfe9082a64281a514a3773206d, type: 3}
 --- !u!1001 &719627018
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1622,7 +1696,6 @@ MonoBehaviour:
   armLengthCalibration: {fileID: 191642077}
   wheelChairTraining: {fileID: 1326041510}
   pauseMenuTraining: {fileID: 515184335}
-  automaton: {fileID: 0}
   handCollectables: {fileID: 850975195}
   designatedArea: {fileID: 1159584230}
 --- !u!82 &885325822

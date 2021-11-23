@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414736, b: 0.12107852, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2477,6 +2477,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AnimusClientManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5723939832518863485, guid: e7404d0d9d4a02b4e8535381133f78af,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7404d0d9d4a02b4e8535381133f78af, type: 3}
@@ -10278,10 +10283,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   configName: config.json
   settings:
-    OperatorIPD: 63.2
-    OperatorManualOverwrite: 0
-    OperatorHorizontal: 0.10705636
-    OperatorVertical: 0.15518166
+    OperatorIPD: 59
+    OperatorManualOverwrite: 1
+    OperatorHorizontal: 0.4643584
+    OperatorVertical: 0.23015173
 --- !u!1 &1373856792 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 477016405502077816, guid: 6883edd6e7804604baa8a1f46e804cfb,
@@ -11113,7 +11118,7 @@ PrefabInstance:
     - target: {fileID: 5126804910112992152, guid: fecb1fa955e882d4fb066401a856213a,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5126804910112992153, guid: fecb1fa955e882d4fb066401a856213a,
         type: 3}
@@ -13355,6 +13360,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ClientLogic
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317224122723432400, guid: 771965c1243361a45a0d36cd14e1b3f9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 771965c1243361a45a0d36cd14e1b3f9, type: 3}
