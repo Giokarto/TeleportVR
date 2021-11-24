@@ -25,7 +25,7 @@ namespace Unity.RenderStreaming.Samples
     {
         private static bool s_enableHWCodec = false;
         private static SignalingType s_signalingType = SignalingType.Http;
-        private static string s_signalingAddress = "192.168.0.110";
+        private static string s_signalingAddress = "bot.roboy.org";
         private static float s_signalingInterval = 5;
         private static bool s_signalingSecured = false;
 
