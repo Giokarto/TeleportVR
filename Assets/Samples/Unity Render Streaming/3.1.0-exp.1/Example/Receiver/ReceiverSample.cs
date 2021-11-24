@@ -3,6 +3,8 @@ using Unity.RenderStreaming.Samples;
 using UnityEngine;
 using UnityEngine.UI;
 
+using System.Collections;
+
 namespace Unity.RenderStreaming.Samples
 {
     class ReceiverSample : MonoBehaviour
@@ -23,9 +25,17 @@ namespace Unity.RenderStreaming.Samples
         {
             startButton.onClick.AddListener(OnStart);
             stopButton.onClick.AddListener(OnStop);
-            if(connectionIdInput != null)
+            if (connectionIdInput != null)
                 connectionIdInput.onValueChanged.AddListener(input => connectionId = input);
             receiveVideoViewer.OnUpdateReceiveTexture += texture => remoteVideoImage.texture = texture;
+        }
+
+        IEnumerator Example()
+        {
+            print(Time.time);
+            yield return new WaitForSecondsRealtime(3);
+            print(Time.time);
+            OnStart();
         }
 
         void Start()
@@ -35,10 +45,18 @@ namespace Unity.RenderStreaming.Samples
             renderStreaming.Run(
                 hardwareEncoder: RenderStreamingSettings.EnableHWCodec,
                 signaling: RenderStreamingSettings.Signaling);
+            StartCoroutine(Example());
+
+        }
+
+        private void OnDestroy()
+        {
+            OnStop();
         }
 
         private void OnStart()
         {
+            Debug.Log("On start");
             if (string.IsNullOrEmpty(connectionId))
             {
                 connectionId = System.Guid.NewGuid().ToString("N");

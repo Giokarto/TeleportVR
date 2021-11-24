@@ -24,8 +24,8 @@ namespace Unity.RenderStreaming.Samples
     internal static class RenderStreamingSettings
     {
         private static bool s_enableHWCodec = false;
-        private static SignalingType s_signalingType = SignalingType.WebSocket;
-        private static string s_signalingAddress = "localhost";
+        private static SignalingType s_signalingType = SignalingType.Http;
+        private static string s_signalingAddress = "192.168.0.110";
         private static float s_signalingInterval = 5;
         private static bool s_signalingSecured = false;
 
