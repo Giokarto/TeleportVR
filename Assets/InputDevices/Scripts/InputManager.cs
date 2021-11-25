@@ -167,13 +167,18 @@ public class InputManager : Singleton<InputManager>
                 // update the emotion buttons
                 if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out btn))
                 {
-                    UnityAnimusClient.Instance.LeftButton1 = btn;
-                    //UnityAnimusClient.Instance.currentEmotion = "shy";
+                    //if (UnityAnimusClient.Instance != null)
+                    //    UnityAnimusClient.Instance.LeftButton1 = btn;
+                    //    //UnityAnimusClient.Instance.currentEmotion = "shy";
+               
+                   
                 }
                 if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn))
                 {
-                    UnityAnimusClient.Instance.LeftButton2 = btn;
-                    //UnityAnimusClient.Instance.currentEmotion = "hearts";
+                    //if (UnityAnimusClient.Instance != null)
+                    //    UnityAnimusClient.Instance.LeftButton2 = btn;
+                    //    //UnityAnimusClient.Instance.currentEmotion = "hearts";
+                   
                 }
 
                 if (Training.TutorialSteps.Instance != null &&
@@ -314,11 +319,16 @@ public class InputManager : Singleton<InputManager>
                 // update the emotion buttons
                 if (controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out btn))
                 {
-                    UnityAnimusClient.Instance.RightButton1 = btn;
-                }
+                    //if (UnityAnimusClient.Instance != null)
+                    //    UnityAnimusClient.Instance.RightButton1 = btn;
+                    
+            }
                 if (controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn))
                 {
-                    UnityAnimusClient.Instance.RightButton2 = btn;
+                    //if (UnityAnimusClient.Instance != null)
+                    //    UnityAnimusClient.Instance.RightButton2 = btn;
+                   
+                
                 }
 
                 if ( //StateManager.Instance.currentState == StateManager.States.Construct ||

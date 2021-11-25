@@ -2485,6 +2485,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5723939832518863484, guid: e7404d0d9d4a02b4e8535381133f78af,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5723939832518863485, guid: e7404d0d9d4a02b4e8535381133f78af,
         type: 3}
       propertyPath: m_Name
@@ -11258,7 +11263,7 @@ PrefabInstance:
     - target: {fileID: 5126804910112992158, guid: fecb1fa955e882d4fb066401a856213a,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5126804910112992158, guid: fecb1fa955e882d4fb066401a856213a,
         type: 3}
@@ -12517,7 +12522,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1449695644}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e0c2d9a872640ec1fb4b561ddb953dba, type: 3}
   m_Name: 
@@ -12999,7 +13004,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 577784283}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 849537eeae0cce0fdb151c7c593905ef, type: 3}
   m_Name: 
@@ -13329,7 +13334,7 @@ PrefabInstance:
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
@@ -13410,7 +13415,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 1944402364}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f6f22a5669377b559b7a27c87025aa96, type: 3}
   m_Name: 
@@ -17893,20 +17898,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!114 &8483118436856860293
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8483118436856860301}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8542ab36299845442ad3412849ca1cdf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectToTrack: {fileID: 0}
-  axis: {x: 0, y: 0, z: 0}
 --- !u!114 &8483118436856860300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17936,7 +17927,6 @@ GameObject:
   - component: {fileID: 8483118436856860302}
   - component: {fileID: 8483118436856860303}
   - component: {fileID: 8483118436856860300}
-  - component: {fileID: 8483118436856860293}
   m_Layer: 0
   m_Name: Render Streaming Camera (1)
   m_TagString: Untagged

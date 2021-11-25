@@ -73,7 +73,7 @@ public class SpeedTest : MonoBehaviour
             }
 
             var txt = string.Format("Download Speed: {0}Mb/s \t Upload Speed: {1}Mb/s \t Latency: {2} ms", dspeed, uspeed, latency );
-            Debug.Log(txt);
+            //Debug.Log(txt);
 
             //Training.TutorialSteps.PublishNotification(txt);
             lastUpdate = Time.time;
