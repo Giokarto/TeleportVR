@@ -344,5 +344,11 @@ namespace Training
                 
             }
         }
+
+        private void OnDestroy()
+        {
+            handCollectables.Find("HandCollectableLeft").gameObject.SetActive(false);
+            handCollectables.Find("HandCollectableRight").gameObject.SetActive(false);
+        }
     }
 }

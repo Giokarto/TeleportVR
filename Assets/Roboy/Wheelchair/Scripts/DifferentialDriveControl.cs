@@ -85,6 +85,13 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
         V_R = 0;
     }
 
+    public void ResetPosition()
+    {
+        Debug.Log("Resetting wheelchair pose");
+        x = 0;
+        y = 0;
+        theta = 1.57f;
+    }
     private void Move()
     {
         Vector3 movement = new Vector3(x, gameObject.transform.localPosition.y, y);

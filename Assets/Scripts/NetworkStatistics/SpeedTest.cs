@@ -110,7 +110,7 @@ public class SpeedTest : MonoBehaviour
 
     void MeasureDownload()
     {
-        Debug.Log("Download start");
+        //Debug.Log("Download start");
         download_done = false;
         var client = new WebClient();
         client.DownloadFileCompleted += new System.ComponentModel.AsyncCompletedEventHandler(DownloadFileCompleted);

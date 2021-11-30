@@ -16,6 +16,8 @@ public class InputManager : Singleton<InputManager>
     private bool lastGrabLeft;
     private bool lastGrabRight;
     bool nodded, waiting;
+    private int holdingX = 0;
+    public bool resetPositionOrientation = false;
 
     void Awake()
     {
@@ -143,7 +145,7 @@ public class InputManager : Singleton<InputManager>
     /// <summary>
     /// Handle input from the controllers.
     /// </summary>
-    void Update()
+    void FixedUpdate()
     {
 
         //UnityAnimusClient.Instance.emotion_get();
@@ -160,6 +162,7 @@ public class InputManager : Singleton<InputManager>
                 // Go to the other mode
                 if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.menuButton, out btn) && btn && !lastMenuBtn)
                 {
+                    resetPositionOrientation = true;
                     StateManager.Instance.GoToNextState();
                 }
                 lastMenuBtn = btn;
@@ -167,11 +170,21 @@ public class InputManager : Singleton<InputManager>
                 // update the emotion buttons
                 if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out btn))
                 {
-                    //if (UnityAnimusClient.Instance != null)
-                    //    UnityAnimusClient.Instance.LeftButton1 = btn;
-                    //    //UnityAnimusClient.Instance.currentEmotion = "shy";
+                    if (btn)
+                    {
+                        holdingX += 1; 
+                    }
+                    else
+                    {
+                        holdingX = 0;
+                    }
                
                    
+                }
+                if (holdingX > 50)
+                {
+                    resetPositionOrientation = true; 
+                    holdingX = 0;
                 }
                 if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn))
                 {
@@ -308,11 +321,11 @@ public class InputManager : Singleton<InputManager>
             }
             else
             {
-                if (UnityAnimusClient.Instance != null)
-                {
-                    UnityAnimusClient.Instance.LeftButton1 = Input.GetKeyDown(KeyCode.F);
-                    UnityAnimusClient.Instance.LeftButton2 = Input.GetKeyDown(KeyCode.R);
-                }
+                //if (UnityAnimusClient.Instance != null)
+                //{
+                //    UnityAnimusClient.Instance.LeftButton1 = Input.GetKeyDown(KeyCode.F);
+                //    UnityAnimusClient.Instance.LeftButton2 = Input.GetKeyDown(KeyCode.R);
+                //}
             }
             if (GetRightController())
             {
@@ -345,11 +358,11 @@ public class InputManager : Singleton<InputManager>
             }
             else
             {
-                if (UnityAnimusClient.Instance != null)
-                {
-                    UnityAnimusClient.Instance.RightButton1 = Input.GetKeyDown(KeyCode.G);
-                    UnityAnimusClient.Instance.RightButton2 = Input.GetKeyDown(KeyCode.T);
-                }
+                //if (UnityAnimusClient.Instance != null)
+                //{
+                //    UnityAnimusClient.Instance.RightButton1 = Input.GetKeyDown(KeyCode.G);
+                //    UnityAnimusClient.Instance.RightButton2 = Input.GetKeyDown(KeyCode.T);
+                //}
             }
         }
     }

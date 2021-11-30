@@ -148,6 +148,13 @@ namespace RudderPedals
                 return;
             }
 
+            if (InputManager.Instance.resetPositionOrientation)
+            {
+                driveControl.ResetPosition();
+                InputManager.Instance.resetPositionOrientation = false;
+                return;
+            }
+
 #if RUDDER
             // in  [-1, 1] & inverted
             float steeringAngle = -player.GetAxis("SteeringAngle");
