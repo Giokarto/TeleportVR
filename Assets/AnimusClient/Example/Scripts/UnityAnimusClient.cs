@@ -754,7 +754,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                     // [0] -> head_axis0
                     // [1] -> head_axis1
                     // [2] -> head_axis2
-                    motorMsg.Data[0] = 0.0f;
+                    motorMsg.Data[0] = 0.6f;
                     motorMsg.Data[1] = 0.0f;
                     motorMsg.Data[2] = 0.0f;
                 }
@@ -762,7 +762,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 {
                     motorAngles = new List<float>(new float[29])
                     {
-                        [0] = 0.0f
+                        [0] = 0.6f
                     };
                     motorMsg.Data.Clear();
                     motorMsg.Data.Add(motorAngles);
@@ -840,6 +840,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
             motorAngles.Add(wheelchairDrive.x);
             // right
             motorAngles.Add(wheelchairDrive.y);
+            //Debug.Log(" wheelchair: " + wheelchairDrive.x + " " + wheelchairDrive.y);
 
 //#else
 //            Vector2 axis2D;

@@ -504,8 +504,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   driveControl: {fileID: 3112793307756572318}
-  maxVelocity: 0.1
-  maxAngularVelocity: 0.015
+  maxVelocity: 0.067
+  maxAngularVelocity: 0.004
   forwardDeadzone: 0.05
   backwardDeadzone: 0.05
   velocityMap:

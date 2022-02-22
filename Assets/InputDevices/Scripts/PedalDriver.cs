@@ -81,7 +81,7 @@ namespace RudderPedals
         public DifferentialDriveControl driveControl;
 
         [Range(0, 1), Tooltip("Maximum forward velocity (m/s)")]
-        public float maxVelocity = 0.1f;
+        public float maxVelocity = 0.05f;
 
         [Range(0, 1), Tooltip("Maximum angular velocity (m/s)")]
         public float maxAngularVelocity = 0.025f;
