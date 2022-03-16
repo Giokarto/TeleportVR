@@ -21,8 +21,8 @@ namespace Training
 #if SENSEGLOVE
             ARM_LENGTH,
 #endif
-            WHEELCHAIR,
-            PAUSE_MENU,
+            //WHEELCHAIR,
+          //  PAUSE_MENU,
             DONE
         }
 
@@ -215,6 +215,8 @@ namespace Training
             };
 #endif
 
+#if WHEELCHAIR
+
             stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
             {
                 wheelChairTraining.OnDone((s) => Next(), once: true);
@@ -224,6 +226,7 @@ namespace Training
             {
                 wheelChairTraining.StopTraining();
             };
+#endif
 
 #if RUDDER
             stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
@@ -242,13 +245,17 @@ namespace Training
                 RudderPedals.PresenceDetector.Instance.canPause = true;
             };
 #else
-            stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
-            {
-                PraiseUser();
-                audioManager.ScheduleAudioClip(miscAudio.enterButton, queue: true);
+            stateMachine.onEnter[TrainingStep.DONE] = (step) =>
+            {  
+                audioManager.ScheduleAudioClip(miscAudio.enterButton);
             };
+            //stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
+            //{
+            //    PraiseUser();
+            //    audioManager.ScheduleAudioClip(miscAudio.enterButton, queue: true);
+            //};
 #endif
-            #endregion
+#endregion
         }
 
         /// <summary>
