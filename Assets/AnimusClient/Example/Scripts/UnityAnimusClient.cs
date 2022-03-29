@@ -744,17 +744,17 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         //if (Time.time * 1000 - _lastUpdate > 50)
         {
             //Debug.Log($"motor enabled: {motorEnabled}");
-            
+
             // if motor not enabled - keep sending the last motor message with head pose looking down 
             if (!motorEnabled)
             {
-                if (motorMsg.Data.Count>0)
+                if (motorMsg.Data.Count > 0)
                 {
                     // motorMsg.Data:
                     // [0] -> head_axis0
                     // [1] -> head_axis1
                     // [2] -> head_axis2
-                    motorMsg.Data[0] = 0.6f;
+                    motorMsg.Data[0] = 0.0f;
                     motorMsg.Data[1] = 0.0f;
                     motorMsg.Data[2] = 0.0f;
                 }
@@ -762,12 +762,12 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 {
                     motorAngles = new List<float>(new float[29])
                     {
-                        [0] = 0.6f
+                        [0] = 0.0f
                     };
                     motorMsg.Data.Clear();
                     motorMsg.Data.Add(motorAngles);
                 }
-                
+
             }
             else
             {
@@ -811,58 +811,58 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                     motorAngles.Add(step);
                 }
 #else
-            float left_open = 0, right_open = 0;
-            if (InputManager.Instance.GetLeftController())
-                InputManager.Instance.controllerLeft[0]
-                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left_open);
+                float left_open = 0, right_open = 0;
+                if (InputManager.Instance.GetLeftController())
+                    InputManager.Instance.controllerLeft[0]
+                        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left_open);
 
-            if (InputManager.Instance.GetRightController())
-                InputManager.Instance.controllerRight[0]
-                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
+                if (InputManager.Instance.GetRightController())
+                    InputManager.Instance.controllerRight[0]
+                        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
 
 
-            // 4 values for right and left
-            for (int i = 0; i < 4; i++)
-            {
-                motorAngles.Add(right_open);
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                motorAngles.Add(left_open);
-            }
+                // 4 values for right and left
+                for (int i = 0; i < 4; i++)
+                {
+                    motorAngles.Add(right_open);
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    motorAngles.Add(left_open);
+                }
 #endif
 
-//#if RUDDER
-                        
-            // wheelchair
-            Vector2 wheelchairDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
-            // left
-            motorAngles.Add(wheelchairDrive.x);
-            // right
-            motorAngles.Add(wheelchairDrive.y);
-            //Debug.Log(" wheelchair: " + wheelchairDrive.x + " " + wheelchairDrive.y);
+                //#if RUDDER
 
-//#else
-//            Vector2 axis2D;
-//            if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
-//                InputManager.Instance.controllerLeft[0]
-//                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
-//            {
-//                motorAngles.Add(axis2D[0]);
-//                motorAngles.Add(axis2D[1]);
-//            }
-//#endif
+                // wheelchair
+                Vector2 wheelchairDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
+                // left
+                motorAngles.Add(wheelchairDrive.x);
+                // right
+                motorAngles.Add(wheelchairDrive.y);
+                //Debug.Log(" wheelchair: " + wheelchairDrive.x + " " + wheelchairDrive.y);
+
+                //#else
+                //            Vector2 axis2D;
+                //            if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
+                //                InputManager.Instance.controllerLeft[0]
+                //                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
+                //            {
+                //                motorAngles.Add(axis2D[0]);
+                //                motorAngles.Add(axis2D[1]);
+                //            }
+                //#endif
 
                 motorMsg.Data.Clear();
                 motorMsg.Data.Add(motorAngles);
 
 
             }
-       
-        motorSample.Data = motorMsg;
-        _lastUpdate = Time.time * 1000;
 
-        return motorSample;
+            motorSample.Data = motorMsg;
+            _lastUpdate = Time.time * 1000;
+
+            return motorSample;
         }
 
         return null;
