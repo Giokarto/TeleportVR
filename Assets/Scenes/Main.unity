@@ -2478,6 +2478,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: AnimusClientManager
       objectReference: {fileID: 0}
+    - target: {fileID: 5723939832518863485, guid: e7404d0d9d4a02b4e8535381133f78af,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7404d0d9d4a02b4e8535381133f78af, type: 3}
 --- !u!4 &577784284 stripped
@@ -13319,27 +13324,27 @@ PrefabInstance:
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
       propertyPath: requiredModalities.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
       propertyPath: requiredModalities.Array.data[0]
-      value: vision
-      objectReference: {fileID: 0}
-    - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
-        type: 3}
-      propertyPath: requiredModalities.Array.data[1]
-      value: audition
-      objectReference: {fileID: 0}
-    - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
-        type: 3}
-      propertyPath: requiredModalities.Array.data[2]
       value: motor
       objectReference: {fileID: 0}
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
-      propertyPath: requiredModalities.Array.data[3]
+      propertyPath: requiredModalities.Array.data[1]
       value: voice
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
+        type: 3}
+      propertyPath: requiredModalities.Array.data[2]
+      value: audition
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
+        type: 3}
+      propertyPath: requiredModalities.Array.data[3]
+      value: emotion
       objectReference: {fileID: 0}
     - target: {fileID: 7317224122723430447, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
@@ -13355,6 +13360,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ClientLogic
+      objectReference: {fileID: 0}
+    - target: {fileID: 7317224122723432400, guid: 771965c1243361a45a0d36cd14e1b3f9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 771965c1243361a45a0d36cd14e1b3f9, type: 3}
