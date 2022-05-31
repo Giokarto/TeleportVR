@@ -22,9 +22,11 @@ public class UserInteractionManager : Singleton<UserInteractionManager>
 
     private Callbacks<bool> onConfirmCallbacks;
 
+#if SENSEGLOVE
     // SenseGlove params
     public HandCalibrator leftCalibrator, rightCalibrator;
     private const HandCalibrator.Pose confirmationPose = HandCalibrator.Pose.ThumbUp;
+#endif
     private const float confirmationPoseError = 0.5f;
     private const float confirmationDwellTime = 3;
     private readonly Timer dwellTimer = new Timer();

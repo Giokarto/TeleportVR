@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.XR;
 using Widgets;
 using System;
 
 namespace Training
 {
     public class TutorialSteps : Automaton<TutorialSteps.TrainingStep>
+    //public class TutorialSteps : Singleton<TutorialSteps> // Automaton<TutorialSteps.TrainingStep>
     {
         public enum TrainingStep
         {
@@ -19,8 +21,8 @@ namespace Training
 #if SENSEGLOVE
             ARM_LENGTH,
 #endif
-            WHEELCHAIR,
-            PAUSE_MENU,
+            //WHEELCHAIR,
+          //  PAUSE_MENU,
             DONE
         }
 
@@ -35,17 +37,21 @@ namespace Training
         public List<AudioClip> praisePhrases = new List<AudioClip>();
 
         public bool waitingForNod = false;
+#if SENSEGLOVE
         public Calibration.HandCalibrator rightCalibrator, leftCalibrator;
         public Calibration.ArmLength.ArmLength armLengthCalibration;
+#endif
         public WheelchairTraining wheelChairTraining;
         public PauseMenuTraining pauseMenuTraining;
-
+        //public Automaton<TrainingStep> automaton;
 
         //int toggle;
         //double prevDuration = 0.0;
         //double prevStart = 0.0;
         TrainingStep lastCorrectedAtStep = TrainingStep.IDLE;
-        private bool waitStarted = false, startTraining = true;
+        private bool waitStarted = false, startTraining = true, inProgress=false;
+
+
 
 
         [SerializeField] private Transform handCollectables;
@@ -54,18 +60,20 @@ namespace Training
 
         private IEnumerator StartTrainingAfter(float seconds)
         {
+            waitStarted = true;
             yield return new WaitForSeconds(seconds);
             audioManager.ScheduleAudioClip(miscAudio.welcome, queue: false,
                onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length)
                );
             audioManager.ScheduleAudioClip(miscAudio.imAria, queue: true,
-                onStart: () => PublishNotification("I am Aria - your personal telepresence trainer.", miscAudio.imAria.length + 2),
+                onStart: () => PublishNotification("I am Amala - your personal telepresence trainer.", miscAudio.imAria.length + 2),
                 onEnd: () =>
                 {
                     currentState = TrainingStep.IDLE;
                     Debug.Log("Started Training");
                     Next();
                     waitStarted = false;
+                    Debug.Log("Started false");
                     startTraining = true;
                 }
             );
@@ -74,24 +82,28 @@ namespace Training
 
         void Start()
         {
+            //automaton = this;
             Debug.Log($"Training State visited {StateManager.Instance.TimesStateVisited(StateManager.States.Training)} times");
             // get a reference to this singleton, as scripts from other scenes are not able to do this
             _ = Instance;
-            if (StateManager.Instance.TimesStateVisited(StateManager.States.Training) <= 1)
-            {
-                waitStarted = true;
-                StartCoroutine(StartTrainingAfter(0));
-            }
-            else
-            {
-                Debug.Log("Training routine skipped.");
-                startTraining = false;
-            }
+            Instance = this;
+
+            //currentState = TrainingStep.IDLE;
+            //if (StateManager.Instance.TimesStateVisited(StateManager.States.Training) <= 1)
+            //{
+
+            //    StartCoroutine(StartTrainingAfter(0));
+            //}
+            //else
+            //{
+            //    Debug.Log("Training routine skipped.");
+            //    startTraining = false;
+            //}
             //currentStep = TrainingStep.RIGHT_HAND;
             //NextStep();
             //trainingStarted = false;
 
-            #region StateDefinition
+#region StateDefinition
 
             stateMachine.onEnter[TrainingStep.HEAD] = (step) =>
             {
@@ -107,7 +119,10 @@ namespace Training
             {
                 waitingForNod = false;
 #if RUDDER
-                RudderPedals.PresenceDetector.Instance.canPause = false;
+                if (StateManager.Instance.currentState == StateManager.States.Training)
+                {
+                    RudderPedals.PresenceDetector.Instance.canPause = false;
+                }
 #endif
             };
 
@@ -202,6 +217,8 @@ namespace Training
             };
 #endif
 
+#if WHEELCHAIR
+
             stateMachine.onEnter[TrainingStep.WHEELCHAIR] = (step) =>
             {
                 wheelChairTraining.OnDone((s) => Next(), once: true);
@@ -211,6 +228,7 @@ namespace Training
             {
                 wheelChairTraining.StopTraining();
             };
+#endif
 
 #if RUDDER
             stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
@@ -229,13 +247,17 @@ namespace Training
                 RudderPedals.PresenceDetector.Instance.canPause = true;
             };
 #else
-            stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
-            {
-                PraiseUser();
-                audioManager.ScheduleAudioClip(miscAudio.enterButton, queue: true);
+            stateMachine.onEnter[TrainingStep.DONE] = (step) =>
+            {  
+                audioManager.ScheduleAudioClip(miscAudio.enterButton);
             };
+            //stateMachine.onEnter[TrainingStep.PAUSE_MENU] = (step) =>
+            //{
+            //    PraiseUser();
+            //    audioManager.ScheduleAudioClip(miscAudio.enterButton, queue: true);
+            //};
 #endif
-            #endregion
+#endregion
         }
 
         /// <summary>
@@ -321,6 +343,14 @@ namespace Training
             {
                 StopAllCoroutines();
                 Prev();
+            }
+
+            if (InputManager.Instance.GetControllerBtn(CommonUsages.primaryButton, false) && !waitStarted)// (stateMachine.State == TrainingStep.IDLE || stateMachine.State == TrainingStep.DONE))
+            {
+                waitStarted = true;
+                Debug.Log("Started true");
+                StartCoroutine(StartTrainingAfter(0));
+                
             }
         }
     }

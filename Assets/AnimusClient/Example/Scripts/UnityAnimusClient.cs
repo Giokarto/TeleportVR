@@ -126,6 +126,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     private int rightIdx = 0, leftIdx = 0;
     private AnimusManager.AnimusClientManager animusManager;
     private bool inHUD = false;
+    float emotionStamp = 0;
+    Camera camRight, camLeft;
 
     public enum Modality
     {
@@ -140,7 +142,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
     public void Start()
     {
-
+        emotion_initialise();
 
         motorEnabled = false;
         visionEnabled = false;
@@ -149,8 +151,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         initMats = false;
         bodyTransitionReady = false;
 
-        var camRight = RightEye.transform.GetComponentInParent<Camera>();
-        var camLeft = LeftEye.transform.GetComponentInParent<Camera>();
+        camRight = RightEye.transform.GetComponentInParent<Camera>();
+        camLeft = LeftEye.transform.GetComponentInParent<Camera>();
         if (!stereovision)
         {
             camRight.stereoTargetEye = StereoTargetEyeMask.None;
@@ -365,6 +367,18 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         inHUD = currentScene == Scenes.HUD;
         _leftPlane.SetActive(inHUD && animusManager.openModalitiesSuccess);
         _rightPlane.SetActive(stereovision && inHUD && animusManager.openModalitiesSuccess);
+        if (!stereovision)
+        {
+            camRight.stereoTargetEye = StereoTargetEyeMask.None;
+
+            camLeft.stereoTargetEye = StereoTargetEyeMask.Both;
+        }
+        else
+        {
+            camRight.stereoTargetEye = StereoTargetEyeMask.Right;
+
+            camLeft.stereoTargetEye = StereoTargetEyeMask.Left;
+        }
 
 
     }
@@ -400,6 +414,17 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
             var currSample = currSamples.Samples[0];
             var currShape = currSample.DataShape;
+            //Debug.Log($"currshape: {currShape}");
+            if (currShape[1] / currShape[0] >= 2)
+            {
+                stereovision = true;
+            }
+            else
+            {
+                stereovision = false;
+                //_rightPlane.SetActive(true);// stereovision && inHUD && animusManager.openModalitiesSuccess);
+            }
+
 
             var all_bytes = currSample.Data.ToByteArray();
 #if ANIMUS_USE_OPENCV
@@ -408,6 +433,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
             if (!initMats)
             {
                 yuv = new Mat((int)(currShape[1] * 1.5), (int)(currShape[0]), CvType.CV_8UC1);
+                
                 rgb = new Mat();
                 initMats = true;
             }
@@ -468,11 +494,11 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                     }
 
                     float scaleFactor = (float)_imageDims[1] / (float)_imageDims[0];
-                    _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
-                                                                  _leftPlane.transform.localScale.y,
-                                                                  scaleFactor * _leftPlane.transform.localScale.x);
+                    //_leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
+                    //                                              _leftPlane.transform.localScale.y,
+                    //                                              scaleFactor * _leftPlane.transform.localScale.x);
 
-                    _leftTexture = new Texture2D(rgb.width(), rgb.height(), TextureFormat.RGB24, false)
+                    _leftTexture = new Texture2D((int)_imageDims[0], (int)_imageDims[1], TextureFormat.RGB24, false)
                     {
                         wrapMode = TextureWrapMode.Clamp
                     };
@@ -504,6 +530,9 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     {
         //Mat rgb = new Mat();
         Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_YUV2RGB_I420);
+        //Debug.Log("rgb: " + rgb.size());
+        //Debug.Log("yuv: " + yuv.size());
+        //Imgproc.cvtColor(yuv, rgb, Imgproc.COLOR_BGR2RGB);
         //Mat rgb_l = new Mat(rgb.rows(), rgb.cols(), CvType.CV_8UC3);
 
         if (undistortion)
@@ -739,17 +768,17 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         //if (Time.time * 1000 - _lastUpdate > 50)
         {
             //Debug.Log($"motor enabled: {motorEnabled}");
-            
+
             // if motor not enabled - keep sending the last motor message with head pose looking down 
             if (!motorEnabled)
             {
-                if (motorMsg.Data.Count>0)
+                if (motorMsg.Data.Count > 0)
                 {
                     // motorMsg.Data:
                     // [0] -> head_axis0
                     // [1] -> head_axis1
                     // [2] -> head_axis2
-                    motorMsg.Data[0] = 0.6f;
+                    motorMsg.Data[0] = 0.0f;
                     motorMsg.Data[1] = 0.0f;
                     motorMsg.Data[2] = 0.0f;
                 }
@@ -757,12 +786,12 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 {
                     motorAngles = new List<float>(new float[29])
                     {
-                        [0] = 0.6f
+                        [0] = 0.0f
                     };
                     motorMsg.Data.Clear();
                     motorMsg.Data.Add(motorAngles);
                 }
-                
+
             }
             else
             {
@@ -806,57 +835,60 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                     motorAngles.Add(step);
                 }
 #else
-            float left_open = 0, right_open = 0;
-            if (InputManager.Instance.GetLeftController())
-                InputManager.Instance.controllerLeft[0]
-                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left_open);
+                float left_open = 0, right_open = 0;
+                if (InputManager.Instance.GetLeftController())
+                    InputManager.Instance.controllerLeft[0]
+                        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left_open);
 
-            if (InputManager.Instance.GetRightController())
-                InputManager.Instance.controllerRight[0]
-                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
+                if (InputManager.Instance.GetRightController())
+                    InputManager.Instance.controllerRight[0]
+                        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
 
 
-            // 4 values for right and left
-            for (int i = 0; i < 4; i++)
-            {
-                motorAngles.Add(right_open);
-            }
-            for (int i = 0; i < 4; i++)
-            {
-                motorAngles.Add(left_open);
-            }
+                // 4 values for right and left
+                for (int i = 0; i < 4; i++)
+                {
+                    motorAngles.Add(right_open);
+                }
+                for (int i = 0; i < 4; i++)
+                {
+                    motorAngles.Add(left_open);
+                }
 #endif
 
-//#if RUDDER
-                        
-            // wheelchair
-            Vector2 wheelchairDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
-            // left
-            motorAngles.Add(wheelchairDrive.x);
-            // right
-            motorAngles.Add(wheelchairDrive.y);
+                //#if RUDDER
 
-//#else
-//            Vector2 axis2D;
-//            if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
-//                InputManager.Instance.controllerLeft[0]
-//                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
-//            {
-//                motorAngles.Add(axis2D[0]);
-//                motorAngles.Add(axis2D[1]);
-//            }
-//#endif
+                //// wheelchair
+                //Vector2 wheelchairDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
+                //// left
+                //motorAngles.Add(wheelchairDrive.x);
+                //// right
+                //motorAngles.Add(wheelchairDrive.y);
+
+
+                //Debug.Log(" wheelchair: " + wheelchairDrive.x + " " + wheelchairDrive.y);
+
+                //#else
+                //            Vector2 axis2D;
+                //            if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
+                //                InputManager.Instance.controllerLeft[0]
+                //                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
+                //            {
+                //                motorAngles.Add(axis2D[0]);
+                //                motorAngles.Add(axis2D[1]);
+                //            }
+                //#endif
 
                 motorMsg.Data.Clear();
                 motorMsg.Data.Add(motorAngles);
 
 
             }
-       
-        motorSample.Data = motorMsg;
-        _lastUpdate = Time.time * 1000;
 
-        return motorSample;
+            motorSample.Data = motorMsg;
+            _lastUpdate = Time.time * 1000;
+
+            return motorSample;
         }
 
         return null;
@@ -885,6 +917,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         WidgetInteraction.MarkModalityConnected(Modality.AUDITION, animusManager.openModalitiesSuccess);
         WidgetInteraction.MarkModalityConnected(Modality.VOICE, animusManager.openModalitiesSuccess);
         WidgetInteraction.MarkModalityConnected(Modality.MOTOR, animusManager.openModalitiesSuccess && inHUD);
+        
     }
 
     // --------------------------Voice Modality----------------------------------
@@ -916,66 +949,97 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     // read out the currently pressed button combination and send it as a string via animus
     public Sample emotion_get()
     {
+        //Debug.Log("emotion_get");
+        if (InputManager.Instance.GetControllerBtn(UnityEngine.XR.CommonUsages.primaryButton,true) && inHUD && Time.time - emotionStamp > 2)
+        {
+            currentEmotion = "shy";
+            emotionStamp = Time.time;
+            //Debug.Log("emotion: shy");
+        }
+        else if (InputManager.Instance.GetControllerBtn(UnityEngine.XR.CommonUsages.secondaryButton, true) && inHUD && Time.time - emotionStamp > 2)
+        {
+            currentEmotion = "blink";
+            emotionStamp = Time.time;
+            //Debug.Log("emotion: blink");
+        }
         if (currentEmotion.Equals(oldEmotion))
         {
             currentEmotion = "neutral";
         }
-        //// convert the button combination to an int
-        //var controlCombination = ((LeftButton1 ? 1 : 0) * 1) +
-        //                         ((LeftButton2 ? 1 : 0) * 2) +
-        //                         ((RightButton1 ? 1 : 0) * 4) +
-        //                         ((RightButton2 ? 1 : 0) * 8);
-
-        //// convert the button combination from an int representation to a string representation
-        //switch (controlCombination)
+        //else
         //{
-        //    case 0:
-        //        // All off
-        //        currentEmotion = "off";
-        //        break;
-        //    case 1:
-        //        // Left Button 1
-        //        currentEmotion = "A";
-        //        break;
-        //    case 2:
-        //        // Left Button 2
-        //        currentEmotion = "B";
-        //        break;
-        //    case 4:
-        //        // Right Button 1
-        //        currentEmotion = "Y";
-        //        break;
-        //    case 5:
-        //        // Right button 1 and left button 1
-        //        currentEmotion = "AY";
-        //        break;
-        //    case 6:
-        //        currentEmotion = "BY";
-        //        break;
-        //    case 8:
-        //        // Right Button 2
-        //        currentEmotion = "X";
-        //        break;
-        //    case 9:
-        //        currentEmotion = "AX";
-        //        break;
-        //    case 10:
-        //        // Right Button 2 and Left Button 2
-        //        currentEmotion = "BX";
-        //        break;
-        //    default:
-        //        Debug.Log("Unassigned Combination");
-        //        break;
+        //    if (LeftButton1)
+        //    {
+        //        currentEmotion = "shy";
+        //        Debug.Log("emotion: shy");
+        //    }
+        //    else if (LeftButton2)
+        //    {
+        //        currentEmotion = "blink";
+        //        Debug.Log("emotion: blink");
+        //    }
+        //}
+        //else
+        //{
+        //    if (inHUD && currentEmotion != "tp_on" && currentEmotion != "tp_off")
+        //    {
+        //        // convert the button combination to an int
+        //        var controlCombination = ((LeftButton1 ? 1 : 0) * 1) +
+        //                                 ((LeftButton2 ? 1 : 0) * 2) +
+        //                                 ((RightButton1 ? 1 : 0) * 4) +
+        //                                 ((RightButton2 ? 1 : 0) * 8);
+
+        //        switch (controlCombination)
+        //        {
+        //            case 1:
+        //                // Left Button 1
+        //                currentEmotion = "shy";
+        //                break;
+        //            case 2:
+        //                // Left Button 2
+        //                currentEmotion = "hearts";
+        //                break;
+        //            case 4:
+        //                // Right Button 1
+        //                currentEmotion = "blink";
+        //                break;
+        //            //case 5:
+        //            //    // Right button 1 and left button 1
+        //            //    currentEmotion = "AY";
+        //            //    break;
+        //            //case 6:
+        //            //    currentEmotion = "BY";
+        //            //    break;
+        //            case 8:
+        //                // Right Button 2
+        //                currentEmotion = "hypno_color";
+        //                break;
+        //            //case 9:
+        //            //    currentEmotion = "AX";
+        //            //    break;
+        //            //case 10:
+        //            //    // Right Button 2 and Left Button 2
+        //            //    currentEmotion = "BX";
+        //            //    break;
+        //            default:
+        //                Debug.Log("Unassigned Combination");
+        //                currentEmotion = "neutral";
+        //                break;
+        //        }
+        //    }
+            
+
+
         //}
 
-
         emotionMsg.Data = currentEmotion;
+        if (currentEmotion != "neutral") Debug.Log(currentEmotion);
         //if (currentEmotion != "off")
         //{
         //    // Display the current Emotion on the widget
         //    EmotionManager.Instance.SetFaceByKey(currentEmotion);
         //}
-
+        
         // send the emotion via animus to display it on the real robot
         emotionSample.Data = emotionMsg;
         oldEmotion = currentEmotion;

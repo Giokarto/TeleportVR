@@ -113,3 +113,9 @@ crashlytics-build.properties
 # Exclude XTAL SDK
 Assets/vrgineers/
 Assets/vrgineers.meta
+
+MonoBleedingEdge/*
+*.exe
+Teleport_Data/*
+gitex-visiton/*
+gitex-with-audio/*

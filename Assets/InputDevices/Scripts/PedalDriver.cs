@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if RUDDER
 using Rewired;
 
 // TODO: rename tha class since now Oculus controller inputs are also in here
@@ -81,7 +82,7 @@ namespace RudderPedals
         public DifferentialDriveControl driveControl;
 
         [Range(0, 1), Tooltip("Maximum forward velocity (m/s)")]
-        public float maxVelocity = 0.1f;
+        public float maxVelocity = 0.05f;
 
         [Range(0, 1), Tooltip("Maximum angular velocity (m/s)")]
         public float maxAngularVelocity = 0.025f;
@@ -151,19 +152,19 @@ namespace RudderPedals
                 return;
             }
 
-#if RUDDER
+
             // in  [-1, 1] & inverted
             float steeringAngle = -player.GetAxis("SteeringAngle");
             // in [0,1]
             float left = player.GetAxis("Backward");
             float right = player.GetAxis("Forward");
-#else
+//#else
             var joystick = InputManager.Instance.GetControllerJoystick(true);
             float steeringAngle = joystick.x;
             // keeping "left"=backward and "right"=forward variables from the pedals implementation
             float left = (joystick.y > 0) ? 0 : Mathf.Abs(joystick.y);
             float right = (joystick.y < 0) ? 0 : Mathf.Abs(joystick.y);
-#endif
+
             leftWindow.Add(left);
             rightWindow.Add(right);
 
@@ -241,3 +242,4 @@ namespace RudderPedals
     }
 
 }
+#endif

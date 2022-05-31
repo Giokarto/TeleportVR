@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using BioIK;
 using System;
+#if SENSEGLOVE
 using SG;
 
 
@@ -40,7 +41,7 @@ namespace JointTransfer
         public float initialTarget;
         public bool initialized = false;
 
-#if SENSEGLOVE
+
         // Update is called once per frame
         void Update()
         {
@@ -115,7 +116,8 @@ namespace JointTransfer
             }
             return ((x - minIn) / (maxIn - minIn)) * maxOut + minOut;
         }
-#endif
+
     }
 }
 
+#endif

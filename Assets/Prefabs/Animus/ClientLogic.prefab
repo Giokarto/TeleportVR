@@ -45,6 +45,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnimusManager: {fileID: 0}
   unityClient: {fileID: 0}
-  robotName: Roboy2Xavier
+  robotName: 3
   AccountEmail: 
   AccountPassword: 
+  requiredModalities:
+  - vision

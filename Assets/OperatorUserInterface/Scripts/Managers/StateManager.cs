@@ -114,15 +114,15 @@ public class StateManager : Singleton<StateManager>
         _lastSwitch = Time.time;
         switch (newState)
         {
-            case States.Construct:
-                transitionManager.StartTransition(false);
-                additiveSceneManager.ChangeScene(Scenes.CONSTRUCT, null, null, DelegateBeforeConstructLoad, () =>
-                {
-                    DelegateAfterConstructLoad();
-                    onLoadDone?.Invoke();
-                });
-                currentState = States.Construct;
-                break;
+            //case States.Construct:
+            //    transitionManager.StartTransition(false);
+            //    additiveSceneManager.ChangeScene(Scenes.CONSTRUCT, null, null, DelegateBeforeConstructLoad, () =>
+            //    {
+            //        DelegateAfterConstructLoad();
+            //        onLoadDone?.Invoke();
+            //    });
+            //    currentState = States.Construct;
+            //    break;
             case States.HUD:
                 transitionManager.StartTransition(true);
                 additiveSceneManager.ChangeScene(Scenes.HUD, null, null, DelegateBeforeHudLoad, () =>
@@ -191,7 +191,7 @@ public class StateManager : Singleton<StateManager>
     /// </summary>
     void DelegateAfterTrainingLoad()
     {
-        TutorialSteps.Instance = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TutorialSteps>();
+       // TutorialSteps.Instance = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TutorialSteps>();
     }
 
     /// <summary>

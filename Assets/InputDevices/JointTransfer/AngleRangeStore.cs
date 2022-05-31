@@ -21,12 +21,12 @@ namespace JointTransfer
         private Dictionary<string, Transform> transforms;
         private Dictionary<string, Vector3> _minRotation;
         private Dictionary<string, Vector3> _maxRotation;
-
+#if SENSEGLOVE
         private Training.Calibration.HandCalibrator calibrator;
 
         private const string FQN = "JointTransfer.AngleRangeStore";
 
-#if SENSEGLOVE
+
         // Start is called before the first frame update
         void Start()
         {
