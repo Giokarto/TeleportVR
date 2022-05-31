@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+
 namespace Training.Calibration
 {
     public class CalibrationVolume : MonoBehaviour
@@ -11,6 +12,7 @@ namespace Training.Calibration
         public string requiredTag;
         [Tooltip("Array of TrainingSteps, during which to trigger the calibration")]
         public TutorialSteps.TrainingStep[] requiredTrainingSteps;
+#if SENSEGLOVE
         [Tooltip("Array of Steps, during which to trigger the calibration")]
         public HandCalibrator.Step[] requiredCalibrationSteps;
         [Tooltip("Calibator the calibration will be triggered for")]
@@ -32,7 +34,7 @@ namespace Training.Calibration
 
         private bool colliding = false;
 
-#if SENSEGLOVE
+
         // Update is called once per frame
         void Update()
         {

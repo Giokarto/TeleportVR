@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Widgets;
 
+#if SENSEGLOVE
 using SenseGloveCs.Kinematics;
 using SG;
 using SG.Calibration;
@@ -79,7 +80,7 @@ namespace Training.Calibration
         public Step currentStep = Step.ShowInstruction;
         public bool calibrating = false;
 
-#if SENSEGLOVE
+//#if SENSEGLOVE
         private SG_SenseGloveHardware hand;
         private InterpolationSet_IMU interpolator;
         private CalibrationPose[] poses;
@@ -114,7 +115,7 @@ namespace Training.Calibration
             return res;
         }
 
-        #region Setup
+#region Setup
 
         // Start is called before the first frame update
         void Start()
@@ -156,7 +157,7 @@ namespace Training.Calibration
 
             StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) =>StopCailbration(), once: true);
         }
-        #endregion
+#endregion
 
         private void ShowInstruction()
         {
@@ -442,6 +443,7 @@ namespace Training.Calibration
             poseValues = items;
             return true;
         }
-#endif
+
     }
 }
+#endif

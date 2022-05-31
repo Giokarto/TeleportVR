@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if SENSEGLOVE
 using SG;
 using SenseGloveCs.Kinematics;
 using SG.Calibration;
@@ -82,3 +83,4 @@ namespace Training.Calibration
     }
 
 }
+#endif

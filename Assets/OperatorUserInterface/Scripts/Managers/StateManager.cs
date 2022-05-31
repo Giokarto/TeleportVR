@@ -114,15 +114,15 @@ public class StateManager : Singleton<StateManager>
         _lastSwitch = Time.time;
         switch (newState)
         {
-            case States.Construct:
-                transitionManager.StartTransition(false);
-                additiveSceneManager.ChangeScene(Scenes.CONSTRUCT, null, null, DelegateBeforeConstructLoad, () =>
-                {
-                    DelegateAfterConstructLoad();
-                    onLoadDone?.Invoke();
-                });
-                currentState = States.Construct;
-                break;
+            //case States.Construct:
+            //    transitionManager.StartTransition(false);
+            //    additiveSceneManager.ChangeScene(Scenes.CONSTRUCT, null, null, DelegateBeforeConstructLoad, () =>
+            //    {
+            //        DelegateAfterConstructLoad();
+            //        onLoadDone?.Invoke();
+            //    });
+            //    currentState = States.Construct;
+            //    break;
             case States.HUD:
                 transitionManager.StartTransition(true);
                 additiveSceneManager.ChangeScene(Scenes.HUD, null, null, DelegateBeforeHudLoad, () =>

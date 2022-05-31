@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public enum Scenes {
     NONE,
     HUD,
-    CONSTRUCT,
+    //CONSTRUCT,
     TRAINING
 }
 
@@ -54,13 +54,13 @@ public class AdditiveSceneManager : MonoBehaviour
     /// <param name="mode">mode used to load the sene</param>
     void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
         switch (scene.buildIndex) {
+            //case 1:
+            //    currentScene = Scenes.CONSTRUCT;
+            //    break;
             case 1:
-                currentScene = Scenes.CONSTRUCT;
-                break;
-            case 2:
                 currentScene = Scenes.HUD;
                 break;
-            case 3:
+            case 2:
                 currentScene = Scenes.TRAINING;
                 break;
         }
@@ -84,12 +84,12 @@ public class AdditiveSceneManager : MonoBehaviour
     /// <returns>name of scene</returns>
     int SceneNameForScene(Scenes scene) {
         switch (scene) {
-            case Scenes.CONSTRUCT:
-                return 1;
+            //case Scenes.CONSTRUCT:
+            //    return 1;
             case Scenes.HUD:
-                return 2;
+                return 1;
             case Scenes.TRAINING:
-                return 3;
+                return 2;
             default:
                 return -1;
         }

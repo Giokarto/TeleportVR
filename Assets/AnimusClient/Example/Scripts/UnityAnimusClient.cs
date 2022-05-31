@@ -127,6 +127,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     private AnimusManager.AnimusClientManager animusManager;
     private bool inHUD = false;
     float emotionStamp = 0;
+    Camera camRight, camLeft;
 
     public enum Modality
     {
@@ -150,8 +151,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         initMats = false;
         bodyTransitionReady = false;
 
-        var camRight = RightEye.transform.GetComponentInParent<Camera>();
-        var camLeft = LeftEye.transform.GetComponentInParent<Camera>();
+        camRight = RightEye.transform.GetComponentInParent<Camera>();
+        camLeft = LeftEye.transform.GetComponentInParent<Camera>();
         if (!stereovision)
         {
             camRight.stereoTargetEye = StereoTargetEyeMask.None;
@@ -366,6 +367,18 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         inHUD = currentScene == Scenes.HUD;
         _leftPlane.SetActive(inHUD && animusManager.openModalitiesSuccess);
         _rightPlane.SetActive(stereovision && inHUD && animusManager.openModalitiesSuccess);
+        if (!stereovision)
+        {
+            camRight.stereoTargetEye = StereoTargetEyeMask.None;
+
+            camLeft.stereoTargetEye = StereoTargetEyeMask.Both;
+        }
+        else
+        {
+            camRight.stereoTargetEye = StereoTargetEyeMask.Right;
+
+            camLeft.stereoTargetEye = StereoTargetEyeMask.Left;
+        }
 
 
     }
@@ -401,6 +414,17 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
             var currSample = currSamples.Samples[0];
             var currShape = currSample.DataShape;
+            //Debug.Log($"currshape: {currShape}");
+            if (currShape[1] / currShape[0] >= 2)
+            {
+                stereovision = true;
+            }
+            else
+            {
+                stereovision = false;
+                //_rightPlane.SetActive(true);// stereovision && inHUD && animusManager.openModalitiesSuccess);
+            }
+
 
             var all_bytes = currSample.Data.ToByteArray();
 #if ANIMUS_USE_OPENCV
@@ -834,12 +858,14 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
                 //#if RUDDER
 
-                // wheelchair
-                Vector2 wheelchairDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
-                // left
-                motorAngles.Add(wheelchairDrive.x);
-                // right
-                motorAngles.Add(wheelchairDrive.y);
+                //// wheelchair
+                //Vector2 wheelchairDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
+                //// left
+                //motorAngles.Add(wheelchairDrive.x);
+                //// right
+                //motorAngles.Add(wheelchairDrive.y);
+
+
                 //Debug.Log(" wheelchair: " + wheelchairDrive.x + " " + wheelchairDrive.y);
 
                 //#else

@@ -37,8 +37,10 @@ namespace Training
         public List<AudioClip> praisePhrases = new List<AudioClip>();
 
         public bool waitingForNod = false;
+#if SENSEGLOVE
         public Calibration.HandCalibrator rightCalibrator, leftCalibrator;
         public Calibration.ArmLength.ArmLength armLengthCalibration;
+#endif
         public WheelchairTraining wheelChairTraining;
         public PauseMenuTraining pauseMenuTraining;
         //public Automaton<TrainingStep> automaton;
@@ -64,7 +66,7 @@ namespace Training
                onStart: () => PublishNotification("Welcome to Teleport VR!", miscAudio.welcome.length)
                );
             audioManager.ScheduleAudioClip(miscAudio.imAria, queue: true,
-                onStart: () => PublishNotification("I am Aria - your personal telepresence trainer.", miscAudio.imAria.length + 2),
+                onStart: () => PublishNotification("I am Amala - your personal telepresence trainer.", miscAudio.imAria.length + 2),
                 onEnd: () =>
                 {
                     currentState = TrainingStep.IDLE;
@@ -101,7 +103,7 @@ namespace Training
             //NextStep();
             //trainingStarted = false;
 
-            #region StateDefinition
+#region StateDefinition
 
             stateMachine.onEnter[TrainingStep.HEAD] = (step) =>
             {
