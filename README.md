@@ -17,7 +17,7 @@ Make sure to uncheck `UnityAnimusClient.cs` and `ClientLogic.cs` in the import p
 11. For further functionality and support for more hardware, look at the section [Plugins](#plugins)
 
 ## How to run in Unity Editor
-Open the `Main.scene` in Unity Editor and press play.
+Open the `Main.unity` scene in Unity Editor and press play.
 
 ## Build Instructions
 The App can be run on a computer without VR, with a PC VR headset (tested with the Quest) in the Editor or in a build. Furthermore, it can run (without RosSharp) standalone on the Oculus Quest. To build it, select the plattform you want to use in the BuildSettings, select the scenes you want to have in the build (e.g. Training for PC VR and TrainingMobile) in the order 
