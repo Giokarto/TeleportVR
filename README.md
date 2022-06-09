@@ -2,7 +2,7 @@
 
 ## How to install
 
-1. Download the main branch of this repository
+1. Clone or download the main branch of this repository
 2. Open the Project with Unity (tested with 2020.3.1f1)
 3. Add the UnityPackage `UsedPlugins`, `SenseGloveSDK v1_2`, `Rewired1.1.39.U2020_Trial` and `Ultimate 10 Shaders` from the [Google Drive Folder](https://drive.google.com/drive/folders/1b-Ez4EaQvI0c8lEPN2esZWvLFtbvm95R) to the project. 
 Not all of the plugins are needed, look at the Section [Plugins](#plugins) for more information
