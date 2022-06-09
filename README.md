@@ -3,7 +3,7 @@
 ## How to install
 
 1. Download the main branch of this repository
-2. Open the Project with Unity 2020.3.1f1
+2. Open the Project with Unity (tested with 2020.3.1f1)
 3. Add the UnityPackage `UsedPlugins`, `SenseGloveSDK v1_2`, `Rewired1.1.39.U2020_Trial` and `Ultimate 10 Shaders` from the [Google Drive Folder](https://drive.google.com/drive/folders/1b-Ez4EaQvI0c8lEPN2esZWvLFtbvm95R) to the project. 
 Not all of the plugins are needed, look at the Section [Plugins](#plugins) for more information
 4. Add the Animus SDK to the project (>= Version 2.3.2, newer versions might fix some bugs but might not be compatible) from https://animus.cyberanimus.com/login. 
@@ -13,16 +13,18 @@ Make sure to uncheck `UnityAnimusClient.cs` and `ClientLogic.cs` in the import p
 7. Open the scene Scenes/main
 8. Enter your Robot name in the Editor by clicking on the GameObject ClientLogic in the Hierarchy window and set the name in the field 'Robot Name'
 9. In the script AnimusUtilities.cs, insert the line `UnityAnimusClient.DisplayLatency(AverageLag, AverageFps);` in line 233
-1. You are now be able to start and use the application!
-1. For further functionality and support for more hardware, look at the section [Plugins](#plugins)
+10. You are now be able to start and use the application!
+11. For further functionality and support for more hardware, look at the section [Plugins](#plugins)
+
+## How to run in Unity Editor
+Open the `Main.scene` in Unity Editor and press play.
 
 ## Build Instructions
 The App can be run on a computer without VR, with a PC VR headset (tested with the Quest) in the Editor or in a build. Furthermore, it can run (without RosSharp) standalone on the Oculus Quest. To build it, select the plattform you want to use in the BuildSettings, select the scenes you want to have in the build (e.g. Training for PC VR and TrainingMobile) in the order 
 
 0. Main
-1. Construct
-2. HUD
-3. Training
+1. HUD
+2. Training
 
 For non-Quest headsets or the VR Mock, it might be needed to change the XR-Plugin Management in the Project Settings.
 
