@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using System.IO.Ports;
 
-namespace RudderPedals
+namespace DiffDrive
 {
     public class SerialReader : MonoBehaviour
     {

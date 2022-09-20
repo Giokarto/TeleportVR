@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
-namespace RudderPedals
+namespace DiffDrive
 {
     public class PresenceDetector : Singleton<PresenceDetector>
     {

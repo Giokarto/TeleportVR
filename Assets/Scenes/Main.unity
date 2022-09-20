@@ -477,6 +477,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22a81c963a2afdb429a3faaf2a69645c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  driveControl: {fileID: 0}
+  maxVelocity: 0.05
+  maxAngularVelocity: 0.025
+  forwardDeadzone: 0.4
+  backwardDeadzone: 0.2
+  velocityMap:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  angularVelocityMap:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  filterSize: 10
+  velocity: 0
+  angularVelocity: 0
+  _output: {x: 0, y: 0}
+  goingForward: 1
+  canChangeDir: 1
 --- !u!4 &122745458
 Transform:
   m_ObjectHideFlags: 0
@@ -2563,9 +2586,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4177823132778806939, guid: 8376e5037528d434cab49e987b7a4e72,
         type: 3}
+      propertyPath: MotionType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177823132778806939, guid: 8376e5037528d434cab49e987b7a4e72,
+        type: 3}
+      propertyPath: MaximumVelocity
+      value: 29
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177823132778806939, guid: 8376e5037528d434cab49e987b7a4e72,
+        type: 3}
       propertyPath: SelectedSegment
       value: 
       objectReference: {fileID: 235385098}
+    - target: {fileID: 4177823132778806939, guid: 8376e5037528d434cab49e987b7a4e72,
+        type: 3}
+      propertyPath: MaximumAcceleration
+      value: 13.05
+      objectReference: {fileID: 0}
     - target: {fileID: 4177823132778806939, guid: 8376e5037528d434cab49e987b7a4e72,
         type: 3}
       propertyPath: Segments.Array.size
@@ -2979,7 +3017,7 @@ PrefabInstance:
     - target: {fileID: 4177823133385641361, guid: 8376e5037528d434cab49e987b7a4e72,
         type: 3}
       propertyPath: MaximumVelocity
-      value: 2
+      value: 5.69
       objectReference: {fileID: 0}
     - target: {fileID: 4177823133385641361, guid: 8376e5037528d434cab49e987b7a4e72,
         type: 3}
@@ -2989,7 +3027,7 @@ PrefabInstance:
     - target: {fileID: 4177823133385641361, guid: 8376e5037528d434cab49e987b7a4e72,
         type: 3}
       propertyPath: MaximumAcceleration
-      value: 2
+      value: 4.15
       objectReference: {fileID: 0}
     - target: {fileID: 4177823133385641361, guid: 8376e5037528d434cab49e987b7a4e72,
         type: 3}
@@ -7944,7 +7982,7 @@ PrefabInstance:
     - target: {fileID: 2459119425388815567, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2497834216055462839, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
@@ -15134,7 +15172,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3112793306941609135}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1.02}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 3112793306941114509}
@@ -15593,6 +15631,7 @@ GameObject:
   - component: {fileID: 3112793307756572317}
   - component: {fileID: 3112793306941609136}
   - component: {fileID: 3112793306941609138}
+  - component: {fileID: 3112793306941609137}
   m_Layer: 0
   m_Name: Wheelchair
   m_TagString: RoboyCollider
@@ -15613,6 +15652,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0946897, y: 2.9351847, z: 1.2400804}
   m_Center: {x: 0.004304111, y: 0.9942719, z: 0.042612076}
+--- !u!114 &3112793306941609137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3112793306941609135}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c3f772307f742b44a79c898fb314d9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToTrack: {fileID: 6021411801083968251}
 --- !u!114 &3112793306941609138
 MonoBehaviour:
   m_ObjectHideFlags: 0

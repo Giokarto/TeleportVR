@@ -856,15 +856,20 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 }
 #endif
 
+
                 //#if RUDDER
 
-                //// wheelchair
-                //Vector2 wheelchairDrive = RudderPedals.PedalDriver.Instance.normalizedOutput;
+                // wheelchair
+                var linearVelocity = InputManager.Instance.GetControllerJoystick(true).y;
+                var angularVelocity = -InputManager.Instance.GetControllerJoystick(false).x;
+                motorAngles.Add(linearVelocity);
+                motorAngles.Add(angularVelocity);
+
+                //Vector2 wheelchairDrive = DiffDrive.DiffDrive.Instance.output;// normalizedOutput;
                 //// left
                 //motorAngles.Add(wheelchairDrive.x);
                 //// right
                 //motorAngles.Add(wheelchairDrive.y);
-
 
                 //Debug.Log(" wheelchair: " + wheelchairDrive.x + " " + wheelchairDrive.y);
 
@@ -878,6 +883,32 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                 //                motorAngles.Add(axis2D[1]);
                 //            }
                 //#endif
+
+                //// wheels lin_vel and ang_vel
+                //Vector2 axis2D;
+                //if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetRightController() &&
+                //    InputManager.Instance.controllerRight[0]
+                //        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
+                //{
+                //    motorAngles.Add(axis2D[1]);
+                //}
+                //else
+                //{
+                //    motorAngles.Add(0.0F);
+                //}
+
+                //if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
+                //    InputManager.Instance.controllerLeft[0]
+                //        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
+                //{
+                //    motorAngles.Add(axis2D[0]); //right for speed
+                //}
+                //else
+                //{
+                //    motorAngles.Add(0.0F);
+                //}
+
+
 
                 motorMsg.Data.Clear();
                 motorMsg.Data.Add(motorAngles);
