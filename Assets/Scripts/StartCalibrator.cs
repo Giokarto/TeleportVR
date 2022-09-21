@@ -23,15 +23,33 @@ public class StartCalibrator : MonoBehaviour
         StartCoroutine(WaitAndCalibrate(calibrationTime));
     }
 
-    private IEnumerator WaitAndCalibrate(float waitTime)
+    private IEnumerator WaitAndCalibrate(float waitTime, bool withRotation=false)
     {
         yield return new WaitForSeconds(waitTime);
         // Change transfrom position
         Vector3 move = goal.position - eye.position;
         transform.position += move;
 
+        if (withRotation)
+        {
+            // Change transform orientation
+            var rotate = new Vector3(0f, - eye.rotation.eulerAngles.y, 0f); // goal.rotation.eulerAngles.y
+            var newRot = transform.rotation.eulerAngles + rotate;
+            transform.rotation = Quaternion.Euler(newRot);
+        }
         calibrated = true;
         Debug.Log($"Calibration done, moved: {move}");
+    }
+
+    private void Update()
+    {
+        bool btn;
+        InputManager.Instance.controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn);
+        if (btn)
+        {
+            Debug.Log("Manual position calibration triggered.");
+            StartCoroutine(WaitAndCalibrate(0,true));
+        }
     }
 
 }

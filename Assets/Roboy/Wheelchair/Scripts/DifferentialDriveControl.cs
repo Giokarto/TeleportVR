@@ -38,7 +38,21 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
 
     private void Update()
     {
-        // TODO: move keyboard controls outta here
+        if (AdditiveSceneManager.CurrentSceneContainsHud())
+        {
+            return;
+        }
+        // TODO: move controls outta here
+
+        var leftJoystick = InputManager.Instance.GetControllerJoystick(true);
+        var rightJoystick = InputManager.Instance.GetControllerJoystick(false);
+        
+        var angular = -rightJoystick.x/100.0;
+        var linear = leftJoystick.y/50.0;
+
+        V_L = (float)(linear - angular / 2.0);
+        V_R = (float)(linear + angular / 2.0);
+
         if (Input.GetKey(KeyCode.RightArrow))
         {
             V_L = 0.02f;
