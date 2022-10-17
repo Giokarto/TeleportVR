@@ -330,7 +330,7 @@ namespace Training
             //    waitingForNod = true;
 
             //inProgress = !(stateMachine.State == TrainingStep.DONE || stateMachine.State == TrainingStep.IDLE);
-            Debug.Log(inProgress);
+            //Debug.Log(inProgress);
             
             // allows to continue to the next step when pressing 'n'
             if (Input.GetKeyDown(KeyCode.N))
