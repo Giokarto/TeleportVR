@@ -467,12 +467,12 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
                     // only half of the vertical scale corresponds to the image for one eye
                     float scaleFactor = ((float)_imageDims[1] / 2) / (float)_imageDims[0];
-                    //_leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
-                    //                                              _leftPlane.transform.localScale.y,
-                    //                                              scaleFactor * _leftPlane.transform.localScale.x);
-                    //_rightPlane.transform.localScale = new Vector3(_rightPlane.transform.localScale.x,
-                    //                                              _rightPlane.transform.localScale.y,
-                    //                                              scaleFactor * _rightPlane.transform.localScale.x);
+                    _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
+                                                                  _leftPlane.transform.localScale.y,
+                                                                  scaleFactor * _leftPlane.transform.localScale.x);
+                    _rightPlane.transform.localScale = new Vector3(_rightPlane.transform.localScale.x,
+                                                                  _rightPlane.transform.localScale.y,
+                                                                  scaleFactor * _rightPlane.transform.localScale.x);
 
                     // the left texture is the upper half of the received image
                     _leftTexture = new Texture2D((int)_imageDims[0], (int)_imageDims[1] / 2, TextureFormat.RGB24, false)
@@ -494,9 +494,9 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                     }
 
                     float scaleFactor = (float)_imageDims[1] / (float)_imageDims[0];
-                    //_leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
-                    //                                              _leftPlane.transform.localScale.y,
-                    //                                              scaleFactor * _leftPlane.transform.localScale.x);
+                    _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
+                                                                  _leftPlane.transform.localScale.y,
+                                                                  scaleFactor * _leftPlane.transform.localScale.x);
 
                     _leftTexture = new Texture2D((int)_imageDims[0], (int)_imageDims[1], TextureFormat.RGB24, false)
                     {

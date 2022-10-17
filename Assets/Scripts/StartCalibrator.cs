@@ -44,12 +44,16 @@ public class StartCalibrator : MonoBehaviour
     private void Update()
     {
         bool btn;
-        InputManager.Instance.controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn);
-        if (btn)
+        if (InputManager.Instance.controllerRight.Count > 0)
         {
-            Debug.Log("Manual position calibration triggered.");
-            StartCoroutine(WaitAndCalibrate(0,true));
+            InputManager.Instance.controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn);
+            if (btn)
+            {
+                Debug.Log("Manual position calibration triggered.");
+                StartCoroutine(WaitAndCalibrate(0, true));
+            }
         }
+        
     }
 
 }

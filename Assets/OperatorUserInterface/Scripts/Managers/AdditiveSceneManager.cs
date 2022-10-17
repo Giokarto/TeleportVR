@@ -44,7 +44,7 @@ public class AdditiveSceneManager : MonoBehaviour
     /// <returns></returns>
     public static bool CurrentSceneContainsHud()
     {
-        return currentScene == Scenes.HUD || currentScene == Scenes.TRAINING;
+        return currentScene == Scenes.HUD;// || currentScene == Scenes.TRAINING;
     }
 
     /// <summary>

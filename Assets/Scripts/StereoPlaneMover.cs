@@ -44,22 +44,24 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
 
     public void UpdateIPD()
     {
-        if (GameConfig.Instance.settings.OperatorManualOverwrite)
-        {
-            // if manually saved settings use those
-            horizontal = GameConfig.Instance.settings.OperatorHorizontal;
-            vertical = GameConfig.Instance.settings.OperatorVertical;
-            manualCalibration = true;
-        }
-        else
-        {
-            // linear regression of user derived calibration values
-            // Study Data can be found here: https://docs.google.com/spreadsheets/d/17Bjk4q2Xs9SZGZ0OZsH9OgV_PBdQkzd_srlOClHPXj4/edit?usp=sharing 
-            horizontal = GameConfig.Instance.settings.OperatorIPD * horizontal_a + horizontal_b;
-            vertical = GameConfig.Instance.settings.OperatorIPD * vertical_a + vertical_b;
-        }
-        horizontal = Mathf.Max(horizontal, 0);
-        vertical = Mathf.Max(vertical, 0);
+        //if (GameConfig.Instance.settings.OperatorManualOverwrite)
+        //{
+        //    // if manually saved settings use those
+        //    horizontal = GameConfig.Instance.settings.OperatorHorizontal;
+        //    vertical = GameConfig.Instance.settings.OperatorVertical;
+        //    manualCalibration = true;
+        //}
+        //else
+        //{
+        //    // linear regression of user derived calibration values
+        //    // Study Data can be found here: https://docs.google.com/spreadsheets/d/17Bjk4q2Xs9SZGZ0OZsH9OgV_PBdQkzd_srlOClHPXj4/edit?usp=sharing 
+        //    horizontal = GameConfig.Instance.settings.OperatorIPD * horizontal_a + horizontal_b;
+        //    vertical = GameConfig.Instance.settings.OperatorIPD * vertical_a + vertical_b;
+        //}
+        //TODO remove this hack
+        horizontal = 0;// Mathf.Max(horizontal, 0);
+        vertical = 0.1432849f;// Mathf.Max(vertical, 0);
+        //Debug.Log(vertical);
     }
 
     // Update is called once per frame

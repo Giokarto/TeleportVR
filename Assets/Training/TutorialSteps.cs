@@ -51,9 +51,6 @@ namespace Training
         TrainingStep lastCorrectedAtStep = TrainingStep.IDLE;
         private bool waitStarted = false, startTraining = true, inProgress=false;
 
-
-
-
         [SerializeField] private Transform handCollectables;
 
         [SerializeField] private GameObject designatedArea;
@@ -332,6 +329,9 @@ namespace Training
             //if (currentStep == TrainingStep.HEAD && !isAudioPlaying())
             //    waitingForNod = true;
 
+            //inProgress = !(stateMachine.State == TrainingStep.DONE || stateMachine.State == TrainingStep.IDLE);
+            Debug.Log(inProgress);
+            
             // allows to continue to the next step when pressing 'n'
             if (Input.GetKeyDown(KeyCode.N))
             {
@@ -345,13 +345,18 @@ namespace Training
                 Prev();
             }
 
-            if (InputManager.Instance.GetControllerBtn(CommonUsages.primaryButton, false) && !waitStarted)// (stateMachine.State == TrainingStep.IDLE || stateMachine.State == TrainingStep.DONE))
-            {
-                waitStarted = true;
-                Debug.Log("Started true");
-                StartCoroutine(StartTrainingAfter(0));
+            // start training on the button A press
+            //if (InputManager.Instance.GetControllerBtn(CommonUsages.primaryButton, false) )// (stateMachine.State == TrainingStep.IDLE || stateMachine.State == TrainingStep.DONE))
+            //{
                 
-            }
+            //    if (!waitStarted)
+            //    {
+            //        waitStarted = true;
+            //        Debug.Log("Started true");
+            //        StartCoroutine(StartTrainingAfter(0));
+            //        inProgress = true;
+            //    }
+            //} 
         }
     }
 }

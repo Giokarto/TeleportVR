@@ -38,6 +38,7 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
 
     private void Update()
     {
+        
         if (AdditiveSceneManager.CurrentSceneContainsHud())
         {
             return;
