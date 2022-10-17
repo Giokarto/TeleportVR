@@ -8,6 +8,7 @@ public class InputManager : Singleton<InputManager>
 {
     public List<UnityEngine.XR.InputDevice> controllerLeft = new List<UnityEngine.XR.InputDevice>();
     public List<UnityEngine.XR.InputDevice> controllerRight = new List<UnityEngine.XR.InputDevice>();
+    public InputDevice HMD;
     public HandManager handManager;
 
     [SerializeField] VRGestureRecognizer vrGestureRecognizer;
@@ -21,6 +22,7 @@ public class InputManager : Singleton<InputManager>
     {
         GetLeftController();
         GetRightController();
+
 
         vrGestureRecognizer.Nodded += OnNodded;
         vrGestureRecognizer.HeadShaken += OnHeadShaken;
@@ -54,6 +56,46 @@ public class InputManager : Singleton<InputManager>
             InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Right, controllerRight);
         }
         return controllerRight.Count > 0;
+    }
+
+    public bool GetHMD()
+    {
+        List<InputDevice> HMDs = new List<InputDevice>();
+        ////if (HMD == null)
+        ////{
+
+        //var inputDevices = new List<UnityEngine.XR.InputDevice>();
+        //UnityEngine.XR.InputDevices.GetDevices(inputDevices);
+
+        //foreach (var device in inputDevices)
+        //{
+        //    Debug.Log(string.Format("Device found with name '{0}' and role '{1}'", device.name, device.role.ToString()));
+        //}
+
+        //var l = new List<XRNode>() { XRNode.Head, XRNode.LeftEye, XRNode.CenterEye, XRNode.TrackingReference };
+        //foreach( var ll in l)
+        //{
+        //    var d = InputDevices.GetDeviceAtXRNode(ll);
+            
+        //    d.TryGetFeatureValue(UnityEngine.XR.CommonUsages.deviceRotation, out Quaternion rot);
+        //    Debug.Log($"{ d.name} \t { rot}");
+        //}
+        HMD = InputDevices.GetDeviceAtXRNode(XRNode.Head);
+        if (HMD == null) return false;
+        return true;
+        //InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.TrackedDevice | InputDeviceCharacteristics.HeadMounted, HMDs);
+        
+        ////InputDevices.GetDevicesAtXRNode(XRNode.Head,HMDs);
+        //Debug.Log($"HMDs found: {HMDs.Count}");
+        //if (HMDs.Count > 0)
+        //{
+        //    HMD = HMDs[0];
+        //    return true;
+        //}
+        //return false;
+
+        //}
+        //return true;
     }
 
     /// try to get the left controller, if possible.<!-- return if the controller can be referenced.-->

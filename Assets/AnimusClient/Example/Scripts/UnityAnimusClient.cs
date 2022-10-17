@@ -733,6 +733,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         _lastUpdate = 0;
         motorMsg = new Float32Array();
         motorSample = new Sample(DataMessage.Types.DataType.Float32Arr, motorMsg);
+        InputManager.Instance.GetHMD();
 
         StartCoroutine(SendLEDCommand(LEDS_CONNECTED));
         return true;
@@ -758,171 +759,36 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         print(printmsg);
     }
 
+
     /// <summary>
     /// Send all the necessary data from the simulated roboy to the real roboy.
     /// </summary>
     /// <returns>Success.</returns>
     public Sample motor_get()
     {
-        var motorAngles = new List<float>();
-        //if (Time.time * 1000 - _lastUpdate > 50)
+        
+        var motorValues = new MotorAnglesList<float>();
+        
+        var devices = new List<UnityEngine.XR.InputDevice>() {InputManager.Instance.HMD, InputManager.Instance.controllerLeft[0], InputManager.Instance.controllerRight[0] };
+        foreach (var d in devices)
         {
-            //Debug.Log($"motor enabled: {motorEnabled}");
+            d.TryGetFeatureValue(UnityEngine.XR.CommonUsages.devicePosition, out Vector3 devicePosition);
+            d.TryGetFeatureValue(UnityEngine.XR.CommonUsages.deviceRotation, out Quaternion deviceRotation);
+            d.TryGetFeatureValue(UnityEngine.XR.CommonUsages.deviceVelocity, out Vector3 deviceVelocity);
+            d.TryGetFeatureValue(UnityEngine.XR.CommonUsages.deviceAcceleration, out Vector3 deviceAcceleration);
+            motorValues.Add(Vector2Ros(devicePosition));
+            motorValues.Add(Quaternion2Ros(deviceRotation));
+            motorValues.Add(Vector2Ros(deviceVelocity));
+            motorValues.Add(Vector2Ros(deviceAcceleration));
 
-            // if motor not enabled - keep sending the last motor message with head pose looking down 
-            if (!motorEnabled)
-            {
-                if (motorMsg.Data.Count > 0)
-                {
-                    // motorMsg.Data:
-                    // [0] -> head_axis0
-                    // [1] -> head_axis1
-                    // [2] -> head_axis2
-                    motorMsg.Data[0] = 0.0f;
-                    motorMsg.Data[1] = 0.0f;
-                    motorMsg.Data[2] = 0.0f;
-                }
-                else
-                {
-                    motorAngles = new List<float>(new float[29])
-                    {
-                        [0] = 0.0f
-                    };
-                    motorMsg.Data.Clear();
-                    motorMsg.Data.Add(motorAngles);
-                }
-
-            }
-            else
-            {
-                //Debug.LogError("Motor modality enabled");
-                latestJointValues.Clear();
-                // head joints
-                foreach (var segment in _myIKHead.Segments)
-                {
-
-                    if (segment.Joint != null)
-                    {
-                        motorAngles.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
-                        latestJointValues.Add((float)segment.Joint.X.CurrentValue);
-                    }
-                }
-
-                // torso joints
-                foreach (var segment in _myIKBody.Segments)
-                {
-                    //Debug.Log(segment.name);
-                    if (segment.Joint != null)
-                    {
-                        //Debug.Log($"{motorAngles.Count - 1}: {segment.gameObject.name} {segment.Joint.X.CurrentValue}");
-                        motorAngles.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
-                        latestJointValues.Add((float)segment.Joint.X.CurrentValue);
-                    }
-                }
-                // Distribure angle on elbow_*_axis0 to axis0 and axis1 equally
-                const int elbowRightAxis0 = 6;
-                const int elbowLeftAxis0 = 14;
-                motorAngles[elbowRightAxis0 + 1] = -motorAngles[elbowRightAxis0] / 2;
-                motorAngles[elbowRightAxis0] /= 2;
-                motorAngles[elbowLeftAxis0 + 1] = motorAngles[elbowLeftAxis0] / 2;
-                motorAngles[elbowLeftAxis0] /= 2;
-
-
-                // right, left
-#if SENSEGLOVE
-                foreach (var step in InputManager.Instance.handManager.GetMotorPositions())
-                {
-                    motorAngles.Add(step);
-                }
-#else
-                float left_open = 0, right_open = 0;
-                if (InputManager.Instance.GetLeftController())
-                    InputManager.Instance.controllerLeft[0]
-                        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left_open);
-
-                if (InputManager.Instance.GetRightController())
-                    InputManager.Instance.controllerRight[0]
-                        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
-
-
-                // 4 values for right and left
-                for (int i = 0; i < 4; i++)
-                {
-                    motorAngles.Add(right_open);
-                }
-                for (int i = 0; i < 4; i++)
-                {
-                    motorAngles.Add(left_open);
-                }
-#endif
-
-
-                //#if RUDDER
-
-                // wheelchair
-                var linearVelocity = InputManager.Instance.GetControllerJoystick(true).y;
-                var angularVelocity = -InputManager.Instance.GetControllerJoystick(false).x;
-                motorAngles.Add(linearVelocity);
-                motorAngles.Add(angularVelocity);
-
-                //Vector2 wheelchairDrive = DiffDrive.DiffDrive.Instance.output;// normalizedOutput;
-                //// left
-                //motorAngles.Add(wheelchairDrive.x);
-                //// right
-                //motorAngles.Add(wheelchairDrive.y);
-
-                //Debug.Log(" wheelchair: " + wheelchairDrive.x + " " + wheelchairDrive.y);
-
-                //#else
-                //            Vector2 axis2D;
-                //            if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
-                //                InputManager.Instance.controllerLeft[0]
-                //                    .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
-                //            {
-                //                motorAngles.Add(axis2D[0]);
-                //                motorAngles.Add(axis2D[1]);
-                //            }
-                //#endif
-
-                //// wheels lin_vel and ang_vel
-                //Vector2 axis2D;
-                //if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetRightController() &&
-                //    InputManager.Instance.controllerRight[0]
-                //        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
-                //{
-                //    motorAngles.Add(axis2D[1]);
-                //}
-                //else
-                //{
-                //    motorAngles.Add(0.0F);
-                //}
-
-                //if (!WidgetInteraction.settingsAreActive && InputManager.Instance.GetLeftController() &&
-                //    InputManager.Instance.controllerLeft[0]
-                //        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axis2D))
-                //{
-                //    motorAngles.Add(axis2D[0]); //right for speed
-                //}
-                //else
-                //{
-                //    motorAngles.Add(0.0F);
-                //}
-
-
-
-                motorMsg.Data.Clear();
-                motorMsg.Data.Add(motorAngles);
-
-
-            }
-
-            motorSample.Data = motorMsg;
-            _lastUpdate = Time.time * 1000;
-
-            return motorSample;
         }
 
-        return null;
+        motorMsg.Data.Clear();
+        motorMsg.Data.Add(motorValues);
+        motorSample.Data = motorMsg;
+
+        return motorSample;
+
     }
 
     public bool motor_close()
@@ -1114,5 +980,22 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         }
 
         return angle;
+    }
+
+    class MotorAnglesList<T> : List<float>
+    {
+        public void Add(Vector3 item)
+        {
+            base.Add(item.x);
+            base.Add(item.y);
+            base.Add(item.z);
+        }
+        public void Add(Quaternion item)
+        {
+            base.Add(item.x);
+            base.Add(item.y);
+            base.Add(item.z);
+            base.Add(item.w);
+        }
     }
 }
