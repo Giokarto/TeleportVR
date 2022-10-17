@@ -25,6 +25,12 @@ public class ClientLogic : Singleton<ClientLogic>
     {
         _count = 0;
         StartCoroutine(ClientManagerLogic());
+        
+        if (GameConfig.Instance.settings.RobotName != null)
+        {
+            Debug.Log($"Connecting to a robot defined in config.json called {GameConfig.Instance.settings.RobotName}");
+            robotName = GameConfig.Instance.settings.RobotName;
+        }
     }
 
     IEnumerator ClientManagerLogic()
