@@ -24,6 +24,7 @@ public class WheelchairStateManager : Singleton<WheelchairStateManager>
     private void Start()
     {
         internalState = StateManager.Instance.currentState;
+        SetVisibility(false);
     }
 
     void Update()
@@ -32,7 +33,8 @@ public class WheelchairStateManager : Singleton<WheelchairStateManager>
         if (StateManager.Instance.currentState != internalState)
         {
             internalState = StateManager.Instance.currentState;
-            SetVisibility(internalState != StateManager.States.HUD);
+            SetVisibility(false);
+            //SetVisibility(internalState != StateManager.States.HUD);
         }
     }
 

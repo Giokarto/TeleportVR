@@ -41,6 +41,11 @@ public class StartCalibrator : MonoBehaviour
         Debug.Log($"Calibration done, moved: {move}");
     }
 
+    public void ResetBodyPose()
+    {
+        StartCoroutine(WaitAndCalibrate(0, true));
+    }
+
     private void Update()
     {
         bool btn;

@@ -9,6 +9,7 @@ public class InputManager : Singleton<InputManager>
     public List<UnityEngine.XR.InputDevice> controllerLeft = new List<UnityEngine.XR.InputDevice>();
     public List<UnityEngine.XR.InputDevice> controllerRight = new List<UnityEngine.XR.InputDevice>();
     public HandManager handManager;
+    public StartCalibrator startCalibrator;
 
     [SerializeField] VRGestureRecognizer vrGestureRecognizer;
 
@@ -157,10 +158,12 @@ public class InputManager : Singleton<InputManager>
             bool btn;
             if (GetLeftController())
             {
-                // Go to the other mode
+                // enable/disable motor
                 if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.menuButton, out btn) && btn && !lastMenuBtn)
                 {
-                    StateManager.Instance.GoToNextState();
+                    UnityAnimusClient.Instance.ToggleMotor();
+                    startCalibrator.ResetBodyPose(); // re-aling robody model with operator's body every time we enable motion
+                    //StateManager.Instance.GoToNextState();
                 }
                 lastMenuBtn = btn;
 

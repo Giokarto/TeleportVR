@@ -38,7 +38,7 @@ namespace Widgets
 
             timer = new Timer();
 
-            gameObject.AddComponent<CurvedUI.CurvedUIVertexEffect>();
+            //gameObject.AddComponent<CurvedUI.CurvedUIVertexEffect>();
         }
 
         /// <summary>

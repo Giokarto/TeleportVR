@@ -72,7 +72,7 @@ public class UI_Manager : Singleton<UI_Manager>
         this.transform.rotation = Quaternion.Euler(rotation);
 
         // Send pointer information to Curved UI Input Module to use event system
-        CurvedUIInputModule.CustomControllerRay = new Ray(this.transform.position, this.transform.forward);
+        //CurvedUIInputModule.CustomControllerRay = new Ray(this.transform.position, this.transform.forward);
 
         // this draws the ray - the rest of the raycast Manager is not being used
         if (showLaser)

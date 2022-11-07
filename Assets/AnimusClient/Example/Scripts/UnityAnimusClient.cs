@@ -133,13 +133,14 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
     {
         VISION, AUDITION, VOICE, MOTOR, EMOTION
     }
+#if ANIMUS_USE_OPENCV
     private struct Undistort
     {
         public Mat mapx, mapy;
     }
 
     private Undistort undistort;
-
+#endif
     public void Start()
     {
         emotion_initialise();
@@ -364,7 +365,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         //}
         currentScene = s;
 
-        inHUD = currentScene == Scenes.HUD;
+        inHUD = true;// currentScene == Scenes.HUD;
         _leftPlane.SetActive(inHUD && animusManager.openModalitiesSuccess);
         _rightPlane.SetActive(stereovision && inHUD && animusManager.openModalitiesSuccess);
         if (!stereovision)
@@ -467,12 +468,12 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
                     // only half of the vertical scale corresponds to the image for one eye
                     float scaleFactor = ((float)_imageDims[1] / 2) / (float)_imageDims[0];
-                    _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
-                                                                  _leftPlane.transform.localScale.y,
-                                                                  scaleFactor * _leftPlane.transform.localScale.x);
-                    _rightPlane.transform.localScale = new Vector3(_rightPlane.transform.localScale.x,
-                                                                  _rightPlane.transform.localScale.y,
-                                                                  scaleFactor * _rightPlane.transform.localScale.x);
+                    //_leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
+                    //                                              _leftPlane.transform.localScale.y,
+                    //                                              scaleFactor * _leftPlane.transform.localScale.x);
+                    //_rightPlane.transform.localScale = new Vector3(_rightPlane.transform.localScale.x,
+                    //                                              _rightPlane.transform.localScale.y,
+                    //                                              scaleFactor * _rightPlane.transform.localScale.x);
 
                     // the left texture is the upper half of the received image
                     _leftTexture = new Texture2D((int)_imageDims[0], (int)_imageDims[1] / 2, TextureFormat.RGB24, false)
@@ -494,9 +495,9 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
                     }
 
                     float scaleFactor = (float)_imageDims[1] / (float)_imageDims[0];
-                    _leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
-                                                                  _leftPlane.transform.localScale.y,
-                                                                  scaleFactor * _leftPlane.transform.localScale.x);
+                    //_leftPlane.transform.localScale = new Vector3(_leftPlane.transform.localScale.x,
+                    //                                              _leftPlane.transform.localScale.y,
+                    //                                              scaleFactor * _leftPlane.transform.localScale.x);
 
                     _leftTexture = new Texture2D((int)_imageDims[0], (int)_imageDims[1], TextureFormat.RGB24, false)
                     {
@@ -525,7 +526,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 
         return true;
     }
-
+#if ANIMUS_USE_OPENCV
     void render_plane(Mat yuv, Texture2D texture, Renderer renderer, bool left = true)
     {
         //Mat rgb = new Mat();
@@ -550,6 +551,8 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         // System.IO.File.WriteAllBytes($"{name}_{leftIdx++}.jpg", texture.EncodeToJPG());
         renderer.material.mainTexture = texture;
     }
+
+#endif
 
     /// <summary>
     /// Closes the vision modality if it was opened and sets a corresponding flag.
@@ -735,6 +738,7 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         motorSample = new Sample(DataMessage.Types.DataType.Float32Arr, motorMsg);
 
         StartCoroutine(SendLEDCommand(LEDS_CONNECTED));
+        EnableMotor(true);
         return true;
     }
 
@@ -743,6 +747,10 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
         motorEnabled = enable;
     }
 
+    public void ToggleMotor()
+    {
+        motorEnabled = !motorEnabled;
+    }
     /// <summary>
     /// Can be used to debug the data send by motor_get.
     /// </summary>

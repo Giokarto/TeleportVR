@@ -8,14 +8,14 @@ using UnityEngine;
 /// </summary>
 public class ChildCurver : MonoBehaviour
 {
-    private CurvedUI.CurvedUISettings curvedUI;
+    //private CurvedUI.CurvedUISettings curvedUI;
 
     /// <summary>
     /// Get the reference to the CurvedUI.CurvedUISettings script
     /// </summary>
     void Start()
     {
-        curvedUI = GetComponent<CurvedUI.CurvedUISettings>();
+        //curvedUI = GetComponent<CurvedUI.CurvedUISettings>();
     }
 
     /// <summary>
@@ -23,6 +23,6 @@ public class ChildCurver : MonoBehaviour
     /// </summary>
     void LateUpdate()
     {
-        curvedUI.AddEffectToChildren();
+        //curvedUI.AddEffectToChildren();
     }
 }

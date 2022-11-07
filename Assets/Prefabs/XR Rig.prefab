@@ -534,6 +534,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handManager: {fileID: 0}
+  startCalibrator: {fileID: 0}
   vrGestureRecognizer: {fileID: 0}
 --- !u!1 &6021411799948961774
 GameObject:

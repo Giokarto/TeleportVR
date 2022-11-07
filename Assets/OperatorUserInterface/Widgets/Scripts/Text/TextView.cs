@@ -61,7 +61,7 @@ namespace Widgets
                     return;
             }
 
-            gameObject.AddComponent<CurvedUI.CurvedUIVertexEffect>();
+            //gameObject.AddComponent<CurvedUI.CurvedUIVertexEffect>();
 
             transform.SetParent(parentView.transform, false);
 

@@ -1,4 +1,4 @@
-﻿using CurvedUI;
+﻿//using CurvedUI;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

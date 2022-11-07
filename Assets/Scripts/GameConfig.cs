@@ -28,18 +28,18 @@ public class GameConfig : Singleton<GameConfig>
     {
         path = Application.persistentDataPath + "/" + configName;
         settings = new PlayerSettings();
-        try
-        {
-            var s = File.ReadAllText(path);
-            settings = JsonUtility.FromJson<PlayerSettings>(s);
-            Debug.Log($"Successfully loaded settings from {path}");
-            //Debug.Log(settings.RobotName);
-        }
-        catch (IOException)
-        {
-            Debug.LogError($"Coud not read settings from {path}, using default");
-            WriteSettings();
-        }
+        //try
+        //{
+        //    var s = File.ReadAllText(path);
+        //    settings = JsonUtility.FromJson<PlayerSettings>(s);
+        //    Debug.Log($"Successfully loaded settings from {path}");
+        //    //Debug.Log(settings.RobotName);
+        //}
+        //catch (IOException)
+        //{
+        //    Debug.LogError($"Coud not read settings from {path}, using default");
+        //    WriteSettings();
+        //}
     }
 
     public void WriteSettings()

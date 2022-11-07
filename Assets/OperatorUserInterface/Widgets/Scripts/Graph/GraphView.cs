@@ -1,4 +1,4 @@
-﻿using ChartAndGraph;
+﻿//using ChartAndGraph;
 using TMPro;
 using UnityEngine;
 
@@ -13,9 +13,9 @@ namespace Widgets
         
         private Material lineMaterial;
 
-        private GraphChart graph;
-        private VerticalAxis verticalAxis;
-        private HorizontalAxis horizontalAxis;
+        //private GraphChart graph;
+        //private VerticalAxis verticalAxis;
+        //private HorizontalAxis horizontalAxis;
         private TextMeshProUGUI titleText;
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace Widgets
         /// <param name="widget">The corresponding GraphWidget which holds the data</param>
         public override void Init(Widget widget)
         { 
-            gameObject.AddComponent<CurvedUI.CurvedUIVertexEffect>();
+            //gameObject.AddComponent<CurvedUI.CurvedUIVertexEffect>();
             GraphWidget graphWidget = (GraphWidget)widget;
             SetChildWidget(graphWidget.childWidget);
 
@@ -37,8 +37,8 @@ namespace Widgets
             SetGraphProperties(graphWidget);
             foreach (GraphWidget.Datapoint data in graphWidget.datapoints)
             {
-                graph.DataSource.AddPointToCategoryRealtime(graphWidget.name, data.time,
-                    data.data);
+                //graph.DataSource.AddPointToCategoryRealtime(graphWidget.name, data.time,
+                //    data.data);
             }
 
             Init(widget.relativeChildPosition, widget.GetContext().unfoldChildDwellTimer, widget.GetContext().onActivate, widget.GetContext().onClose, widget.GetContext().xPositionOffset, widget.GetContext().yPositionOffset, widget.GetContext().scale);
@@ -51,27 +51,28 @@ namespace Widgets
         /// <param name="graphWidget">The corresponding GraphWidget which holds the data</param>
         private void InitGraphObject(GraphWidget graphWidget)
         {
-            graph = GetComponentInChildren<GraphChart>();
-            if (graph == null)
-            {
-                // the ChartGraph info is obtained via the inspector
-                Debug.LogWarning("No GraphChart found! Place this script into a graph chart!");
-                return;
-            }
+            return;
+            ////graph = GetComponentInChildren<GraphChart>();
+            //if (graph == null)
+            //{
+            //    // the ChartGraph info is obtained via the inspector
+            //    Debug.LogWarning("No GraphChart found! Place this script into a graph chart!");
+            //    return;
+            //}
 
-            lineMaterial = new Material(Shader.Find("Chart/Canvas/Solid"));
-            graph.DataSource.AddCategory(graphWidget.name, lineMaterial, 20, new MaterialTiling(false, 20), null, true, null, 20);
+            //lineMaterial = new Material(Shader.Find("Chart/Canvas/Solid"));
+            //graph.DataSource.AddCategory(graphWidget.name, lineMaterial, 20, new MaterialTiling(false, 20), null, true, null, 20);
 
-            graph.AutoScrollHorizontally = true;
-            graph.DataSource.AutomaticHorizontalView = graphWidget.showCompleteHistory;
-            if (verticalAxis == null)
-            {
-                verticalAxis = graph.GetComponent<VerticalAxis>();
-                horizontalAxis = graph.GetComponent<HorizontalAxis>();
-                horizontalAxis.Format = AxisFormat.Time;
-            }
-            // has to be changed if the graph gets other TextMeshProUGUI scripts
-            titleText = GetComponentInChildren<TextMeshProUGUI>();
+            //graph.AutoScrollHorizontally = true;
+            //graph.DataSource.AutomaticHorizontalView = graphWidget.showCompleteHistory;
+            //if (verticalAxis == null)
+            //{
+            //    verticalAxis = graph.GetComponent<VerticalAxis>();
+            //    horizontalAxis = graph.GetComponent<HorizontalAxis>();
+            //    horizontalAxis.Format = AxisFormat.Time;
+            //}
+            //// has to be changed if the graph gets other TextMeshProUGUI scripts
+            //titleText = GetComponentInChildren<TextMeshProUGUI>();
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace Widgets
             if (graphWidget.datapoints.Count > 0)
             {
                 GraphWidget.Datapoint dp = graphWidget.datapoints[graphWidget.datapoints.Count - 1];
-                graph.DataSource.AddPointToCategoryRealtime(graphWidget.name, dp.time, dp.data);
+                //graph.DataSource.AddPointToCategoryRealtime(graphWidget.name, dp.time, dp.data);
             }
         }
 
@@ -136,7 +137,7 @@ namespace Widgets
                     return;
             }
 
-            gameObject.AddComponent<CurvedUI.CurvedUIVertexEffect>();
+            //gameObject.AddComponent<CurvedUI.CurvedUIVertexEffect>();
 
             transform.SetParent(parentView.transform, false);
 
@@ -153,7 +154,7 @@ namespace Widgets
         {
             Material fill = new Material(lineMaterial);
             fill.color = c;
-            graph.DataSource.SetCategoryLine(topic, fill, 5, new MaterialTiling(false, 0));
+            //graph.DataSource.SetCategoryLine(topic, fill, 5, new MaterialTiling(false, 0));
         }
 
         /// <summary>
@@ -166,8 +167,8 @@ namespace Widgets
             {
                 Debug.LogWarning("Invalid Amount of Labels on X Axis");
             }
-            horizontalAxis.MainDivisions.Total = num;
-            horizontalAxis.SubDivisions.Total = 1;
+            //horizontalAxis.MainDivisions.Total = num;
+            //horizontalAxis.SubDivisions.Total = 1;
         }
         
         /// <summary>
@@ -180,8 +181,8 @@ namespace Widgets
             {
                 Debug.LogWarning("Invalid Amount of Labels on Y Axis");
             }
-            verticalAxis.MainDivisions.Total = num;
-            verticalAxis.SubDivisions.Total = 1;
+            //verticalAxis.MainDivisions.Total = num;
+            //verticalAxis.SubDivisions.Total = 1;
         }
 
         /// <summary>
