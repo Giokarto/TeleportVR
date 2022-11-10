@@ -6992,6 +6992,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 672391305442d4247958d25d550bd81f, type: 3}
+--- !u!23 &1200921383 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 817624087352457729, guid: 672391305442d4247958d25d550bd81f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1200921382}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1215007295 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8980600751835884621, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -8364,6 +8370,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cc329982edfc412a8a508a8e175eef1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1650065262
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1650065264}
+  - component: {fileID: 1650065263}
+  m_Layer: 0
+  m_Name: ROS Img Sub
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1650065263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1650065262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebdb5dc77e7f8ec42afcf9c1fbd4f9af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TopicName: /roboy/sensing/camera/left
+  meshRenderer: {fileID: 1200921383}
+  FPS: 0
+  RPS: 0
+--- !u!4 &1650065264
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1650065262}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.8580651, y: 3.5218108, z: 11.044045}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1654401223 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -1709390562044907109, guid: 8376e5037528d434cab49e987b7a4e72,

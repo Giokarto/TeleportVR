@@ -162,7 +162,7 @@ public class InputManager : Singleton<InputManager>
                 if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.menuButton, out btn) && btn && !lastMenuBtn)
                 {
                     UnityAnimusClient.Instance.ToggleMotor();
-                    startCalibrator.ResetBodyPose(); // re-aling robody model with operator's body every time we enable motion
+                    //startCalibrator.ResetBodyPose(); // re-aling robody model with operator's body every time we enable motion
                     //StateManager.Instance.GoToNextState();
                 }
                 lastMenuBtn = btn;
