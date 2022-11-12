@@ -64,8 +64,11 @@ public class StateManager : Singleton<StateManager>
 
         leftSenseGlove = GameObject.FindGameObjectWithTag("SenseGloveLeft");
         rightSenseGlove = GameObject.FindGameObjectWithTag("SenseGloveRight");
-        leftSenseGlove.SetActive(false);
-        rightSenseGlove.SetActive(false);
+        if (leftSenseGlove != null && rightSenseGlove != null)
+        {
+            leftSenseGlove.SetActive(false);
+            rightSenseGlove.SetActive(false);
+        }
 
         bioIks = FindObjectsOfType<BioIK.BioIK>();
 
