@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 //using Valve.VR;
 using UnityEngine.Events;
+using AnimusClient;
 
 public class StateManager : Singleton<StateManager>
 {

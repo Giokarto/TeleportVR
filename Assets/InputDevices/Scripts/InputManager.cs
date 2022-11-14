@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using Widgets;
+using AnimusClient;
 
 public class InputManager : Singleton<InputManager>
 {
