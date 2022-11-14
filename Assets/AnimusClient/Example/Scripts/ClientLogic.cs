@@ -8,6 +8,10 @@ using Widgets;
 
 namespace AnimusClient
 {
+    /// <summary>
+    /// This class needs to stay in the Example folder of the AnimusClient package.
+    /// See explanation in <see cref="UnityAnimusClient"/>.
+    /// </summary>
     public class ClientLogic : Singleton<ClientLogic>
     {
         public AnimusClientManager AnimusManager;

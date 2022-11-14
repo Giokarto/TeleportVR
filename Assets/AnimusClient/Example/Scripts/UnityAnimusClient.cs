@@ -31,6 +31,20 @@ namespace AnimusClient
         }
     }
 
+    /// <summary>
+    /// This class needs to stay in the Example folder of the AnimusClient package.
+    ///
+    /// The original Example scripts from the AnimusClient package are:
+    /// 1. Not in a namespace (therefore global).
+    /// 2. Used by <see cref="AnimusManager.AnimusClientManager"/> ('private UnityAnimusClient _client;').
+    ///
+    /// Creating our own scripts outside of the package would mean they have to:
+    /// 1. Be named differently to avoid ambiguity with these Example scripts.
+    /// 2. Inherit from the Example scripts to be usable with AnimusClientManager.
+    /// 3. Not be a Singleton, otherwise the inheritance wouldn't work properly.
+    ///
+    /// Therefore, we keep the scripts here and make sure they don't get replaced when importing the AnimusClient package.
+    /// </summary>
     public class UnityAnimusClient : Singleton<UnityAnimusClient>
     {
         public GameObject OVRRig;
