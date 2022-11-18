@@ -4,52 +4,56 @@ using UnityEngine;
 using UnityEngine.XR;
 using Widgets;
 
-public class EnableControlManager : Singleton<EnableControlManager>
+namespace InputDevices
 {
-    public BioSegment left_hand, right_hand;
-    public BioIK.BioIK left_fingers, right_fingers;
-
-    public BioIKGroup leftBioIKGroup, rightBioIKGroup;
-    private UnityEngine.XR.InputDevice leftController, rightController;
-    private bool leftControllerFound = false, rightControllerFound = false;
-
-
-    public struct BioIKGroup
+    public class EnableControlManager : Singleton<EnableControlManager>
     {
-        public BioSegment hand_segment;
-        public BioIK.BioIK hand_body;
-        private bool enabled;
+        public BioSegment left_hand, right_hand;
+        public BioIK.BioIK left_fingers, right_fingers;
 
-        public BioIKGroup(BioSegment _segment, BioIK.BioIK _body)
-        {
-            hand_segment = _segment;
-            hand_body = _body;
-            enabled = false;
-        }
-        public void WeakSetEnabled(bool _enabled)
-        {
-            if (!enabled)
-            {
-                return;
-            }
-            SetEnabled(_enabled);
-        }
+        public BioIKGroup leftBioIKGroup, rightBioIKGroup;
+        private UnityEngine.XR.InputDevice leftController, rightController;
+        private bool leftControllerFound = false, rightControllerFound = false;
 
-        public void SetEnabled(bool _enabled)
+
+        public struct BioIKGroup
         {
-            enabled = _enabled;
-            //if (enabled)
-            //{
-            //    controller.SendHapticImpulse(0, 0.005f);
-            //}
-            //else
-            //{
-            //    controller.StopHaptics();
-            //}
-            foreach (var objective in hand_segment.Objectives)
+            public BioSegment hand_segment;
+            public BioIK.BioIK hand_body;
+            private bool enabled;
+
+            public BioIKGroup(BioSegment _segment, BioIK.BioIK _body)
             {
-                objective.enabled = enabled;
+                hand_segment = _segment;
+                hand_body = _body;
+                enabled = false;
             }
+
+            public void WeakSetEnabled(bool _enabled)
+            {
+                if (!enabled)
+                {
+                    return;
+                }
+
+                SetEnabled(_enabled);
+            }
+
+            public void SetEnabled(bool _enabled)
+            {
+                enabled = _enabled;
+                //if (enabled)
+                //{
+                //    controller.SendHapticImpulse(0, 0.005f);
+                //}
+                //else
+                //{
+                //    controller.StopHaptics();
+                //}
+                foreach (var objective in hand_segment.Objectives)
+                {
+                    objective.enabled = enabled;
+                }
 #if SENSEGLOVE
             foreach (var segment in hand_body.Segments)
             {
@@ -60,114 +64,121 @@ public class EnableControlManager : Singleton<EnableControlManager>
                 }
             }
 #endif
-        }
+            }
 
-        public bool IsEnabled()
-        {
-            return enabled;
-        }
-
-        public void UpdateFingers(double value)
-        {
-            foreach (var segment in hand_body.Segments)
+            public bool IsEnabled()
             {
+                return enabled;
+            }
 
-                if (segment.Joint != null)
+            public void UpdateFingers(double value)
+            {
+                foreach (var segment in hand_body.Segments)
                 {
-                    //if (segment.Joint.name.Contains("TH") && !segment.Joint.name.Contains("J1"))
-                    //{
 
-                    //}
-                    if ((segment.Joint.name.Contains("TH") && !segment.Joint.name.Contains("J5")) || // && !segment.Joint.name.Contains("J2")) ||
-                        (segment.Joint.name.Contains("LF") && !segment.Joint.name.Contains("J5")) ||// && !segment.Joint.name.Contains("J4")) ||
-                        (!segment.Joint.name.Contains("J4")))
+                    if (segment.Joint != null)
                     {
-                        var range = segment.Joint.X.UpperLimit - segment.Joint.X.LowerLimit;
+                        //if (segment.Joint.name.Contains("TH") && !segment.Joint.name.Contains("J1"))
+                        //{
 
-                        segment.Joint.X.SetTargetValue(value * range - segment.Joint.X.LowerLimit);
+                        //}
+                        if ((segment.Joint.name.Contains("TH") &&
+                             !segment.Joint.name.Contains("J5")) || // && !segment.Joint.name.Contains("J2")) ||
+                            (segment.Joint.name.Contains("LF") &&
+                             !segment.Joint.name.Contains("J5")) || // && !segment.Joint.name.Contains("J4")) ||
+                            (!segment.Joint.name.Contains("J4")))
+                        {
+                            var range = segment.Joint.X.UpperLimit - segment.Joint.X.LowerLimit;
+
+                            segment.Joint.X.SetTargetValue(value * range - segment.Joint.X.LowerLimit);
+                        }
+
                     }
-
                 }
             }
         }
-    }
 
-    void FindControllers()
-    {
-        if (InputManager.Instance.GetLeftController())
+        void FindControllers()
         {
-            leftController = InputManager.Instance.controllerLeft[0];
-            leftControllerFound = true;
+            if (InputManager.Instance.GetLeftController())
+            {
+                leftController = InputManager.Instance.controllerLeft[0];
+                leftControllerFound = true;
+            }
+
+            if (InputManager.Instance.GetRightController())
+            {
+                rightController = InputManager.Instance.controllerRight[0];
+                rightControllerFound = true;
+            }
         }
-        if (InputManager.Instance.GetRightController())
+
+        // Start is called before the first frame update
+        void Start()
         {
-            rightController = InputManager.Instance.controllerRight[0];
-            rightControllerFound = true;
-        }
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        leftBioIKGroup = new BioIKGroup(left_hand, left_fingers);
-        rightBioIKGroup = new BioIKGroup(right_hand, right_fingers);
-        FindControllers();
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-
-        if (leftController == null || rightController == null || !leftController.isValid || !rightController.isValid)
-        {
+            leftBioIKGroup = new BioIKGroup(left_hand, left_fingers);
+            rightBioIKGroup = new BioIKGroup(right_hand, right_fingers);
             FindControllers();
         }
 
-        if (leftControllerFound)
-        {
-            ReadControllers(leftBioIKGroup, leftController, true);
-        }
-        //else
-        //{
-        //    leftBioIKGroup.SetEnabled(false);
-        //}
-        if (rightControllerFound)
-        {
-            ReadControllers(rightBioIKGroup, rightController, false);
-        }
-        //else
-        //{
-        //    rightBioIKGroup.SetEnabled(false);
-        //}
-    }
 
-    void ReadControllers(BioIKGroup group, UnityEngine.XR.InputDevice controller, bool isLeft)
-    {
-        if (controller == null)
+        // Update is called once per frame
+        void Update()
         {
-            return;
+
+            if (leftController == null || rightController == null || !leftController.isValid ||
+                !rightController.isValid)
+            {
+                FindControllers();
+            }
+
+            if (leftControllerFound)
+            {
+                ReadControllers(leftBioIKGroup, leftController, true);
+            }
+
+            //else
+            //{
+            //    leftBioIKGroup.SetEnabled(false);
+            //}
+            if (rightControllerFound)
+            {
+                ReadControllers(rightBioIKGroup, rightController, false);
+            }
+            //else
+            //{
+            //    rightBioIKGroup.SetEnabled(false);
+            //}
         }
 
-        var _enabled = 0.0f;
-        var trigger = false;
-        if (controller.isValid)
+        void ReadControllers(BioIKGroup group, UnityEngine.XR.InputDevice controller, bool isLeft)
         {
-            controller.TryGetFeatureValue(UnityEngine.XR.CommonUsages.trigger, out _enabled);
-            controller.TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out trigger);
-        }
-        int i = isLeft ? 0 : 1;
-        // Show that the arm is active in the state manager
-        //WidgetInteraction.SetBodyPartActive(53 - i, _enabled > 0.9f);
+            if (controller == null)
+            {
+                return;
+            }
 
-        // Show that the fingers are active in the state manager
-        //WidgetInteraction.SetBodyPartActive(55 - i, trigger);
+            var _enabled = 0.0f;
+            var trigger = false;
+            if (controller.isValid)
+            {
+                controller.TryGetFeatureValue(UnityEngine.XR.CommonUsages.trigger, out _enabled);
+                controller.TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out trigger);
+            }
+
+            int i = isLeft ? 0 : 1;
+            // Show that the arm is active in the state manager
+            //WidgetInteraction.SetBodyPartActive(53 - i, _enabled > 0.9f);
+
+            // Show that the fingers are active in the state manager
+            //WidgetInteraction.SetBodyPartActive(55 - i, trigger);
 
 #if SENSEGLOVE
         group.WeakSetEnabled(true);
 #else
-        group.SetEnabled(_enabled > 0.9f);
-        group.UpdateFingers(System.Convert.ToDouble(trigger)); 
+            group.SetEnabled(_enabled > 0.9f);
+            group.UpdateFingers(System.Convert.ToDouble(trigger));
 #endif
+        }
     }
 }

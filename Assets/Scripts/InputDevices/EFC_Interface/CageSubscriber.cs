@@ -4,6 +4,7 @@ using RosSharp.RosBridgeClient.MessageTypes.RoboyMiddleware;
 using UnityEngine;
 using Widgets;
 
+namespace InputDevices.EFC {
 public class CageSubscriber : UnitySubscriber<ExoforceResponse>
 {
     [Tooltip("determines if this subscriber is listening to init responses or stop responses")]
@@ -45,5 +46,6 @@ public class CageSubscriber : UnitySubscriber<ExoforceResponse>
             Debug.LogWarning("Request to Cage unssuccessfull: " + message.message);
         }
     }
+}
 }
 #endif

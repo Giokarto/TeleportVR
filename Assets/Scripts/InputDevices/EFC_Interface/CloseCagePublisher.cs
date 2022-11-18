@@ -2,6 +2,7 @@
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 using UnityEngine;
 
+namespace InputDevices.EFC {
 public class CloseCagePublisher : RosPublisher<Empty>
 {
     // Allows to send a closeCage message with the keyboard
@@ -19,5 +20,6 @@ public class CloseCagePublisher : RosPublisher<Empty>
         // Send disconnect message
         PublishMessage(new Empty());
     }
+}
 }
 #endif

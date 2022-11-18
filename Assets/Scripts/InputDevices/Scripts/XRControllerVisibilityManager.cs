@@ -1,14 +1,16 @@
 using UnityEngine;
 
-public class XRControllerVisibilityManager : MonoBehaviour
+namespace InputDevices
 {
-
-    public GameObject leftController, rightController;
-    private bool controllersHidden = false;
-
-    // Update is called once per frame
-    void Update()
+    public class XRControllerVisibilityManager : MonoBehaviour
     {
+
+        public GameObject leftController, rightController;
+        private bool controllersHidden = false;
+
+        // Update is called once per frame
+        void Update()
+        {
 #if SENSEGLOVE
         if (!controllersHidden)
         {
@@ -17,11 +19,13 @@ public class XRControllerVisibilityManager : MonoBehaviour
             {
                 var leftRenderer = leftController.GetComponentInChildren<MeshRenderer>();
                 leftRenderer.enabled = false;
-                var leftLineRenderer = leftController.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.XRRayInteractor>();
+                var leftLineRenderer =
+ leftController.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.XRRayInteractor>();
                 leftLineRenderer.enabled = false;
                 var rightRenderer = rightController.GetComponentInChildren<MeshRenderer>();
                 rightRenderer.enabled = false;
-                var rightLineRenderer = rightController.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.XRRayInteractor>();
+                var rightLineRenderer =
+ rightController.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.XRRayInteractor>();
                 rightLineRenderer.enabled = false;
 
                 controllersHidden = true;
@@ -31,5 +35,6 @@ public class XRControllerVisibilityManager : MonoBehaviour
             }
         }
 #endif
+        }
     }
 }

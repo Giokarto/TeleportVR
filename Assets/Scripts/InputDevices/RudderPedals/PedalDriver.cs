@@ -5,7 +5,7 @@ using UnityEngine;
 using Rewired;
 
 // TODO: rename tha class since now Oculus controller inputs are also in here
-namespace RudderPedals
+namespace InputDevices.RudderPedals
 {
     public class PedalDriver : Singleton<PedalDriver>
     {

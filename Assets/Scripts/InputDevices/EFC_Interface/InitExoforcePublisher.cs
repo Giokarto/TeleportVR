@@ -10,6 +10,7 @@ using Pose = RosSharp.RosBridgeClient.MessageTypes.Geometry.Pose;
 using Quaternion = UnityEngine.Quaternion;
 using Transform = UnityEngine.Transform;
 
+namespace InputDevices.EFC {
 public class InitExoforcePublisher : RosPublisher<InitExoforceRequest>
 {
     [SerializeField] private Transform head;
@@ -190,5 +191,6 @@ public class InitExoforcePublisher : RosPublisher<InitExoforceRequest>
             InitExoforce();
         }
     }
+}
 }
 #endif

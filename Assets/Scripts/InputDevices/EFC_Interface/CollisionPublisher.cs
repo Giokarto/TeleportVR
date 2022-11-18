@@ -5,6 +5,7 @@ using ContactPoint = RosSharp.RosBridgeClient.MessageTypes.RoboySimulation.Conta
 using Collision = RosSharp.RosBridgeClient.MessageTypes.RoboySimulation.Collision;
 using Vector3 = RosSharp.RosBridgeClient.MessageTypes.Geometry.Vector3;
 
+namespace InputDevices.EFC {
 public class CollisionPublisher : RosPublisher<Collision>
 {
     private int collisionMessageSize = 9;
@@ -49,5 +50,6 @@ public class CollisionPublisher : RosPublisher<Collision>
             PublishCollision(new []{0f, 1, 2, 3, 4, 5, 6, 7, 8});
         }
     }
+}
 }
 #endif

@@ -9,6 +9,7 @@ using Quaternion = UnityEngine.Quaternion;
 using Transform = UnityEngine.Transform;
 using Vector3 = UnityEngine.Vector3;
 
+namespace InputDevices.EFC {
 /// <summary>
 /// This is the Class which should handle all interfaces between animus or Teleport and the cage.
 /// </summary>
@@ -81,5 +82,6 @@ public class CageInterface : Singleton<CageInterface>
             Debug.Log("Tried to close not initialized cage.");
         }
     }
+}
 }
 #endif

@@ -7,6 +7,7 @@ using Pose = RosSharp.RosBridgeClient.MessageTypes.Geometry.Pose;
 using Quaternion = RosSharp.RosBridgeClient.MessageTypes.Geometry.Quaternion;
 using Transform = UnityEngine.Transform;
 
+namespace InputDevices.EFC {
 public class EFPosePublisher : RosPublisher<EFPose>
 {
     [SerializeField] private Transform handLeft;
@@ -35,5 +36,6 @@ public class EFPosePublisher : RosPublisher<EFPose>
             PublishMessage(transformToEFPose(handRight, "right_hand"));
         }
     }
+}
 }
 #endif

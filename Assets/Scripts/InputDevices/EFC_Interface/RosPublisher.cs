@@ -4,6 +4,7 @@ using RosSharp.RosBridgeClient;
 using UnityEngine;
 using Collision = RosSharp.RosBridgeClient.MessageTypes.RoboySimulation.Collision;
 
+namespace InputDevices.EFC {
 public class RosPublisher<T> : UnityPublisher<T> where T : Message
 {
     protected bool started = false;
@@ -74,5 +75,6 @@ public class RosPublisher<T> : UnityPublisher<T> where T : Message
             }
         }
     }
+}
 }
 #endif
