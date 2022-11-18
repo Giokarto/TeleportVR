@@ -1,3 +1,4 @@
+using System;
 using ServerConnection;
 
 namespace InputDevices
@@ -11,7 +12,7 @@ namespace InputDevices
     /// TODO: maybe extract another class - Roboy model which holds the current state of emotions, joint positions, etc?
     /// also all the computations in <see cref="AnimusClient.UnityAnimusClient"/> in motor_get, Animus shouldn't depend on BioIK
     /// </summary>
-    public class UserInteractionManager
+    public class UserInteractionEventSystem : Singleton<UserInteractionEventSystem>
     {
         private IServerData serverData;
         public void SendEmotion(string emotion)
@@ -28,6 +29,12 @@ namespace InputDevices
             /*if (InputManager.Instance.GetLeftController())
                 InputManager.Instance.controllerLeft[0]
                     .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left);*/
+        }
+
+        public Action OnOpenMenu;
+        public void OpenMenu()
+        {
+            
         }
     }
 }
