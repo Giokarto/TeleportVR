@@ -1,6 +1,6 @@
 namespace InputDevices
 {
-    public class UIInputManager
+    public class UserInteractionManager
     {
         
     }
