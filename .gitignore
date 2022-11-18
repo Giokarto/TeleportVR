@@ -18,24 +18,14 @@ Assets/Plugins/Editor/JetBrains*
 /[Mm]emoryCaptures/
 #exclude all ProjectSettings
 /[Pp]rojectSettings/
-/[Uu]ser[Ss]ettings/*
-/UserSettings
-
-/Assets/Rewired/
+/[Uu]ser[Ss]ettings/
 
 # exclude SenseGlove SDK
 /Assets/SenseGlove/
-
-/Assets/SenseGlove/
 /Assets/SenseGlove.meta
+# exclude Rewired SDK
 /Assets/Rewired/
 /Assets/Rewired.meta
-
-/Assets/SenseGlove/
-/Assets/SenseGlove.meta
-/Assets/Rewired/
-/Assets/Rewired.meta
-
 # exclude the Animus SDK
 /Assets/AnimusClient/
 # except for the UnityAnimusClient and ClientLogic, because we change them
@@ -44,16 +34,14 @@ Assets/Plugins/Editor/JetBrains*
 
 # exclude OpenCVForUnity
 /Assets/OpenCVForUnity/
+/Assets/OpenCVForUnity.meta
 
 # exclude Ultimate 10 Shaders
 /Assets/Ultimate\ 10\ Plus\ Shaders/
 
-# exclude the OUI ThirdParty Assets
-Assets/OperatorUserInterface/ThirdParty/
-Assets/OperatorUserInterface/Plugins/
-
-# exclude the Showroom
-Assets/OperatorUserInterface/Models/Showroom/
+# exclude the ThirdParty Assets
+Assets/Scripts/ThirdParty/
+Assets/Scripts/Plugins/
 
 # exclude the username and password for Animus
 Assets/Prefabs/Animus/AnimusPasswordSetter.prefab
@@ -119,3 +107,7 @@ MonoBleedingEdge/*
 Teleport_Data/*
 gitex-visiton/*
 gitex-with-audio/*
+
+# packages get sometimes automatically created
+packages/
+

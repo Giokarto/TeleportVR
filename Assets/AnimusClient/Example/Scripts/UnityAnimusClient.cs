@@ -5,8 +5,10 @@ using System.Linq;
 using Animus.Data;
 using Animus.RobotProto;
 using AnimusCommon;
+using AnimusManager;
 using Google.Protobuf.Collections;
 using BioIK;
+using ServerConnection;
 #if ANIMUS_USE_OPENCV
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ImgprocModule;
@@ -15,7 +17,6 @@ using OpenCVForUnity.Calib3dModule;
 #endif
 using UnityEngine;
 using UnityEngine.Networking;
-using Widgets;
 using Quaternion = UnityEngine.Quaternion;
 using Transform = UnityEngine.Transform;
 using Vector3 = UnityEngine.Vector3;
@@ -32,6 +33,7 @@ namespace AnimusClient
     }
 
     /// <summary>
+    /// <remarks>
     /// This class needs to stay in the Example folder of the AnimusClient package.
     ///
     /// The original Example scripts from the AnimusClient package are:
@@ -44,28 +46,30 @@ namespace AnimusClient
     /// 3. Not be a Singleton, otherwise the inheritance wouldn't work properly.
     ///
     /// Therefore, we keep the scripts here and make sure they don't get replaced when importing the AnimusClient package.
+    /// </remarks>
+    /// 
+    /// This class contains methods for every modality (Vision, Voice, Motor...).
+    /// 
+    /// The methods for initialization, closing, setting input and processing output have to be
+    /// named with a correct suffix to use in <see cref="AnimusClientManager"/>.
+    ///
+    /// The logic for every modality, as well as variables connected to it, are in its
+    /// corresponding region to maintain cleaner code.
     /// </summary>
-    public class UnityAnimusClient : Singleton<UnityAnimusClient>
+    public class UnityAnimusClient : Singleton<UnityAnimusClient>, IServerData
     {
         public GameObject OVRRig;
         public Transform TrackingSpace;
         public Robot chosenDetails;
 
-        // vision variables
-        public bool stereovision = false;
-        public bool undistortion = true;
-        public GameObject LeftEye;
-        public GameObject RightEye;
-        [SerializeField] private GameObject _leftPlane;
-        [SerializeField] private GameObject _rightPlane;
-        private Renderer _leftRenderer;
-        private Renderer _rightRenderer;
-        private Texture2D _leftTexture;
-        private Texture2D _rightTexture;
-        private bool visionEnabled;
+        private bool bodyTransitionReady;
+        private int bodyTransitionDuration = 1;
+        
+        public Dictionary<Modality, bool> ModalityConnected { get; }
+            = Enum.GetValues(typeof(Modality)).Cast<Enum>().ToDictionary(e => (Modality)e, v => false);
 
-        private bool triggerResChange;
-
+        public bool ConnectedToServer { get; private set; }
+        
         // private List<int> imageDims;
         private RepeatedField<uint> _imageDims;
 #if ANIMUS_USE_OPENCV
@@ -75,84 +79,18 @@ namespace AnimusClient
 
         private bool initMats;
 
-        // motor variables
-        public Transform robotHead;
-        public Transform robotBase;
-        public Transform robotLeftHandObjective;
-        public Transform robotRightHandObjective;
-        private Vector3 robotLeftHandPositionROS;
-        private Vector3 robotRightHandPositionROS;
-        private Vector3 robotHeadPositionROS;
-        private Quaternion robotLeftHandOrientationROS;
-        private Quaternion robotRightHandOrientationROS;
-        private Quaternion robotHeadOrientationROS;
-        public Transform humanRightHand;
-        public Transform humanLeftHand;
-        public Transform humanHead;
-        public Vector3 bodyToBaseOffset;
-        public float ForwardDeadzone;
-        public float SidewaysDeadzone;
-        public float RotationDeadzone;
-        private float humanRightHandOpen;
-        private float humanLeftHandOpen;
-        private Vector2 eyesPosition;
-        private bool trackingRight;
-        private bool trackingLeft;
-
-        // public NaoAnimusDriver robotDriver;
-        public BioIK.BioIK _myIKBody;
-        public BioIK.BioIK _myIKHead;
-        private List<BioSegment> _actuatedJoints;
-        private List<float> latestJointValues;
-        public bool motorEnabled;
-        private float _lastUpdate;
-
-        private bool bodyTransitionReady;
-        private int bodyTransitionDuration = 1;
-
-        private Animus.Data.Float32Array motorMsg;
-        private Sample motorSample;
-
-        // audition variables
-        private bool auditionEnabled;
-        // public GameObject Audio;
-        // private AudioSetter _audioSetter;
-
-        // voice variables
-        // public GameObject Voice;
-        private bool voiceEnabled;
-        // private VoiceSampler _voiceSampler;
-
-        // emotion variables
-        public bool LeftButton1;
-        public bool LeftButton2;
-        public bool RightButton1;
-        public bool RightButton2;
-        public string currentEmotion;
-        public string oldEmotion;
-        private Animus.Data.StringSample emotionMsg;
-        private Sample emotionSample;
-
         private const string LEDS_OFF = "off";
         private const string LEDS_CONNECTING = "robot_connecting";
         private const string LEDS_CONNECTED = "robot_established";
         private const string LEDS_IS_CONNECTED = "if_connected";
 
-        private Scenes currentScene = Scenes.NONE;
         private int rightIdx = 0, leftIdx = 0;
         private AnimusManager.AnimusClientManager animusManager;
         private bool inHUD = false;
         float emotionStamp = 0;
         Camera camRight, camLeft;
 
-        public enum Modality
-        {
-            VISION,
-            AUDITION,
-            VOICE,
-            MOTOR,
-            EMOTION
-        }
+        
 
         private struct Undistort
         {
@@ -305,35 +243,24 @@ namespace AnimusClient
         }
 
         // --------------------------Vision Modality----------------------------------
-        /// <summary>
-        /// This method allows to display the current latency and fps in the connection widget. 
-        /// </summary>
-        /// <param name="latency">The current latency in ms.</param>
-        /// <param name="fps">The frames per second.</param>
-        public static void DisplayLatency(float latency, float fps)
-        {
-            // Present the latency and fps
-            Widget latencyWidget = Manager.Instance.FindWidgetWithID(33);
-            if (latency < 0 || latency > 100000)
-            {
-                latencyWidget.GetContext().textMessage = $"FPS: {fps:F2}";
-            }
-            else
-            {
-                latencyWidget.GetContext().textMessage = $"Latency: {latency:F2}ms\nFPS: {fps:F2}";
-            }
+        #region Vision
+        // vision variables
+        public bool stereovision = false;
+        public bool undistortion = true;
+        public GameObject LeftEye;
+        public GameObject RightEye;
+        [SerializeField] private GameObject _leftPlane;
+        [SerializeField] private GameObject _rightPlane;
+        private Renderer _leftRenderer;
+        private Renderer _rightRenderer;
+        private Texture2D _leftTexture;
+        private Texture2D _rightTexture;
+        private bool visionEnabled;
 
-            latencyWidget.ProcessRosMessage(latencyWidget.GetContext());
-
-            // turn the icon from yellow (no connection) to green
-            Widget wifiWidget = Manager.Instance.FindWidgetWithID(23);
-            wifiWidget.GetContext().currentIcon = "WifiGreen";
-            wifiWidget.ProcessRosMessage(wifiWidget.GetContext());
-        }
-
+        private bool triggerResChange;
         /// <summary>
         /// Setup the displays to display the received image(s) from animus.
-        // </summary>
+        /// </summary>
         /// <returns>The success of this method.</returns>
         public bool vision_initialise()
         {
@@ -375,46 +302,6 @@ namespace AnimusClient
             visionEnabled = true;
 
             return visionEnabled;
-        }
-
-        /// <summary>
-        /// Returns the textures for both eyes, so that they can be used in other scripts, e.g. for the portal.
-        /// </summary>
-        /// <returns>Both eye textures.</returns>
-        public Texture2D[] GetVisionTextures()
-        {
-            return new[] { _leftTexture, _rightTexture };
-        }
-
-        /// <summary>
-        /// Activates or deactivates the displays, depending on the current scene and if stereovision is active
-        /// </summary>
-        private void SetDisplaystate()
-        {
-            Scenes s = AdditiveSceneManager.GetCurrentScene();
-            //if (currentScene == s)
-            //{
-            //    return;
-            //}
-            currentScene = s;
-
-            inHUD = currentScene == Scenes.HUD;
-            _leftPlane.SetActive(inHUD && animusManager.openModalitiesSuccess);
-            _rightPlane.SetActive(stereovision && inHUD && animusManager.openModalitiesSuccess);
-            if (!stereovision)
-            {
-                camRight.stereoTargetEye = StereoTargetEyeMask.None;
-
-                camLeft.stereoTargetEye = StereoTargetEyeMask.Both;
-            }
-            else
-            {
-                camRight.stereoTargetEye = StereoTargetEyeMask.Right;
-
-                camLeft.stereoTargetEye = StereoTargetEyeMask.Left;
-            }
-
-
         }
 
         /// <summary>
@@ -564,6 +451,106 @@ namespace AnimusClient
             return true;
         }
 
+        /// <summary>
+        /// Closes the vision modality if it was opened and sets a corresponding flag.
+        /// </summary>
+        /// <returns>Closing the modality was successful.</returns>
+        public bool vision_close()
+        {
+            if (!visionEnabled)
+            {
+                Debug.Log("Vision modality not enabled. Cannot close");
+                return false;
+            }
+
+            visionEnabled = false;
+            return true;
+        }
+        
+        public float GetVisionLatency()
+        {
+            // animusManager has private _modalitySamplers, which has private FpsLag setModalityFPS
+            // Can we get it without changing even more of the code inside the Animus SDK package?
+            // (using Reflection like the "good practices" of AnimusClientManager)
+            throw new NotImplementedException();
+            
+            // TODO: find a new place for this code
+            /*
+            /// <summary>
+            /// This method allows to display the current latency and fps in the connection widget. 
+            /// </summary>
+            /// <param name="latency">The current latency in ms.</param>
+            /// <param name="fps">The frames per second.</param>
+            public static void DisplayLatency(float latency, float fps)
+            {
+                // Present the latency and fps
+                Widget latencyWidget = Manager.Instance.FindWidgetWithID(33);
+                if (latency < 0 || latency > 100000)
+                {
+                    latencyWidget.GetContext().textMessage = $"FPS: {fps:F2}";
+                }
+                else
+                {
+                    latencyWidget.GetContext().textMessage = $"Latency: {latency:F2}ms\nFPS: {fps:F2}";
+                }
+
+                latencyWidget.ProcessRosMessage(latencyWidget.GetContext());
+
+                // turn the icon from yellow (no connection) to green
+                Widget wifiWidget = Manager.Instance.FindWidgetWithID(23);
+                wifiWidget.GetContext().currentIcon = "WifiGreen";
+                wifiWidget.ProcessRosMessage(wifiWidget.GetContext());
+            }
+            */
+        }
+
+        public float GetVisionFps()
+        {
+            // animusManager has private _modalitySamplers, which has private FpsLag setModalityFPS
+            // Can we get it without changing even more of the code inside the Animus SDK package?
+            // (using Reflection like the "good practices" of AnimusClientManager)
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Returns the textures for both eyes, so that they can be used in other scripts, e.g. for the portal.
+        /// </summary>
+        /// <returns>Both eye textures.</returns>
+        public Texture2D[] GetVisionTextures()
+        {
+            return new[] { _leftTexture, _rightTexture };
+        }
+
+        public bool EnableVision(bool stereo)
+        {
+            stereovision = stereo;
+            if (!animusManager.openModalitiesSuccess)
+            {
+                return false;
+            }
+            _leftPlane.SetActive(animusManager.openModalitiesSuccess);
+            _rightPlane.SetActive(stereovision && animusManager.openModalitiesSuccess);
+            if (!stereovision)
+            {
+                camRight.stereoTargetEye = StereoTargetEyeMask.None;
+
+                camLeft.stereoTargetEye = StereoTargetEyeMask.Both;
+            }
+            else
+            {
+                camRight.stereoTargetEye = StereoTargetEyeMask.Right;
+
+                camLeft.stereoTargetEye = StereoTargetEyeMask.Left;
+            }
+            return true;
+        }
+
+        public void DisableVision()
+        {
+            _leftPlane.SetActive(false);
+            _rightPlane.SetActive(false);
+        }
+        #endregion
+
         void render_plane(Mat yuv, Texture2D texture, Renderer renderer, bool left = true)
         {
             //Mat rgb = new Mat();
@@ -590,24 +577,14 @@ namespace AnimusClient
             renderer.material.mainTexture = texture;
         }
 
-        /// <summary>
-        /// Closes the vision modality if it was opened and sets a corresponding flag.
-        /// </summary>
-        /// <returns>Closing the modality was successful.</returns>
-        public bool vision_close()
-        {
-            if (!visionEnabled)
-            {
-                Debug.Log("Vision modality not enabled. Cannot close");
-                return false;
-            }
-
-            visionEnabled = false;
-            return true;
-        }
-
 
         //--------------------------Audition Modality----------------------------------
+        #region Audition
+        // audition variables
+        private bool auditionEnabled;
+        // public GameObject Audio;
+        // private AudioSetter _audioSetter;
+        
         public bool audition_initialise()
         {
             return auditionEnabled;
@@ -624,9 +601,10 @@ namespace AnimusClient
             auditionEnabled = false;
             return true;
         }
-
+        #endregion
 
         // --------------------------Collision Modality----------------------------------
+        #region Collision
         /// <summary>
         /// Nothing to do on startup, but the method will still be called by animus.
         /// </summary>
@@ -681,8 +659,10 @@ namespace AnimusClient
         {
             return true;
         }
+        #endregion
 
         // --------------------------Proprioception Modality----------------------------------
+        #region Proprioception
         /// <summary>
         /// Nothing to do on startup, but the method will still be called by animus.
         /// </summary>
@@ -727,6 +707,15 @@ namespace AnimusClient
         }
 
         /// <summary>
+        /// Nothing to do on close, but the method will still be called by animus.
+        /// </summary>
+        /// <returns>Success.</returns>
+        public bool proprioception_close()
+        {
+            return true;
+        }
+        
+        /// <summary>
         /// Method to handle the information in currSample and control the color of the 6 body parts
         /// </summary>
         /// <param name="id">ID of the icon in the json file</param>
@@ -734,6 +723,7 @@ namespace AnimusClient
         /// <param name="currSample">Float array with 6 floats (-1.0; 0.0; 1.0)</param>
         public void body_manager(int id, int position, Float32Array currSample)
         {
+            /* TODO: how to pass the data
             // get the instance of the widget with this id
             Widget widget = Manager.Instance.FindWidgetWithID(id);
             if ((int)(currSample.Data[position]) == -1)
@@ -754,19 +744,48 @@ namespace AnimusClient
 
             // Apply the changes to the instance of the widget with ProcessRosMessage
             widget.ProcessRosMessage(widget.GetContext());
+            */
         }
+        #endregion
 
-
-        /// <summary>
-        /// Nothing to do on close, but the method will still be called by animus.
-        /// </summary>
-        /// <returns>Success.</returns>
-        public bool proprioception_close()
-        {
-            return true;
-        }
 
         // --------------------------Motor Modality-------------------------------------
+        #region Motor
+        // motor variables
+        public Transform robotHead;
+        public Transform robotBase;
+        public Transform robotLeftHandObjective;
+        public Transform robotRightHandObjective;
+        private Vector3 robotLeftHandPositionROS;
+        private Vector3 robotRightHandPositionROS;
+        private Vector3 robotHeadPositionROS;
+        private Quaternion robotLeftHandOrientationROS;
+        private Quaternion robotRightHandOrientationROS;
+        private Quaternion robotHeadOrientationROS;
+        public Transform humanRightHand;
+        public Transform humanLeftHand;
+        public Transform humanHead;
+        public Vector3 bodyToBaseOffset;
+        public float ForwardDeadzone;
+        public float SidewaysDeadzone;
+        public float RotationDeadzone;
+        private float humanRightHandOpen;
+        private float humanLeftHandOpen;
+        private Vector2 eyesPosition;
+        private bool trackingRight;
+        private bool trackingLeft;
+
+        // public NaoAnimusDriver robotDriver;
+        public BioIK.BioIK _myIKBody;
+        public BioIK.BioIK _myIKHead;
+        private List<BioSegment> _actuatedJoints;
+        private List<float> latestJointValues;
+        public bool motorEnabled;
+        private float _lastUpdate;
+
+        private Animus.Data.Float32Array motorMsg;
+        private Sample motorSample;
+
         public bool motor_initialise()
         {
             //motorEnabled = false;
@@ -776,26 +795,6 @@ namespace AnimusClient
 
             StartCoroutine(SendLEDCommand(LEDS_CONNECTED));
             return true;
-        }
-
-        public void EnableMotor(bool enable)
-        {
-            motorEnabled = enable;
-        }
-
-        /// <summary>
-        /// Can be used to debug the data send by motor_get.
-        /// </summary>
-        /// <param name="floatArr">The array that should be printed to the console.</param>
-        private static void PrintFloatArray(float[] floatArr)
-        {
-            string printmsg = "";
-            foreach (float f in floatArr)
-            {
-                printmsg += f + ", ";
-            }
-
-            print(printmsg);
         }
 
         /// <summary>
@@ -943,6 +942,29 @@ namespace AnimusClient
 
             return true;
         }
+        
+        
+        public void SetMotorOn(bool enable)
+        {
+            motorEnabled = enable;
+        }
+
+        /// <summary>
+        /// Can be used to debug the data send by motor_get.
+        /// </summary>
+        /// <param name="floatArr">The array that should be printed to the console.</param>
+        private static void PrintFloatArray(float[] floatArr)
+        {
+            string printmsg = "";
+            foreach (float f in floatArr)
+            {
+                printmsg += f + ", ";
+            }
+
+            print(printmsg);
+        }
+
+        #endregion
 
         public List<float> GetLatestJointValues()
         {
@@ -951,18 +973,19 @@ namespace AnimusClient
 
         private void Update()
         {
-            // Enable or disable the displays
-            SetDisplaystate();
-
-            // update widgets
-            WidgetInteraction.MarkAnimusConnected(animusManager.connectedToRobotSuccess);
-            WidgetInteraction.MarkModalityConnected(Modality.AUDITION, animusManager.openModalitiesSuccess);
-            WidgetInteraction.MarkModalityConnected(Modality.VOICE, animusManager.openModalitiesSuccess);
-            WidgetInteraction.MarkModalityConnected(Modality.MOTOR, animusManager.openModalitiesSuccess && inHUD);
-
+            ConnectedToServer = animusManager.connectedToRobotSuccess;
+            ModalityConnected[Modality.AUDITION] = animusManager.openModalitiesSuccess;
+            ModalityConnected[Modality.VOICE] = animusManager.openModalitiesSuccess;
+            ModalityConnected[Modality.MOTOR] = animusManager.openModalitiesSuccess && inHUD;
         }
 
         // --------------------------Voice Modality----------------------------------
+        #region Voice
+        // voice variables
+        // public GameObject Voice;
+        private bool voiceEnabled;
+        // private VoiceSampler _voiceSampler;
+        
         public bool voice_initialise()
         {
             return voiceEnabled;
@@ -979,8 +1002,19 @@ namespace AnimusClient
             voiceEnabled = false;
             return true;
         }
+        #endregion
 
         // --------------------------Emotion Modality----------------------------------
+        #region Emotion
+        // emotion variables
+        public bool LeftButton1;
+        public bool LeftButton2;
+        public bool RightButton1;
+        public bool RightButton2;
+        public string currentEmotion;
+        public string oldEmotion;
+        private Animus.Data.StringSample emotionMsg;
+        private Sample emotionSample;
         public bool emotion_initialise()
         {
             emotionMsg = new StringSample();
@@ -1104,6 +1138,8 @@ namespace AnimusClient
         {
             currentEmotion = on ? "tp_on" : "tp_off";
         }
+        #endregion
+
         // Utilities
 
         public static Vector3 Vector2Ros(Vector3 vector3)

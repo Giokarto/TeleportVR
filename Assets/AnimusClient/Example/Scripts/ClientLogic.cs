@@ -1,16 +1,17 @@
 using System.Collections;
-using System.Collections.Generic;
 using Animus.RobotProto;
-using AnimusClient;
 using AnimusManager;
 using UnityEngine;
-using Widgets;
 
 namespace AnimusClient
 {
     /// <summary>
+    /// <remarks>
     /// This class needs to stay in the Example folder of the AnimusClient package.
     /// See explanation in <see cref="UnityAnimusClient"/>.
+    /// </remarks>
+    ///
+    /// This class interacts with AnimusClientManager to establish the connection to the robot.
     /// </summary>
     public class ClientLogic : Singleton<ClientLogic>
     {
@@ -23,8 +24,12 @@ namespace AnimusClient
 
         public string[] requiredModalities = new string[] { "vision" };
 
-        public Robot _chosenRobot;
+        public Robot ChosenRobot;
         private int _count;
+
+        void Awake()
+        {
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -44,7 +49,7 @@ namespace AnimusClient
             }
 
             // Step 1 - Login user
-            print(AnimusManager);
+            Debug.Log(AnimusManager);
             AnimusManager.LoginUser(AccountEmail, AccountPassword);
             while (!AnimusManager.loginResultAvailable)
             {
@@ -88,11 +93,11 @@ namespace AnimusClient
                 Debug.Log(robot.ToString());
                 if (robot.Name == robotName)
                 {
-                    _chosenRobot = robot;
+                    ChosenRobot = robot;
                 }
             }
 
-            if (_chosenRobot == null)
+            if (ChosenRobot == null)
             {
                 Debug.Log($"Robot {robotName} not found");
 
@@ -106,7 +111,7 @@ namespace AnimusClient
             AnimusManager.SetClientClass(unityClient);
 
             // Step 5 - Connect to the robot
-            AnimusManager.StartRobotConnection(_chosenRobot);
+            AnimusManager.StartRobotConnection(ChosenRobot);
             while (!AnimusManager.connectToRobotFinished)
             {
                 yield return null;
