@@ -774,6 +774,7 @@ namespace AnimusClient
         private Vector2 eyesPosition;
         private bool trackingRight;
         private bool trackingLeft;
+        float left_open = 0, right_open = 0;
 
         // public NaoAnimusDriver robotDriver;
         public BioIK.BioIK _myIKBody;
@@ -859,7 +860,7 @@ namespace AnimusClient
                         }
                     }
 
-                    // Distribure angle on elbow_*_axis0 to axis0 and axis1 equally
+                    // Distribute angle on elbow_*_axis0 to axis0 and axis1 equally
                     const int elbowRightAxis0 = 6;
                     const int elbowLeftAxis0 = 14;
                     motorAngles[elbowRightAxis0 + 1] = -motorAngles[elbowRightAxis0] / 2;
@@ -875,7 +876,8 @@ namespace AnimusClient
                         motorAngles.Add(step);
                     }
 #else
-                    float left_open = 0, right_open = 0;
+                    
+                    /* // set through ChangeGrip(l ,r)
                     if (InputManager.Instance.GetLeftController())
                         InputManager.Instance.controllerLeft[0]
                             .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left_open);
@@ -883,6 +885,7 @@ namespace AnimusClient
                     if (InputManager.Instance.GetRightController())
                         InputManager.Instance.controllerRight[0]
                             .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
+                    */
 
 
                     // 4 values for right and left
@@ -942,7 +945,12 @@ namespace AnimusClient
 
             return true;
         }
-        
+
+        public void ChangeGrip(float left, float right)
+        {
+            left_open = left;
+            right_open = right;
+        }
         
         public void SetMotorOn(bool enable)
         {
@@ -1025,104 +1033,29 @@ namespace AnimusClient
         // read out the currently pressed button combination and send it as a string via animus
         public Sample emotion_get()
         {
-            //Debug.Log("emotion_get");
-            if (InputManager.Instance.GetControllerBtn(UnityEngine.XR.CommonUsages.primaryButton, true) && inHUD &&
-                Time.time - emotionStamp > 2)
-            {
-                currentEmotion = "shy";
-                emotionStamp = Time.time;
-                //Debug.Log("emotion: shy");
-            }
-            else if (InputManager.Instance.GetControllerBtn(UnityEngine.XR.CommonUsages.secondaryButton, true) &&
-                     inHUD && Time.time - emotionStamp > 2)
-            {
-                currentEmotion = "blink";
-                emotionStamp = Time.time;
-                //Debug.Log("emotion: blink");
-            }
-
             if (currentEmotion.Equals(oldEmotion))
             {
                 currentEmotion = "neutral";
             }
-            //else
-            //{
-            //    if (LeftButton1)
-            //    {
-            //        currentEmotion = "shy";
-            //        Debug.Log("emotion: shy");
-            //    }
-            //    else if (LeftButton2)
-            //    {
-            //        currentEmotion = "blink";
-            //        Debug.Log("emotion: blink");
-            //    }
-            //}
-            //else
-            //{
-            //    if (inHUD && currentEmotion != "tp_on" && currentEmotion != "tp_off")
-            //    {
-            //        // convert the button combination to an int
-            //        var controlCombination = ((LeftButton1 ? 1 : 0) * 1) +
-            //                                 ((LeftButton2 ? 1 : 0) * 2) +
-            //                                 ((RightButton1 ? 1 : 0) * 4) +
-            //                                 ((RightButton2 ? 1 : 0) * 8);
-
-            //        switch (controlCombination)
-            //        {
-            //            case 1:
-            //                // Left Button 1
-            //                currentEmotion = "shy";
-            //                break;
-            //            case 2:
-            //                // Left Button 2
-            //                currentEmotion = "hearts";
-            //                break;
-            //            case 4:
-            //                // Right Button 1
-            //                currentEmotion = "blink";
-            //                break;
-            //            //case 5:
-            //            //    // Right button 1 and left button 1
-            //            //    currentEmotion = "AY";
-            //            //    break;
-            //            //case 6:
-            //            //    currentEmotion = "BY";
-            //            //    break;
-            //            case 8:
-            //                // Right Button 2
-            //                currentEmotion = "hypno_color";
-            //                break;
-            //            //case 9:
-            //            //    currentEmotion = "AX";
-            //            //    break;
-            //            //case 10:
-            //            //    // Right Button 2 and Left Button 2
-            //            //    currentEmotion = "BX";
-            //            //    break;
-            //            default:
-            //                Debug.Log("Unassigned Combination");
-            //                currentEmotion = "neutral";
-            //                break;
-            //        }
-            //    }
-
-
-
-            //}
-
             emotionMsg.Data = currentEmotion;
             if (currentEmotion != "neutral") Debug.Log(currentEmotion);
-            //if (currentEmotion != "off")
-            //{
-            //    // Display the current Emotion on the widget
-            //    EmotionManager.Instance.SetFaceByKey(currentEmotion);
-            //}
 
             // send the emotion via animus to display it on the real robot
             emotionSample.Data = emotionMsg;
             oldEmotion = currentEmotion;
             return emotionSample;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="emotion">Possible emotions: off, neutral, shy, blink, hypno_color, hearts, ?</param>
+        public void SetEmotion(string emotion)
+        {
+            if (Time.time - emotionStamp > 2)
+            {
+                currentEmotion = emotion;
+                emotionStamp = Time.time;
+            }
         }
 
         /// <summary>

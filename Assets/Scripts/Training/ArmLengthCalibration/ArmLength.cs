@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using InputDevices;
 using UnityEngine;
 
 
@@ -110,7 +111,7 @@ namespace Training.Calibration.ArmLength
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.scale_left);
                 TutorialSteps.PublishNotification("Strech your left arm fully");
                 TutorialSteps.PublishNotification("Left thumbs up to calibrate");
-                UserInteractionManager.Instance.Confirm((b) =>
+                ConfirmationManager.Instance.Confirm((b) =>
                 {
                     FitLeft();
                     Next();
@@ -122,7 +123,7 @@ namespace Training.Calibration.ArmLength
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.scale_right);
                 TutorialSteps.PublishNotification("Strech your right arm fully");
                 TutorialSteps.PublishNotification("Right thumbs up to calibrate");
-                UserInteractionManager.Instance.Confirm((b) =>
+                ConfirmationManager.Instance.Confirm((b) =>
                 {
                     FitRight();
                     Next();

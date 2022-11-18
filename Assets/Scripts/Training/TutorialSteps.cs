@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.XR;
 using Widgets;
 using System;
+using InputDevices;
 
 namespace Training
 {

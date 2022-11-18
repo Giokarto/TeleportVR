@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using InputDevices.SenseGlove;
 using UnityEngine;
 //using UnityEditor.Events;
 using TMPro;
