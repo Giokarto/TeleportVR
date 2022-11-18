@@ -1493,7 +1493,7 @@ PrefabInstance:
     - target: {fileID: 5723939832518863485, guid: e7404d0d9d4a02b4e8535381133f78af,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7404d0d9d4a02b4e8535381133f78af, type: 3}
@@ -6968,7 +6968,7 @@ PrefabInstance:
     - target: {fileID: 6958796702040240223, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7341443711394241275, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
@@ -7621,7 +7621,7 @@ PrefabInstance:
     - target: {fileID: 5126804910112992152, guid: fecb1fa955e882d4fb066401a856213a,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5126804910112992153, guid: fecb1fa955e882d4fb066401a856213a,
         type: 3}
@@ -8380,13 +8380,14 @@ GameObject:
   m_Component:
   - component: {fileID: 1650065264}
   - component: {fileID: 1650065263}
+  - component: {fileID: 1650065265}
   m_Layer: 0
   m_Name: ROS Img Sub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1650065263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8399,7 +8400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebdb5dc77e7f8ec42afcf9c1fbd4f9af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TopicName: /roboy/sensing/camera/left
+  TopicName: /image/left/image_compressed
   meshRenderer: {fileID: 1200921383}
   FPS: 0
   RPS: 0
@@ -8417,6 +8418,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1650065265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1650065262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebdb5dc77e7f8ec42afcf9c1fbd4f9af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TopicName: /image/right/image_compressed
+  meshRenderer: {fileID: 6958796703207009149}
+  FPS: 0
+  RPS: 0
 --- !u!114 &1654401223 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -1709390562044907109, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -9454,7 +9471,7 @@ PrefabInstance:
     - target: {fileID: 7317224122723432400, guid: 771965c1243361a45a0d36cd14e1b3f9,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 771965c1243361a45a0d36cd14e1b3f9, type: 3}
@@ -11907,6 +11924,12 @@ GameObject:
 --- !u!4 &6958796703207009146 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 991579244922214202, guid: 672391305442d4247958d25d550bd81f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1200921382}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6958796703207009149 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3446754110549594781, guid: 672391305442d4247958d25d550bd81f,
     type: 3}
   m_PrefabInstance: {fileID: 1200921382}
   m_PrefabAsset: {fileID: 0}
