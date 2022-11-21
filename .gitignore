@@ -46,6 +46,7 @@ Assets/Scripts/Plugins/
 # exclude the username and password for Animus
 Assets/Prefabs/Animus/AnimusPasswordSetter.prefab
 Assets/Scripts/AnimusPasswordStore.cs
+*AnimusPasswordStore.cs*AnimusPasswordStore.cs
 
 # currently too big for git
 Assets/Wheelchair/LowerLimbs_v50.obj
