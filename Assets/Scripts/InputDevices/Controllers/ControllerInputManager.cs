@@ -11,6 +11,7 @@ namespace InputDevices.Controllers
         private InputDevice controllerLeft;
         private InputDevice controllerRight;
         private UserInteractionEventSystem uiEventSystem;
+        private bool controllersAvailable;
         
         private bool GetControllers()
         {
@@ -28,10 +29,11 @@ namespace InputDevices.Controllers
                 controllerRight = foundControllersRight[0];
             }
             
-            return foundControllersLeft.Count > 0 && foundControllersRight.Count > 0;
+            controllersAvailable = foundControllersLeft.Count > 0 && foundControllersRight.Count > 0;
+            return controllersAvailable;
         }
 
-        private void Awake()
+        private void Start()
         {
             uiEventSystem = UserInteractionEventSystem.Instance;
             
@@ -40,13 +42,20 @@ namespace InputDevices.Controllers
                 Debug.LogError("Could not find XR controllers!");
             }
         }
-
+        
         /// <summary>
         /// Handle input from the controllers.
         /// </summary>
         void Update()
         {
             bool btn;
+            if (!controllersAvailable)
+            {
+                if (!GetControllers())
+                {
+                    return;
+                }
+            }
             
             if (controllerLeft.TryGetFeatureValue(CommonUsages.menuButton, out btn) && btn)
             {

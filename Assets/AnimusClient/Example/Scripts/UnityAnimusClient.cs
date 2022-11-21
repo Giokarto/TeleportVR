@@ -56,7 +56,7 @@ namespace AnimusClient
     /// The logic for every modality, as well as variables connected to it, are in its
     /// corresponding region to maintain cleaner code.
     /// </summary>
-    public class UnityAnimusClient : Singleton<UnityAnimusClient>, IServerData
+    public class UnityAnimusClient : ServerData
     {
         public GameObject OVRRig;
         public Transform TrackingSpace;
@@ -65,7 +65,7 @@ namespace AnimusClient
         private bool bodyTransitionReady;
         private int bodyTransitionDuration = 1;
         
-        public Dictionary<Modality, bool> ModalityConnected { get; }
+        public override Dictionary<Modality, bool> ModalityConnected { get; }
             = Enum.GetValues(typeof(Modality)).Cast<Enum>().ToDictionary(e => (Modality)e, v => false);
 
         public bool ConnectedToServer { get; private set; }
@@ -467,7 +467,7 @@ namespace AnimusClient
             return true;
         }
         
-        public float GetVisionLatency()
+        public override float GetVisionLatency()
         {
             // animusManager has private _modalitySamplers, which has private FpsLag setModalityFPS
             // Can we get it without changing even more of the code inside the Animus SDK package?
@@ -504,7 +504,7 @@ namespace AnimusClient
             */
         }
 
-        public float GetVisionFps()
+        public override float GetVisionFps()
         {
             // animusManager has private _modalitySamplers, which has private FpsLag setModalityFPS
             // Can we get it without changing even more of the code inside the Animus SDK package?
@@ -515,12 +515,12 @@ namespace AnimusClient
         /// Returns the textures for both eyes, so that they can be used in other scripts, e.g. for the portal.
         /// </summary>
         /// <returns>Both eye textures.</returns>
-        public Texture2D[] GetVisionTextures()
+        public override Texture2D[] GetVisionTextures()
         {
             return new[] { _leftTexture, _rightTexture };
         }
 
-        public bool EnableVision(bool stereo)
+        public override bool EnableVision(bool stereo)
         {
             stereovision = stereo;
             if (!animusManager.openModalitiesSuccess)
@@ -544,7 +544,7 @@ namespace AnimusClient
             return true;
         }
 
-        public void DisableVision()
+        public override void DisableVision()
         {
             _leftPlane.SetActive(false);
             _rightPlane.SetActive(false);
@@ -946,13 +946,13 @@ namespace AnimusClient
             return true;
         }
 
-        public void ChangeGrip(float left, float right)
+        public override void ChangeGrip(float left, float right)
         {
             left_open = left;
             right_open = right;
         }
         
-        public void SetMotorOn(bool enable)
+        public override void SetMotorOn(bool enable)
         {
             motorEnabled = enable;
         }
@@ -974,7 +974,7 @@ namespace AnimusClient
 
         #endregion
 
-        public List<float> GetLatestJointValues()
+        public override List<float> GetLatestJointValues()
         {
             return latestJointValues;
         }
@@ -1049,7 +1049,7 @@ namespace AnimusClient
         /// <summary>
         /// </summary>
         /// <param name="emotion">Possible emotions: off, neutral, shy, blink, hypno_color, hearts, ?</param>
-        public void SetEmotion(string emotion)
+        public override void SetEmotion(string emotion)
         {
             if (Time.time - emotionStamp > 2)
             {
@@ -1067,7 +1067,7 @@ namespace AnimusClient
             return true;
         }
 
-        public void SetPresenceIndicatorOn(bool on)
+        public override void SetPresenceIndicatorOn(bool on)
         {
             currentEmotion = on ? "tp_on" : "tp_off";
         }

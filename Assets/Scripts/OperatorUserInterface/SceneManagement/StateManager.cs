@@ -25,7 +25,7 @@ public class StateManager : Singleton<StateManager>
 
     private float _lastSwitch = float.NegativeInfinity;
 
-    [SerializeField] private IServerData serverConnection;
+    [SerializeField] private ServerData serverConnection;
 
     AdditiveSceneManager additiveSceneManager;
     ConstructFXManager constructFXManager;
@@ -52,6 +52,8 @@ public class StateManager : Singleton<StateManager>
         onStateChangeTo[States.HUD] = new Callbacks<States>();
         onStateChangeTo[States.Construct] = new Callbacks<States>();
         onStateChangeTo[States.Training] = new Callbacks<States>();
+
+        serverConnection = ServerData.Instance;
     }
 
     /// <summary>

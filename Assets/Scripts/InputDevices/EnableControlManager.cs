@@ -100,15 +100,15 @@ namespace InputDevices
 
         void FindControllers()
         {
-            if (InputManager.Instance.GetLeftController())
+            if (ControllerInputManager.Instance.GetLeftController())
             {
-                leftController = InputManager.Instance.controllerLeft[0];
+                leftController = ControllerInputManager.Instance.controllerLeft[0];
                 leftControllerFound = true;
             }
 
-            if (InputManager.Instance.GetRightController())
+            if (ControllerInputManager.Instance.GetRightController())
             {
-                rightController = InputManager.Instance.controllerRight[0];
+                rightController = ControllerInputManager.Instance.controllerRight[0];
                 rightControllerFound = true;
             }
         }

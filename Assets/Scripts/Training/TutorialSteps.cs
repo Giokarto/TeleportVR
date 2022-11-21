@@ -346,7 +346,7 @@ namespace Training
                 Prev();
             }
 
-            if (InputManager.Instance.GetControllerBtn(CommonUsages.primaryButton, false) && !waitStarted)// (stateMachine.State == TrainingStep.IDLE || stateMachine.State == TrainingStep.DONE))
+            if (ControllerInputManager.Instance.GetControllerBtn(CommonUsages.primaryButton, false) && !waitStarted)// (stateMachine.State == TrainingStep.IDLE || stateMachine.State == TrainingStep.DONE))
             {
                 waitStarted = true;
                 Debug.Log("Started true");

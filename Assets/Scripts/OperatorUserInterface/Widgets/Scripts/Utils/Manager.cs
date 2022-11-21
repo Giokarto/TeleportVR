@@ -17,6 +17,7 @@ namespace Widgets
         {
             //rosSubscriber = GameObject.FindGameObjectWithTag("RosManager").GetComponent<RosSubscriber>();
             widgets = Factory.Instance.CreateWidgetsAtStartup();
+            Debug.LogError(widgets);
         }
 
         /// <summary>

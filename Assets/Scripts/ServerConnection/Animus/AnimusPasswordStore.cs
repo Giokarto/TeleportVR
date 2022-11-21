@@ -2,7 +2,7 @@
 {
   public static class AnimusPasswordStore
   {
-    public static string AnimusEmail = "";
-    public static string AnimusPassword = "";
+    public static string AnimusEmail = "z.urbanova@tum.de";
+    public static string AnimusPassword = "VASF0srg32f!";
   }
 }

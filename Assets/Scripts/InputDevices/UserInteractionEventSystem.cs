@@ -14,7 +14,13 @@ namespace InputDevices
     /// </summary>
     public class UserInteractionEventSystem : Singleton<UserInteractionEventSystem>
     {
-        private IServerData serverData;
+        private ServerData serverData;
+
+        private void Awake()
+        {
+            serverData = ServerData.Instance;
+        }
+
         public void SendEmotion(string emotion)
         {
             serverData.SetEmotion(emotion);

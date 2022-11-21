@@ -178,7 +178,7 @@ PrefabInstance:
     - target: {fileID: 6087389295465485392, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.7536186
+      value: 0.7710047
       objectReference: {fileID: 0}
     - target: {fileID: 7092463258604815620, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
         type: 3}
@@ -254,6 +254,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AriaAvatar
+      objectReference: {fileID: 0}
+    - target: {fileID: 7092463259208583631, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7092463260066313436, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
         type: 3}
@@ -885,8 +890,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputDevice: 0
   completionWidget: {fileID: 0}
-  leftCalibrator: {fileID: 0}
-  rightCalibrator: {fileID: 0}
 --- !u!4 &1409407287
 Transform:
   m_ObjectHideFlags: 0

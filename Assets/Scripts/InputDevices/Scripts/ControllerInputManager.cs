@@ -7,7 +7,7 @@ using AnimusClient;
 
 namespace InputDevices
 {
-    public class InputManager : Singleton<InputManager>
+    public class ControllerInputManager : Singleton<ControllerInputManager>
     {
         public List<UnityEngine.XR.InputDevice> controllerLeft = new List<UnityEngine.XR.InputDevice>();
         public List<UnityEngine.XR.InputDevice> controllerRight = new List<UnityEngine.XR.InputDevice>();
@@ -20,7 +20,7 @@ namespace InputDevices
         private bool lastGrabRight;
         bool nodded, waiting;
 
-        void Awake()
+        void Start()
         {
             GetLeftController();
             GetRightController();
@@ -131,12 +131,12 @@ namespace InputDevices
         void OnNodded()
         {
             nodded = true;
-            Debug.LogError("Yes");
+            Debug.Log("Nodded (Yes)");
         }
 
         void OnHeadShaken()
         {
-            Debug.LogError("no");
+            Debug.Log("Head shaken (no)");
         }
 
         IEnumerator WaitForNod()

@@ -5,6 +5,7 @@ using BioIK;
 using System;
 #if SENSEGLOVE
 using SG;
+#endif
 
 
 namespace InputDevices.JointTransfer
@@ -15,6 +16,7 @@ namespace InputDevices.JointTransfer
     /// </summary>
     public class HingeJointTransfer : MonoBehaviour
     {
+#if SENSEGLOVE
         [Tooltip("Controlling rotation")]
         public Transform controller;
         [Tooltip("Joint to write the output angle to")]
@@ -117,7 +119,6 @@ namespace InputDevices.JointTransfer
             return ((x - minIn) / (maxIn - minIn)) * maxOut + minOut;
         }
 
+#endif
     }
 }
-
-#endif

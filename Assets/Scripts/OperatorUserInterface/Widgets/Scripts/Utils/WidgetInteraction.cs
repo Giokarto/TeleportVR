@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AnimusClient;
 using ServerConnection;
 using UnityEngine;
 
@@ -13,7 +14,12 @@ namespace Widgets
         // Needed if functionality of sound and micro widget gets implemented when animus provides the functionality
         // [SerializeField] private AnimusClientManager animusManager;
         // [SerializeField] private UnityAnimusClient client;
-        private IServerData serverData;
+        private ServerData serverData;
+
+        private void Start()
+        {
+            serverData = ServerData.Instance;
+        }
 
         void Update()
         {

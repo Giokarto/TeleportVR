@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Widgets
 {
@@ -29,7 +30,7 @@ namespace Widgets
             childWidgetId = context.childWidgetId;
             position = WidgetUtility.StringToWidgetPosition(context.widgetPosition);
             relativeChildPosition = WidgetUtility.StringToRelativeChildPosition(context.relativeChildPosition);
-	    trainingInfo = context.trainingInfo;
+	        trainingInfo = context.trainingInfo;
 
             this.viewDesignPrefab = viewDesignPrefab;
         }

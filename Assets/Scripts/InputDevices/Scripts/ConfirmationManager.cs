@@ -155,7 +155,7 @@ namespace InputDevices
         {
             while (true)
             {
-                if (InputManager.Instance.GetAnyControllerBtnPressed())
+                if (ControllerInputManager.Instance.GetAnyControllerBtnPressed())
                 {
                     coroutine = null;
                     onConfirmCallbacks.Call(true);
