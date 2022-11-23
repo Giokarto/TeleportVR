@@ -98,6 +98,17 @@ namespace Widgets
             this.toastrDuration = toastrDuration;
             this.toastrColor = col;
         }
+        
+        /// <summary>
+        /// Internal constructor for text widget json message
+        /// </summary>
+        private RosJsonMessage(int id, string textMessage, int textFontSize, byte[] col)
+        {
+            this.id = id;
+            this.textMessage = textMessage;
+            this.textFontSize = textFontSize;
+            this.textColor = col;
+        }
 
         /// <summary>
         /// Internal constructor for registering widget

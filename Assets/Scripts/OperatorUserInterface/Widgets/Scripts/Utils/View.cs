@@ -178,6 +178,7 @@ namespace Widgets
         /// </summary>
         public void OnSelectionEnter()
         {
+            print("selection entered");
             isLookedAt = true;
 
             if (keepChildUnfoldedTimer != null)

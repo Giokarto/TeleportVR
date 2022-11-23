@@ -1,0 +1,9 @@
+{
+  "id": 42,
+  "type": "Text",
+  "title": "Clock",
+  "widgetPosition": "right",
+  "textMessage": "It is 15:45",
+  "textFontSize": 20,
+  "textColor": [ 255, 255, 255, 255 ]
+}
