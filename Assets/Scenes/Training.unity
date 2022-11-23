@@ -178,7 +178,7 @@ PrefabInstance:
     - target: {fileID: 6087389295465485392, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.8291492
+      value: 0.7500244
       objectReference: {fileID: 0}
     - target: {fileID: 7092463258604815620, guid: 51c8c3c70e8d76b4e8a623c6fc012867,
         type: 3}
@@ -468,6 +468,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5426246047765934873, guid: ec5fe212e99d405439368b3702ba1ef0,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.09803922
+      objectReference: {fileID: 0}
+    - target: {fileID: 5426246047765934873, guid: ec5fe212e99d405439368b3702ba1ef0,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5426246047765934873, guid: ec5fe212e99d405439368b3702ba1ef0,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5426246047765934873, guid: ec5fe212e99d405439368b3702ba1ef0,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6103261333500944480, guid: ec5fe212e99d405439368b3702ba1ef0,
         type: 3}
       propertyPath: m_LocalPosition.z
@@ -1093,10 +1113,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   requiredTag: LeftObjective
   requiredTrainingSteps: 03000000
-  requiredCalibrationSteps: 000000000100000002000000
-  calibrator: {fileID: 1189526810}
-  renderer: {fileID: 586467670}
-  collisionLayerIndex: 7
 --- !u!65 &586467669
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1451,10 +1467,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   requiredTag: RightObjective
   requiredTrainingSteps: 05000000
-  requiredCalibrationSteps: 000000000100000002000000
-  calibrator: {fileID: 902270246}
-  renderer: {fileID: 780221222}
-  collisionLayerIndex: 7
 --- !u!1 &848127118
 GameObject:
   m_ObjectHideFlags: 0
@@ -1617,9 +1629,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e2207d182bac7c54699e705e20f9c0c7, type: 3}
   - {fileID: 8300000, guid: b27b73bfcc6fd5842bfbf8dbe05d5e61, type: 3}
   waitingForNod: 0
-  rightCalibrator: {fileID: 902270246}
-  leftCalibrator: {fileID: 1189526810}
-  armLengthCalibration: {fileID: 191642077}
   wheelChairTraining: {fileID: 1326041510}
   pauseMenuTraining: {fileID: 515184335}
   handCollectables: {fileID: 850975195}
@@ -2834,8 +2843,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputDevice: 0
   completionWidget: {fileID: 1835822494}
-  leftCalibrator: {fileID: 1189526810}
-  rightCalibrator: {fileID: 902270246}
 --- !u!4 &1409407287
 Transform:
   m_ObjectHideFlags: 0

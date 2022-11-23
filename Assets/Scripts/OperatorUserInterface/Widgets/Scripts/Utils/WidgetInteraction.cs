@@ -207,7 +207,8 @@ namespace Widgets
         public static void MarkAnimusConnected(bool connected)
         {
             var wifiWidget = Manager.Instance.FindWidgetWithID(23);
-            wifiWidget.GetContext().currentIconAlpha = connected ? 1f : 0.04f;
+            wifiWidget.GetContext().currentIcon = connected ? "wifiWhite" : "WifiRed";
+            wifiWidget.GetContext().currentIconAlpha = 1f;
             wifiWidget.ProcessRosMessage(wifiWidget.GetContext());
         }
 
