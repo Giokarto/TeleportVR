@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     public class Manager : Singleton<Manager>
     {

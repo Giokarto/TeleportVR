@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Widgets.ToastrWidget;
+using static DeprecatedWidgets.ToastrWidget;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     public class ToastrView : View
     {
@@ -30,7 +30,7 @@ namespace Widgets
 
             toastrDesignPrefab = widget.viewDesignPrefab;
 
-            foreach (ToastrTemplate toastrTemplate in ((ToastrWidget)widget).toastrActiveQueue.ToArray())
+            foreach (ToastrWidget.ToastrTemplate toastrTemplate in ((ToastrWidget)widget).toastrActiveQueue.ToArray())
             {
                 CreateNewToastr(toastrTemplate);
             }
@@ -42,7 +42,7 @@ namespace Widgets
         /// Create new Toastr from template and enqueue.
         /// </summary>
         /// <param name="toastrToInstantiate"></param>
-        public void CreateNewToastr(ToastrTemplate toastrToInstantiate)
+        public void CreateNewToastr(ToastrWidget.ToastrTemplate toastrToInstantiate)
         {
             GameObject toastrGameObject = Instantiate(toastrDesignPrefab);
             toastrGameObject.transform.SetParent(transform, false);

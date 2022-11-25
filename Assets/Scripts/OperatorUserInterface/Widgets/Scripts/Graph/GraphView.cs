@@ -2,7 +2,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     /// <summary>
     /// Displays and controls how a graph looks like

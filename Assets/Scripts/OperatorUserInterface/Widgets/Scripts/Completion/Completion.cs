@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     [ExecuteAlways]
     public class Completion : MonoBehaviour

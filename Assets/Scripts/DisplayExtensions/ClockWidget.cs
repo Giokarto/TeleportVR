@@ -1,27 +1,20 @@
 using System;
-using UnityEngine;
 using Widgets;
 
 namespace DisplayExtensions
 {
     public class ClockWidget : Singleton<ClockWidget>
     {
-        public TextWidget widget;
+        public IconWidget widget;
         public void Start()
         {
-            widget = (TextWidget)Manager.Instance.FindWidgetWithID(42);
+            widget = WidgetFactory.Instance.CreateIconWidget("InfoActive", WidgetPosition.Center, "testinfo");
         }
 
         public void Update()
         {
-            if (widget == null)
-            {
-                widget = (TextWidget)Manager.Instance.FindWidgetWithID(42);
-            }
             string time = $"It is {DateTime.Now.Hour:D2}:{DateTime.Now.Minute:D2}:{DateTime.Now.Second:D2}.{DateTime.Now.Millisecond:D3}!";
-            RosJsonMessage msg =
-                RosJsonMessage.CreateTextMessage(42, time, 20, new byte[] { 0xff, 0xff, 0xff, 0xff });
-            widget.ProcessRosMessage(msg);
+            widget.SetIcon(DateTime.Now.Second % 2 == 0? "InfoActive" : "InfoInactive");
         }
     }
 }

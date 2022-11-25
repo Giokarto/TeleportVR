@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     public abstract class Widget : MonoBehaviour
     {

@@ -19,7 +19,7 @@ namespace InputDevices
 
         public InputDevice inputDevice = InputDevice.CONTROLLERS;
         public UnityEngine.XR.InputDevice controllerLeft, controllerRight;
-        public Widgets.Completion completionWidget;
+        public DeprecatedWidgets.Completion completionWidget;
 
 
         private Callbacks<bool> onConfirmCallbacks;

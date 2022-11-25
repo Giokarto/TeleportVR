@@ -4,7 +4,7 @@ using AnimusClient;
 using ServerConnection;
 using UnityEngine;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     /// <summary>
     /// This script allows to define methods that get called when a widget gets activated or closed.

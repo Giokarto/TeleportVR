@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     public class IconView : View
     {

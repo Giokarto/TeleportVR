@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
-using Widgets;
-using AnimusClient;
 
 namespace InputDevices
 {
@@ -165,7 +163,7 @@ namespace InputDevices
             //else
             //    UnityAnimusClient.Instance.EnableMotor(false);
 
-            if (!Widgets.WidgetInteraction.settingsAreActive)
+            if (!DeprecatedWidgets.WidgetInteraction.settingsAreActive)
             {
                 bool btn;
                 if (GetLeftController())

@@ -15,7 +15,7 @@ namespace PauseMenu
         public TouchButton switchScene;
 
         public GameObject matchHands;
-        public Widgets.Completion matchHandsCompletion;
+        public DeprecatedWidgets.Completion matchHandsCompletion;
         public float minSwitchWait = 3f;
 
 

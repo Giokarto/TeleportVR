@@ -2,9 +2,9 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.XR;
-using Widgets;
 using System;
 using InputDevices;
+using Widgets;
 
 namespace Training
 {
@@ -270,24 +270,11 @@ namespace Training
         public static bool PublishNotification(string message, float duration = 4f)
         {
             byte[] color = new byte[] { 0x17, 0x17, 0x17, 0xff };
-            ToastrWidget widget = (ToastrWidget)Manager.Instance.FindWidgetWithID(10);
-            RosJsonMessage msg = RosJsonMessage.CreateToastrMessage(10, message, duration, color);
+            var toastr = WidgetFactory.Instance.CreateToastrWidget(message, duration);
+            toastr.Publish();
 
-            bool isOld = false;
-            foreach (var template in widget.toastrActiveQueue)
-            {
-                if (template.toastrMessage == message && template.toastrDuration == duration)
-                {
-                    isOld = true;
-                    break;
-                }
-            }
-            if (!isOld)
-            {
-                widget.ProcessRosMessage(msg);
-            }
             // published?
-            return !isOld;
+            return true;
         }
 
         public void PraiseUser()

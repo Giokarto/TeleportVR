@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     public class IconWidget : Widget
     {

@@ -1,9 +1,9 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static Widgets.TextWidget;
+using static DeprecatedWidgets.TextWidget;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     public class TextView : View
     {
@@ -72,7 +72,7 @@ namespace Widgets
         /// Change message.
         /// </summary>
         /// <param name="incomingMessageTemplate"></param>
-        public void ChangeMessage(TextWidgetTemplate incomingMessageTemplate)
+        public void ChangeMessage(TextWidget.TextWidgetTemplate incomingMessageTemplate)
         {
             textMeshPro.text = incomingMessageTemplate.messageToDisplay;
             textMeshPro.color = incomingMessageTemplate.textColor;

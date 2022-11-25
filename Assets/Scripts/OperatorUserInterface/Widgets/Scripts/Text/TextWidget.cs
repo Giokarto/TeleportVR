@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     public class TextWidget : Widget
     {

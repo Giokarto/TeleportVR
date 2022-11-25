@@ -8,7 +8,7 @@ namespace Training.Calibration.ArmLength
     public class StayInVolume : MonoBehaviour
     {
         [Tooltip("Completion widget in HUD")]
-        public Widgets.Completion completionWidget;
+        public DeprecatedWidgets.Completion completionWidget;
         [Tooltip("Required tag for the colliders to trigger waiting")]
         public string requiredTag;
         [Tooltip("Time to wait for until triggering Callbacks")]

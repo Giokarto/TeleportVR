@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     public static class WidgetUtility
     {

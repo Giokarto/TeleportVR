@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     public class GraphWidget : Widget
     {

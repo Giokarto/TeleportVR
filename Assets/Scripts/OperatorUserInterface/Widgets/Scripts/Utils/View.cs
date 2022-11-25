@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Widgets
+namespace DeprecatedWidgets
 {
     public abstract class View : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
