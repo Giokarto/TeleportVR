@@ -1,19 +1,24 @@
-﻿using UnityEngine;
+﻿using System;
+using TMPro;
+using UnityEngine;
 
 namespace Widgets
 {
     public class TextWidget : Widget
     {
-        public Color color;
-        public int fontSize;
-
-        public string currentlyDisplayedMessage;
         public Color textColor;
         public int textFontSize;
+        
+        TextMeshProUGUI textMeshPro;
 
         public void SetMessage(string message)
         {
-            currentlyDisplayedMessage = message;
+            textMeshPro.text = message;
+        }
+
+        public void Awake()
+        {
+            textMeshPro = gameObject.GetComponentInChildren<TextMeshProUGUI>();
         }
     }
 }

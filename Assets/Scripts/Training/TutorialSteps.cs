@@ -271,7 +271,6 @@ namespace Training
         {
             byte[] color = new byte[] { 0x17, 0x17, 0x17, 0xff };
             var toastr = WidgetFactory.Instance.CreateToastrWidget(message, duration);
-            toastr.Publish();
 
             // published?
             return true;

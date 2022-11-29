@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using CurvedUI;
 
 namespace Widgets
 {
@@ -10,8 +11,9 @@ namespace Widgets
     /// </summary>
     public class WidgetFactory : Singleton<WidgetFactory>
     {
-        public Dictionary<string, Texture2D> Icons;
-        
+        // Stored prefabs to instantiate the widgets.
+        // Could also be instantiated fully from the script without prefab,
+        // then there would be no need for a WidgetFactory.
         public GameObject toastrWidgetPrefab;
         public GameObject textWidgetPrefab;
         public GameObject iconWidgetPrefab;
@@ -23,13 +25,13 @@ namespace Widgets
             widget.name = name;
             var iconWidget = widget.GetComponent<IconWidget>();
             
-            iconWidget.SetIcon(Icons[iconName]);
+            iconWidget.SetIcon(iconName);
             SetWidgetPosition(iconWidget, position);
 
             return iconWidget;
         }
         
-        public ToastrWidget CreateToastrWidget(string message, float duration, WidgetPosition position = WidgetPosition.Center, string name = "new ToastrWidget")
+        public ToastrWidget CreateToastrWidget(string message, float duration, string name = "new ToastrWidget")
         {
             var widget = GameObject.Instantiate(toastrWidgetPrefab);
             widget.name = name;
@@ -37,20 +39,27 @@ namespace Widgets
             
             toastrWidget.SetMessage(message);
             toastrWidget.SetDuration(duration);
-            SetWidgetPosition(toastrWidget, position);
+
+            ToastrList toastrList = ToastrList.Instance;
+            toastrWidget.transform.SetParent(toastrList.transform, false);
+            toastrWidget.transform.localPosition -= toastrList.toastrQueue.Count * toastrList.OFFSET * Vector3.up;
+
+            toastrList.EnqueueToastr(toastrWidget);
+            print("creating toastr " + widget.gameObject.name);
 
             return toastrWidget;
         }
         
         public TextWidget CreateTextWidget(string message, WidgetPosition position = WidgetPosition.Center, string name = "new TextWidget")
         {
-            var widget = GameObject.Instantiate(toastrWidgetPrefab);
+            var widget = GameObject.Instantiate(textWidgetPrefab);
             widget.name = name;
             var textWidget = widget.GetComponent<TextWidget>();
             
             textWidget.SetMessage(message);
             SetWidgetPosition(textWidget, position);
 
+            print("created textWidget");
             return textWidget;
         }
 
@@ -58,29 +67,6 @@ namespace Widgets
         {
             GameObject parent = GameObject.Find("Widgets" + position);
             widget.transform.SetParent(parent.transform, false);
-        }
-
-        public void Awake()
-        {
-            Icons = FetchAllIcons();
-        }
-
-
-        /// <summary>
-        /// Opens all registered icons from the resources folder.
-        /// </summary>
-        /// <returns>Returns a dictionary of the icons as Texture2D with their names as keys.</returns>
-        private Dictionary<string, Texture2D> FetchAllIcons()
-        {
-            Texture2D[] iconsArray = Resources.LoadAll<Texture2D>("Icons");
-            Dictionary<string, Texture2D> iconsDictionary = new Dictionary<string, Texture2D>();
-
-            foreach (Texture2D icon in iconsArray)
-            {
-                iconsDictionary.Add(icon.name, icon);
-            }
-
-            return iconsDictionary;
         }
     }
     

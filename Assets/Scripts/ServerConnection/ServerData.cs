@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using AnimusClient;
+using OpenCVForUnity.XimgprocModule;
 using UnityEngine;
 
 namespace ServerConnection
@@ -12,7 +15,9 @@ namespace ServerConnection
         public abstract Dictionary<Modality, bool> ModalityConnected { get; }
 
         public abstract bool EnableVision(bool stereo);
+
         public abstract void DisableVision();
+
         public abstract float GetVisionLatency();
         public abstract float GetVisionFps();
         public abstract Texture2D[] GetVisionTextures();

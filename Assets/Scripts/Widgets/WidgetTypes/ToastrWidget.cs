@@ -1,101 +1,77 @@
-﻿using System.Collections.Generic;
-using OperatorUI;
+﻿using CurvedUI;
+using TMPro;
 using UnityEngine;
 
 namespace Widgets
 {
     public class ToastrWidget : Widget
     {
-        // While in construct, incoming toastr are queued and wait to be shown by view in HUD scene.
-        public Queue<ToastrTemplate> toastrToInstantiateQueue;
+        private readonly float SLERP_DURATION = 0.5f;
 
-        // These are the toastr that are shown in HUD scene already.
-        public Queue<ToastrTemplate> toastrActiveQueue;
+        private bool slerpActive = false;
+        private Vector3 localSlerpStartPos;
+        private Vector3 localSlerpStopPos;
+        private Timer slerpTimer;
+
+        private TextMeshProUGUI textMeshPro;
 
         public float duration;
-        public Color color;
-        public int fontSize;
 
-        private Timer timer;
+        public void Awake()
+        {
+            textMeshPro = gameObject.GetComponentInChildren<TextMeshProUGUI>();
+            
+            slerpTimer = new Timer();
 
-        private string message;
+            gameObject.AddComponent<CurvedUIVertexEffect>();
+        }
+
         public void SetMessage(string message)
         {
-            this.message = message;
+            textMeshPro.SetText(message);
+            
+            textMeshPro.fontSize = 30;
+            textMeshPro.color = Color.black;
         }
-        
+
         public void SetDuration(float duration)
         {
             this.duration = duration;
         }
 
         /// <summary>
-        /// Shows the message on the screen for <see cref="duration"/> time.
+        /// Move the toastr upwards over time by a slerp. Called when top toastr is deleted. 
+        /// For nicer animation, a time offset is used depending on the position of the toastr to delay animation for lower toastr.
         /// </summary>
-        public void Publish()
+        /// <param name="offsetInY">How far to slerp upwards</param>
+        /// <param name="timeOffset">Delay slerp for this toastr by offset.</param>
+        public void SlerpUp(float offsetInY, float timeOffset)
         {
-            // TODO
+            localSlerpStartPos = transform.localPosition;
+            localSlerpStopPos = transform.localPosition + new Vector3(0, offsetInY, 0);
+            slerpTimer.SetTimer(SLERP_DURATION + timeOffset, StopSlerp);
+            slerpActive = true;
         }
 
         /// <summary>
-        /// Initialize queues first, to avoid null pointer exception in Update().
+        /// Manage timer.
         /// </summary>
-        private void Awake()
+        public void Update()
         {
-            toastrToInstantiateQueue = new Queue<ToastrTemplate>();
-            toastrActiveQueue = new Queue<ToastrTemplate>();
-            timer = new Timer();
+            if (slerpActive)
+            {
+                slerpTimer.LetTimePass(Time.deltaTime);
+
+                transform.localPosition = Vector3.Slerp(localSlerpStartPos, localSlerpStopPos, slerpTimer.GetFraction());
+            }
         }
 
         /// <summary>
-        /// Enqueue new toastr. Use default values, if not specified.
+        /// Set slerp flag false.
         /// </summary>
-        /// <param name="toastrMessage"></param>
-        /// <param name="toastrDuration"></param>
-        /// <param name="toastrColor"></param>
-        /// <param name="toastrFontSize"></param>
-        private void EnqueueNewMessage(string toastrMessage, float toastrDuration, Color toastrColor, int toastrFontSize)
+        public void StopSlerp()
         {
-            if (toastrMessage.Equals(""))
-            {
-                return;
-            }
-
-            if (toastrColor == null)
-            {
-                toastrColor = color;
-            }
-
-            if (toastrDuration == 0.0f)
-            {
-                toastrDuration = duration;
-            }
-
-            if (toastrFontSize == 0)
-            {
-                toastrFontSize = fontSize;
-            }
-
-            toastrToInstantiateQueue.Enqueue(new ToastrTemplate(toastrMessage, toastrDuration, toastrColor, toastrFontSize));
-        }
-        
-        /// <summary>
-        /// Struct to initialize toastr by view.
-        /// </summary>
-        public class ToastrTemplate
-        {
-            public string toastrMessage;
-            public Color toastrColor;
-            public int toastrFontSize;
-            public float toastrDuration;
-
-            public ToastrTemplate(string toastrMessage, float toastrDuration, Color toastrColor, int toastrFontSize)
-            {
-                this.toastrMessage = toastrMessage;
-                this.toastrColor = toastrColor;
-                this.toastrFontSize = toastrFontSize;
-                this.toastrDuration = toastrDuration;
-            }
+            slerpActive = false;
         }
     }
 }
