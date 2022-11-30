@@ -68,7 +68,7 @@ namespace AnimusClient
         public override Dictionary<Modality, bool> ModalityConnected { get; }
             = Enum.GetValues(typeof(Modality)).Cast<Enum>().ToDictionary(e => (Modality)e, v => false);
 
-        public bool ConnectedToServer { get; private set; }
+        public override bool ConnectedToServer { get; protected set; }
         
         // private List<int> imageDims;
         private RepeatedField<uint> _imageDims;

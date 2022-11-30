@@ -10,7 +10,7 @@ namespace ServerConnection
 {
     public abstract class ServerData: Singleton<ServerData>
     {
-        public bool ConnectedToServer { get; }
+        public abstract bool ConnectedToServer { get; protected set; }
         
         public abstract Dictionary<Modality, bool> ModalityConnected { get; }
 
