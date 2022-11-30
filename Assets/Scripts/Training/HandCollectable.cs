@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Training
@@ -29,6 +30,7 @@ namespace Training
         /// <param name="other">The other colliding collider</param>
         private void OnTriggerEnter(Collider other)
         {
+            Debug.Log("collision with " + other);
             if (requiredSteps.Contains(TutorialSteps.Instance.currentState) && AnyTagMatches(other))
             {
                 collectedSpheres++;

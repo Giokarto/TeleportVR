@@ -39,7 +39,7 @@ namespace InputDevices.Controllers
             
             if (!GetControllers())
             {
-                Debug.LogError("Could not find XR controllers!");
+                Debug.Log("Could not find XR controllers!");
             }
         }
         
@@ -54,6 +54,10 @@ namespace InputDevices.Controllers
                 if (!GetControllers())
                 {
                     return;
+                }
+                else
+                {
+                    Debug.Log("Found XR Controllers");
                 }
             }
             

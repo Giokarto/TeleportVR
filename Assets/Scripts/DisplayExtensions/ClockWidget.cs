@@ -20,7 +20,7 @@ namespace DisplayExtensions
             if (DateTime.Now.Second != oldSeconds)
             {
                 oldSeconds = DateTime.Now.Second;
-                WidgetFactory.Instance.CreateToastrWidget($"Toastr says {DateTime.Now.Second:D2}", oldSeconds > 50? 2f : 0.5f);
+                //WidgetFactory.Instance.CreateToastrWidget($"Toastr says {DateTime.Now.Second:D2}", oldSeconds > 50? 2f : 0.5f);
             }
         }
     }

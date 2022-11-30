@@ -39,6 +39,10 @@ Assets/Plugins/Editor/JetBrains*
 # exclude Ultimate 10 Shaders
 /Assets/Ultimate\ 10\ Plus\ Shaders/
 
+# XRI package
+/Assets/XRI/
+/Assets/XRI.meta
+
 # exclude the ThirdParty Assets
 Assets/Scripts/ThirdParty/
 Assets/Scripts/Plugins/

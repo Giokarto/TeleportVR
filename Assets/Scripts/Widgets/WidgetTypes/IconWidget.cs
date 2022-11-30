@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -19,7 +20,14 @@ namespace Widgets
 
         public void SetIcon(string iconName)
         {
-            image.texture = Icons[iconName];
+            if (!Icons.Keys.Contains(iconName))
+            {
+                Debug.LogError($"Icon {iconName} not found!");
+            }
+            else
+            {
+                image.texture = Icons[iconName];
+            }
         }
 
         public void Awake()

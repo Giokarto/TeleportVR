@@ -20,6 +20,8 @@ namespace Widgets
             micWidget = WidgetFactory.Instance.CreateIconWidget("MicroUnavailable", WidgetPosition.Top, "micWidget");
             speakerWidget = WidgetFactory.Instance.CreateIconWidget("SpeakersUnavailable", WidgetPosition.Top, "speakerWidget");
             motorsWidget = WidgetFactory.Instance.CreateIconWidget("MotorsRed", WidgetPosition.Top, "motorsWidget");
+
+            serverData = ServerData.Instance;
         }
 
         public void Update()
@@ -28,7 +30,7 @@ namespace Widgets
             {
                 wifiWidget.SetIcon("WifiRed");
                 micWidget.SetIcon("MicroUnavailable");
-                speakerWidget.SetIcon("SpeakerUnavailable");
+                speakerWidget.SetIcon("SpeakersUnavailable");
                 motorsWidget.SetIcon("MotorsRed");
             }
             else
