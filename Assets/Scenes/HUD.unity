@@ -361,6 +361,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: HUD-v2
       objectReference: {fileID: 0}
+    - target: {fileID: 6103261333899003510, guid: ec5fe212e99d405439368b3702ba1ef0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec5fe212e99d405439368b3702ba1ef0, type: 3}
 --- !u!850595691 &1853273512
@@ -450,6 +455,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HudManagers
+      objectReference: {fileID: 0}
+    - target: {fileID: 5117890474173084065, guid: 7ea387afbb9099245a52cdb032caf821,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5117890474173084070, guid: 7ea387afbb9099245a52cdb032caf821,
         type: 3}
