@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using InputDevices;
 using ServerConnection;
 using UnityEngine;
 using Widgets;
@@ -58,6 +59,16 @@ namespace OperatorUserInterface
 
             currentScene = Scene.MAIN;
             LoadScene(Scene.LOBBY);
+        }
+
+        private void OnEnable()
+        {
+            InputSystem.OnLeftMenuButton += SwitchScene;
+        }
+
+        private void OnDisable()
+        {
+            InputSystem.OnLeftMenuButton -= SwitchScene;
         }
 
         public void SwitchScene()

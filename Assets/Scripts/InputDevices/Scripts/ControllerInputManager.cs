@@ -175,7 +175,7 @@ namespace InputDevices
                     {
                         Debug.Log("Scene switch button pressed!");
                         //StateManager.Instance.GoToNextState();
-                        SceneManager.Instance.SwitchScene();
+                        //SceneManager.Instance.SwitchScene();
                     }
 
                     lastMenuBtn = btn;
