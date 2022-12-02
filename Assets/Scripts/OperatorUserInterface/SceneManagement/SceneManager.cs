@@ -110,7 +110,7 @@ namespace OperatorUserInterface
             }
 
             Debug.Log($"Loading scene {sceneNames[scene]}");
-            UnitySceneManager.LoadScene(sceneNames[scene]);
+            UnitySceneManager.LoadSceneAsync(sceneNames[scene]);
 
             currentScene = scene;
         }
