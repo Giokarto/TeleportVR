@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 // using Valve.VR.InteractionSystem;
 
+[Obsolete("Use SceneManager instead.")]
 public class ConstructFXManager : MonoBehaviour {
     [SerializeField] private Material constructEffectMaterial;
 

@@ -49,7 +49,7 @@ namespace ServerConnection.MockServer
         
         public void Update()
         {
-            ConnectedToServer = random.NextDouble() < 0.95 ? ConnectedToServer : !ConnectedToServer;
+            ConnectedToServer = random.NextDouble() < 0.98 ? ConnectedToServer : !ConnectedToServer;
 
             RenderTexture videoTexture = (RenderTexture)videoPlayer.texture;
             
@@ -96,7 +96,7 @@ namespace ServerConnection.MockServer
         public override void ChangeGrip(float left, float right) {}
         public override List<float> GetLatestJointValues()
         {
-            return null;
+            return new List<float>();
         }
     }
 }

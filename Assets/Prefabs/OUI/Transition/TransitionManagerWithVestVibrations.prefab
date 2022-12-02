@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6244576674719440515}
   - component: {fileID: 9145645678757317710}
   m_Layer: 0
-  m_Name: TransitionManager
+  m_Name: TransitionManagerWithVestVibrations
   m_TagString: TransitionManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

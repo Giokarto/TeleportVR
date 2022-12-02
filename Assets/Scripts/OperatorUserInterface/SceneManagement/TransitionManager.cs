@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 
+[Obsolete("Use SceneManager instead. Use delegates or override the base class to add vest vibrations or improve animations.")]
 public class TransitionManager : MonoBehaviour {
     PostProcessVolume postProcessVolume;
 

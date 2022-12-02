@@ -14,16 +14,12 @@ public class StateManager : Singleton<StateManager>
     public bool KillConstruct;
     public States currentState;
 
-    public float lastSwitch
-    {
-        get { return _lastSwitch; }
-    }
+    // When was the scene last changed
+    public float lastSwitch { get; private set; } = float.NegativeInfinity;
 
     // Callbacks called before the corresponding scene is loaded
     // WARNING: On Scene loading all callbacks for a resective scene are cleared.
     public Dictionary<States, Callbacks<States>> onStateChangeTo;
-
-    private float _lastSwitch = float.NegativeInfinity;
 
     [SerializeField] private ServerData serverConnection;
 
@@ -119,7 +115,7 @@ public class StateManager : Singleton<StateManager>
 
         // keep motor disabled at all times, only HUD can send motor commands which is set in the DelegateAfterHudLoad
         serverConnection.SetMotorOn(false);
-        _lastSwitch = Time.time;
+        lastSwitch = Time.time;
         switch (newState)
         {
             //case States.Construct:
@@ -132,7 +128,8 @@ public class StateManager : Singleton<StateManager>
             //    currentState = States.Construct;
             //    break;
             case States.HUD:
-                transitionManager.StartTransition(true);
+                // transitionManager.StartTransition(true);
+                GetComponent<AudioSource>().Play(); // stolen from TransitionManager
                 additiveSceneManager.ChangeScene(Scenes.HUD, null, null, DelegateBeforeHudLoad, () =>
                 {
                     DelegateAfterHudLoad();
@@ -141,7 +138,8 @@ public class StateManager : Singleton<StateManager>
                 currentState = States.HUD;
                 break;
             case States.Training:
-                transitionManager.StartTransition(true);
+                // transitionManager.StartTransition(true);
+                GetComponent<AudioSource>().Play(); // stolen from TransitionManager
                 additiveSceneManager.ChangeScene(Scenes.TRAINING, null, null, DelegateBeforeTrainingLoad, () =>
                 {
                     DelegateAfterTrainingLoad();
@@ -229,7 +227,7 @@ public class StateManager : Singleton<StateManager>
             questButton.onPress[1].AddListener(GameObject.FindGameObjectWithTag("FinalsDemoScriptManager").GetComponent<FinalsDemoScriptManager>().StopQuest);
             constructObjects.GetChild(0).SetParent(cameraOrigin, false);
 
-            constructFXManager.ToggleEffects(true);
+            //constructFXManager.ToggleEffects(true);
         }
     }
 
@@ -252,7 +250,7 @@ public class StateManager : Singleton<StateManager>
             //            rightSenseGlove.SetActive(false);
             //#endif
 
-            constructFXManager.ToggleEffects(false);
+            //constructFXManager.ToggleEffects(false);
         }
     }
 

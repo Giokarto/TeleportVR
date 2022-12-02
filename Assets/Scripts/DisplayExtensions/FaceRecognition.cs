@@ -55,7 +55,6 @@ namespace DisplayExtensions
             //rgbaMat = new Mat(1280, 1280, CvType.CV_8UC4);
             for (int i = 0; i < rects.Length; i++)
             {
-                Debug.Log("detect faces " + rects[i]);
                 Imgproc.rectangle(rgbaMat, new Point(rects[i].x, rects[i].y), new Point(rects[i].x + rects[i].width, rects[i].y + rects[i].height), new Scalar(255, 0, 0, 255), 2);
             }//convert rgb mat back to texture
             Utils.fastMatToTexture2D(rgbaMat, texture);

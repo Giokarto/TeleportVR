@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using OperatorUserInterface;
 using UnityEngine.XR;
 
 namespace InputDevices
@@ -172,7 +173,9 @@ namespace InputDevices
                     if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.menuButton, out btn) && btn &&
                         !lastMenuBtn)
                     {
-                        StateManager.Instance.GoToNextState();
+                        Debug.Log("Scene switch button pressed!");
+                        //StateManager.Instance.GoToNextState();
+                        SceneManager.Instance.SwitchScene();
                     }
 
                     lastMenuBtn = btn;

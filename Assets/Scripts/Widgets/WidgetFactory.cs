@@ -45,7 +45,6 @@ namespace Widgets
             toastrWidget.transform.localPosition -= toastrList.toastrQueue.Count * toastrList.OFFSET * Vector3.up;
 
             toastrList.EnqueueToastr(toastrWidget);
-            print("creating toastr " + widget.gameObject.name);
 
             return toastrWidget;
         }
