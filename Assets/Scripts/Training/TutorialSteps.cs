@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.XR;
 using System;
 using InputDevices;
+using InputDevices.Controllers;
 using Widgets;
 
 namespace Training
 {
     public class TutorialSteps : Automaton<TutorialSteps.TrainingStep>
-    //public class TutorialSteps : Singleton<TutorialSteps> // Automaton<TutorialSteps.TrainingStep>
     {
         public enum TrainingStep
         {
@@ -23,7 +23,7 @@ namespace Training
             ARM_LENGTH,
 #endif
             //WHEELCHAIR,
-          //  PAUSE_MENU,
+            //PAUSE_MENU,
             DONE
         }
 
@@ -37,7 +37,7 @@ namespace Training
 
         public List<AudioClip> praisePhrases = new List<AudioClip>();
 
-        public bool waitingForNod = false;
+        private bool waitingForNod = false;
 #if SENSEGLOVE
         public Calibration.HandCalibrator rightCalibrator, leftCalibrator;
         public Calibration.ArmLength.ArmLength armLengthCalibration;
@@ -51,6 +51,7 @@ namespace Training
         //double prevStart = 0.0;
         TrainingStep lastCorrectedAtStep = TrainingStep.IDLE;
         private bool waitStarted = false, startTraining = true, inProgress=false;
+        private bool trainingInProgress = false;
 
 
 
@@ -115,6 +116,13 @@ namespace Training
                     onStart: () => PublishNotification("Give me a nod to continue", miscAudio.nod.length + 2)
                     );
                 waitingForNod = true;
+                VRGestureRecognizer.Nodded += OnNodded;
+                void OnNodded()
+                {
+                    Debug.Log("user nodded");
+                    Next();
+                    VRGestureRecognizer.Nodded -= OnNodded;
+                }
             };
             stateMachine.onExit[TrainingStep.HEAD] = (step) =>
             {
@@ -140,11 +148,20 @@ namespace Training
 
                 audioManager.ScheduleAudioClip(controllerAudio.leftBall, queue: true,
                     onStart: () => handCollectables.Find("HandCollectableLeft").gameObject.SetActive(true));
-
+                
+                ControllerInputSystem.OnGripChange += OnGripLeftArm;
             };
+            void OnGripLeftArm(float l, float r)
+            {
+                if (l > 0)
+                {
+                    CorrectUser("index");
+                }
+            }
             stateMachine.onExit[TrainingStep.LEFT_ARM] = (step) =>
             {
                 handCollectables.Find("HandCollectableLeft").gameObject.SetActive(false);
+                ControllerInputSystem.OnGripChange -= OnGripLeftArm;
             };
 
             stateMachine.onEnter[TrainingStep.LEFT_HAND] = (step) =>
@@ -158,10 +175,28 @@ namespace Training
                 audioManager.ScheduleAudioClip(controllerAudio.leftHand, queue: true,
                     onStart: () => PublishNotification("Press the grip button on the side to close the hand.")
                     );
+                ControllerInputSystem.OnGripChange += OnGripLeftHand;
+                ControllerInputSystem.OnTriggerChange += OnTriggerLeftHand;
 #endif
             };
+            void OnGripLeftHand(float l, float r)
+            {
+                if (l > 0)
+                {
+                    Next();
+                    ControllerInputSystem.OnGripChange -= OnGripLeftHand;
+                }
+            }
+            void OnTriggerLeftHand(float l, float r)
+            {
+                if (l > 0)
+                {
+                    CorrectUser("grip");
+                }
+            }
             stateMachine.onExit[TrainingStep.LEFT_HAND] = (step) =>
             {
+                ControllerInputSystem.OnGripChange -= OnTriggerLeftHand;
 #if SENSEGLOVE
                 // force stop the calibration, if not done so already
                 leftCalibrator.StopCailbration();
@@ -180,11 +215,21 @@ namespace Training
 
                 audioManager.ScheduleAudioClip(controllerAudio.rightBall, queue: true,
                     onStart: () => handCollectables.Find("HandCollectableRight").gameObject.SetActive(true));
+                
+                ControllerInputSystem.OnGripChange += OnGripRightArm;
 
             };
+            void OnGripRightArm(float l, float r)
+            {
+                if (r > 0)
+                {
+                    CorrectUser("index");
+                }
+            }
             stateMachine.onExit[TrainingStep.RIGHT_ARM] = (step) =>
             {
                 handCollectables.Find("HandCollectableRight").gameObject.SetActive(false);
+                ControllerInputSystem.OnGripChange -= OnGripRightArm;
             };
 
             stateMachine.onEnter[TrainingStep.RIGHT_HAND] = (step) =>
@@ -198,11 +243,29 @@ namespace Training
                 audioManager.ScheduleAudioClip(controllerAudio.rightHand, queue: true,
                     onStart: () => PublishNotification("Press the grip button to close the hand.")
                 );
+                ControllerInputSystem.OnGripChange += OnGripRightHand;
+                ControllerInputSystem.OnTriggerChange += OnTriggerRightHand;
 #endif
             };
-#if SENSEGLOVE
+            void OnGripRightHand(float l, float r)
+            {
+                if (r > 0)
+                {
+                    Next();
+                    ControllerInputSystem.OnGripChange -= OnGripRightHand;
+                }
+            }
+            void OnTriggerRightHand(float l, float r)
+            {
+                if (r > 0)
+                {
+                    CorrectUser("grip");
+                }
+            }
             stateMachine.onExit[TrainingStep.RIGHT_HAND] = (step) =>
             {
+                ControllerInputSystem.OnTriggerChange -= OnTriggerRightHand;
+#if SENSEGLOVE
                 rightCalibrator.StopCailbration();
             };
 
@@ -215,8 +278,8 @@ namespace Training
             stateMachine.onExit[TrainingStep.ARM_LENGTH] = (step) =>
             {
                 armLengthCalibration.StopCalibration();
-            };
 #endif
+            };
 
 #if WHEELCHAIR
 

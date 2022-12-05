@@ -32,7 +32,7 @@ namespace Training.Calibration.ArmLength
         {
             currentState = State.START;
 
-            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => StopCalibration(), once: true);
+            //StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => StopCalibration(), once: true);
 
             // get objectives
             foreach (var comp in PlayerRig.Instance.gameObject.GetComponentsInChildren<XROffset>())
@@ -111,24 +111,28 @@ namespace Training.Calibration.ArmLength
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.scale_left);
                 TutorialSteps.PublishNotification("Strech your left arm fully");
                 TutorialSteps.PublishNotification("Left thumbs up to calibrate");
-                ConfirmationManager.Instance.Confirm((b) =>
-                {
-                    FitLeft();
-                    Next();
-                }, left: true, once: true);
+                InputSystem.OnAnyButton += ConfirmLeft;
             };
+            void ConfirmLeft()
+            {
+                FitLeft();
+                Next();
+                InputSystem.OnAnyButton -= ConfirmLeft;
+            }
 
             stateMachine.onEnter[State.RIGHT_SCALE] = (state) =>
             {
                 TutorialSteps.Instance.audioManager.ScheduleAudioClip(armLengthAudioClips.scale_right);
                 TutorialSteps.PublishNotification("Strech your right arm fully");
                 TutorialSteps.PublishNotification("Right thumbs up to calibrate");
-                ConfirmationManager.Instance.Confirm((b) =>
-                {
-                    FitRight();
-                    Next();
-                }, left: false, once: true);
+                InputSystem.OnAnyButton += ConfirmRight;
             };
+            void ConfirmRight()
+            {
+                FitRight();
+                Next();
+                InputSystem.OnAnyButton -= ConfirmRight;
+            }
 
             stateMachine.onEnter[State.DONE] = (state) =>
             {

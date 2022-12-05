@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using OperatorUserInterface;
 using UnityEngine;
 
 
@@ -19,20 +20,19 @@ public class WheelchairStateManager : Singleton<WheelchairStateManager>
         }
     }
     private bool _visible = true;
-    private StateManager.States internalState;
+    private Scene internalScene;
 
     private void Start()
     {
-        internalState = StateManager.Instance.currentState;
+        internalScene = SceneManager.Instance.currentScene;
     }
 
     void Update()
     {
         // if state changed update visibility accordingly
-        if (StateManager.Instance.currentState != internalState)
+        if (SceneManager.Instance.currentScene != internalScene)
         {
-            internalState = StateManager.Instance.currentState;
-            SetVisibility(internalState != StateManager.States.HUD);
+            SetVisibility(SceneManager.Instance.currentScene != Scene.REAL);
         }
     }
 

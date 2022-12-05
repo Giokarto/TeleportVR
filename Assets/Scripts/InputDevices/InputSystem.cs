@@ -9,37 +9,38 @@ namespace InputDevices
     /// Classes that need to listen for user input can register their delegates here.
     ///
     /// The buttons are named after classic VR controllers, but can be connected to any input device.
+    ///
+    /// Derived classes should check for input from a specific input device and invoke the delegates
+    /// in Update. Derived classes can also define own delegates. See <see cref="Controllers.ControllerInputSystem"/>
     /// </summary>
-    public class InputSystem : MonoBehaviour
+    public abstract class InputSystem : MonoBehaviour
     {
-        public delegate void OnLeftPrimaryButtonPress();
-        public static event OnLeftPrimaryButtonPress OnLeftPrimaryButton = delegate{};
+        [SerializeField] VRGestureRecognizer vrGestureRecognizer;
         
-        public delegate void OnLeftSecondaryButtonPress();
-        public static event OnLeftPrimaryButtonPress OnLeftSecondaryButton = delegate{};
+        public static event Action OnLeftPrimaryButton = delegate{};
+        protected void InvokeLeftPrimaryButton() {OnLeftPrimaryButton?.Invoke();}
         
-        public delegate void OnLeftMenuButtonPress();
-        public static event OnLeftPrimaryButtonPress OnLeftMenuButton = delegate{};
+        public static event Action OnLeftSecondaryButton = delegate{};
+        protected void InvokeLeftSecondaryButton() {OnLeftSecondaryButton?.Invoke();}
         
-        public delegate void OnRightPrimaryButtonPress();
-        public delegate void OnRightSecondaryButtonPress();
+        public static event Action OnLeftMenuButton = delegate{};
+        protected void InvokeLeftMenuButton() {OnLeftMenuButton?.Invoke();}
+        
+        public static event Action OnRightPrimaryButton = delegate{};
+        protected void InvokeRightPrimaryButton() {OnRightPrimaryButton?.Invoke();}
+        
+        public static event Action OnRightSecondaryButton = delegate{};
+        protected void InvokeRightSecondaryButton() {OnRightSecondaryButton?.Invoke();}
+        
+        public static event Action OnAnyButton = delegate{};
+        protected void InvokeAnyButton() {OnAnyButton?.Invoke();}
+        
+        
+        // TODO: joystick to drive the wheelchair
 
-        private InputDevice controllerLeft;
-        private InputDevice controllerRight;
-
-        private void Start()
-        {
-            // TODO: find controllers
-        }
-        
-        private void Update()
-        {
-            bool btn;
-            controllerLeft = ControllerInputManager.Instance.controllerLeft[0]; // for now
-            if (controllerLeft.TryGetFeatureValue(CommonUsages.menuButton, out btn) && btn)
-            {
-                OnLeftMenuButton.Invoke();
-            }
-        }
+        /// <summary>
+        /// Derived classes should check input here and invoke the delegates.
+        /// </summary>
+        public abstract void Update();
     }
 }

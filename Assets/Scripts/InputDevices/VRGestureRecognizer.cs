@@ -27,8 +27,8 @@ namespace InputDevices
     {
         [SerializeField] float recognitionInterval = 2f;
 
-        public event Action Nodded;
-        public event Action HeadShaken;
+        public static event Action Nodded;
+        public static event Action HeadShaken;
 
         public readonly Queue<PoseSample> PoseSamples = new Queue<PoseSample>();
 

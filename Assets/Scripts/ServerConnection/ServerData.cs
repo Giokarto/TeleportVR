@@ -1,15 +1,23 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using AnimusClient;
-using OpenCVForUnity.XimgprocModule;
+using InputDevices;
+using InputDevices.Controllers;
 using UnityEngine;
 
 namespace ServerConnection
 {
     public abstract class ServerData: Singleton<ServerData>
     {
+        private void OnEnable()
+        {
+            ControllerInputSystem.OnGripChange += ChangeGrip;
+            InputSystem.OnLeftPrimaryButton += SendHearts;
+        }
+        private void OnDisable()
+        {
+            ControllerInputSystem.OnGripChange -= ChangeGrip;
+            InputSystem.OnLeftPrimaryButton -= SendHearts;
+        }
+
         public abstract bool ConnectedToServer { get; protected set; }
         
         public abstract Dictionary<Modality, bool> ModalityConnected { get; }
@@ -34,6 +42,8 @@ namespace ServerConnection
         /// <remarks>TODO: change string to enum</remarks>
         /// <param name="emotion">emotion to show</param>
         public abstract void SetEmotion(string emotion);
+
+        private void SendHearts() => SetEmotion("hearts");
 
         /// <summary>
         /// Enable or disable motor on the actual robot.

@@ -44,7 +44,7 @@ namespace Training
                 }
             });
 
-            StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => StopTraining(), once: true);
+            //StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => StopTraining(), once: true);
 
             // states independent of input device
             stateMachine.onExit[State.FORWARD] = (state) => waitingForTrigger = false;
