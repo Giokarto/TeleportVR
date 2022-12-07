@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -91,15 +93,15 @@ namespace InputDevices.Controllers
                     InvokeRightSecondaryButton();
                 }
 
-                float left, right;
-                if (controllerLeft.TryGetFeatureValue(CommonUsages.grip, out left) && left>0 |
-                    controllerRight.TryGetFeatureValue(CommonUsages.grip, out right) && right>0)
+                float left, right = 0;
+                if ((controllerLeft.TryGetFeatureValue(CommonUsages.grip, out left) && left>0) ||
+                    (controllerRight.TryGetFeatureValue(CommonUsages.grip, out right) && right>0))
                 {
                     InvokeGripChange(left, right);
                 }
                 
-                if (controllerLeft.TryGetFeatureValue(CommonUsages.trigger, out left) && left>0 |
-                    controllerRight.TryGetFeatureValue(CommonUsages.trigger, out right) && right>0)
+                if ((controllerLeft.TryGetFeatureValue(CommonUsages.trigger, out left) && left>0) ||
+                    (controllerRight.TryGetFeatureValue(CommonUsages.trigger, out right) && right>0))
                 {
                     InvokeTriggerChange(left, right);
                 }

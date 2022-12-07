@@ -85,7 +85,7 @@ namespace Training
         void Start()
         {
             //automaton = this;
-            Debug.Log($"Training State visited {StateManager.Instance.TimesStateVisited(StateManager.States.Training)} times");
+            //Debug.Log($"Training State visited {StateManager.Instance.TimesStateVisited(StateManager.States.Training)} times");
             // get a reference to this singleton, as scripts from other scenes are not able to do this
             _ = Instance;
             Instance = this;
@@ -153,7 +153,7 @@ namespace Training
             };
             void OnGripLeftArm(float l, float r)
             {
-                if (l > 0)
+                if (l > 0.5)
                 {
                     CorrectUser("index");
                 }
@@ -175,13 +175,15 @@ namespace Training
                 audioManager.ScheduleAudioClip(controllerAudio.leftHand, queue: true,
                     onStart: () => PublishNotification("Press the grip button on the side to close the hand.")
                     );
+                Debug.Log("entered LeftHand");
                 ControllerInputSystem.OnGripChange += OnGripLeftHand;
                 ControllerInputSystem.OnTriggerChange += OnTriggerLeftHand;
 #endif
             };
             void OnGripLeftHand(float l, float r)
             {
-                if (l > 0)
+                Debug.Log("OnGripLeftHand");
+                if (l > 0.5)
                 {
                     Next();
                     ControllerInputSystem.OnGripChange -= OnGripLeftHand;
@@ -189,13 +191,15 @@ namespace Training
             }
             void OnTriggerLeftHand(float l, float r)
             {
-                if (l > 0)
+                Debug.Log("OnTriggerLeftHand");
+                if (l > 0.5)
                 {
                     CorrectUser("grip");
                 }
             }
             stateMachine.onExit[TrainingStep.LEFT_HAND] = (step) =>
             {
+                
                 ControllerInputSystem.OnGripChange -= OnTriggerLeftHand;
 #if SENSEGLOVE
                 // force stop the calibration, if not done so already
@@ -221,7 +225,7 @@ namespace Training
             };
             void OnGripRightArm(float l, float r)
             {
-                if (r > 0)
+                if (r > 0.5)
                 {
                     CorrectUser("index");
                 }
@@ -249,7 +253,7 @@ namespace Training
             };
             void OnGripRightHand(float l, float r)
             {
-                if (r > 0)
+                if (r > 0.5)
                 {
                     Next();
                     ControllerInputSystem.OnGripChange -= OnGripRightHand;
@@ -257,7 +261,7 @@ namespace Training
             }
             void OnTriggerRightHand(float l, float r)
             {
-                if (r > 0)
+                if (r > 0.5)
                 {
                     CorrectUser("grip");
                 }

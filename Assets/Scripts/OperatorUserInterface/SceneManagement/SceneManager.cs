@@ -4,7 +4,6 @@ using InputDevices;
 using ServerConnection;
 using UnityEngine;
 using Widgets;
-using OperatorUI;
 using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace OperatorUserInterface
@@ -89,6 +88,11 @@ namespace OperatorUserInterface
 
         private void LoadScene(Scene scene)
         {
+            if (Time.time - lastSwitch < 1) // don't load scene if the last change was less than 1 second ago
+            {
+                return;
+            }
+            
             lastSwitch = Time.time;
 
             switch (scene)

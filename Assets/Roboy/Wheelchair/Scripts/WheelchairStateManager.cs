@@ -33,6 +33,7 @@ public class WheelchairStateManager : Singleton<WheelchairStateManager>
         if (SceneManager.Instance.currentScene != internalScene)
         {
             SetVisibility(SceneManager.Instance.currentScene != Scene.REAL);
+            internalScene = SceneManager.Instance.currentScene;
         }
     }
 

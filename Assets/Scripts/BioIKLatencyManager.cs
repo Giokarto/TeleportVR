@@ -1,3 +1,4 @@
+using OperatorUserInterface;
 using UnityEngine;
 
 public class BioIKLatencyManager : MonoBehaviour
@@ -18,7 +19,7 @@ public class BioIKLatencyManager : MonoBehaviour
     public VelAcc handControlLimits = new VelAcc(velocity: 10, acceleration: 20);
 
     private VelAcc armDefault, handDefault;
-    private StateManager.States currentState;
+    private Scene currentState;
 
     // Start is called before the first frame update
     void Start()
@@ -26,20 +27,20 @@ public class BioIKLatencyManager : MonoBehaviour
         armDefault = new VelAcc(arms.MaximumVelocity, arms.MaximumAcceleration);
         handDefault = new VelAcc(Mathf.Max(leftHand.MaximumVelocity, rightHand.MaximumVelocity),
                                  Mathf.Max(leftHand.MaximumAcceleration, rightHand.MaximumAcceleration));
-        currentState = StateManager.States.Training;
+        currentState = Scene.MAIN;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (currentState == StateManager.Instance.currentState)
+        if (currentState == SceneManager.Instance.currentScene)
         {
             return;
         }
-        currentState = StateManager.Instance.currentState;
+        currentState = SceneManager.Instance.currentScene;
         switch (currentState)
         {
-            case StateManager.States.HUD:
+            case Scene.REAL:
                 arms.MaximumVelocity = armControlLimits.velocity;
                 arms.MaximumAcceleration = armControlLimits.acceleration;
                 leftHand.MaximumVelocity = handControlLimits.velocity;

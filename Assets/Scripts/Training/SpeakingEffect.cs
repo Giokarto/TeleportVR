@@ -20,6 +20,7 @@ namespace Training
         void Start()
         {
             originalScale = transform.localScale;
+            clipLoudness = audioManager.CurrentLoudness();
         }
 
         // Update is called once per frame
@@ -29,7 +30,7 @@ namespace Training
             if (currentUpdateTime >= updateStep)
             {
                 currentUpdateTime = 0;
-                clipLoudness = audioManager.CurrentLoudness();
+                // clipLoudness = audioManager.CurrentLoudness(); // sometimes causes exceptions; not necessary to set in every Update
             }
 
             transform.localScale = Vector3.Lerp(transform.localScale, originalScale + clipLoudness * scaleChange, scaleRate * Time.deltaTime);
