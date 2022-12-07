@@ -1,22 +1,80 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.XR.CoreUtils;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace DisplayExtensions
 {
-    public class FullScreenOverlay : MonoBehaviour
+    /// <summary>
+    /// Base class for overlays to the video stream from the robot.
+    /// Renders the extra information (e.g. names of people) as a second material on the eye plane.
+    /// </summary>
+    public abstract class FullScreenOverlay : MonoBehaviour
     {
-        private GameObject display;
-        private RawImage image;
+        public Renderer leftRenderer;
+        public Renderer rightRenderer;
 
-        private void Awake()
+        private Material overlayMat;
+
+        /// <summary>
+        /// Each overlay adds a material to the renderer. This retrieves its index. The index can get changed
+        /// if an earlier overlay is destroyed. We assume the index is the same for left and right plane.
+        /// </summary>
+        private static Dictionary<FullScreenOverlay, int> overlayToMatIndex = new Dictionary<FullScreenOverlay, int>();
+
+        /// <summary>
+        /// Add a new material to the renderer and note its index.
+        /// </summary>
+        protected void RegisterOverlay()
         {
-            display = GameObject.Find("Background"); // background from canvas in HUD
-            image = display.GetComponent<RawImage>();
+            overlayMat = new Material(Shader.Find("Sprites/Default"));
+
+            int materialIndex = leftRenderer.materials.Length;
+            overlayToMatIndex[this] = materialIndex;
             
-            // example texture in background, could be e.g. detected faces in the camera stream
-            var texture = Resources.Load<Texture2D>("Icons/Cage/CageGreen");
-            image.texture = texture;
+            leftRenderer.AddMaterial(overlayMat);
+            rightRenderer.AddMaterial(overlayMat);
+        }
+
+        /// <summary>
+        /// Removes the material and has to update material index of other overlays.
+        /// </summary>
+        protected void OnDisable()
+        {
+            int index = overlayToMatIndex[this];
+            
+            var leftMaterials = leftRenderer.materials;
+            var newMaterials = leftMaterials.Where((item, i) => i != index).ToArray();
+            leftRenderer.materials = newMaterials;
+            
+            var rightMaterials = rightRenderer.materials;
+            newMaterials = rightMaterials.Where((item, i) => i != index).ToArray();
+            rightRenderer.materials = newMaterials;
+
+            foreach (var (overlay, i) in overlayToMatIndex.Select(x => (x.Key, x.Value)))
+            {
+                if (i > index)
+                {
+                    overlayToMatIndex[overlay] -= 1;
+                }
+            }
+        }
+
+        protected void Awake()
+        {
+            RegisterOverlay();
+        }
+
+        /// <summary>
+        /// Get information to show in overlay and return them as a texture (with transparent background).
+        /// </summary>
+        public abstract Texture GetOverlayTexture();
+
+        protected void Update()
+        {
+            var texture = GetOverlayTexture();
+            
         }
     }
 }

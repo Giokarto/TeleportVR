@@ -11,7 +11,7 @@ using Rect = OpenCVForUnity.CoreModule.Rect;
 
 namespace DisplayExtensions
 {
-    public class FaceRecognition : MonoBehaviour
+    public class FaceRecognition : FullScreenOverlay
     {
         private string filename;
         private CascadeClassifier cascade;
@@ -48,6 +48,15 @@ namespace DisplayExtensions
         
         void Update()
         {
+            var t = GetOverlayTexture();
+            
+            //set rawimage texture
+            this.GetComponent<RawImage>().texture = t;
+            leftRenderer.materials[1].mainTexture = t;
+        }
+
+        public override Texture GetOverlayTexture()
+        {
             var rects = GetFaces();
             
             //draw rectangles
@@ -60,10 +69,8 @@ namespace DisplayExtensions
             //convert rgb mat back to texture
             Utils.fastMatToTexture2D(rgbaMat, texture);
             texture.Apply();
- 
-            //set rawimage texture
-            this.GetComponent<RawImage>().texture = texture;
-            leftRenderer.materials[1].mainTexture = texture;
+
+            return texture;
         }
 
         /// <summary>
