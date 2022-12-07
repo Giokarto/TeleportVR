@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731707, g: 0.13414726, b: 0.12107857, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6599,9 +6599,9 @@ MonoBehaviour:
   configName: config.json
   settings:
     OperatorIPD: 63
-    OperatorManualOverwrite: 1
-    OperatorHorizontal: 0.86593777
-    OperatorVertical: 0.3231526
+    OperatorManualOverwrite: 0
+    OperatorHorizontal: 0
+    OperatorVertical: 0
 --- !u!114 &1376495787 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -6371880505787038194, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -6682,8 +6682,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8118b7a48c5fb8946ac0ce822738a57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputDevice: 0
-  completionWidget: {fileID: 1835822494}
 --- !u!4 &1409407287
 Transform:
   m_ObjectHideFlags: 0
@@ -8556,18 +8554,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff93477a43d01414e9266374532dd9db, type: 3}
---- !u!114 &1835822494 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 656020218274012970, guid: ff93477a43d01414e9266374532dd9db,
-    type: 3}
-  m_PrefabInstance: {fileID: 1835822493}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97b35914f0a116f43a43cb137f4b3812, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1840053909 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -1417497070578578524, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -10693,20 +10679,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 506de83a2f0900e42b66f291b08c8d62, type: 3}
---- !u!4 &2737206109677767346
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5788050249394011238}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 6021411799846510436}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!222 &2740056867311733844
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12744,23 +12716,6 @@ MonoBehaviour:
   savedColor: {r: 1, g: 1, b: 1, a: 0.54901963}
   savedTextUV0: {x: 0, y: 0}
   savedFill: 1
---- !u!1 &5788050249394011238
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2737206109677767346}
-  - component: {fileID: 6420666206319213959}
-  m_Layer: 5
-  m_Name: InputManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1001 &5826557875377529290
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13042,7 +12997,6 @@ Transform:
   m_Children:
   - {fileID: 3581542606171204588}
   - {fileID: 8882876742564550606}
-  - {fileID: 2737206109677767346}
   m_Father: {fileID: 6021411801083968249}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -15000,20 +14954,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6420666206319213959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5788050249394011238}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61867a8db159d4744a90374d94abbe8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handManager: {fileID: 187668441}
-  vrGestureRecognizer: {fileID: 0}
 --- !u!1 &6671594477583083336
 GameObject:
   m_ObjectHideFlags: 0
