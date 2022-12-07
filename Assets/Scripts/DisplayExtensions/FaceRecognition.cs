@@ -3,8 +3,11 @@ using OpenCVForUnity.ImgprocModule;
 using OpenCVForUnity.ObjdetectModule;
 using OpenCVForUnity.UnityUtils;
 using ServerConnection;
+using Unity.XR.CoreUtils;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
+using Rect = OpenCVForUnity.CoreModule.Rect;
 
 namespace DisplayExtensions
 {
@@ -16,6 +19,10 @@ namespace DisplayExtensions
         private Texture2D texture;
         private Mat rgbaMat;
         private Mat grayMat;
+        
+        private Material mat;
+
+        public Renderer leftRenderer;
         
         void Start()
         {
@@ -33,9 +40,38 @@ namespace DisplayExtensions
  
             //initialize texture2d
             texture = new Texture2D(rgbaMat.cols(), rgbaMat.rows(), TextureFormat.RGBA32, false);
+
+            // add material to the plane where camera stream is rendered; will render face recognition as an overlay
+            mat = new Material(Shader.Find("Sprites/Default"));
+            leftRenderer.AddMaterial(mat);
         }
         
         void Update()
+        {
+            var rects = GetFaces();
+            
+            //draw rectangles
+            rgbaMat = new Mat(1280, 1280, CvType.CV_8UC4); // clear material without the video image
+            for (int i = 0; i < rects.Length; i++)
+            {
+                Imgproc.rectangle(rgbaMat, new Point(rects[i].x, rects[i].y), new Point(rects[i].x + rects[i].width, rects[i].y + rects[i].height), new Scalar(255, 0, 0, 255), 2);
+            }
+            
+            //convert rgb mat back to texture
+            Utils.fastMatToTexture2D(rgbaMat, texture);
+            texture.Apply();
+ 
+            //set rawimage texture
+            this.GetComponent<RawImage>().texture = texture;
+            leftRenderer.materials[1].mainTexture = texture;
+        }
+
+        /// <summary>
+        /// Should be call to cloud server which recognizes the faces.
+        /// For the purpose of testing compute the faces here.
+        /// </summary>
+        /// <returns></returns>
+        Rect[] GetFaces()
         {
             var textures = ServerData.Instance.GetVisionTextures();
             
@@ -49,21 +85,9 @@ namespace DisplayExtensions
             cascade.detectMultiScale(grayMat, faces, 1.1, 4); 
             
             //store faces in array
-            OpenCVForUnity.CoreModule.Rect[] rects = faces.toArray(); 
-            
-            //draw rectangles
-            rgbaMat = new Mat(1280, 1280, CvType.CV_8UC4);
-            for (int i = 0; i < rects.Length; i++)
-            {
-                Imgproc.rectangle(rgbaMat, new Point(rects[i].x, rects[i].y), new Point(rects[i].x + rects[i].width, rects[i].y + rects[i].height), new Scalar(255, 0, 0, 255), 2);
-            }
-            
-            //convert rgb mat back to texture
-            Utils.fastMatToTexture2D(rgbaMat, texture);
-            texture.Apply();
- 
-            //set rawimage texture
-            this.GetComponent<RawImage>().texture = texture;
+            Rect[] rects = faces.toArray();
+
+            return rects;
         }
     }
 }

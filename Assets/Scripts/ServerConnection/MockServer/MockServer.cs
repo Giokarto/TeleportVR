@@ -61,6 +61,7 @@ namespace ServerConnection.MockServer
             _leftTexture = convertedTexture;
             
             _leftRenderer.material.mainTexture = _leftTexture;
+            _rightRenderer.material.mainTexture = _leftTexture;
         }
 
         public override bool ConnectedToServer { get; protected set; }
@@ -87,7 +88,7 @@ namespace ServerConnection.MockServer
 
         public override Texture2D[] GetVisionTextures()
         {
-            return new[] { _leftTexture, _rightTexture };
+            return new[] { _leftTexture, _leftTexture }; // only mono vision here
         }
 
         public override void SetPresenceIndicatorOn(bool on) {}
