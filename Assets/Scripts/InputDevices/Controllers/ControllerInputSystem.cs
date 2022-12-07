@@ -12,8 +12,8 @@ namespace InputDevices.Controllers
     /// </summary>
     public class ControllerInputSystem: InputSystem
     {
-        private InputDevice controllerLeft;
-        private InputDevice controllerRight;
+        public static InputDevice controllerLeft { get; private set; }
+        public static InputDevice controllerRight { get; private set; }
         
         private bool controllersAvailable;
         

@@ -399,7 +399,7 @@ namespace Training
                 Prev();
             }
 
-            if (ControllerInputManager.Instance.GetControllerBtn(CommonUsages.primaryButton, false) && !waitStarted)// (stateMachine.State == TrainingStep.IDLE || stateMachine.State == TrainingStep.DONE))
+            if (ControllerInputSystem.controllerRight.TryGetFeatureValue(CommonUsages.primaryButton, out bool btn) && btn && !waitStarted)// (stateMachine.State == TrainingStep.IDLE || stateMachine.State == TrainingStep.DONE))
             {
                 waitStarted = true;
                 Debug.Log("Started true");

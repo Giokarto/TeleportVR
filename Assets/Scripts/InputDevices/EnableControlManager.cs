@@ -1,5 +1,6 @@
 ﻿using BioIK;
 using System.Collections.Generic;
+using InputDevices.Controllers;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -99,17 +100,10 @@ namespace InputDevices
 
         void FindControllers()
         {
-            if (ControllerInputManager.Instance.GetLeftController())
-            {
-                leftController = ControllerInputManager.Instance.controllerLeft[0];
-                leftControllerFound = true;
-            }
-
-            if (ControllerInputManager.Instance.GetRightController())
-            {
-                rightController = ControllerInputManager.Instance.controllerRight[0];
-                rightControllerFound = true;
-            }
+            leftController = ControllerInputSystem.controllerLeft;
+            rightController = ControllerInputSystem.controllerRight;
+            leftControllerFound = true;
+            rightControllerFound = true;
         }
 
         // Start is called before the first frame update
