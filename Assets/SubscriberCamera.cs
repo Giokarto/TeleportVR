@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Robotics.ROSTCPConnector;
 using UnityEngine;
 using CompressedImage = RosMessageTypes.Sensor.CompressedImageMsg;
+using Image = RosMessageTypes.Sensor.ImageMsg;
 
 
 public class SubscriberCamera : MonoBehaviour
@@ -23,7 +24,7 @@ public class SubscriberCamera : MonoBehaviour
     private void Start()
     {
         ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(TopicName, GetImage);
-        texture2D = new Texture2D(960, 540, TextureFormat.RGBA32, false);
+        texture2D = new Texture2D(4056, 3040, TextureFormat.RGBA32, false);
     }
 
     private void Update()
@@ -44,6 +45,7 @@ public class SubscriberCamera : MonoBehaviour
 
         if (!messageProcessed)
         {
+            //Debug.Log($"length: {Message.data.Length}");
             StartCoroutine(ProcessImage(Message.data));
         }
     }

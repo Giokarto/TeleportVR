@@ -27,12 +27,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Main.unity
     guid: 847fc950086306b4ca8dee19ce12232e
   - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
     path: Assets/Scenes/Construct.unity
     guid: ca09c4df27ac2aa4aa1a81330d7938a1
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/HUD.unity
     guid: 72ff9babd829ad149823746cd95b93e4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Training.unity
     guid: ea196a5116fd22840b4032c29b91258f
   - enabled: 0
