@@ -4,6 +4,9 @@ using Widgets;
 
 namespace Training
 {
+    /// <summary>
+    /// Try to move head and nod.
+    /// </summary>
     public class MoveHead : Step
     {
         public override void Enter()

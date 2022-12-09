@@ -13,6 +13,7 @@ namespace Training
 
         public AudioManager audioManager;
         public AudioClips.Misc miscAudio;
+        public AudioClips.Controller controllerAudio;
 
         protected void Start()
         {
@@ -20,6 +21,7 @@ namespace Training
             {
                 step.audioManager = audioManager;
                 step.miscAudio = miscAudio;
+                step.controllerAudio = controllerAudio;
 
                 step.Next += Next;
             }

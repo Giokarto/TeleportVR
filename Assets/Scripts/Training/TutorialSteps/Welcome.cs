@@ -5,6 +5,9 @@ namespace Training
 {
     public class Welcome : Step
     {
+        /// <summary>
+        /// Welcome to the tutorial, info.
+        /// </summary>
         public override void Enter()
         {
             audioManager.ScheduleAudioClip(miscAudio.welcome, queue: false,

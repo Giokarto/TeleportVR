@@ -1,5 +1,8 @@
 namespace Training
 {
+    /// <summary>
+    /// Close the left hand to grip.
+    /// </summary>
     public class LeftHand : Step
     {
         public override void Enter()

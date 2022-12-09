@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Training
 {
@@ -6,6 +7,7 @@ namespace Training
     {
         public AudioManager audioManager;
         public AudioClips.Misc miscAudio;
+        public AudioClips.Controller controllerAudio;
         
         /// <summary>
         /// Called when the step is started.
@@ -32,5 +34,30 @@ namespace Training
         /// </summary>
         public event Action Next;
         protected void NextStep() { Next.Invoke(); }
+
+        protected bool correctedAtThisStep = false;
+        public void CorrectUser(string correctButton)
+        {
+            AudioClip audio;
+            switch (correctButton)
+            {
+                case "trigger":
+                    audio = miscAudio.wrongTrigger;
+                    break;
+                case "grip":
+                    audio = miscAudio.wrongGrip;
+                    break;
+                default:
+                    audio = miscAudio.wrongButton;
+                    break;
+            }
+
+            if (!correctedAtThisStep)
+            {
+                Debug.Log("Correcting User");
+                audioManager.ScheduleAudioClip(audio);
+                correctedAtThisStep = true;
+            }
+        }
     }
 }

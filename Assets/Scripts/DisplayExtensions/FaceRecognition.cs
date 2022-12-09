@@ -21,8 +21,6 @@ namespace DisplayExtensions
         private Mat grayMat;
         
         private Material mat;
-
-        public Renderer leftRenderer;
         
         void Start()
         {
