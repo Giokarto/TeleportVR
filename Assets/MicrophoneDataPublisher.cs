@@ -36,6 +36,32 @@ public class MicrophoneDataPublisher : MonoBehaviour
     private byte[] dataByte;
     private byte[] dataByteTemp;
 
+    //void Start()
+    //{
+    //    var audio = GetComponent<AudioSource>();
+    //    audio.volume = 1f;
+    //    audio.Play();
+
+    //    //string[] MicNames = Microphone.devices;
+    //    //foreach (string _name in MicNames)
+    //    //{
+    //    //    DetectedDevices += _name + "\n";
+    //    //    //Debug.Log($"mic: {_name}");
+    //    //}
+    //    //Debug.Log(DetectedDevices);
+    //    ////Debug.Log(MicNames);
+    //    //var audio = GetComponent<AudioSource> ();
+    //    //var rec = Microphone.Start(MicNames[0], true, 1, 44100);
+    //    ////audio.clip = rec;
+    //    //audio.loop = true;
+    //    //audio.volume = 0.5f;
+    //    //Debug.Log($"audio device name: {audio.name}");
+    //    ////while (!(Microphone.GetPosition(MicNames[0]) > 0)) { }
+    //    //Debug.Log("Playing sound");
+
+
+    //}
+
     void Start()
     {
         ros = ROSConnection.GetOrCreateInstance();
@@ -76,11 +102,13 @@ public class MicrophoneDataPublisher : MonoBehaviour
 
         CurrentDeviceName = MicNames[1];//DeviceMode == MicDeviceMode.Default ? (MicNames.Length > 0 ? MicNames[0] : null) : TargetDeviceName;
 
-        AudioMic.clip = Microphone.Start(CurrentDeviceName, true, 1, OutputSampleRate);
+        AudioMic.clip = Microphone.Start(CurrentDeviceName, true, 10, 44100);// OutputSampleRate);
         AudioMic.loop = true;
         while (!(Microphone.GetPosition(CurrentDeviceName) > 0)) { }
-        Debug.Log("Start Mic(pos): " + Microphone.GetPosition(CurrentDeviceName));
+        Debug.Log("playing sound");
         AudioMic.Play();
+        Debug.Log("Start Mic(pos): " + Microphone.GetPosition(CurrentDeviceName));
+        //AudioMic.Play();
 
         AudioMic.volume = 0f;
 
@@ -88,7 +116,7 @@ public class MicrophoneDataPublisher : MonoBehaviour
 
         while (!stop)
         {
-            AddMicData();
+            //AddMicData();
             yield return null;
         }
         yield return null;

@@ -306,11 +306,11 @@ public class InputManager : Singleton<InputManager>
             }
             else
             {
-                if (UnityAnimusClient.Instance != null)
-                {
-                    UnityAnimusClient.Instance.LeftButton1 = Input.GetKeyDown(KeyCode.F);
-                    UnityAnimusClient.Instance.LeftButton2 = Input.GetKeyDown(KeyCode.R);
-                }
+                //if (UnityAnimusClient.Instance != null)
+                //{
+                //    UnityAnimusClient.Instance.LeftButton1 = Input.GetKeyDown(KeyCode.F);
+                //    UnityAnimusClient.Instance.LeftButton2 = Input.GetKeyDown(KeyCode.R);
+                //}
             }
             if (GetRightController())
             {
@@ -338,11 +338,11 @@ public class InputManager : Singleton<InputManager>
             }
             else
             {
-                if (UnityAnimusClient.Instance != null)
-                {
-                    UnityAnimusClient.Instance.RightButton1 = Input.GetKeyDown(KeyCode.G);
-                    UnityAnimusClient.Instance.RightButton2 = Input.GetKeyDown(KeyCode.T);
-                }
+                //if (UnityAnimusClient.Instance != null)
+                //{
+                //    UnityAnimusClient.Instance.RightButton1 = Input.GetKeyDown(KeyCode.G);
+                //    UnityAnimusClient.Instance.RightButton2 = Input.GetKeyDown(KeyCode.T);
+                //}
             }
         }
     }

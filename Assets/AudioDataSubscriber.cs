@@ -17,10 +17,10 @@ public class AudioDataSubscriber : MonoBehaviour
     void Start()
     {
         AudioSettings.GetDSPBufferSize(out int l, out int n);
-        Debug.Log($"dsp buffer size: {l} {n}");
+        //Debug.Log($"dsp buffer size: {l} {n}");
         AudioSettings.SetDSPBufferSize(256,8);
         AudioSettings.GetDSPBufferSize(out l, out n);
-        Debug.Log($"dsp buffer size2: {l} {n}");
+        //Debug.Log($"dsp buffer size2: {l} {n}");
         ROSConnection.GetOrCreateInstance().Subscribe<Int8Array>("/audio/audio", ProcessAudio);
 
         //Application.runInBackground = true;
