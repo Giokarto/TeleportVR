@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Training;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,6 +9,7 @@ using AnimusClient;
 using OperatorUI;
 using ServerConnection;
 
+[Obsolete("use SceneManager instead")]
 public class StateManager : Singleton<StateManager>
 {
     //For debugging: if true, disables all construct functionality in this script
@@ -114,7 +116,7 @@ public class StateManager : Singleton<StateManager>
         //WheelchairStateManager.Instance.transform.position = Vector3.zero;
 
         // keep motor disabled at all times, only HUD can send motor commands which is set in the DelegateAfterHudLoad
-        serverConnection.SetMotorOn(false);
+        serverConnection.EmbodyRoboy(false);
         lastSwitch = Time.time;
         switch (newState)
         {
@@ -310,7 +312,7 @@ public class StateManager : Singleton<StateManager>
             }
         }
         Debug.Log("Presense indicator on");
-        serverConnection.SetPresenceIndicatorOn(true);
+        serverConnection.EmbodyRoboy(true);
 
         onStateChangeTo[States.HUD].Call(States.HUD);
     }
@@ -323,7 +325,7 @@ public class StateManager : Singleton<StateManager>
         {
             body.MotionType = BioIK.MotionType.Realistic;
         }
-        serverConnection.SetMotorOn(true);
+        serverConnection.EmbodyRoboy(true);
     }
 
     void DelegateOnHudUnload()
@@ -334,7 +336,7 @@ public class StateManager : Singleton<StateManager>
     void DelegateBeforeTrainingLoad()
     {
         Debug.Log("Presense indicator off");
-        serverConnection.SetPresenceIndicatorOn(false);
+        serverConnection.EmbodyRoboy(false);
 
         onStateChangeTo[States.Training].Call(States.HUD);
     }

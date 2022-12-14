@@ -23,8 +23,6 @@ namespace ServerConnection.MockServer
         
         private Texture2D _leftTexture;
         private Texture2D _rightTexture;
-        public GameObject LeftEye;
-        public GameObject RightEye;
         [SerializeField] private GameObject _leftPlane;
         [SerializeField] private GameObject _rightPlane;
         private Renderer _leftRenderer;
@@ -91,9 +89,9 @@ namespace ServerConnection.MockServer
             return new[] { _leftTexture, _leftTexture }; // only mono vision here
         }
 
-        public override void SetPresenceIndicatorOn(bool on) {}
+        protected override void SetPresenceIndicatorOn(bool on) {}
         public override void SetEmotion(string emotion) {}
-        public override void SetMotorOn(bool on) {}
+        protected override void SetMotorOn(bool on) {}
         public override void ChangeGrip(float left, float right) {}
         public override List<float> GetLatestJointValues()
         {

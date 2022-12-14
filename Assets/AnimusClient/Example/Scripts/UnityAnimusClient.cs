@@ -247,8 +247,6 @@ namespace AnimusClient
         // vision variables
         public bool stereovision = false;
         public bool undistortion = true;
-        public GameObject LeftEye;
-        public GameObject RightEye;
         [SerializeField] private GameObject _leftPlane;
         [SerializeField] private GameObject _rightPlane;
         private Renderer _leftRenderer;
@@ -952,7 +950,7 @@ namespace AnimusClient
             right_open = right;
         }
         
-        public override void SetMotorOn(bool enable)
+        protected override void SetMotorOn(bool enable)
         {
             motorEnabled = enable;
         }
@@ -1067,7 +1065,7 @@ namespace AnimusClient
             return true;
         }
 
-        public override void SetPresenceIndicatorOn(bool on)
+        protected override void SetPresenceIndicatorOn(bool on)
         {
             currentEmotion = on ? "tp_on" : "tp_off";
         }

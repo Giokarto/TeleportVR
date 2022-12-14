@@ -101,8 +101,7 @@ namespace OperatorUserInterface
                     Debug.LogError("Not allowed to return back to empty main scene");
                     return;
                 case Scene.LOBBY:
-                    serverConnection.SetMotorOn(false);
-                    serverConnection.SetPresenceIndicatorOn(false);
+                    serverConnection.EmbodyRoboy(false);
                     break;
                 case Scene.REAL:
                     if (!serverConnection.ConnectedToServer)
@@ -114,8 +113,7 @@ namespace OperatorUserInterface
 
                     realAlreadyVisited = true;
                     ResetRobody();
-                    serverConnection.SetMotorOn(true);
-                    serverConnection.SetPresenceIndicatorOn(true);
+                    serverConnection.EmbodyRoboy(true);
                     break;
             }
 

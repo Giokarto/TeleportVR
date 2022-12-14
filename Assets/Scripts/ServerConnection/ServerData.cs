@@ -7,6 +7,9 @@ namespace ServerConnection
 {
     public abstract class ServerData: Singleton<ServerData>
     {
+        public GameObject LeftEye;
+        public GameObject RightEye;
+        
         private void OnEnable()
         {
             ControllerInputSystem.OnGripChange += ChangeGrip;
@@ -34,7 +37,7 @@ namespace ServerConnection
         /// Indicate whether there is an operator inside of the robot.
         /// </summary>
         /// <param name="on"></param>
-        public abstract void SetPresenceIndicatorOn(bool on);
+        protected abstract void SetPresenceIndicatorOn(bool on);
 
         /// <summary>
         /// Sends emotion through the data channel that the robot should show.
@@ -49,10 +52,32 @@ namespace ServerConnection
         /// Enable or disable motor on the actual robot.
         /// </summary>
         /// <param name="on"></param>
-        public abstract void SetMotorOn(bool on);
+        protected abstract void SetMotorOn(bool on);
 
         public abstract void ChangeGrip(float left, float right);
 
         public abstract List<float> GetLatestJointValues();
+
+        /// <summary>
+        /// To be called when switching the scene between real world and training area.
+        /// </summary>
+        /// <param name="embody">true: enter the robot, false: exit the real world view</param>
+        public void EmbodyRoboy(bool embody)
+        {
+            if (embody)
+            {
+                SetMotorOn(true);
+                SetPresenceIndicatorOn(true);
+                LeftEye.SetActive(true);
+                RightEye.SetActive(true);
+            }
+            else
+            {
+                SetMotorOn(false);
+                SetPresenceIndicatorOn(false);
+                LeftEye.SetActive(false);
+                RightEye.SetActive(false);
+            }
+        }
     }
 }
