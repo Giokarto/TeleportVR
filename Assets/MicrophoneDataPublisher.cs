@@ -36,6 +36,8 @@ public class MicrophoneDataPublisher : MonoBehaviour
     private byte[] dataByte;
     private byte[] dataByteTemp;
 
+    private int lastSample = 0;
+
     //void Start()
     //{
     //    var audio = GetComponent<AudioSource>();
@@ -65,7 +67,7 @@ public class MicrophoneDataPublisher : MonoBehaviour
     void Start()
     {
         ros = ROSConnection.GetOrCreateInstance();
-        ros.RegisterPublisher<Int8MultiArrayMsg>(topicName);
+        ros.RegisterPublisher<Int8MultiArrayMsg>(topicName, queue_size:1);
         msg = new Int8MultiArrayMsg();
 
         StartCoroutine(CaptureMic());
@@ -100,9 +102,9 @@ public class MicrophoneDataPublisher : MonoBehaviour
         //}
         //Check Target Device
 
-        CurrentDeviceName = MicNames[1];//DeviceMode == MicDeviceMode.Default ? (MicNames.Length > 0 ? MicNames[0] : null) : TargetDeviceName;
+        CurrentDeviceName = "Echo Cancelling Speakerphone (BCC950 ConferenceCam)";// MicNames[1];//DeviceMode == MicDeviceMode.Default ? (MicNames.Length > 0 ? MicNames[0] : null) : TargetDeviceName;
 
-        AudioMic.clip = Microphone.Start(CurrentDeviceName, true, 10, 44100);// OutputSampleRate);
+        AudioMic.clip = Microphone.Start(CurrentDeviceName, true, 1, 16000);// OutputSampleRate);
         AudioMic.loop = true;
         while (!(Microphone.GetPosition(CurrentDeviceName) > 0)) { }
         Debug.Log("playing sound");
@@ -110,16 +112,44 @@ public class MicrophoneDataPublisher : MonoBehaviour
         Debug.Log("Start Mic(pos): " + Microphone.GetPosition(CurrentDeviceName));
         //AudioMic.Play();
 
-        AudioMic.volume = 0f;
+        //AudioMic.volume = 0f;
 
         OutputChannels = AudioMic.clip.channels;
 
         while (!stop)
         {
-            //AddMicData();
+            AddMicData2();
             yield return null;
         }
         yield return null;
+    }
+
+    private void AddMicData2()
+    {
+        int pos = Microphone.GetPosition(CurrentDeviceName);
+        int diff = pos - lastSample;
+
+        if (diff > 0)
+        {
+            //float[] samples = new float[diff * sendingClip.channels];
+            //sendingClip.GetData(samples, lastSample);
+            //byte[] ba = ToByteArray(samples);
+            //networkView.RPC("Send", RPCMode.Others, ba, sendingClip.channels);
+            //Debug.Log(Microphone.GetPosition(null).ToString());
+
+            float[] samples = new float[diff];//[AudioMic.clip.samples];
+            AudioMic.clip.GetData(samples, lastSample);
+            Debug.Log($"samples: {samples.Length}");
+
+            msg.data = ToByteArray(samples);
+            Debug.Log($"ros: {msg.data.Length}");
+            ros.Publish(topicName, msg);
+
+        }
+        lastSample = pos;
+
+
+       
     }
 
     private void AddMicData()
@@ -132,38 +162,40 @@ public class MicrophoneDataPublisher : MonoBehaviour
         {
             float[] samples = new float[AudioMic.clip.samples];
             AudioMic.clip.GetData(samples, 0);
+            msg.data = ToByteArray(samples);
 
-            if (CurrentAudioTimeSample > LastAudioTimeSample)
-            {
-                lock (_asyncLockAudio)
-                {
-                    for (int i = LastAudioTimeSample; i < CurrentAudioTimeSample; i++)
-                    {
-                        byte[] byteData = BitConverter.GetBytes(FloatToInt16(samples[i]));
-                        msg.data = Array.ConvertAll(byteData, (a) => (sbyte)a);
-                        //foreach (byte _byte in byteData) AudioBytes.Enqueue(_byte);
-                        Debug.Log(byteData.Length);
-                    }
-                }
-            }
-            else if (CurrentAudioTimeSample < LastAudioTimeSample)
-            {
-                lock (_asyncLockAudio)
-                {
-                    for (int i = LastAudioTimeSample; i < samples.Length; i++)
-                    {
-                        byte[] byteData = BitConverter.GetBytes(FloatToInt16(samples[i]));
-                        foreach (byte _byte in byteData) AudioBytes.Enqueue(_byte);
-                    }
-                    for (int i = 0; i < CurrentAudioTimeSample; i++)
-                    {
-                        byte[] byteData = BitConverter.GetBytes(FloatToInt16(samples[i]));
-                        msg.data = Array.ConvertAll(byteData, (a) => (sbyte)a);
-                        Debug.Log(byteData.Length);
-                        //foreach (byte _byte in byteData) AudioBytes.Enqueue(_byte);
-                    }
-                }
-            }
+
+            //if (CurrentAudioTimeSample > LastAudioTimeSample)
+            //{
+            //    lock (_asyncLockAudio)
+            //    {
+            //        for (int i = LastAudioTimeSample; i < CurrentAudioTimeSample; i++)
+            //        {
+            //            byte[] byteData = BitConverter.GetBytes(FloatToInt16(samples[i]));
+            //            msg.data = Array.ConvertAll(byteData, (a) => (sbyte)a);
+            //            //foreach (byte _byte in byteData) AudioBytes.Enqueue(_byte);
+            //            //Debug.Log(byteData.Length);
+            //        }
+            //    }
+            //}
+            //else if (CurrentAudioTimeSample < LastAudioTimeSample)
+            //{
+            //    lock (_asyncLockAudio)
+            //    {
+            //        for (int i = LastAudioTimeSample; i < samples.Length; i++)
+            //        {
+            //            byte[] byteData = BitConverter.GetBytes(FloatToInt16(samples[i]));
+            //            foreach (byte _byte in byteData) AudioBytes.Enqueue(_byte);
+            //        }
+            //        for (int i = 0; i < CurrentAudioTimeSample; i++)
+            //        {
+            //            byte[] byteData = BitConverter.GetBytes(FloatToInt16(samples[i]));
+            //            msg.data = Array.ConvertAll(byteData, (a) => (sbyte)a);
+            //            //Debug.Log(byteData.Length);
+            //            //foreach (byte _byte in byteData) AudioBytes.Enqueue(_byte);
+            //        }
+            //    }
+            //}
             ros.Publish(topicName, msg);
         }
 
@@ -175,6 +207,18 @@ public class MicrophoneDataPublisher : MonoBehaviour
         if (inputFloat < -32768) inputFloat = -32768;
         if (inputFloat > 32767) inputFloat = 32767;
         return Convert.ToInt16(inputFloat);
+    }
+
+    private sbyte[] ToByteArray(float[] floatArray)
+    {
+        List<sbyte> ret = new List<sbyte>();
+        for (int i=0;i<floatArray.Length;i++)
+        {
+            var bytes = BitConverter.GetBytes(FloatToInt16(floatArray[i]));
+            ret.AddRange(Array.ConvertAll(bytes, (a) => (sbyte)a));
+        }
+        return ret.ToArray();
+
     }
 
     void FixedUpdate()
