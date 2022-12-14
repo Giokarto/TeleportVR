@@ -2,7 +2,7 @@ using InputDevices;
 using UnityEngine;
 using Widgets;
 
-namespace Training
+namespace Tutorial
 {
     /// <summary>
     /// Try to move head and nod.

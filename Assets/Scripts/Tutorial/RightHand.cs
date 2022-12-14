@@ -1,4 +1,4 @@
-namespace Training
+namespace Tutorial
 {
     /// <summary>
     /// Close the right hand to grip.

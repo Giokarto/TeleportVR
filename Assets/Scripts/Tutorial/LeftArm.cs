@@ -2,7 +2,7 @@ using InputDevices.Controllers;
 using UnityEngine;
 using Widgets;
 
-namespace Training
+namespace Tutorial
 {
     /// <summary>
     /// Move the left robot arm, touch an object.

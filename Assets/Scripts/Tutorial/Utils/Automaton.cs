@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using InputDevices;
 using UnityEngine;
 
-namespace Training
+namespace Tutorial
 {
-    public class StepAutomaton : MonoBehaviour
+    public class Automaton : MonoBehaviour
     {
         protected List<Step> Steps;
 
@@ -12,8 +11,8 @@ namespace Training
         protected bool running;
 
         public AudioManager audioManager;
-        public AudioClips.Misc miscAudio;
-        public AudioClips.Controller controllerAudio;
+        public MiscAudio miscAudio;
+        public ControllerAudio controllerAudio;
 
         protected void Start()
         {

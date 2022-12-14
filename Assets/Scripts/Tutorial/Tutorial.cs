@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using InputDevices;
 using UnityEngine;
 
-namespace Training
+namespace Tutorial
 {
-    public class Tutorial : StepAutomaton
+    public class Tutorial : Automaton
     {
         private void Awake()
         {

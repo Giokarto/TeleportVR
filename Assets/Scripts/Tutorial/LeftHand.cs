@@ -1,6 +1,9 @@
-namespace Training
+namespace Tutorial
 {
-    public class Done : Step
+    /// <summary>
+    /// Close the left hand to grip.
+    /// </summary>
+    public class LeftHand : Step
     {
         public override void Enter()
         {

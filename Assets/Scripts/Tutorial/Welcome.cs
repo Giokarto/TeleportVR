@@ -1,7 +1,7 @@
 using UnityEngine;
 using Widgets;
 
-namespace Training
+namespace Tutorial
 {
     public class Welcome : Step
     {

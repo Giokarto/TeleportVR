@@ -1,13 +1,13 @@
 using System;
 using UnityEngine;
 
-namespace Training
+namespace Tutorial
 {
     public abstract class Step
     {
         public AudioManager audioManager;
-        public AudioClips.Misc miscAudio;
-        public AudioClips.Controller controllerAudio;
+        public MiscAudio miscAudio;
+        public ControllerAudio controllerAudio;
         
         /// <summary>
         /// Called when the step is started.

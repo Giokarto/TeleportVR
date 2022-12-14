@@ -1,9 +1,6 @@
-namespace Training
+namespace Tutorial
 {
-    /// <summary>
-    /// Move the right robot arm, touch an object.
-    /// </summary>
-    public class RightArm : Step
+    public class Done : Step
     {
         public override void Enter()
         {
