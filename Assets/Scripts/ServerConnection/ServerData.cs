@@ -64,20 +64,10 @@ namespace ServerConnection
         /// <param name="embody">true: enter the robot, false: exit the real world view</param>
         public void EmbodyRoboy(bool embody)
         {
-            if (embody)
-            {
-                SetMotorOn(true);
-                SetPresenceIndicatorOn(true);
-                LeftEye.SetActive(true);
-                RightEye.SetActive(true);
-            }
-            else
-            {
-                SetMotorOn(false);
-                SetPresenceIndicatorOn(false);
-                LeftEye.SetActive(false);
-                RightEye.SetActive(false);
-            }
+            SetMotorOn(embody);
+            SetPresenceIndicatorOn(embody);
+            LeftEye.SetActive(embody);
+            RightEye.SetActive(embody);
         }
     }
 }
