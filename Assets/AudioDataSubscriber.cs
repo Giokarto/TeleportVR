@@ -7,6 +7,7 @@ using UnityEngine;
 
 using Unity.Robotics.ROSTCPConnector;
 using Int8Array = RosMessageTypes.Std.Int8MultiArrayMsg;
+using Int16Array = RosMessageTypes.Std.Int16MultiArrayMsg;
 using NAudio.Wave;
 using System.IO;
 using System;
@@ -19,7 +20,7 @@ public class AudioDataSubscriber : MonoBehaviour
     {
         //AudioSettings.GetDSPBufferSize(out int l, out int n);
         //Debug.Log($"dsp buffer size: {l} {n}");
-        //AudioSettings.SetDSPBufferSize(256, 2);// 2048*2,1);
+        //AudioSettings.SetDSPBufferSize(4096*2, 8);// 2048*2,1);
                                                //AudioSettings.GetDSPBufferSize(out l, out n);
                                                //Debug.Log($"dsp buffer size2: {l} {n}");
 
@@ -37,19 +38,20 @@ public class AudioDataSubscriber : MonoBehaviour
         //AudioSettings.Reset(config);
 
 
-        ROSConnection.GetOrCreateInstance().Subscribe<Int8Array>("/audio/audio", ProcessAudio);
+        ROSConnection.GetOrCreateInstance().Subscribe<Int16Array>("/audio/audio", ProcessAudio);
 
         //Application.runInBackground = true;
         DeviceSampleRate = AudioSettings.GetConfiguration().sampleRate;
 
         if (Audio == null) Audio = GetComponent<AudioSource>();
         Audio.volume = volume;
+        
     }
 
     private void Update()
     {
         //UpdateFPS();
-        Debug.Log($"Current queue size: {ABufferQueue.Count}");
+        //Debug.Log($"Current queue size: {ABufferQueue.Count}");
     }
 
     private bool ReadyToGetFrame = true;
@@ -71,16 +73,18 @@ public class AudioDataSubscriber : MonoBehaviour
 
     public UnityEventFloatArray OnPCMFloatReadyEvent = new UnityEventFloatArray();
 
-    private void ProcessAudio(Int8Array data)
+    private void ProcessAudio(Int16Array data)
     {
+        ////Debug.Log($"max data: {data.data.Max()}");
+        ////Debug.Log($"Getting audio data of length: {data.data.Length}");
+        //byte[] audioBytes = new byte[data.data.Length];
+        //lock (_asyncLock)
+        //    System.Buffer.BlockCopy(data.data, 0, audioBytes, 0, audioBytes.Length); // needed to convert from sbyte
 
-        Debug.Log($"Getting audio data of length: {data.data.Length}");
-        byte[] audioBytes = new byte[data.data.Length];
-        lock (_asyncLock)
-            System.Buffer.BlockCopy(data.data, 0, audioBytes, 0, audioBytes.Length); // needed to convert from sbyte
-        //ProcessAudioData(audioBytes);
+        //StartCoroutine(ProcessAudioData(audioBytes));
 
-        StartCoroutine(ProcessAudioData(audioBytes));
+
+        StartCoroutine(ProcessAudioData4(data.data));
     }
 
     [Range(0f, 1f)]
@@ -134,6 +138,8 @@ public class AudioDataSubscriber : MonoBehaviour
                 SourceChannels = 1;// BitConverter.ToInt32(_channelsByte, 0);
 
                 float[] ABuffer = ToFloatArray(receivedAudioBytes);
+                Debug.Log(ABuffer.ToString());
+                Debug.Log($"length: {ABuffer.Length}");
                 
                 for (int i = 0; i < ABuffer.Length; i++)
                 {
@@ -161,12 +167,97 @@ public class AudioDataSubscriber : MonoBehaviour
         yield return null;
     }
 
+    IEnumerator ProcessAudioData3(short[] receivedAudioArray)
+    {
+        Audio.clip = AudioClip.Create("", 48000*2, 2, 48000, false);
+        //if (Audio.clip == null)
+        //{
+        //    Audio.clip = AudioClip.Create("", 48000, 2, 48000, false);
+        //}
+
+        //Audio.clip.SetData(NormalizeArray(receivedAudioArray), 0);
+
+        //var data = InterleaveArray(receivedAudioArray);
+        //var data = GetLeftChannel(receivedAudioArray);
+
+        var data = Array.ConvertAll(receivedAudioArray, (a) => a / 32767f);
+        Debug.Log($"max {data.Max()}");
+
+        DestroyImmediate(audioClip);
+        Audio.Stop();
+        Audio.clip.SetData(data, 0);
+
+
+        //Audio.loop = true;
+        Audio.Play();
+
+        //if (!Audio.isPlaying)
+        //{
+        //    Audio.Play();
+        //}
+        yield return null;
+    }
+
+    IEnumerator ProcessAudioData4(short[] receivedAudio)
+    {
+        receivedCount++;
+        SourceSampleRate = 48000;// 16000;// BitConverter.ToInt32(_sampleRateByte, 0);
+        SourceChannels = 1;// BitConverter.ToInt32(_channelsByte, 0);
+
+        float[] ABuffer = Array.ConvertAll(receivedAudio, (a) => a / 32767f);
+
+        for (int i = 0; i < ABuffer.Length/2; i++)
+        {
+            ABufferQueue.Enqueue(ABuffer[i]);
+        }
+
+        CreateClip();
+
+        //OnPCMFloatReadyEvent.Invoke(ABuffer);
+        //}
+        //ReadyToGetFrame = true;
+        //}
+        yield return null;
+    }
+
     private int position = 0;
     private int samplerate = 44100;
     private int channel = 2;
 
     private AudioClip audioClip;
     private AudioSource Audio;
+    //void CreateClip()
+    //{
+    //    //Debug.Log("Creating clip");
+    //    //if (samplerate != (int)SourceSampleRate || channel != SourceChannels)
+    //    //{
+    //        //Debug.Log("Streaming audio into an audio clip");
+    //        //samplerate = (int)SourceSampleRate;
+    //        //channel = SourceChannels;
+
+    //        //if (Audio != null) Audio.Stop();
+    //        //if (audioClip != null) DestroyImmediate(audioClip);
+
+    //        if (audioClip == null)
+    //        {
+    //            audioClip = AudioClip.Create("StreamingAudio", 48000 *2, 2, 48000, true, OnAudioRead, OnAudioSetPosition);
+    //            Debug.Log("Created a sample");
+    //            Audio = GetComponent<AudioSource>();
+    //            Audio.clip = audioClip;
+    //            //Audio.loop = true;
+    //            Audio.Play();
+    //        }
+
+    //        ////audioClip = AudioClip.Create("StreamingAudio", samplerate * SourceChannels, SourceChannels, samplerate, true, OnAudioRead, OnAudioSetPosition);
+    //        //audioClip = AudioClip.Create("StreamingAudio", 48000*4, 2, 48000, true, OnAudioRead, OnAudioSetPosition);
+    //        //Audio = GetComponent<AudioSource>();
+    //        //Audio.clip = audioClip;
+    //        //Audio.loop = true;
+    //        //Audio.Play();
+    //    //}
+
+    //}
+
     void CreateClip()
     {
         //Debug.Log("Creating clip");
@@ -179,7 +270,8 @@ public class AudioDataSubscriber : MonoBehaviour
             if (Audio != null) Audio.Stop();
             if (audioClip != null) DestroyImmediate(audioClip);
 
-            audioClip = AudioClip.Create("StreamingAudio", samplerate * SourceChannels, SourceChannels, samplerate, true, OnAudioRead, OnAudioSetPosition);
+            //audioClip = AudioClip.Create("StreamingAudio", samplerate * SourceChannels, SourceChannels, samplerate, true, OnAudioRead, OnAudioSetPosition);
+            audioClip = AudioClip.Create("StreamingAudio", 48000*4, 2, 48000, true, OnAudioRead, OnAudioSetPosition);
             Audio = GetComponent<AudioSource>();
             Audio.clip = audioClip;
             Audio.loop = true;
@@ -190,8 +282,9 @@ public class AudioDataSubscriber : MonoBehaviour
 
     void OnAudioRead(float[] data)
     {
-        //Debug.Log($"size of data: {data.Length}");
+        Debug.Log($"size of data: {data.Length} \t size of buf: {ABufferQueue.Count}");
         int count = 0;
+
         while (count < data.Length)
         {
             if (ABufferQueue.Count > 0)
@@ -209,6 +302,7 @@ public class AudioDataSubscriber : MonoBehaviour
         
     }
 
+
     void OnAudioSetPosition(int newPosition)
     {
         position = newPosition;
@@ -217,12 +311,57 @@ public class AudioDataSubscriber : MonoBehaviour
     private float[] ToFloatArray(byte[] byteArray)
     {
         int len = byteArray.Length / 2;
+        //Debug.Log($"Largest incoming array value: {byteArray.Max()}");
         float[] floatArray = new float[len];
         for (int i = 0; i < byteArray.Length; i += 2)
         {
             floatArray[i / 2] = ((float)BitConverter.ToInt16(byteArray, i)) / 32767f;
         }
+        //Debug.Log($"Largest float: {floatArray.Max()}");
         return floatArray;
+    }
+
+    private float[] NormalizeArray(short[] array)
+    {
+        // get left channel only
+        var ret = new List<float>();
+        for (int i = 0; i < array.Length/4; i++)
+        {
+            ret.Add(array[i*2]/ 32767f);
+        }
+        //return Array.ConvertAll(ret.ToArray(), (a) => a/32767f);
+        return ret.ToArray();
+    }
+
+    private float[] GetLeftChannel(short[] array)
+    {
+        var ret = new List<float>();
+        for (int i=0; i<array.Length/2;i++)
+        {
+            ret.Add(array[i*2]);
+        }
+        return ret.ToArray();
+    }
+
+    private float[] InterleaveArray(short[] array)
+    {
+        var leftChannel = new Queue<float>(); 
+        var rightChannel = new Queue<float>();
+        for (int i=0; i<array.Length/2;i++)
+        {
+            leftChannel.Enqueue(array[i]);
+        }
+        for (int i=array.Length/2; i<array.Length; i++)
+        {
+            rightChannel.Enqueue(array[i]);
+        }
+        var ret = new List<float>();
+        for (int i=0; i< array.Length/2; i++)
+        {
+            ret.Add(leftChannel.Dequeue());
+            ret.Add(rightChannel.Dequeue());
+        }
+        return ret.ToArray();
     }
 
     public class FixedSizedQueue<T>
