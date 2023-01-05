@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.0031560352, g: 0.0027321004, b: 0.0033642156, a: 1}
+  m_IndirectSpecularColor: {r: 0.0031024283, g: 0.002798376, b: 0.0032811726, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -781,7 +781,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &294001289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -794,7 +794,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84ab32c113e76e04c893aa1f24a9f6ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: /operator/joint_target
+  topicName: /roboy/pinky/simulation/joint_targets
   publishMessageFrequency: 0.02
   BodyIK: {fileID: 618619396}
   HeadIK: {fileID: 618619395}
@@ -853,7 +853,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!82 &303857991
 AudioSource:
   m_ObjectHideFlags: 0
@@ -963,7 +963,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   topicName: /operator/audio
-  publishMessageFrequency: 0.025
+  publishMessageFrequency: 0.0001
   DetectedDevices: 
   DeviceMode: 0
   OutputSampleRate: 11025
@@ -6261,7 +6261,7 @@ PrefabInstance:
     - target: {fileID: 2459119425388815567, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2497834216055462839, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
@@ -8352,8 +8352,9 @@ GameObject:
   - component: {fileID: 1553459039}
   - component: {fileID: 1553459038}
   - component: {fileID: 1553459037}
+  - component: {fileID: 1553459040}
   m_Layer: 0
-  m_Name: ROS Audio Sub
+  m_Name: ROS Audio Handler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8369,7 +8370,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: bc031300d71a440478c3d3a94d61fc7a, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -8467,17 +8468,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9de8537288d5a94c95cc36d7c411659, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  label: 2001
-  GZipMode: 0
   FPS: 0
   RPS: 0
-  OnPCMFloatReadyEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  volume: 1
   SourceChannels: 1
   SourceSampleRate: 48000
   DeviceSampleRate: 48000
+  Audio: {fileID: 1553459037}
+  outgoingTopicName: /operator/audio
+  incomingTopicName: /audio/audio
+  AudioMic: {fileID: 1553459040}
+  DetectedDevices: 
+  DeviceMode: 0
+  OutputSampleRate: 11025
+  OutputChannels: 1
+  volume: 1
 --- !u!4 &1553459039
 Transform:
   m_ObjectHideFlags: 0
@@ -8492,6 +8496,102 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1553459040
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1553459036}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &1562753099 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -3010126064790280443, guid: 8376e5037528d434cab49e987b7a4e72,

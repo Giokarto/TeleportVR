@@ -24,7 +24,7 @@ public class SubscriberCamera : MonoBehaviour
     private void Start()
     {
         ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(TopicName, GetImage);
-        texture2D = new Texture2D(4056, 3040, TextureFormat.RGBA32, false);
+        texture2D = new Texture2D(1280, 720);//, TextureFormat.BGRA32, false);
     }
 
     private void Update()
@@ -65,10 +65,17 @@ public class SubscriberCamera : MonoBehaviour
 
     private IEnumerator ProcessImage(byte[] ReceivedImage)
     {
-        
-        
-        texture2D.LoadImage(ReceivedImage);
+        //Color32[] bgradata = new Color32[720 * 1280];
+
+        //for (int i = 0; i < ReceivedImage.Length; i += 3)
+        //{
+        //    bgradata[i / 3] = new Color32(ReceivedImage[i + 2], ReceivedImage[i + 1], ReceivedImage[i], 255);
+        //}
+        //texture2D.SetPixels32(bgradata);
         //texture2D.Apply();
+
+        texture2D.LoadImage(ReceivedImage);
+        
         meshRenderer.material.SetTexture("_MainTex", texture2D);
         messageProcessed = true;
 
