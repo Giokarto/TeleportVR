@@ -13,6 +13,7 @@
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.4.8",
     "com.unity.toolchain.linux-x86_64": "2.0.2",
+    "com.unity.webrtc": "2.4.0-exp.11",
     "com.unity.xr.interaction.toolkit": "2.2.0",
     "com.unity.xr.management": "4.2.1",
     "com.unity.xr.mock-hmd": "1.2.0-preview.1",

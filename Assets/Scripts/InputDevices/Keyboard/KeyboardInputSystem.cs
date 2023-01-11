@@ -9,18 +9,18 @@ namespace InputDevices.Keyboard
     {
         public override void Update()
         {
-            if (Input.GetKey(KeyCode.M))
+            if (Input.GetKeyDown(KeyCode.M))
                 InvokeLeftMenuButton();
-            if (Input.GetKey(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.A))
                 InvokeLeftPrimaryButton();
-            if (Input.GetKey(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.S))
                 InvokeLeftSecondaryButton();
-            if (Input.GetKey(KeyCode.L))
+            if (Input.GetKeyDown(KeyCode.L))
                 InvokeRightPrimaryButton();
-            if (Input.GetKey(KeyCode.K))
+            if (Input.GetKeyDown(KeyCode.K))
                 InvokeRightSecondaryButton();
             
-            if (Input.anyKey)
+            if (Input.anyKeyDown)
                 InvokeAnyButton();
         }
     }
