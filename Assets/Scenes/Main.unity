@@ -1530,6 +1530,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Sphere
       objectReference: {fileID: 0}
+    - target: {fileID: 2110314515825984210, guid: 04eb2aabbd7da2454ab6c42e7c61cd1e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3937725099707715706, guid: 04eb2aabbd7da2454ab6c42e7c61cd1e,
         type: 3}
       propertyPath: m_Mesh

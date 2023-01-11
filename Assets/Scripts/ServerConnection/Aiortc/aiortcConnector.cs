@@ -217,7 +217,7 @@ public class aiortcConnector : MonoBehaviour
         }
         else if (desc.type == RTCSdpType.Offer)
         {
-            yield return StartCoroutine(CreateDesc(RTCSdpType.Answer));
+            StartCoroutine(CreateDesc(RTCSdpType.Answer));
         }
     }
 
@@ -240,7 +240,7 @@ public class aiortcConnector : MonoBehaviour
         
         var resMsg = JsonUtility.FromJson<SignalingMsg>(req.downloadHandler.text);
 
-        yield return StartCoroutine(SetDesc(Side.Remote, resMsg.ToDesc()));
+        StartCoroutine(SetDesc(Side.Remote, resMsg.ToDesc()));
     }
 
     void Update()
