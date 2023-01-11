@@ -1,11 +1,12 @@
 using System;
+using ServerConnection;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ImtpEncoder : MonoBehaviour
 {
-    [SerializeField] private GameObject leftEye;
-    [SerializeField] private GameObject rightEye;
+    [SerializeField] public GameObject leftEye;
+    [SerializeField] public GameObject rightEye;
     [SerializeField] private VideoStreamViewType videoStreamViewType;
     private Renderer leftEyeRenderer, righEyeRenderer;
     private Texture2D lastReceivedTexture;
@@ -18,8 +19,8 @@ public class ImtpEncoder : MonoBehaviour
 
     public void Start()
     {
-        leftEyeRenderer = leftEye.GetComponent<Renderer>();
-        righEyeRenderer = rightEye.GetComponent<Renderer>();
+        leftEyeRenderer = leftEye.GetComponentInChildren<Renderer>();
+        righEyeRenderer = rightEye.GetComponentInChildren<Renderer>();
     }
 
     public void SetLastReceivedTexture(Texture lastReceivedTexture_)

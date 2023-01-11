@@ -1,24 +1,57 @@
 using System.Collections.Generic;
 using InputDevices;
 using InputDevices.Controllers;
+using UnityEditor;
 using UnityEngine;
 
 namespace ServerConnection
 {
     public abstract class ServerData: Singleton<ServerData>
     {
-        public GameObject LeftEye;
-        public GameObject RightEye;
+        public GameObject LeftEyePrefab;
+        public GameObject RightEyePrefab;
+        [SerializeField] protected GameObject LeftEye;
+        [SerializeField] protected GameObject RightEye;
+
+        /// <summary>
+        /// Creates a plane from prefab to project the video to, and adds it as a child of the Eye Anchor.
+        /// Why create it from the script and not in the Editor:
+        ///     1. To keep the modules separate (server is one GO, but the plane has to go as a child of the Head)
+        ///     2. To be able to replace the plane by a different object (Sphere) for different types of cameras
+        ///     3. To not clutter up the scene when the server is not present
+        /// </summary>
+        protected void CreateLeftEye()
+        {
+            var anchor = GameObject.Find("LeftEyeAnchor");
+            if (LeftEyePrefab == null)
+                LeftEyePrefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/EyePlanes/LeftEye.prefab", typeof(GameObject)) as GameObject;
+            LeftEye = Instantiate(LeftEyePrefab, anchor.transform);
+        }
+        
+        /// <summary>
+        /// See <see cref="CreateLeftEye"/>.
+        /// </summary>
+        protected void CreateRightEye()
+        {
+            var anchor = GameObject.Find("RightEyeAnchor");
+            if (RightEyePrefab == null)
+                RightEyePrefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/EyePlanes/RightEye.prefab", typeof(GameObject)) as GameObject;
+            RightEye = Instantiate(RightEyePrefab, anchor.transform);
+        }
         
         private void OnEnable()
         {
             ControllerInputSystem.OnGripChange += ChangeGrip;
             InputSystem.OnLeftPrimaryButton += SendHearts;
+            CreateLeftEye();
+            CreateRightEye();
         }
         private void OnDisable()
         {
             ControllerInputSystem.OnGripChange -= ChangeGrip;
             InputSystem.OnLeftPrimaryButton -= SendHearts;
+            Destroy(LeftEye);
+            Destroy(RightEye);
         }
 
         public abstract bool ConnectedToServer { get; protected set; }

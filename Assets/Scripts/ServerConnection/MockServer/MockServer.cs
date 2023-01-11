@@ -23,8 +23,6 @@ namespace ServerConnection.MockServer
         
         private Texture2D _leftTexture;
         private Texture2D _rightTexture;
-        [SerializeField] private GameObject _leftPlane;
-        [SerializeField] private GameObject _rightPlane;
         private Renderer _leftRenderer;
         private Renderer _rightRenderer;
         
@@ -40,9 +38,11 @@ namespace ServerConnection.MockServer
             videoPlayer.audioOutputMode = VideoAudioOutputMode.None;
             videoPlayer.isLooping = true;
             videoPlayer.Play();
-                
-            _leftRenderer = _leftPlane.GetComponent<Renderer>();
-            _rightRenderer = _rightPlane.GetComponent<Renderer>();
+            
+            Debug.Log("Server getting renderer");
+            Debug.Log(LeftEye);
+            _leftRenderer = LeftEye.GetComponentInChildren<Renderer>();
+            _rightRenderer = RightEye.GetComponentInChildren<Renderer>();
         }
         
         public void Update()

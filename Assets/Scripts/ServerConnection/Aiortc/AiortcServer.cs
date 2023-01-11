@@ -7,12 +7,17 @@ namespace ServerConnection.Aiortc
 {
     public class AiortcServer : ServerData
     {
+        [SerializeField] private aiortcConnector aiortcConnector;
+        [SerializeField] private ImtpEncoder imtpEncoder;
+        
         private int fps = 10;
         
         
         public void Start()
         {
             ConnectedToServer = true;
+            imtpEncoder.leftEye = LeftEye;
+            imtpEncoder.rightEye = RightEye;
         }
         
         public void Update()

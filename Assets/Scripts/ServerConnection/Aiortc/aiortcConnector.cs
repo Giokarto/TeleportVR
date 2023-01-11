@@ -17,8 +17,6 @@ public class aiortcConnector : MonoBehaviour
     [SerializeField] private ImtpEncoder imtpEncoder;
     [SerializeField] private AudioSource receiveAudio;
 
-    private Texture2D incomingTexture2D;
-    private Color[] oldColors = null;
     public enum VideoTransformType
     {
         None,
@@ -102,7 +100,6 @@ public class aiortcConnector : MonoBehaviour
             {
                 // You can access received texture using `track.Texture` property.
                 Debug.Log("receiveStream.OnAddTrack ");
-                incomingTexture2D = (Texture2D) track.Texture;
             }
             else if (e.Track is AudioStreamTrack track2)
             {
