@@ -19,7 +19,9 @@ namespace ServerConnection.Aiortc
             imtpEncoder.leftEye = LeftEye;
             imtpEncoder.rightEye = RightEye;
         }
-        
+
+        public override int[][] FaceCoordinates { get => aiortcConnector.faceCoordinates; }
+
         public void Update()
         {
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using InputDevices;
 using InputDevices.Controllers;
@@ -24,7 +25,10 @@ namespace ServerConnection
         {
             var anchor = GameObject.Find("LeftEyeAnchor");
             if (LeftEyePrefab == null)
+            {
+                Debug.Log("LeftEyePrefab not set, loading default plane");
                 LeftEyePrefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/EyePlanes/LeftEye.prefab", typeof(GameObject)) as GameObject;
+            }
             LeftEye = Instantiate(LeftEyePrefab, anchor.transform);
         }
         
@@ -35,7 +39,10 @@ namespace ServerConnection
         {
             var anchor = GameObject.Find("RightEyeAnchor");
             if (RightEyePrefab == null)
+            {
+                Debug.Log("RightEyePrefab not set, loading default plane");
                 RightEyePrefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/EyePlanes/RightEye.prefab", typeof(GameObject)) as GameObject;
+            }
             RightEye = Instantiate(RightEyePrefab, anchor.transform);
         }
         
@@ -52,6 +59,11 @@ namespace ServerConnection
             InputSystem.OnLeftPrimaryButton -= SendHearts;
             Destroy(LeftEye);
             Destroy(RightEye);
+        }
+
+        public virtual int[][] FaceCoordinates
+        {
+            get { return new int[][] { }; }
         }
 
         public abstract bool ConnectedToServer { get; protected set; }

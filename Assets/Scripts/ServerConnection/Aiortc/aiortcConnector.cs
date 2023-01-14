@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Unity.WebRTC;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -55,6 +58,8 @@ public class aiortcConnector : MonoBehaviour
     private DelegateOnClose onDataChannelClose;
     private DelegateOnDataChannel onDataChannel;
 
+    public Int32[][] faceCoordinates = {};
+
     void Start()
     {
         
@@ -67,7 +72,26 @@ public class aiortcConnector : MonoBehaviour
         onDataChannelMessage = bytes =>
         {
             var str = System.Text.Encoding.UTF8.GetString(bytes);
-            Debug.Log($"{str}");
+            if (str.StartsWith("faces: "))
+            {
+                faceCoordinates = JsonConvert.DeserializeObject<Int32[][]>(str.Substring(7));
+
+                var texture2D = dummyImage.texture as Texture2D;
+                foreach (var face in faceCoordinates)
+                {
+                    Debug.Log($"red face {face[0]}, {face[1]}, {face[2]}, {face[3]}");
+                    for (int i = face[0]; i < face[0]+face[2]; i++)
+                    {
+                        for (int j = face[1]; j < face[1]+face[3]; j++)
+                        {
+                            texture2D.SetPixel(i, texture2D.height - j, Color.red);
+                        }
+                    }
+                }
+                texture2D.Apply();
+                dummyImage.texture = texture2D;
+            }
+            //Debug.Log($"{str}");
             //textReceive.text = System.Text.Encoding.UTF8.GetString(bytes);
         };
         onDataChannelOpen = () =>
@@ -157,6 +181,7 @@ public class aiortcConnector : MonoBehaviour
 
                 video.OnVideoReceived += tex =>
                 {
+                    Debug.Log("onvideoreceived");
                     dummyImage.texture = tex;
                 };
             }

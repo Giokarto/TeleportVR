@@ -28,7 +28,7 @@ public class ImtpEncoder : MonoBehaviour
         try
         {
             lastReceivedTexture = GetTexture(lastReceivedTexture_);
-            Update();
+            UpdateTextures();
         }
         catch (Exception e)
         {
@@ -48,6 +48,20 @@ public class ImtpEncoder : MonoBehaviour
 
         RenderTexture.active = renderTexture;
         texture2D.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
+        
+        var faces = (FindObjectOfType(typeof(aiortcConnector)) as aiortcConnector).faceCoordinates;
+        foreach (var face in faces)
+        {
+            Debug.Log($"blue face {face[0]}, {face[1]}, {face[2]}, {face[3]}");
+            for (int i = face[0]; i < face[0]+face[2]; i++)
+            {
+                for (int j = face[1]; j < face[1]+face[3]; j++)
+                {
+                    texture2D.SetPixel(i, texture2D.height - j, Color.blue);
+                }
+            }
+        }
+        
         texture2D.Apply();
 
         RenderTexture.active = currentRT;
@@ -96,7 +110,7 @@ public class ImtpEncoder : MonoBehaviour
         return ret;
     }
 
-    private void Update()
+    private void UpdateTextures()
     {
         leftEyeRenderer.material.mainTexture = GetEyeTexture2D(lastReceivedTexture, "left");
         righEyeRenderer.material.mainTexture = GetEyeTexture2D(lastReceivedTexture, "right");
