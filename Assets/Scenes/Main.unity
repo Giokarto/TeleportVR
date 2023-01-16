@@ -862,9 +862,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae1d07763e24528ab0e91823ad5abb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LeftEyePrefab: {fileID: 8432836605499604246, guid: d6811525610534b4daec51a68c59a46e,
+  LeftEyePrefab: {fileID: 650765655978913324, guid: 4a3c88a14733a5e4ab063c535704a717,
     type: 3}
-  RightEyePrefab: {fileID: 9088057655630526641, guid: 8d83651f0211037469cfd3ffc11cae08,
+  RightEyePrefab: {fileID: 522820554026848309, guid: 5fb006a593b5d054995f24fe7b79ad74,
     type: 3}
   LeftEye: {fileID: 0}
   RightEye: {fileID: 0}
@@ -7069,7 +7069,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e1f192c59c54fbd87c25983cfdf6704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aiortcServerURL: localhost:8080
+  aiortcServerURL: http://192.168.1.103:8080
   dummyImage: {fileID: 1609621274}
   videoTransformType: 0
   imtpEncoder: {fileID: 1678106452}

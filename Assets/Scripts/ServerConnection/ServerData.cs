@@ -27,7 +27,7 @@ namespace ServerConnection
             if (LeftEyePrefab == null)
             {
                 Debug.Log("LeftEyePrefab not set, loading default plane");
-                LeftEyePrefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/EyePlanes/LeftEye.prefab", typeof(GameObject)) as GameObject;
+                LeftEyePrefab = Resources.Load<GameObject>("EyePlanes/LeftEye");
             }
             LeftEye = Instantiate(LeftEyePrefab, anchor.transform);
         }
@@ -41,7 +41,7 @@ namespace ServerConnection
             if (RightEyePrefab == null)
             {
                 Debug.Log("RightEyePrefab not set, loading default plane");
-                RightEyePrefab = AssetDatabase.LoadAssetAtPath("Assets/Prefabs/EyePlanes/RightEye.prefab", typeof(GameObject)) as GameObject;
+                RightEyePrefab = Resources.Load<GameObject>("EyePlanes/RightEye");
             }
             RightEye = Instantiate(RightEyePrefab, anchor.transform);
         }

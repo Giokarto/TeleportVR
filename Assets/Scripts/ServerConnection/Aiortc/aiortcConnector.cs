@@ -7,6 +7,7 @@ using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Unity.WebRTC;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Networking;
@@ -19,6 +20,11 @@ public class aiortcConnector : MonoBehaviour
     [SerializeField] private VideoTransformType videoTransformType;
     [SerializeField] private ImtpEncoder imtpEncoder;
     [SerializeField] private AudioSource receiveAudio;
+
+    private Renderer leftRenderer;
+    private Renderer rightRenderer;
+
+    private Renderer leftFaceDetectionRenderer;
 
     public enum VideoTransformType
     {
@@ -62,6 +68,10 @@ public class aiortcConnector : MonoBehaviour
 
     void Start()
     {
+        leftRenderer = imtpEncoder.leftEye.GetNamedChild("LeftSphereMaterial").GetComponent<Renderer>();
+        leftFaceDetectionRenderer = imtpEncoder.leftEye.GetNamedChild("Plane").GetComponent<Renderer>();
+        leftFaceDetectionRenderer.material.mainTexture = new Texture2D(1080, 1080);
+        rightRenderer = imtpEncoder.rightEye.GetComponentInChildren<Renderer>();
         
         onDataChannel = channel =>
         {
@@ -76,20 +86,20 @@ public class aiortcConnector : MonoBehaviour
             {
                 faceCoordinates = JsonConvert.DeserializeObject<Int32[][]>(str.Substring(7));
 
-                var texture2D = dummyImage.texture as Texture2D;
-                foreach (var face in faceCoordinates)
-                {
-                    Debug.Log($"red face {face[0]}, {face[1]}, {face[2]}, {face[3]}");
-                    for (int i = face[0]; i < face[0]+face[2]; i++)
-                    {
-                        for (int j = face[1]; j < face[1]+face[3]; j++)
-                        {
-                            texture2D.SetPixel(i, texture2D.height - j, Color.red);
-                        }
-                    }
-                }
-                texture2D.Apply();
-                dummyImage.texture = texture2D;
+                // var texture2D = leftFaceDetectionRenderer.material.mainTexture as Texture2D;
+                // foreach (var face in faceCoordinates)
+                // {
+                //     Debug.Log($"red face {face[0]}, {face[1]}, {face[2]}, {face[3]}");
+                //     for (int i = face[0]; i < face[0]+face[2]; i++)
+                //     {
+                //         for (int j = face[1]; j < face[1]+face[3]; j++)
+                //         {
+                //             texture2D.SetPixel(i, texture2D.height - j, Color.red);
+                //         }
+                //     }
+                // }
+                // texture2D.Apply();
+                // leftFaceDetectionRenderer.material.mainTexture = texture2D;
             }
             //Debug.Log($"{str}");
             //textReceive.text = System.Text.Encoding.UTF8.GetString(bytes);
@@ -267,10 +277,14 @@ public class aiortcConnector : MonoBehaviour
 
     void Update()
     {
-        if (imtpEncoder != null)
-        {
-            imtpEncoder.SetLastReceivedTexture(dummyImage.texture);
-        }
+        // if (imtpEncoder != null)
+        // {
+        //     imtpEncoder.SetLastReceivedTexture(dummyImage.texture);
+        // }
+
+        leftRenderer.material.mainTexture = dummyImage.texture as Texture2D;
+        rightRenderer.material.mainTexture = dummyImage.texture as Texture2D;
+
         /*
         var originalTargetTexture = cam.targetTexture;
         cam.targetTexture = rt;
