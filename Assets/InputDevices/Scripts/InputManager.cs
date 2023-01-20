@@ -8,6 +8,10 @@ public class InputManager : Singleton<InputManager>
 {
     public List<UnityEngine.XR.InputDevice> controllerLeft = new List<UnityEngine.XR.InputDevice>();
     public List<UnityEngine.XR.InputDevice> controllerRight = new List<UnityEngine.XR.InputDevice>();
+    public List<UnityEngine.XR.InputDevice> headset = new List<UnityEngine.XR.InputDevice>();
+
+    public bool IsInitialized = false;
+
     public HandManager handManager;
     public StartCalibrator startCalibrator;
 
@@ -22,9 +26,18 @@ public class InputManager : Singleton<InputManager>
     {
         GetLeftController();
         GetRightController();
+        GetHeadset();
 
         vrGestureRecognizer.Nodded += OnNodded;
         vrGestureRecognizer.HeadShaken += OnHeadShaken;
+
+        IsInitialized = true;
+    }
+
+    public bool IsUserActive()
+    {
+        headset[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.userPresence, out bool userActive);
+        return userActive;
     }
 
     private bool GetControllerAvailable(bool leftController)
@@ -55,6 +68,13 @@ public class InputManager : Singleton<InputManager>
             InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Right, controllerRight);
         }
         return controllerRight.Count > 0;
+    }
+
+    public bool GetHeadset()
+    {
+        if (headset.Count ==0)
+            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(UnityEngine.XR.InputDeviceCharacteristics.HeadMounted, headset);
+        return headset.Count > 0;
     }
 
     /// try to get the left controller, if possible.<!-- return if the controller can be referenced.-->
@@ -152,6 +172,12 @@ public class InputManager : Singleton<InputManager>
         //    UnityAnimusClient.Instance.EnableMotor(true);
         //else
         //    UnityAnimusClient.Instance.EnableMotor(false);
+
+        // update refs to devices in case tracking was lost
+        GetLeftController();
+        GetRightController();
+        GetHeadset();
+
 
         if (!Widgets.WidgetInteraction.settingsAreActive)
         {
@@ -315,14 +341,14 @@ public class InputManager : Singleton<InputManager>
             if (GetRightController())
             {
                 // update the emotion buttons
-                if (controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out btn))
-                {
-                    UnityAnimusClient.Instance.RightButton1 = btn;
-                }
-                if (controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn))
-                {
-                    UnityAnimusClient.Instance.RightButton2 = btn;
-                }
+                //if (controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out btn))
+                //{
+                //    UnityAnimusClient.Instance.RightButton1 = btn;
+                //}
+                //if (controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn))
+                //{
+                //    UnityAnimusClient.Instance.RightButton2 = btn;
+                //}
 
                 if ( //StateManager.Instance.currentState == StateManager.States.Construct ||
                     StateManager.Instance.currentState == StateManager.States.Training)
