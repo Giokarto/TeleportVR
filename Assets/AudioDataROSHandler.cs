@@ -56,6 +56,8 @@ public class AudioDataROSHandler : MonoBehaviour
 
     void Start()
     {
+
+        
         //AudioSettings.GetDSPBufferSize(out int l, out int n);
         //Debug.Log($"dsp buffer size: {l} {n}");
         //AudioSettings.SetDSPBufferSize(4096*2, 8);// 2048*2,1);
@@ -105,8 +107,11 @@ public class AudioDataROSHandler : MonoBehaviour
 
     private void ProcessAudio(Int16MultiArrayMsg data)
     {
-        //Debug.Log("received audio data");
-        StartCoroutine(ProcessAudioData(data.data));
+        if (InputManager.Instance.IsUserActive())
+        {
+            StartCoroutine(ProcessAudioData(data.data));
+        }
+            
     }
 
     [Range(0f, 1f)]
@@ -193,7 +198,7 @@ public class AudioDataROSHandler : MonoBehaviour
                 data[count] = ABufferQueue.Dequeue();
                 //ABufferQueue.TryDequeue(out data[count]);
             }
-            else { data[count] = 0f; }
+            //else { data[count] = 0f; }
 
             position++;
             count++;
@@ -296,7 +301,7 @@ public class AudioDataROSHandler : MonoBehaviour
         foreach (string _name in MicNames)
         {
             DetectedDevices += _name + "\n";
-            Debug.Log($"mic: {_name}");
+            //Debug.Log($"mic: {_name}");
         }
         //Debug.Log(MicNames);
         //if (DeviceMode == MicDeviceMode.TargetDevice)
@@ -319,7 +324,7 @@ public class AudioDataROSHandler : MonoBehaviour
         CurrentDeviceName = MicNames[0];
         AudioSettings.outputSampleRate = 48000;
 
-        Debug.Log("staring mic device...");
+        //Debug.Log("staring mic device...");
 
         AudioMic.clip = Microphone.Start(CurrentDeviceName, true, 1, 48000);// OutputSampleRate);
 

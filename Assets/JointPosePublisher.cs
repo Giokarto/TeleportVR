@@ -17,6 +17,7 @@ public class JointPosePublisher : MonoBehaviour
     List<double> positions, velocities;
     List<string> names;
     
+    private bool motionEnabled, lastMenuBtn;
 
     // TODO move finger joint names definitions somewhere sane
     private List<string> fingerJointNames = new List<string>{ "thumb_", "index_", "middle_", "pinky_"};
@@ -24,6 +25,7 @@ public class JointPosePublisher : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<JointStateMsg>(topicName);
 
@@ -33,30 +35,64 @@ public class JointPosePublisher : MonoBehaviour
         positions = new List<double>();
         velocities = new List<double>();
         names = new List<string>();
+
+        motionEnabled = true;
     }
 
     // Update is called once per frame
     void Update()
     {
+        bool btn;
+        if (InputManager.Instance.ControllerLeft.TryGetFeatureValue(UnityEngine.XR.CommonUsages.menuButton, out btn) && btn && !lastMenuBtn)
+        {
+            motionEnabled = !motionEnabled;
+        }
+        lastMenuBtn = btn;
+
+        // reset joints to 0 when the headset is not on
+        //if (!InputManager.Instance.IsUserActive())
+        //{
+        //    ResetJoints();
+        //    ros.Publish(topicName, GetLatestJointStates());
+        //    motionEnabled = false;
+        //}
+
         timeElapsed += Time.deltaTime;
 
         if (timeElapsed > publishMessageFrequency)
         {
-            ros.Publish(topicName, GetLatestJointStates());
+            if (motionEnabled) ros.Publish(topicName, GetLatestJointStates());
             timeElapsed = 0;
         }
     }
+
+    void ResetJoints()
+    {
+        //foreach (var segment in HeadIK.Segments)
+        //{
+        //    //HeadIK.ResetPosture(segment);
+        //    if (segment.Joint != null)
+        //    {
+        //        segment.Joint.
+        //    }
+        //}
+        foreach (var segment in BodyIK.Segments)
+        {
+            BodyIK.ResetPosture(segment);
+        }
+    }
+
+
 
     JointStateMsg GetLatestJointStates()
     {
         positions = new List<double>();
         velocities = new List<double>();
         names = new List<string>();
-
+        
         // head joints
         foreach (var segment in HeadIK.Segments)
         {
-
             if (segment.Joint != null)
             {
                 names.Add(segment.Joint.name);
@@ -92,11 +128,11 @@ public class JointPosePublisher : MonoBehaviour
         // hand
         float left_open = 0, right_open = 0;
         if (InputManager.Instance.GetLeftController())
-            InputManager.Instance.controllerLeft[0]
+            InputManager.Instance.ControllerLeft
                 .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left_open);
 
         if (InputManager.Instance.GetRightController())
-            InputManager.Instance.controllerRight[0]
+            InputManager.Instance.ControllerRight
                 .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
 
 
@@ -114,13 +150,13 @@ public class JointPosePublisher : MonoBehaviour
             names.Add(fingerJointNames[i] + "left");
         }
 
-        // wheelchair
-        positions.Add(0f);
-        velocities.Add(InputManager.Instance.GetControllerJoystick(true).y); //linear velocity
-        names.Add("wheelchair_linear");
-        positions.Add(0f);
-        velocities.Add(-InputManager.Instance.GetControllerJoystick(false).x); // angular velocity
-        names.Add("wheelchair_angular");
+        //// wheelchair - moved to a separate script
+        //positions.Add(0f);
+        //velocities.Add(InputManager.Instance.GetControllerJoystick(true).y); //linear velocity
+        //names.Add("wheelchair_linear");
+        //positions.Add(0f);
+        //velocities.Add(-InputManager.Instance.GetControllerJoystick(false).x); // angular velocity
+        //names.Add("wheelchair_angular");
 
         //TODO fill header
 

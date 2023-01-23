@@ -96,12 +96,12 @@ public class EnableControlManager : Singleton<EnableControlManager>
     {
         if (InputManager.Instance.GetLeftController())
         {
-            leftController = InputManager.Instance.controllerLeft[0];
+            leftController = InputManager.Instance.ControllerLeft;
             leftControllerFound = true;
         }
         if (InputManager.Instance.GetRightController())
         {
-            rightController = InputManager.Instance.controllerRight[0];
+            rightController = InputManager.Instance.ControllerRight;
             rightControllerFound = true;
         }
     }

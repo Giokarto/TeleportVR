@@ -6,9 +6,13 @@ using Widgets;
 
 public class InputManager : Singleton<InputManager>
 {
-    public List<UnityEngine.XR.InputDevice> controllerLeft = new List<UnityEngine.XR.InputDevice>();
-    public List<UnityEngine.XR.InputDevice> controllerRight = new List<UnityEngine.XR.InputDevice>();
-    public List<UnityEngine.XR.InputDevice> headset = new List<UnityEngine.XR.InputDevice>();
+    private List<UnityEngine.XR.InputDevice> controllerLeftList = new List<UnityEngine.XR.InputDevice>();
+    private List<UnityEngine.XR.InputDevice> controllerRightList = new List<UnityEngine.XR.InputDevice>();
+    private List<UnityEngine.XR.InputDevice> headsetList = new List<UnityEngine.XR.InputDevice>();
+
+    public InputDevice ControllerLeft;
+    public InputDevice ControllerRight;
+    public InputDevice Headset;
 
     public bool IsInitialized = false;
 
@@ -36,8 +40,13 @@ public class InputManager : Singleton<InputManager>
 
     public bool IsUserActive()
     {
-        headset[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.userPresence, out bool userActive);
+        headsetList[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.userPresence, out bool userActive);
         return userActive;
+    }
+
+    public bool IsDeviceAvailable(InputDevice device)
+    {
+        return device != null;
     }
 
     private bool GetControllerAvailable(bool leftController)
@@ -47,54 +56,86 @@ public class InputManager : Singleton<InputManager>
 
     public InputDevice GetController(bool leftController)
     {
-        return leftController ? controllerLeft[0] : controllerRight[0];
+        return leftController ? controllerLeftList[0] : controllerRightList[0];
+    }
+
+    public InputDevice? GetDeviceByName(string name)
+    {
+        if (name.ToLower().Contains("controller"))
+        {
+            if (name.ToLower().Contains("left")) return ControllerLeft;
+            if (name.ToLower().Contains("right")) return ControllerRight;
+        }
+        
+        else if (name.ToLower().Contains("headset") || name.ToLower().Contains("hmd"))
+        {
+            return Headset;
+        }
+
+        Debug.LogWarning($"Could not find device by name {name}");
+        return null;
     }
 
     /// try to get the left controller, if possible.<!-- return if the controller can be referenced.-->
     public bool GetLeftControllerAvailable()
     {
-        if (controllerLeft.Count == 0)
+        if (controllerLeftList.Count == 0)
         {
-            InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Left, controllerLeft);
+            InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Left, controllerLeftList);
         }
-        return controllerLeft.Count > 0;
+        return controllerLeftList.Count > 0;
     }
 
     /// try to get the right controller, if possible.<!-- return if the controller can be referenced.-->
     public bool GetRightControllerAvailable()
     {
-        if (controllerRight.Count == 0)
+        if (controllerRightList.Count == 0)
         {
-            InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Right, controllerRight);
+            InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Right, controllerRightList);
         }
-        return controllerRight.Count > 0;
+        return controllerRightList.Count > 0;
     }
 
     public bool GetHeadset()
     {
-        if (headset.Count ==0)
-            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(UnityEngine.XR.InputDeviceCharacteristics.HeadMounted, headset);
-        return headset.Count > 0;
+        if (headsetList.Count ==0)
+        {
+            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(UnityEngine.XR.InputDeviceCharacteristics.HeadMounted, headsetList);
+            if (headsetList.Count > 0)
+            {
+                Headset = headsetList[0];
+            }
+        }
+            
+        return headsetList.Count > 0;
     }
 
     /// try to get the left controller, if possible.<!-- return if the controller can be referenced.-->
     public bool GetLeftController()
     {
-        if (controllerLeft.Count == 0)
+        if (controllerLeftList.Count == 0)
         {
-            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(UnityEngine.XR.InputDeviceCharacteristics.Left, controllerLeft);
+            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(UnityEngine.XR.InputDeviceCharacteristics.Left, controllerLeftList);
+            if (controllerLeftList.Count > 0 )
+            {
+                ControllerLeft = controllerLeftList[0];
+            }
         }
-        return controllerLeft.Count > 0;
+        return controllerLeftList.Count > 0;
     }
 
     /// try to get the right controller, if possible.<!-- return if the controller can be referenced.-->
     public bool GetRightController()
     {
-        if (controllerRight.Count == 0)
+        if (controllerRightList.Count == 0)
         {
-            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(UnityEngine.XR.InputDeviceCharacteristics.Right, controllerRight);
+            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(UnityEngine.XR.InputDeviceCharacteristics.Right, controllerRightList);
+            if (controllerRightList.Count > 0)
+            {
+                ControllerRight = controllerRightList[0];
+            }
         }
-        return controllerRight.Count > 0;
+        return controllerRightList.Count > 0;
     }
 
     public bool GetControllerBtn(InputFeatureUsage<bool> inputFeature, bool leftController)
@@ -185,7 +226,7 @@ public class InputManager : Singleton<InputManager>
             if (GetLeftController())
             {
                 // enable/disable motor
-                if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.menuButton, out btn) && btn && !lastMenuBtn)
+                if (controllerLeftList[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.menuButton, out btn) && btn && !lastMenuBtn)
                 {
                     UnityAnimusClient.Instance.ToggleMotor();
                     //startCalibrator.ResetBodyPose(); // re-aling robody model with operator's body every time we enable motion
@@ -194,16 +235,16 @@ public class InputManager : Singleton<InputManager>
                 lastMenuBtn = btn;
 
                 // update the emotion buttons
-                if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out btn))
-                {
-                    UnityAnimusClient.Instance.LeftButton1 = btn;
-                    //UnityAnimusClient.Instance.currentEmotion = "shy";
-                }
-                if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn))
-                {
-                    UnityAnimusClient.Instance.LeftButton2 = btn;
-                    //UnityAnimusClient.Instance.currentEmotion = "hearts";
-                }
+                //if (controllerLeftList[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out btn))
+                //{
+                //    UnityAnimusClient.Instance.LeftButton1 = btn;
+                //    //UnityAnimusClient.Instance.currentEmotion = "shy";
+                //}
+                //if (controllerLeftList[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn))
+                //{
+                //    UnityAnimusClient.Instance.LeftButton2 = btn;
+                //    //UnityAnimusClient.Instance.currentEmotion = "hearts";
+                //}
 
                 if (Training.TutorialSteps.Instance != null &&
                     StateManager.Instance.currentState == StateManager.States.Training)
@@ -211,13 +252,13 @@ public class InputManager : Singleton<InputManager>
                     // check if the arm is grabbing
                     if (Training.TutorialSteps.Instance.currentState == Training.TutorialSteps.TrainingStep.LEFT_HAND)
                     {
-                        if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out btn) &&
+                        if (controllerLeftList[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out btn) &&
                             btn)
                         {
                             Training.TutorialSteps.Instance.Next();
                         }
 
-                        if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out btn) &&
+                        if (controllerLeftList[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out btn) &&
                            btn)
                         {
                             Training.TutorialSteps.Instance.CorrectUser("grip");
@@ -226,12 +267,12 @@ public class InputManager : Singleton<InputManager>
 
                     if (Training.TutorialSteps.Instance.currentState == Training.TutorialSteps.TrainingStep.RIGHT_HAND)
                     {
-                        if (controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out btn) &&
+                        if (controllerRightList[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out btn) &&
                             btn)
                         {
                             Training.TutorialSteps.Instance.Next();
                         }
-                        if (controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out btn) &&
+                        if (controllerRightList[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.triggerButton, out btn) &&
                             btn)
                         {
                             Training.TutorialSteps.Instance.CorrectUser("grip");
@@ -241,7 +282,7 @@ public class InputManager : Singleton<InputManager>
                     // check left arm
                     if (Training.TutorialSteps.Instance.currentState == Training.TutorialSteps.TrainingStep.LEFT_ARM)
                     {
-                        if (controllerLeft[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out btn) &&
+                        if (controllerLeftList[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out btn) &&
                             btn)
                         {
                             Training.TutorialSteps.Instance.CorrectUser("index");
@@ -258,7 +299,7 @@ public class InputManager : Singleton<InputManager>
                         //    Training.TutorialSteps.Instance.NextStep(praise: true);
                         //}
 
-                        if (controllerRight[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out btn) &&
+                        if (controllerRightList[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out btn) &&
                             btn)
                         {
                             Training.TutorialSteps.Instance.CorrectUser("index");

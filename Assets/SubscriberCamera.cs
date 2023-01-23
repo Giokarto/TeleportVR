@@ -41,6 +41,7 @@ public class SubscriberCamera : MonoBehaviour
 
     private void GetImage(CompressedImage Message)
     {
+        if (!meshRenderer.gameObject.activeInHierarchy) meshRenderer.gameObject.SetActive(true);
         receivedCount++;
 
         if (!messageProcessed)

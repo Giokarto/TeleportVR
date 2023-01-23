@@ -47,79 +47,80 @@ public class DisplayMover : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        UnityEngine.XR.InputDeviceCharacteristics role = isLeft ?
-            UnityEngine.XR.InputDeviceCharacteristics.Left : UnityEngine.XR.InputDeviceCharacteristics.Right;
-        UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(role, controller);
+    //    UnityEngine.XR.InputDeviceCharacteristics role = isLeft ?
+    //        UnityEngine.XR.InputDeviceCharacteristics.Left : UnityEngine.XR.InputDeviceCharacteristics.Right;
+    //    UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(role, controller);
 
-        _displayOffsetKey = isLeft ? LeftDisplayOffsetKey : RightDisplayOffsetKey;
-        transform.localPosition = new Vector3(PlayerPrefs.GetFloat(_displayOffsetKey + "X", transform.localPosition.x),
-                                                PlayerPrefs.GetFloat(_displayOffsetKey + "Y", transform.localPosition.y),
-                                                PlayerPrefs.GetFloat(_displayOffsetKey + "Z", transform.localPosition.z));
+    //    _displayOffsetKey = isLeft ? LeftDisplayOffsetKey : RightDisplayOffsetKey;
+    //    transform.localPosition = new Vector3(PlayerPrefs.GetFloat(_displayOffsetKey + "X", transform.localPosition.x),
+    //                                            PlayerPrefs.GetFloat(_displayOffsetKey + "Y", transform.localPosition.y),
+    //                                            PlayerPrefs.GetFloat(_displayOffsetKey + "Z", transform.localPosition.z));
+        transform.localPosition.Set(transform.localPosition.x, transform.localPosition.y + 10, transform.localPosition.z);
     }
 
-    /// <summary>
-    /// Update the display positions.
-    /// </summary>
-    void Update()
-    {
-        if (controller.Count > 0)
-        {
-            if (Widgets.WidgetInteraction.settingsAreActive)
-            {
-                // use the joystick to move the displays horizontally or vertically
-                Vector2 axisValue;
-                if (controller[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axisValue) &&
-                    axisValue.magnitude > 0)
-                {
-                    transform.localPosition += Time.deltaTime * _speed * axisValue.x * Vector3.right;
-                    transform.localPosition += Time.deltaTime * _speed * axisValue.y * Vector3.up;
-                }
+    ///// <summary>
+    ///// Update the display positions.
+    ///// </summary>
+    //void Update()
+    //{
+    //    if (controller.Count > 0)
+    //    {
+    //        if (Widgets.WidgetInteraction.settingsAreActive)
+    //        {
+    //            // use the joystick to move the displays horizontally or vertically
+    //            Vector2 axisValue;
+    //            if (controller[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primary2DAxis, out axisValue) &&
+    //                axisValue.magnitude > 0)
+    //            {
+    //                transform.localPosition += Time.deltaTime * _speed * axisValue.x * Vector3.right;
+    //                transform.localPosition += Time.deltaTime * _speed * axisValue.y * Vector3.up;
+    //            }
 
-                // use the buttons to move the displays in forward or backwards (zoom in or out)
-                bool btn;
-                if (controller[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out btn) && btn)
-                {
-                    transform.localPosition += Time.deltaTime * _speed * Vector3.forward;
-                }
+    //            // use the buttons to move the displays in forward or backwards (zoom in or out)
+    //            bool btn;
+    //            if (controller[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out btn) && btn)
+    //            {
+    //                transform.localPosition += Time.deltaTime * _speed * Vector3.forward;
+    //            }
 
-                if (controller[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn) && btn)
-                {
-                    transform.localPosition += Time.deltaTime * _speed * Vector3.back;
-                }
-            }
-        }
-        else
-        {
-            // if no controllers are connected, allow the keyboard mock
-            UnityEngine.XR.InputDeviceCharacteristics role = isLeft ?
-            UnityEngine.XR.InputDeviceCharacteristics.Left : UnityEngine.XR.InputDeviceCharacteristics.Right;
-            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(role, controller);
+    //            if (controller[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.secondaryButton, out btn) && btn)
+    //            {
+    //                transform.localPosition += Time.deltaTime * _speed * Vector3.back;
+    //            }
+    //        }
+    //    }
+    //    else
+    //    {
+    //        // if no controllers are connected, allow the keyboard mock
+    //        UnityEngine.XR.InputDeviceCharacteristics role = isLeft ?
+    //        UnityEngine.XR.InputDeviceCharacteristics.Left : UnityEngine.XR.InputDeviceCharacteristics.Right;
+    //        UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(role, controller);
 
-            if (Widgets.WidgetInteraction.settingsAreActive)
-            {
-                Dictionary<KeyCode, Vector3> moveDict = isLeft ? _moveDictLeft : _moveDictRight;
+    //        if (Widgets.WidgetInteraction.settingsAreActive)
+    //        {
+    //            Dictionary<KeyCode, Vector3> moveDict = isLeft ? _moveDictLeft : _moveDictRight;
 
-                foreach (KeyCode key in moveDict.Keys)
-                {
-                    if (Input.GetKey(key))
-                    {
-                        transform.localPosition += Time.deltaTime * _speed * moveDict[key];
-                    }
-                }
-            }
-        }
+    //            foreach (KeyCode key in moveDict.Keys)
+    //            {
+    //                if (Input.GetKey(key))
+    //                {
+    //                    transform.localPosition += Time.deltaTime * _speed * moveDict[key];
+    //                }
+    //            }
+    //        }
+    //    }
 
-        // save the offset between sessions every 0.2s
-        if (Widgets.WidgetInteraction.settingsAreActive)
-        {
-            if (timer >= 0.2)
-            {
-                timer = 0;
-                SaveOffsets();
-            }
-            timer += Time.deltaTime;
-        }
-    }
+    //    // save the offset between sessions every 0.2s
+    //    if (Widgets.WidgetInteraction.settingsAreActive)
+    //    {
+    //        if (timer >= 0.2)
+    //        {
+    //            timer = 0;
+    //            SaveOffsets();
+    //        }
+    //        timer += Time.deltaTime;
+    //    }
+    //}
 
     // Save the offsets to the PlayerPrefs
     private void SaveOffsets()

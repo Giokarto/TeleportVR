@@ -126,7 +126,7 @@ public class StereoPlaneMover : Singleton<StereoPlaneMover>
             GameConfig.Instance.settings.OperatorVertical = vertical;
             GameConfig.Instance.settings.OperatorHorizontal = horizontal;
             GameConfig.Instance.settings.OperatorManualOverwrite = true;
-            GameConfig.Instance.WriteSettings();
+            //GameConfig.Instance.WriteSettings();
             dirtySettings = false;
         }
 

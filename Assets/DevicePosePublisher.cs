@@ -14,7 +14,7 @@ public class DevicePosePublisher : MonoBehaviour
     private List<string> features = new List<string> { "pose", "velocity", "acceleration" };
     private List<string> deviceNames = new List<string> { "controller/left/", "controller/right/", "headset/" };
     public float publishMessageFrequency = 0.01f;
-    private Dictionary<string, UnityEngine.XR.InputDevice> deviceMap = new Dictionary<string, UnityEngine.XR.InputDevice>();
+    
 
     private float timeElapsed;
     private PoseMsg poseMsg;
@@ -24,29 +24,6 @@ public class DevicePosePublisher : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //while (InputManager.Instance.controllerLeft.Count == 0)
-        //{
-        //    Debug.Log("waiting for the input manager");
-        //}
-
-        try
-        {
-            deviceMap = new Dictionary<string, UnityEngine.XR.InputDevice>()
-            {
-                { "controller/left/", InputManager.Instance.controllerLeft[0]},
-                { "controller/right/", InputManager.Instance.controllerRight[0]},
-                { "headset/", InputManager.Instance.headset[0]}
-            };
-        } 
-        catch
-        {
-
-        }
-
-        //Debug.Log(InputManager.Instance.controllerLeft.Count);
-        //Debug.Log(InputManager.Instance.controllerRight[0]);
-        //Debug.Log(InputManager.Instance.headset[0]);
-
         ros = ROSConnection.GetOrCreateInstance();
 
         foreach(var device in deviceNames)
@@ -58,34 +35,37 @@ public class DevicePosePublisher : MonoBehaviour
             ros.RegisterPublisher<Vector3Msg>(topicName + "acceleration");
 
         }
-        
-        poseMsg = new PoseMsg();
-        velMsg = new Vector3Msg();
-        accMsg = new Vector3Msg();
-
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        deviceMap = new Dictionary<string, UnityEngine.XR.InputDevice>()
-        {
-            { "controller/left/", InputManager.Instance.controllerLeft[0]},
-            { "controller/right/", InputManager.Instance.controllerRight[0]},
-            { "headset/", InputManager.Instance.headset[0]}
-        };
         timeElapsed += Time.deltaTime;
 
         if (timeElapsed > publishMessageFrequency)
         {
-            foreach (var device in deviceMap.Keys)
+            foreach (var device in deviceNames)
             {
                 topicName = topicRoot + device;
-                deviceMap.TryGetValue(device, out var inputDevice);
-                ros.Publish(topicName + "pose", GetLatestDevicePose(inputDevice));
-                ros.Publish(topicName + "velocity", GetLatestDeviceVelocity(inputDevice));
-                ros.Publish(topicName + "acceleration", GetLatestDeviceAcceleration(inputDevice));
+                var inputDevice = InputManager.Instance.GetDeviceByName(device);
+                if (inputDevice.HasValue)
+                {
+                    if (inputDevice.Value.TryGetFeatureValue(UnityEngine.XR.CommonUsages.devicePosition, out var _))
+                    {
+                        ros.Publish(topicName + "pose", GetLatestDevicePose(inputDevice.Value));
+                        ros.Publish(topicName + "velocity", GetLatestDeviceVelocity(inputDevice.Value));
+                        ros.Publish(topicName + "acceleration", GetLatestDeviceAcceleration(inputDevice.Value));
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"{inputDevice.Value.name} is not tracked");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"{inputDevice.Value.name} is not available");
+                }
+                
             }
                
             timeElapsed = 0;
@@ -94,25 +74,22 @@ public class DevicePosePublisher : MonoBehaviour
 
     PoseMsg GetLatestDevicePose(UnityEngine.XR.InputDevice device)
     {
+   
         device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.devicePosition, out Vector3 devicePosition);
         device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.deviceRotation, out Quaternion deviceRotation);
         var rosPosition = RosUtils.Vector2Ros(devicePosition);
         var rosOrientation = RosUtils.Quaternion2Ros(deviceRotation);
 
-        //Debug.Log($"ros position: {rosPosition}");
-        //Debug.Log($"ros orn: {rosOrientation}");
-       
-        
-        poseMsg.position = new RosMessageTypes.Geometry.PointMsg(rosPosition.x, rosPosition.y, rosPosition.z);
-        //poseMsg.position.x = rosPosition.x;
-        //poseMsg.position.y = rosPosition.y;
-        //poseMsg.position.z = rosPosition.z;
+        poseMsg = new PoseMsg();
 
-        poseMsg.orientation = new RosMessageTypes.Geometry.QuaternionMsg(rosOrientation.x, rosOrientation.y, rosOrientation.z, rosOrientation.w);
-        //poseMsg.orientation.x = rosOrientation.x;
-        //poseMsg.orientation.y = rosOrientation.y;
-        //poseMsg.orientation.z = rosOrientation.z;
-        //poseMsg.orientation.w = rosOrientation.w;
+        poseMsg.position.x = rosPosition.x;
+        poseMsg.position.y = rosPosition.y;
+        poseMsg.position.z = rosPosition.z;
+
+        poseMsg.orientation.x = rosOrientation.x;
+        poseMsg.orientation.y = rosOrientation.y;
+        poseMsg.orientation.z = rosOrientation.z;
+        poseMsg.orientation.w = rosOrientation.w;
 
         return poseMsg;
 
@@ -122,7 +99,7 @@ public class DevicePosePublisher : MonoBehaviour
     {
         device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.deviceVelocity, out Vector3 deviceVelocity);
         var rosVelocity = RosUtils.Vector2Ros(deviceVelocity);
-
+        velMsg = new Vector3Msg();
         velMsg.x = rosVelocity.x;
         velMsg.y = rosVelocity.y;
         velMsg.z = rosVelocity.z;
@@ -134,13 +111,12 @@ public class DevicePosePublisher : MonoBehaviour
     {
         device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.deviceAcceleration, out Vector3 deviceAcceleration);
         var rosAccelearation = RosUtils.Vector2Ros(deviceAcceleration);
-
+        accMsg = new Vector3Msg();
         accMsg.x = rosAccelearation.x;
         accMsg.y = rosAccelearation.y;
         accMsg.z = rosAccelearation.z;
 
         return accMsg;
     }
-
 
 }

@@ -845,11 +845,11 @@ public class UnityAnimusClient : Singleton<UnityAnimusClient>
 #else
                 float left_open = 0, right_open = 0;
                 if (InputManager.Instance.GetLeftController())
-                    InputManager.Instance.controllerLeft[0]
+                    InputManager.Instance.ControllerLeft
                         .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left_open);
 
                 if (InputManager.Instance.GetRightController())
-                    InputManager.Instance.controllerRight[0]
+                    InputManager.Instance.ControllerRight
                         .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
 
 
