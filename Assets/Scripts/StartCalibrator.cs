@@ -6,15 +6,16 @@ using UnityEngine;
 /// This script moves the associated transfrom such that the reference eye transform matches the goal. 
 /// Calibration is done calibrationTime number of seconds after the game has started, to insure the operator
 /// has enough time to settle.
+/// Used to move the initial camera position to match with Roboy's head.
 /// </summary>
 public class StartCalibrator : MonoBehaviour
 {
-    [Tooltip("Operator eye transfrom, used as calibration reference")]
+    [Tooltip("Operator eye transform, used as calibration reference")]
     public Transform eye;
     [Tooltip("Goal eye transform after calibration")]
     public Transform goal;
 
-    [Tooltip("Number of seconds after game start, calibration should occurr (seconds)")]
+    [Tooltip("Number of seconds after game start, calibration should occur (seconds)")]
     public float calibrationTime = 2;
     private bool calibrated = false;
 
