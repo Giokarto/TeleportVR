@@ -37,7 +37,7 @@ namespace Widgets
                 Icons = FetchAllIcons();
             }
             
-            image = gameObject.GetComponentInChildren<RawImage>();
+            image = gameObject.GetComponent<RawImage>();
         }
         
 

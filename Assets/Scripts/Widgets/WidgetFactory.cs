@@ -27,6 +27,8 @@ namespace Widgets
             
             iconWidget.SetIcon(iconName);
             SetWidgetPosition(iconWidget, position);
+            
+            // 
 
             return iconWidget;
         }
@@ -69,5 +71,5 @@ namespace Widgets
         }
     }
     
-    public enum WidgetPosition { Top, Left, Right, Center, Bottom, BottomLeft, BottomRight };
+    public enum WidgetPosition { Top, TopRight, TopLeft, Left, Right, Center, Bottom, BottomLeft, BottomRight };
 }
