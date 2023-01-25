@@ -7,14 +7,14 @@ using UnityEngine;
 /// </summary>
 public abstract class Pointer : MonoBehaviour
 {
-    private UI_Manager UI_Manager;
+    private PointerManager _pointerManager;
 
     /// <summary>
     /// Starts the pointer object
     /// </summary>
     void Start()
     {
-        UI_Manager = GetComponent<UI_Manager>();
+        _pointerManager = GetComponent<PointerManager>();
         SubclassStart();
     }
 
@@ -35,6 +35,6 @@ public abstract class Pointer : MonoBehaviour
     /// <param name="rotation">pointers rotation</param>
     public void PushPointerPosition(Vector3 position, Vector3 rotation)
     {
-        UI_Manager.Point(position, rotation);
+        _pointerManager.Point(position, rotation);
     }
 }

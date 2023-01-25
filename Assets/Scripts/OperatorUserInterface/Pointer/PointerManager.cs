@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// <summary>
 /// This class manages the raycast input system with different input methods and also with the Curved UI
 /// </summary>
-public class UI_Manager : Singleton<UI_Manager>
+public class PointerManager : Singleton<PointerManager>
 {
     [Header("Select Interaction Techniques")]
     [Tooltip("Technique for pointing. Auto switches between PointerController and PointerMouse depending on the Plattform.")]
@@ -53,10 +53,10 @@ public class UI_Manager : Singleton<UI_Manager>
             showLaser = pointerTechnique == PointerTechnique.PointerMouse;
         }
 #endif
-        CreatePointer();
         cam = Camera.main;
         clickSound = this.GetComponent<AudioSource>();
         raycastManager = this.GetComponent<RaycastManager>();
+        CreatePointer();
     }
 
     #endregion
