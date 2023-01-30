@@ -1009,7 +1009,6 @@ MonoBehaviour:
   topicName: /operator/audio
   publishMessageFrequency: 0.0001
   DetectedDevices: 
-  DeviceMode: 0
   OutputSampleRate: 11025
   OutputChannels: 1
 --- !u!4 &303857993
@@ -5738,7 +5737,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   KillConstruct: 0
   currentState: 0
-  clientLogic: {fileID: 1944402365}
 --- !u!114 &1008317582 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 141366066131608481, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -6320,7 +6318,7 @@ PrefabInstance:
     - target: {fileID: 2459119425388815567, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2497834216055462839, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
@@ -7405,7 +7403,7 @@ PrefabInstance:
     - target: {fileID: 6958796702040240223, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7341443711394241275, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
@@ -8666,7 +8664,6 @@ MonoBehaviour:
   incomingTopicName: /audio/audio
   AudioMic: {fileID: 1553459040}
   DetectedDevices: 
-  DeviceMode: 0
   OutputSampleRate: 11025
   OutputChannels: 1
   volume: 1

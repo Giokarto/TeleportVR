@@ -228,7 +228,7 @@ public class InputManager : Singleton<InputManager>
                 // enable/disable motor
                 if (controllerLeftList[0].TryGetFeatureValue(UnityEngine.XR.CommonUsages.menuButton, out btn) && btn && !lastMenuBtn)
                 {
-                    UnityAnimusClient.Instance.ToggleMotor();
+                    //UnityAnimusClient.Instance.ToggleMotor();
                     //startCalibrator.ResetBodyPose(); // re-aling robody model with operator's body every time we enable motion
                     //StateManager.Instance.GoToNextState();
                 }

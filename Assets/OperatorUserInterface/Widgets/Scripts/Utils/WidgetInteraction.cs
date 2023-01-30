@@ -1,4 +1,4 @@
-﻿using AnimusManager;
+﻿//using AnimusManager;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,14 +31,14 @@ namespace Widgets
             Invoke(function, 0);
         }
 
-        private static Dictionary<UnityAnimusClient.Modality, int> modalityMap = new Dictionary<UnityAnimusClient.Modality, int>()
-        {
-            { UnityAnimusClient.Modality.VOICE, 25 },
-            { UnityAnimusClient.Modality.AUDITION, 26},
-            { UnityAnimusClient.Modality.MOTOR, 21},
-            //{ UnityAnimusClient.Modality.VISION , 28},
-           // { UnityAnimusClient.Modality.EMOTION , 29}
-        };
+        //private static Dictionary<UnityAnimusClient.Modality, int> modalityMap = new Dictionary<UnityAnimusClient.Modality, int>()
+        //{
+        //    { UnityAnimusClient.Modality.VOICE, 25 },
+        //    { UnityAnimusClient.Modality.AUDITION, 26},
+        //    { UnityAnimusClient.Modality.MOTOR, 21},
+        //    //{ UnityAnimusClient.Modality.VISION , 28},
+        //   // { UnityAnimusClient.Modality.EMOTION , 29}
+        //};
 
 
         /// <summary>
@@ -195,17 +195,17 @@ namespace Widgets
             wifiWidget.ProcessRosMessage(wifiWidget.GetContext());
         }
 
-        public static void MarkModalityConnected(UnityAnimusClient.Modality modality, bool connected)
-        {
-            modalityMap.TryGetValue(modality, out var id);
-            if (!id.Equals(null))
-            {
-                var widget = Manager.Instance.FindWidgetWithID(id);
-                widget.GetContext().currentIconAlpha = connected ? 1f : 0.04f;
-                widget.ProcessRosMessage(widget.GetContext());
-            }
+        //public static void MarkModalityConnected(UnityAnimusClient.Modality modality, bool connected)
+        //{
+        //    modalityMap.TryGetValue(modality, out var id);
+        //    if (!id.Equals(null))
+        //    {
+        //        var widget = Manager.Instance.FindWidgetWithID(id);
+        //        widget.GetContext().currentIconAlpha = connected ? 1f : 0.04f;
+        //        widget.ProcessRosMessage(widget.GetContext());
+        //    }
 
-        }
+        //}
 
         /// <summary>
         /// Allow to move the displays.

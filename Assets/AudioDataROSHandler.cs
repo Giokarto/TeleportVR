@@ -38,7 +38,7 @@ public class AudioDataROSHandler : MonoBehaviour
 
     [SerializeField] AudioSource AudioMic;
     public string DetectedDevices;
-    public MicDeviceMode DeviceMode = MicDeviceMode.Default;
+    //public MicDeviceMode DeviceMode = MicDeviceMode.Default;
     string CurrentDeviceName = null;
 
     public int OutputSampleRate = 11025;

@@ -12,14 +12,14 @@ using Int16MultiArrayMsg = RosMessageTypes.Std.Int16MultiArrayMsg;
 public class MicrophoneDataPublisher : MonoBehaviour
 {
     ROSConnection ros;
-    public string topicName = "/audio/audio";
+    public string topicName = "/operator/audio";
     public float publishMessageFrequency = 0.0001f;
     private Int16MultiArrayMsg msg;
     private float timeElapsed;
 
     AudioSource AudioMic;
     public string DetectedDevices;
-    public MicDeviceMode DeviceMode = MicDeviceMode.Default;
+    //public MicDeviceMode DeviceMode = MicDeviceMode.Default;
     string CurrentDeviceName = null;
 
     public int OutputSampleRate = 11025;
@@ -36,7 +36,7 @@ public class MicrophoneDataPublisher : MonoBehaviour
     void Start()
     {
         ros = ROSConnection.GetOrCreateInstance();
-        ros.RegisterPublisher<Int16MultiArrayMsg>(topicName, queue_size:10);
+        ros.RegisterPublisher<Int16MultiArrayMsg>(topicName, queue_size:1);
         msg = new Int16MultiArrayMsg();
 
         StartCoroutine(CaptureMic());
@@ -72,8 +72,10 @@ public class MicrophoneDataPublisher : MonoBehaviour
         //Check Target Device
 
         CurrentDeviceName = "Echo Cancelling Speakerphone (BCC950 ConferenceCam)";// MicNames[1];//DeviceMode == MicDeviceMode.Default ? (MicNames.Length > 0 ? MicNames[0] : null) : TargetDeviceName;
-        
+        //CurrentDeviceName = "Headset Microphone (Oculus Virtual Audio Device)";
         AudioSettings.outputSampleRate = 48000;
+
+        Debug.Log("staring mic device...");
 
         AudioMic.clip = Microphone.Start(CurrentDeviceName, true, 1, 48000);// OutputSampleRate);
 
@@ -81,7 +83,8 @@ public class MicrophoneDataPublisher : MonoBehaviour
         while (!(Microphone.GetPosition(CurrentDeviceName) > 0)) { }
         while (!stop)
         {
-            AddMicData();
+            Debug.Log("entering mic cb");
+            StartCoroutine(AddMicData());
             //AddMicData2();
             yield return null;
         }
@@ -118,7 +121,7 @@ public class MicrophoneDataPublisher : MonoBehaviour
         lastSample = pos;
     }
 
-    private void AddMicData()
+    private IEnumerator AddMicData()
     {
         LastAudioTimeSample = CurrentAudioTimeSample;
         //CurrentAudioTimeSample = AudioMic.timeSamples;
@@ -128,12 +131,14 @@ public class MicrophoneDataPublisher : MonoBehaviour
         if (CurrentAudioTimeSample != LastAudioTimeSample)
         {
             float[] samples = new float[AudioMic.clip.samples];
-            AudioMic.clip.GetData(samples, 0);
-            
+            lock (_asyncLockAudio)
+            {
+                AudioMic.clip.GetData(samples, 0);
+            }
 
             if (CurrentAudioTimeSample > LastAudioTimeSample)
             {
-                //lock (_asyncLockAudio)
+                lock (_asyncLockAudio)
                 {
                     for (int i = LastAudioTimeSample; i < CurrentAudioTimeSample; i++)
                     {
@@ -143,7 +148,7 @@ public class MicrophoneDataPublisher : MonoBehaviour
             }
             else if (CurrentAudioTimeSample < LastAudioTimeSample)
             {
-                //lock (_asyncLockAudio)
+                lock (_asyncLockAudio)
                 {
                     for (int i = LastAudioTimeSample; i < samples.Length; i++)
                     {
@@ -161,8 +166,10 @@ public class MicrophoneDataPublisher : MonoBehaviour
             }
             data.AddRange(data);
             msg.data = data.ToArray();
+            Debug.Log("published audio operator msg");
             ros.Publish(topicName, msg);
         }
+        yield return null;
     }
 
 

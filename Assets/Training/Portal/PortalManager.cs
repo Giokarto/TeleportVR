@@ -21,6 +21,6 @@ public class PortalManager : MonoBehaviour
     private void Update()
     {
         // Set the Portal background to the texture streamed to the left eye
-        backgroundRenderer.material.mainTexture = UnityAnimusClient.Instance.GetVisionTextures()[0];
+        //backgroundRenderer.material.mainTexture = UnityAnimusClient.Instance.GetVisionTextures()[0];
     }
 }

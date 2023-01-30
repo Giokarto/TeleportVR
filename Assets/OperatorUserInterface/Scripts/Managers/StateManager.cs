@@ -22,7 +22,7 @@ public class StateManager : Singleton<StateManager>
 
     private float _lastSwitch = float.NegativeInfinity;
 
-    [SerializeField] private ClientLogic clientLogic;
+    //[SerializeField] private ClientLogic clientLogic;
 
     AdditiveSceneManager additiveSceneManager;
     ConstructFXManager constructFXManager;
@@ -110,7 +110,7 @@ public class StateManager : Singleton<StateManager>
         //WheelchairStateManager.Instance.transform.position = Vector3.zero;
 
         // keep motor disabled at all times, only HUD can send motor commands which is set in the DelegateAfterHudLoad
-        clientLogic.unityClient.EnableMotor(false);
+        //clientLogic.unityClient.EnableMotor(false);
         _lastSwitch = Time.time;
         switch (newState)
         {
@@ -280,31 +280,31 @@ public class StateManager : Singleton<StateManager>
         else
         {
             // go to the latest joint targets before leaving HUD
-            var jointValues = clientLogic.unityClient.GetLatestJointValues();
-            if (jointValues.Count > 0)
-            {
-                int i = 0;
-                foreach (var body in bioIks)
-                {
-                    if (body.name.Contains("shadow"))
-                    {
-                        continue;
-                    }
-                    foreach (var segment in body.Segments)
-                    {
-                        if (segment.Joint != null)
-                        {
-                            //Debug.Log($"{body.name}: {segment.Joint.name} {i}");
-                            segment.Joint.X.SetTargetValue(jointValues[i]);
+            //var jointValues = clientLogic.unityClient.GetLatestJointValues();
+            //if (jointValues.Count > 0)
+            //{
+            //    int i = 0;
+            //    foreach (var body in bioIks)
+            //    {
+            //        if (body.name.Contains("shadow"))
+            //        {
+            //            continue;
+            //        }
+            //        foreach (var segment in body.Segments)
+            //        {
+            //            if (segment.Joint != null)
+            //            {
+            //                //Debug.Log($"{body.name}: {segment.Joint.name} {i}");
+            //                segment.Joint.X.SetTargetValue(jointValues[i]);
 
-                            i++;
-                        }
-                    }
-                }
-            }
+            //                i++;
+            //            }
+            //        }
+            //    }
+            //}
         }
         Debug.Log("Presense indicator on");
-        clientLogic.unityClient.SetPresenceIndicatorOn(true);
+        //clientLogic.unityClient.SetPresenceIndicatorOn(true);
 
         onStateChangeTo[States.HUD].Call(States.HUD);
     }
@@ -317,7 +317,7 @@ public class StateManager : Singleton<StateManager>
         {
             body.MotionType = BioIK.MotionType.Realistic;
         }
-        clientLogic.unityClient.EnableMotor(true);
+        //clientLogic.unityClient.EnableMotor(true);
     }
 
     void DelegateOnHudUnload()
@@ -328,7 +328,7 @@ public class StateManager : Singleton<StateManager>
     void DelegateBeforeTrainingLoad()
     {
         Debug.Log("Presense indicator off");
-        clientLogic.unityClient.SetPresenceIndicatorOn(false);
+        //clientLogic.unityClient.SetPresenceIndicatorOn(false);
 
         onStateChangeTo[States.Training].Call(States.HUD);
     }
