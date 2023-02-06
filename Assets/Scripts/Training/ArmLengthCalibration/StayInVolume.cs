@@ -7,8 +7,8 @@ namespace Training.Calibration.ArmLength
 {
     public class StayInVolume : MonoBehaviour
     {
-        [Tooltip("Completion widget in HUD")]
-        public DeprecatedWidgets.Completion completionWidget;
+        //[Tooltip("Completion widget in HUD")]
+        //public DeprecatedWidgets.Completion completionWidget;
         [Tooltip("Required tag for the colliders to trigger waiting")]
         public string requiredTag;
         [Tooltip("Time to wait for until triggering Callbacks")]
@@ -26,7 +26,7 @@ namespace Training.Calibration.ArmLength
             if (started && waiting)
             {
                 completionTimer.LetTimePass(Time.deltaTime);
-                completionWidget.Set(completionTimer.GetFraction(), "hold");
+                //completionWidget.Set(completionTimer.GetFraction(), "hold");
             }
         }
 
@@ -55,7 +55,7 @@ namespace Training.Calibration.ArmLength
 
         private void Reset()
         {
-            completionWidget.Set(0);
+            //completionWidget.Set(0);
             completionTimer.ResetTimer();
             waiting = false;
         }
