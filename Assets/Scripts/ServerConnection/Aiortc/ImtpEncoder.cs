@@ -39,34 +39,7 @@ public class ImtpEncoder : MonoBehaviour
 
     private Texture2D GetTexture(Texture mainTexture)
     {
-        Texture2D texture2D = new Texture2D(mainTexture.width, mainTexture.height, TextureFormat.RGBA32, false);
-        
-        RenderTexture currentRT = RenderTexture.active;
-        
-        RenderTexture renderTexture = new RenderTexture(mainTexture.width, mainTexture.height, 32);
-        Graphics.Blit(mainTexture, renderTexture);
-        
-        RenderTexture.active = renderTexture;
-        texture2D.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
-        
-        var faces = (FindObjectOfType(typeof(aiortcConnector)) as aiortcConnector).faceCoordinates;
-        foreach (var face in faces)
-        {
-            Debug.Log($"blue face {face[0]}, {face[1]}, {face[2]}, {face[3]}");
-            for (int i = face[0]; i < face[0]+face[2]; i++)
-            {
-                for (int j = face[1]; j < face[1]+face[3]; j++)
-                {
-                    texture2D.SetPixel(i, texture2D.height - j, Color.blue);
-                }
-            }
-        }
-        
-        texture2D.Apply();
-        
-        RenderTexture.active = currentRT;
-        renderTexture.Release();
-        return texture2D;
+        return mainTexture as Texture2D;
         
         // Texture2D tex = mainTexture as Texture2D;
         //

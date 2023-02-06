@@ -50,7 +50,7 @@ public class EmotionManager : Singleton<EmotionManager>
         }
         else
         {
-            print("Trying to set undefined Emotion: " + key);
+            Debug.LogWarning("Trying to set undefined Emotion: " + key);
         }
     }
 
@@ -98,7 +98,7 @@ public class EmotionManager : Singleton<EmotionManager>
         }
 
         faceAnimator.SetEmotion(emotion);
-        print("Set emotion " + emotion);
+        Debug.Log("Set emotion " + emotion);
 #endif
     }
 }

@@ -75,7 +75,6 @@ public class aiortcConnector : MonoBehaviour
         
         onDataChannel = channel =>
         {
-            Debug.Log($"onDataChannel");
             remoteDataChannel = channel;
             remoteDataChannel.OnMessage = onDataChannelMessage;
         };
@@ -106,12 +105,10 @@ public class aiortcConnector : MonoBehaviour
         };
         onDataChannelOpen = () =>
         {
-            Debug.Log($"onDataChannelOpen");
             SendMsg();
         };
         onDataChannelClose = () =>
         {
-            Debug.Log($"onDataChannelClose");
         };
         WebRTC.Initialize();
         StartCoroutine(WebRTC.Update());
@@ -133,7 +130,6 @@ public class aiortcConnector : MonoBehaviour
             if (e.Track is VideoStreamTrack track)
             {
                 // You can access received texture using `track.Texture` property.
-                Debug.Log("receiveStream.OnAddTrack ");
             }
             else if (e.Track is AudioStreamTrack track2)
             {
@@ -143,7 +139,6 @@ public class aiortcConnector : MonoBehaviour
         };
         receiveStream.OnRemoveTrack = ev =>
         {
-            Debug.Log("receiveStream.OnRemoveTrack");
             dummyImage.texture = null;
             ev.Track.Dispose();
         };
@@ -170,15 +165,12 @@ public class aiortcConnector : MonoBehaviour
         };
         pc.OnIceGatheringStateChange = state =>
         {
-            Debug.Log($"OnIceGatheringStateChange > state: {state}");
         };
         pc.OnConnectionStateChange = state =>
         {
-            Debug.Log($"OnConnectionStateChange > state: {state}");
         };
         pc.OnTrack = e =>
         {
-            Debug.Log($"OnTrack");
             if (e.Track.Kind == TrackKind.Video)
             {
                 // Add track to MediaStream for receiver.
@@ -187,11 +179,9 @@ public class aiortcConnector : MonoBehaviour
             }
             if (e.Track is VideoStreamTrack video)
             {
-                Debug.Log($"OnTrackVideo");
 
                 video.OnVideoReceived += tex =>
                 {
-                    Debug.Log("onvideoreceived");
                     dummyImage.texture = tex;
                 };
             }
@@ -218,7 +208,6 @@ public class aiortcConnector : MonoBehaviour
             transceiver1.Direction = RTCRtpTransceiverDirection.RecvOnly;
             var transceiver2 = pc.AddTransceiver(TrackKind.Audio);
             transceiver2.Direction = RTCRtpTransceiverDirection.RecvOnly;
-            Debug.Log("Offer");
         }
         var op = type == RTCSdpType.Offer ? pc.CreateOffer() : pc.CreateAnswer();
         yield return op;

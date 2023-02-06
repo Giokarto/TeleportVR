@@ -680,7 +680,6 @@ namespace AnimusClient
         /// <returns>Success.</returns>
         public bool proprioception_set(Float32Array currSample)
         {
-            //print("Proprio: " + currSample.Data);
             // check if the float array contains information for the 6 body parts
             if (currSample.CalculateSize() >= 6)
             {

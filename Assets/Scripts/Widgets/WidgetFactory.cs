@@ -59,8 +59,7 @@ namespace Widgets
             
             textWidget.SetMessage(message);
             SetWidgetPosition(textWidget, position);
-
-            print("created textWidget");
+            
             return textWidget;
         }
 

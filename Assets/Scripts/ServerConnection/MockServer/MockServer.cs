@@ -39,8 +39,6 @@ namespace ServerConnection.MockServer
             videoPlayer.isLooping = true;
             videoPlayer.Play();
             
-            Debug.Log("Server getting renderer");
-            Debug.Log(LeftEye);
             _leftRenderer = LeftEye.GetComponentInChildren<Renderer>();
             _rightRenderer = RightEye.GetComponentInChildren<Renderer>();
         }

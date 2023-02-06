@@ -28,7 +28,6 @@ public class PointerController : Pointer
     public override void SubclassStart()
     {
         Object[] objects = Resources.FindObjectsOfTypeAll(typeof(XRBaseController));
-        print("objects.Length" + objects.Length);
         if (objects.Length > 0)
         {
             teleport = (XRBaseController) objects[0];
@@ -50,6 +49,5 @@ public class PointerController : Pointer
         GetPointerPosition();
         var pressed = (right.TryGetFeatureValue(CommonUsages.primaryButton, out var btn) && btn) ;
         CurvedUIInputModule.CustomControllerButtonState = pressed;
-        print(pressed);
     }
 }

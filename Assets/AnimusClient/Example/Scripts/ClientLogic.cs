@@ -49,7 +49,6 @@ namespace AnimusClient
             }
 
             // Step 1 - Login user
-            Debug.Log(AnimusManager);
             AnimusManager.LoginUser(AccountEmail, AccountPassword);
             while (!AnimusManager.loginResultAvailable)
             {
@@ -90,7 +89,6 @@ namespace AnimusClient
             // Step 3 - Choose Robot
             foreach (var robot in AnimusManager.robotDetailsList)
             {
-                Debug.Log(robot.ToString());
                 if (robot.Name == robotName)
                 {
                     ChosenRobot = robot;
