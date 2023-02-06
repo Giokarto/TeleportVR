@@ -5,12 +5,12 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.XR;
 
-namespace InputDevices.Controllers
+namespace InputDevices.VRControllers
 {
     /// <summary>
     /// Input system for control with classic headset and controllers.
     /// </summary>
-    public class ControllerInputSystem: InputSystem
+    public class VRControllerInputSystem: InputSystem
     {
         public static InputDevice controllerLeft { get; private set; }
         public static InputDevice controllerRight { get; private set; }

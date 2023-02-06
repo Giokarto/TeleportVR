@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using InputDevices;
-using InputDevices.Controllers;
+using InputDevices.VRControllers;
 using UnityEditor;
 using UnityEngine;
 
@@ -48,14 +48,14 @@ namespace ServerConnection
         
         private void OnEnable()
         {
-            ControllerInputSystem.OnGripChange += ChangeGrip;
+            VRControllerInputSystem.OnGripChange += ChangeGrip;
             InputSystem.OnLeftPrimaryButton += SendHearts;
             CreateLeftEye();
             CreateRightEye();
         }
         private void OnDisable()
         {
-            ControllerInputSystem.OnGripChange -= ChangeGrip;
+            VRControllerInputSystem.OnGripChange -= ChangeGrip;
             InputSystem.OnLeftPrimaryButton -= SendHearts;
             Destroy(LeftEye);
             Destroy(RightEye);

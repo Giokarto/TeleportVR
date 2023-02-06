@@ -1,6 +1,6 @@
 ﻿using BioIK;
 using System.Collections.Generic;
-using InputDevices.Controllers;
+using InputDevices.VRControllers;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -100,8 +100,8 @@ namespace InputDevices
 
         void FindControllers()
         {
-            leftController = ControllerInputSystem.controllerLeft;
-            rightController = ControllerInputSystem.controllerRight;
+            leftController = VRControllerInputSystem.controllerLeft;
+            rightController = VRControllerInputSystem.controllerRight;
             leftControllerFound = true;
             rightControllerFound = true;
         }

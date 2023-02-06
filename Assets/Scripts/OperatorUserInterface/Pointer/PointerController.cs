@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using InputDevices.Controllers;
+using InputDevices.VRControllers;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -33,9 +33,9 @@ public class PointerController : Pointer
             teleport = (XRBaseController) objects[0];
         }
 
-        right = ControllerInputSystem.controllerRight;
+        right = VRControllerInputSystem.controllerRight;
         
-        ControllerInputSystem.OnTriggerChange += (l, r) =>
+        VRControllerInputSystem.OnTriggerChange += (l, r) =>
         {
             //CurvedUIInputModule.CustomControllerButtonState = r > 0.5;
         }; // TODO: remove in ondestroy

@@ -1,4 +1,4 @@
-using InputDevices.Controllers;
+using InputDevices.VRControllers;
 using UnityEngine;
 using Widgets;
 
@@ -18,7 +18,7 @@ namespace Tutorial
             audioManager.ScheduleAudioClip(controllerAudio.leftBall, queue: true,
                 onStart: () => GameObject.Find("HandCollectableLeft").gameObject.SetActive(true)); // TODO: create from prefab instead
                 
-            ControllerInputSystem.OnGripChange += OnGripLeftArm;
+            VRControllerInputSystem.OnGripChange += OnGripLeftArm;
         }
         
         void OnGripLeftArm(float l, float r)
@@ -31,7 +31,7 @@ namespace Tutorial
 
         public override void Exit()
         {
-            ControllerInputSystem.OnGripChange -= OnGripLeftArm;
+            VRControllerInputSystem.OnGripChange -= OnGripLeftArm;
             GameObject.Find("HandCollectableLeft").gameObject.SetActive(false);
         }
 

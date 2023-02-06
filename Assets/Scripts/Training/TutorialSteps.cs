@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.XR;
 using System;
 using InputDevices;
-using InputDevices.Controllers;
+using InputDevices.VRControllers;
 using Widgets;
 
 namespace Training
@@ -149,7 +149,7 @@ namespace Training
                 audioManager.ScheduleAudioClip(controllerAudio.leftBall, queue: true,
                     onStart: () => handCollectables.Find("HandCollectableLeft").gameObject.SetActive(true));
                 
-                ControllerInputSystem.OnGripChange += OnGripLeftArm;
+                VRControllerInputSystem.OnGripChange += OnGripLeftArm;
             };
             void OnGripLeftArm(float l, float r)
             {
@@ -161,7 +161,7 @@ namespace Training
             stateMachine.onExit[TrainingStep.LEFT_ARM] = (step) =>
             {
                 handCollectables.Find("HandCollectableLeft").gameObject.SetActive(false);
-                ControllerInputSystem.OnGripChange -= OnGripLeftArm;
+                VRControllerInputSystem.OnGripChange -= OnGripLeftArm;
             };
 
             stateMachine.onEnter[TrainingStep.LEFT_HAND] = (step) =>
@@ -176,8 +176,8 @@ namespace Training
                     onStart: () => PublishNotification("Press the grip button on the side to close the hand.")
                     );
                 Debug.Log("entered LeftHand");
-                ControllerInputSystem.OnGripChange += OnGripLeftHand;
-                ControllerInputSystem.OnTriggerChange += OnTriggerLeftHand;
+                VRControllerInputSystem.OnGripChange += OnGripLeftHand;
+                VRControllerInputSystem.OnTriggerChange += OnTriggerLeftHand;
 #endif
             };
             void OnGripLeftHand(float l, float r)
@@ -186,7 +186,7 @@ namespace Training
                 if (l > 0.5)
                 {
                     Next();
-                    ControllerInputSystem.OnGripChange -= OnGripLeftHand;
+                    VRControllerInputSystem.OnGripChange -= OnGripLeftHand;
                 }
             }
             void OnTriggerLeftHand(float l, float r)
@@ -200,7 +200,7 @@ namespace Training
             stateMachine.onExit[TrainingStep.LEFT_HAND] = (step) =>
             {
                 
-                ControllerInputSystem.OnGripChange -= OnTriggerLeftHand;
+                VRControllerInputSystem.OnGripChange -= OnTriggerLeftHand;
 #if SENSEGLOVE
                 // force stop the calibration, if not done so already
                 leftCalibrator.StopCailbration();
@@ -220,7 +220,7 @@ namespace Training
                 audioManager.ScheduleAudioClip(controllerAudio.rightBall, queue: true,
                     onStart: () => handCollectables.Find("HandCollectableRight").gameObject.SetActive(true));
                 
-                ControllerInputSystem.OnGripChange += OnGripRightArm;
+                VRControllerInputSystem.OnGripChange += OnGripRightArm;
 
             };
             void OnGripRightArm(float l, float r)
@@ -233,7 +233,7 @@ namespace Training
             stateMachine.onExit[TrainingStep.RIGHT_ARM] = (step) =>
             {
                 handCollectables.Find("HandCollectableRight").gameObject.SetActive(false);
-                ControllerInputSystem.OnGripChange -= OnGripRightArm;
+                VRControllerInputSystem.OnGripChange -= OnGripRightArm;
             };
 
             stateMachine.onEnter[TrainingStep.RIGHT_HAND] = (step) =>
@@ -247,8 +247,8 @@ namespace Training
                 audioManager.ScheduleAudioClip(controllerAudio.rightHand, queue: true,
                     onStart: () => PublishNotification("Press the grip button to close the hand.")
                 );
-                ControllerInputSystem.OnGripChange += OnGripRightHand;
-                ControllerInputSystem.OnTriggerChange += OnTriggerRightHand;
+                VRControllerInputSystem.OnGripChange += OnGripRightHand;
+                VRControllerInputSystem.OnTriggerChange += OnTriggerRightHand;
 #endif
             };
             void OnGripRightHand(float l, float r)
@@ -256,7 +256,7 @@ namespace Training
                 if (r > 0.5)
                 {
                     Next();
-                    ControllerInputSystem.OnGripChange -= OnGripRightHand;
+                    VRControllerInputSystem.OnGripChange -= OnGripRightHand;
                 }
             }
             void OnTriggerRightHand(float l, float r)
@@ -268,7 +268,7 @@ namespace Training
             }
             stateMachine.onExit[TrainingStep.RIGHT_HAND] = (step) =>
             {
-                ControllerInputSystem.OnTriggerChange -= OnTriggerRightHand;
+                VRControllerInputSystem.OnTriggerChange -= OnTriggerRightHand;
 #if SENSEGLOVE
                 rightCalibrator.StopCailbration();
             };
@@ -399,7 +399,7 @@ namespace Training
                 Prev();
             }
 
-            if (ControllerInputSystem.controllerRight.TryGetFeatureValue(CommonUsages.primaryButton, out bool btn) && btn && !waitStarted)// (stateMachine.State == TrainingStep.IDLE || stateMachine.State == TrainingStep.DONE))
+            if (VRControllerInputSystem.controllerRight.TryGetFeatureValue(CommonUsages.primaryButton, out bool btn) && btn && !waitStarted)// (stateMachine.State == TrainingStep.IDLE || stateMachine.State == TrainingStep.DONE))
             {
                 waitStarted = true;
                 Debug.Log("Started true");

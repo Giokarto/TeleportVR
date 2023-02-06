@@ -1,4 +1,5 @@
 using System;
+using InputDevices.VRControllers;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -11,7 +12,7 @@ namespace InputDevices
     /// The buttons are named after classic VR controllers, but can be connected to any input device.
     ///
     /// Derived classes should check for input from a specific input device and invoke the delegates
-    /// in Update. Derived classes can also define own delegates. See <see cref="Controllers.ControllerInputSystem"/>
+    /// in Update. Derived classes can also define own delegates. See <see cref="VRControllerInputSystem"/>
     /// </summary>
     public abstract class InputSystem : MonoBehaviour
     {
