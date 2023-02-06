@@ -8,6 +8,7 @@ using AnimusCommon;
 using AnimusManager;
 using Google.Protobuf.Collections;
 using BioIK;
+using OperatorUserInterface;
 using ServerConnection;
 #if ANIMUS_USE_OPENCV
 using OpenCVForUnity.CoreModule;
@@ -327,7 +328,7 @@ namespace AnimusClient
                 }
 
                 // only set vision when it's visible
-                if (StateManager.Instance.currentState != StateManager.States.HUD)
+                if (SceneManager.Instance.currentScene != Scene.REAL)
                 {
                     return false;
                 }

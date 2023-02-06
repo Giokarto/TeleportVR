@@ -2,6 +2,7 @@
 using Tobii.G2OM;
 #endif
 using System;
+using OperatorUserInterface;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -59,7 +60,7 @@ public class EyeGazeDwellTimer : MonoBehaviour, IGazeFocusable, IPointerEnterHan
 
         public void GoToConstruct()
         {
-            StateManager.Instance.GoToNextState();
+            SceneManager.Instance.SwitchScene();
         }
 
         public void OnPointerEnter(PointerEventData eventData)

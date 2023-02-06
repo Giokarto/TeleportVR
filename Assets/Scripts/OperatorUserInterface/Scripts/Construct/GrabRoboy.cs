@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using OperatorUI;
+using OperatorUserInterface;
 using UnityEngine;
 
 public class GrabRoboy : MonoBehaviour
@@ -10,14 +10,14 @@ public class GrabRoboy : MonoBehaviour
 //#if SENSEGLOVE
 //    SenseGlove_Grabable grab;
 //#endif
-    AdditiveSceneManager additiveSceneManager;
+    SceneManager sceneManager;
 
     /// <summary>
     /// Set reference to instances
     /// </summary>
     private void Start()
     {
-        additiveSceneManager = GameObject.FindGameObjectWithTag("AdditiveSceneManager").GetComponent<AdditiveSceneManager>();
+        sceneManager = SceneManager.Instance;
         defaultPos = this.transform.localPosition;
         defaultRot = this.transform.localRotation;
 //    #if SENSEGLOVE
@@ -52,7 +52,7 @@ public class GrabRoboy : MonoBehaviour
 //                grab.EndInteraction(grab.GrabScript, true);
 //            }
 //#endif
-            StateManager.Instance.GoToNextState();
+            sceneManager.SwitchScene();
         }
     }
 

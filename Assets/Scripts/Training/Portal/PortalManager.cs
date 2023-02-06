@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using AnimusClient;
+using OperatorUserInterface;
 
 public class PortalManager : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class PortalManager : MonoBehaviour
         if (other.CompareTag("RoboyCollider"))
         {
             // Go to the HUD scene
-            StateManager.Instance.GoToState(StateManager.States.HUD);
+            SceneManager.Instance.SwitchScene();
         }
     }
 

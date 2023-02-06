@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 namespace InputDevices.RudderPedals
 {
@@ -71,7 +72,6 @@ namespace InputDevices.RudderPedals
         private bool _canPause = true;
         public bool pauseAudio = true;
 
-        public StateManager stateManager;
         public TrackerSwitcher leftGlove;
         public TrackerSwitcher rightGlove;
         public float matchHandThreshold = 0.0f;
