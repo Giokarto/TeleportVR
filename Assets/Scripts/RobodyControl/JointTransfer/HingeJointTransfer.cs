@@ -8,7 +8,7 @@ using SG;
 #endif
 
 
-namespace InputDevices.JointTransfer
+namespace RobodyControl.JointTransfer
 {
     /// <summary>
     /// This copies the rotation in a single axis from a controller to a target joint.

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InputDevices
+namespace RobodyControl
 {
     /// <summary>
     /// This class transforms the associated game object into a space suitable for using it as 

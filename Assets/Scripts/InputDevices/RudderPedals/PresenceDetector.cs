@@ -11,7 +11,7 @@ namespace InputDevices.RudderPedals
         public class TrackerSwitcher
         {
             [Tooltip("CopyTransform script at SenseGlove root")]
-            public InputDevices.JointTransfer.CopyTransfrom copyTransform;
+            public RobodyControl.JointTransfer.CopyTransfrom copyTransform;
             [Tooltip("XR input for the associated hand")]
             public Transform xrController;
             [Tooltip("Ghost hand, shown when paused")]

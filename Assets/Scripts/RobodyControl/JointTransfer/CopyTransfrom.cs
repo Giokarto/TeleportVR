@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InputDevices.JointTransfer
+namespace RobodyControl.JointTransfer
 {
     public class CopyTransfrom : MonoBehaviour
     {

@@ -23,6 +23,9 @@ namespace InputDevices
         }
     }
 
+    /// <summary>
+    /// Recognizes Nod ("yes") and Headshake ("no") of the operator with VR headset.
+    /// </summary>
     public class VRGestureRecognizer : MonoBehaviour
     {
         [SerializeField] float recognitionInterval = 2f;

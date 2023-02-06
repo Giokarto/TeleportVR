@@ -1,4 +1,4 @@
-namespace InputDevices
+namespace RobodyControl
 {
     public class RobotMotionManager
     {

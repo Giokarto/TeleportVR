@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InputDevices
+namespace RobodyControl
 {
     public class XRControllerVisibilityManager : MonoBehaviour
     {

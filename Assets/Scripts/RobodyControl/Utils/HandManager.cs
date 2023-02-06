@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InputDevices
+namespace RobodyControl
 {
     public class HandManager : MonoBehaviour
     {
