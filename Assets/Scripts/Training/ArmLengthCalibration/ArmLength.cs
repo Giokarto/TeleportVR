@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using InputDevices;
 using UnityEngine;
 using RobodyControl;
+using Unity.XR.CoreUtils;
 
 namespace Training.Calibration.ArmLength
 {
@@ -35,7 +36,7 @@ namespace Training.Calibration.ArmLength
             //StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => StopCalibration(), once: true);
 
             // get objectives
-            foreach (var comp in PlayerRig.Instance.gameObject.GetComponentsInChildren<XROffset>())
+            foreach (var comp in (FindObjectOfType(typeof(XROrigin)) as XROrigin).gameObject.GetComponentsInChildren<XROffset>())
             {
                 if (comp.isRight)
                 {

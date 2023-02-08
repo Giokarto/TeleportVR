@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.XR.CoreUtils;
+using UnityEngine;
 
 public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
 {
@@ -23,6 +24,8 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
     public Transform casterLeftWheel;
 
     public Transform casterLeftWheelMain;
+    
+    public GameObject PlayerRig;
 
     private void Start()
     {
@@ -31,6 +34,11 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
         theta = Mathf.PI / 2;
 
         drivingTime = 1f;
+
+        if (PlayerRig == null)
+        {
+            PlayerRig = FindObjectOfType<XROrigin>().gameObject;
+        }
     }
 
     float abc = 0;
@@ -88,7 +96,7 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
     {
         Vector3 movement = new Vector3(x, gameObject.transform.localPosition.y, y);
         m_Rigidbody.MovePosition(movement);
-        PlayerRig.Instance.transform.position = transform.position - Vector3.up * 0.25f;
+        PlayerRig.transform.position = transform.position - Vector3.up * 0.25f;
     }
 
     private void Turn()
@@ -97,7 +105,7 @@ public class DifferentialDriveControl : Singleton<DifferentialDriveControl>
 
         Quaternion rotate = Quaternion.Euler(0f, theta_deg, 0f);
         m_Rigidbody.MoveRotation(rotate);
-        PlayerRig.Instance.transform.rotation = transform.rotation;
+        PlayerRig.transform.rotation = transform.rotation;
 
         //if (casterLeftWheelMain.transform.localEulerAngles.y >= 90f && casterLeftWheelMain.transform.localEulerAngles.y <= 270f)
         //{
