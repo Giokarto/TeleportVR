@@ -59,57 +59,50 @@ namespace InputDevices.VRControllers
                 {
                     return;
                 }
-                else
-                {
-                    Debug.Log("Found XR Controllers");
-                }
             }
-            else
+            bool btn;
+            bool anyButton = false;
+            if (controllerLeft.TryGetFeatureValue(CommonUsages.menuButton, out btn) && btn)
             {
-                bool btn;
-                bool anyButton = false;
-                if (controllerLeft.TryGetFeatureValue(CommonUsages.menuButton, out btn) && btn)
-                {
-                    InvokeLeftMenuButton();
-                }
-                if (controllerLeft.TryGetFeatureValue(CommonUsages.primaryButton, out btn) && btn)
-                {
-                    anyButton = true;
-                    InvokeLeftPrimaryButton();
-                }
-                if (controllerLeft.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn)
-                {
-                    anyButton = true;
-                    InvokeLeftSecondaryButton();
-                }
-                if (controllerRight.TryGetFeatureValue(CommonUsages.primaryButton, out btn) && btn)
-                {
-                    anyButton = true;
-                    InvokeRightPrimaryButton();
-                }
-                if (controllerRight.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn)
-                {
-                    anyButton = true;
-                    InvokeRightSecondaryButton();
-                }
+                InvokeLeftMenuButton();
+            }
+            if (controllerLeft.TryGetFeatureValue(CommonUsages.primaryButton, out btn) && btn)
+            {
+                anyButton = true;
+                InvokeLeftPrimaryButton();
+            }
+            if (controllerLeft.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn)
+            {
+                anyButton = true;
+                InvokeLeftSecondaryButton();
+            }
+            if (controllerRight.TryGetFeatureValue(CommonUsages.primaryButton, out btn) && btn)
+            {
+                anyButton = true;
+                InvokeRightPrimaryButton();
+            }
+            if (controllerRight.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn)
+            {
+                anyButton = true;
+                InvokeRightSecondaryButton();
+            }
 
-                float left, right = 0;
-                if ((controllerLeft.TryGetFeatureValue(CommonUsages.grip, out left) && left>0) ||
-                    (controllerRight.TryGetFeatureValue(CommonUsages.grip, out right) && right>0))
-                {
-                    InvokeGripChange(left, right);
-                }
-                
-                if ((controllerLeft.TryGetFeatureValue(CommonUsages.trigger, out left) && left>0) ||
-                    (controllerRight.TryGetFeatureValue(CommonUsages.trigger, out right) && right>0))
-                {
-                    InvokeTriggerChange(left, right);
-                }
+            float left, right = 0;
+            if ((controllerLeft.TryGetFeatureValue(CommonUsages.grip, out left) && left>0) ||
+                (controllerRight.TryGetFeatureValue(CommonUsages.grip, out right) && right>0))
+            {
+                InvokeGripChange(left, right);
+            }
+            
+            if ((controllerLeft.TryGetFeatureValue(CommonUsages.trigger, out left) && left>0) ||
+                (controllerRight.TryGetFeatureValue(CommonUsages.trigger, out right) && right>0))
+            {
+                InvokeTriggerChange(left, right);
+            }
 
-                if (anyButton)
-                {
-                    InvokeAnyButton();
-                }
+            if (anyButton)
+            {
+                InvokeAnyButton();
             }
         }
 

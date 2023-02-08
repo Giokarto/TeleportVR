@@ -11,13 +11,13 @@ namespace InputDevices.Keyboard
         {
             if (Input.GetKeyDown(KeyCode.M))
                 InvokeLeftMenuButton();
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Input.GetKeyDown(KeyCode.X))
                 InvokeLeftPrimaryButton();
-            if (Input.GetKeyDown(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.Y))
                 InvokeLeftSecondaryButton();
-            if (Input.GetKeyDown(KeyCode.L))
+            if (Input.GetKeyDown(KeyCode.A))
                 InvokeRightPrimaryButton();
-            if (Input.GetKeyDown(KeyCode.K))
+            if (Input.GetKeyDown(KeyCode.B))
                 InvokeRightSecondaryButton();
             
             if (Input.anyKeyDown)

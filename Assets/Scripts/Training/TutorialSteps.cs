@@ -393,7 +393,7 @@ namespace Training
                 //audioManager.ClearQueue();
                 Next();
             }
-            else if (Input.GetKeyDown(KeyCode.B))
+            else if (Input.GetKeyDown(KeyCode.P))
             {
                 StopAllCoroutines();
                 Prev();
