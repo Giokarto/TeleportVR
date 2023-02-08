@@ -7,7 +7,7 @@ namespace ServerConnection.Aiortc
 {
     public class AiortcServer : ServerData
     {
-        [SerializeField] private aiortcConnector aiortcConnector;
+        [SerializeField] private AiortcConnector aiortcConnector;
         [SerializeField] private ImtpEncoder imtpEncoder;
         
         private int fps = 10;
@@ -40,7 +40,7 @@ namespace ServerConnection.Aiortc
 
         public override float GetVisionLatency()
         {
-            return 10;
+            throw new NotImplementedException();
         }
 
         public override float GetVisionFps()

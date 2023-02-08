@@ -13,7 +13,11 @@ using UnityEngine.Audio;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class aiortcConnector : MonoBehaviour
+/// <summary>
+/// This class is gathered and modified from https://github.com/gtk2k/Unity_aiortc_sample
+/// It is responsible with creating the connection with aiortc server and set necessary stream services, such as Data, Video and Audio channels
+/// </summary>
+public class AiortcConnector : MonoBehaviour
 {
     [SerializeField] private string aiortcServerURL;
     [SerializeField] private RawImage dummyImage;
@@ -40,6 +44,10 @@ public class aiortcConnector : MonoBehaviour
         Remote
     }
 
+
+    /// <summary>
+    /// Sets the signalling message which can be offer for outgoing connection and answer for incomming connection
+    /// </summary>
     private class SignalingMsg
     {
         public string type;
@@ -66,6 +74,9 @@ public class aiortcConnector : MonoBehaviour
 
     public Int32[][] faceCoordinates = {};
 
+    /// <summary>
+    /// Initializes game components and data channel behavior then tries to start the connection
+    /// </summary>
     void Start()
     {
         leftRenderer = imtpEncoder.leftEye.GetNamedChild("LeftSphereMaterial").GetComponent<Renderer>();
@@ -115,6 +126,9 @@ public class aiortcConnector : MonoBehaviour
         Connect();
     }
 
+    /// <summary>
+    /// Stops the webrtc connection
+    /// </summary>
     public void Stop()
     {
         receiveAudio.Stop();
@@ -122,6 +136,10 @@ public class aiortcConnector : MonoBehaviour
         WebRTC.Dispose();
     }
     
+    /// <summary>
+    /// Sets webrtc connection behaviors by setting up delegate functions, onTrack is very important in particular where incoming connections are listened
+    /// Then makes a offer for connection
+    /// </summary>
     public void Connect()
     {
         receiveStream = new MediaStream();
@@ -201,6 +219,9 @@ public class aiortcConnector : MonoBehaviour
         StartCoroutine(CreateDesc(RTCSdpType.Offer));
     }
 
+    /// <summary>
+    /// Creates description of connection
+    /// </summary>
     private IEnumerator CreateDesc(RTCSdpType type){
         if(type == RTCSdpType.Offer)
         {
@@ -241,7 +262,10 @@ public class aiortcConnector : MonoBehaviour
             StartCoroutine(CreateDesc(RTCSdpType.Answer));
         }
     }
-
+    
+    /// <summary>
+    /// Sends connection web request to dedicated server
+    /// </summary>
     private IEnumerator aiortcSignaling(SignalingMsg msg)
     {
         var jsonStr = JsonUtility.ToJson(msg);
@@ -264,6 +288,11 @@ public class aiortcConnector : MonoBehaviour
         StartCoroutine(SetDesc(Side.Remote, resMsg.ToDesc()));
     }
 
+    /// <summary>
+    /// Webrtc frame updates are listened here and for every incoming texture it is setting spherical game object texture with coming frames
+    /// Frames can be also transfered to ImtpEncoder class and can be manipulated further, currently disabled because it is causing rendering 
+    /// problems on Oculus 
+    /// </summary>
     void Update()
     {
         // if (imtpEncoder != null)
@@ -280,6 +309,10 @@ public class aiortcConnector : MonoBehaviour
         cam.Render();
         cam.targetTexture = originalTargetTexture;*/
     }
+    
+    /// <summary>
+    /// Sends message to data channel
+    /// </summary>
     public void SendMsg()
     {
         Debug.Log($"SendMsg ping");

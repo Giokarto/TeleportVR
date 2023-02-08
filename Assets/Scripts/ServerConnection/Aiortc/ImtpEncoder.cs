@@ -3,6 +3,11 @@ using ServerConnection;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Frame manipulator class for aiortc connections. It is capable of listening frames, reading pixels and do
+/// transformations such as vertical mirrorings
+/// Currently not in use since it is causing problems on Oculus, can be investigated more
+/// </summary>
 public class ImtpEncoder : MonoBehaviour
 {
     [SerializeField] public GameObject leftEye;
@@ -17,12 +22,19 @@ public class ImtpEncoder : MonoBehaviour
         Stereo
     }
 
+    /// <summary>
+    /// Sets game object for left and right eye spheres
+    /// </summary>
     public void Start()
     {
         leftEyeRenderer = leftEye.GetComponentInChildren<Renderer>();
         righEyeRenderer = rightEye.GetComponentInChildren<Renderer>();
     }
 
+    /// <summary>
+    /// Recieves the last frame from AiortcConnector.Update function then updates its own game objects
+    /// </summary>
+    /// <param name="lastReceivedTexture_">incomming frame texture</param>
     public void SetLastReceivedTexture(Texture lastReceivedTexture_)
     {
         try
@@ -37,13 +49,17 @@ public class ImtpEncoder : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Converts incoming Texture to Texture2D
+    /// </summary>
+    /// <param name="mainTexture">incomming frame texture</param>
     private Texture2D GetTexture(Texture mainTexture)
     {
         return mainTexture as Texture2D;
         
         // Texture2D tex = mainTexture as Texture2D;
         //
-        // var faces = (FindObjectOfType(typeof(aiortcConnector)) as aiortcConnector).faceCoordinates;
+        // var faces = (FindObjectOfType(typeof(AiortcConnector)) as AiortcConnector).faceCoordinates;
         // foreach (var face in faces)
         // {
         //     for (int i = face[0]; i < face[0]+face[2]; i++)
@@ -59,6 +75,14 @@ public class ImtpEncoder : MonoBehaviour
         // return tex;
     }
 
+
+    /// <summary>
+    /// Manipulates incoming frame by type, if it is Single camera data incoming it manipulates the frames so that each eye sees correctly
+    /// if it Stereo it also divides incoming frames and creates correct eye view
+    /// also mirrors the frames by default
+    /// </summary>
+    /// <param name="originalTexture">incomming frame texture</param>
+    /// <param name="side">indicates which eye, can be "left" or "right" </param>
     Texture2D GetEyeTexture2D(Texture2D originalTexture, string side)
     {
         var width = videoStreamViewType == VideoStreamViewType.Single
@@ -74,6 +98,12 @@ public class ImtpEncoder : MonoBehaviour
         return croppedTexture;
     }
 
+    /// <summary>
+    /// Vertical mirroring of color array
+    /// </summary>
+    /// <param name="colors">color array that will be mirrored vertically</param>
+    /// <param name="width">width of frame</param>
+    /// <param name="height">height of frame</param>
     Color[] FlipColors(Color[] colors, int width, int height)
     {
         Color[] newColor = new Color[width*height];
@@ -87,19 +117,10 @@ public class ImtpEncoder : MonoBehaviour
 
         return newColor;
     }
-    
-    static int[,] RotateMatrix(int[,] matrix, int n) {
-        int[,] ret = new int[n, n];
 
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                ret[i, j] = matrix[j, i];
-            }
-        }
-
-        return ret;
-    }
-
+    /// <summary>
+    /// Updates eye game object textures
+    /// </summary>
     private void UpdateTextures()
     {
         leftEyeRenderer.material.mainTexture = GetEyeTexture2D(lastReceivedTexture, "left");
