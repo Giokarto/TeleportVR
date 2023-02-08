@@ -314,7 +314,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 160, y: 30}
   savedColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  savedTextUV0: {x: 0.08203125, y: 0.1171875, z: 0, w: 0}
+  savedTextUV0: {x: 0.03515625, y: 0.19921875, z: 0, w: 0}
   savedFill: 0
 --- !u!114 &58683498
 MonoBehaviour:
@@ -640,7 +640,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 160, y: 30}
   savedColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  savedTextUV0: {x: 0.08203125, y: 0.1171875, z: 0, w: 0}
+  savedTextUV0: {x: 0.03515625, y: 0.19921875, z: 0, w: 0}
   savedFill: 0
 --- !u!114 &109195387
 MonoBehaviour:
@@ -6506,7 +6506,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 164.6, y: 17}
   savedColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  savedTextUV0: {x: 0.08203125, y: 0.1171875, z: 0, w: 0}
+  savedTextUV0: {x: 0.03515625, y: 0.19921875, z: 0, w: 0}
   savedFill: 0
 --- !u!114 &1215007295 stripped
 MonoBehaviour:
@@ -8448,7 +8448,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 160, y: 30}
   savedColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  savedTextUV0: {x: 0.0390625, y: 0.08203125, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0.0703125, z: 0, w: 0}
   savedFill: 0
 --- !u!114 &1729757896
 MonoBehaviour:
@@ -11047,7 +11047,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3112793306941609135}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a2081d754b3ac20418ca975a3b6ef4f8, type: 3}
   m_Name: 
@@ -11062,6 +11062,7 @@ MonoBehaviour:
   casterRightWheel: {fileID: 3112793306941114573}
   casterLeftWheel: {fileID: 3112793306941114571}
   casterLeftWheelMain: {fileID: 3112793306941114569}
+  PlayerRig: {fileID: 0}
 --- !u!54 &3112793307756572319
 Rigidbody:
   m_ObjectHideFlags: 0
