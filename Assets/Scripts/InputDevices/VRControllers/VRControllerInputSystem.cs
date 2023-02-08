@@ -16,6 +16,14 @@ namespace InputDevices.VRControllers
         public static InputDevice controllerRight { get; private set; }
         
         private bool controllersAvailable;
+
+        /// <summary>
+        /// TryGetFeatureValue returns true for every frame in which the button is pressed, we want to track only
+        /// the first time (such as Input.GetKeyDown), so we need to store the previous state
+        /// </summary>
+        private bool wasPressedMenu, wasPressedLeftPrimary, wasPressedLeftSecondary, wasPressedRightPrimary, wasPressedRightSecondary;
+        
+        bool anyButtonCurrentlyPressed = false;
         
         public static event Action<float, float> OnGripChange = delegate{};
         protected void InvokeGripChange(float left, float right) {OnGripChange?.Invoke(left, right);}
@@ -50,6 +58,31 @@ namespace InputDevices.VRControllers
                 Debug.Log("Could not find XR controllers!");
             }
         }
+
+        /// <summary>
+        /// Checks if button is pressed, invokes the delegate and sets state to remember later.
+        /// Used below to get rid of copy-pasted conditions.
+        /// </summary>
+        /// <param name="isPressed">is the button currently pressed?</param>
+        /// <param name="previouslyPressed">ref to bool of previous state (ref to change the content)</param>
+        /// <param name="actionToInvoke"></param>
+        private void HandleButtonPress(bool isPressed, ref bool previouslyPressed, Action actionToInvoke)
+        {
+            if (isPressed)
+            {
+                if (!previouslyPressed)
+                {
+                    actionToInvoke();
+                }
+
+                previouslyPressed = true;
+                anyButtonCurrentlyPressed = true;
+            }
+            else
+            {
+                previouslyPressed = false;
+            }
+        }
         
         public override void Update()
         {
@@ -60,32 +93,20 @@ namespace InputDevices.VRControllers
                     return;
                 }
             }
+
+            anyButtonCurrentlyPressed = false;
             bool btn;
-            bool anyButton = false;
-            if (controllerLeft.TryGetFeatureValue(CommonUsages.menuButton, out btn) && btn)
-            {
-                InvokeLeftMenuButton();
-            }
-            if (controllerLeft.TryGetFeatureValue(CommonUsages.primaryButton, out btn) && btn)
-            {
-                anyButton = true;
-                InvokeLeftPrimaryButton();
-            }
-            if (controllerLeft.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn)
-            {
-                anyButton = true;
-                InvokeLeftSecondaryButton();
-            }
-            if (controllerRight.TryGetFeatureValue(CommonUsages.primaryButton, out btn) && btn)
-            {
-                anyButton = true;
-                InvokeRightPrimaryButton();
-            }
-            if (controllerRight.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn)
-            {
-                anyButton = true;
-                InvokeRightSecondaryButton();
-            }
+
+            HandleButtonPress(controllerLeft.TryGetFeatureValue(CommonUsages.menuButton, out btn) && btn, 
+                ref wasPressedMenu, InvokeLeftMenuButton);
+            HandleButtonPress(controllerLeft.TryGetFeatureValue(CommonUsages.primaryButton, out btn) && btn, 
+                ref wasPressedLeftPrimary, InvokeLeftPrimaryButton);
+            HandleButtonPress(controllerLeft.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn, 
+                ref wasPressedLeftSecondary, InvokeLeftSecondaryButton);
+            HandleButtonPress(controllerRight.TryGetFeatureValue(CommonUsages.primaryButton, out btn) && btn, 
+                ref wasPressedRightPrimary, InvokeRightPrimaryButton);
+            HandleButtonPress(controllerRight.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn, 
+                ref wasPressedRightSecondary, InvokeRightSecondaryButton);
 
             float left, right = 0;
             if ((controllerLeft.TryGetFeatureValue(CommonUsages.grip, out left) && left>0) ||
@@ -100,7 +121,7 @@ namespace InputDevices.VRControllers
                 InvokeTriggerChange(left, right);
             }
 
-            if (anyButton)
+            if (anyButtonCurrentlyPressed)
             {
                 InvokeAnyButton();
             }
