@@ -1,6 +1,6 @@
 using ServerConnection;
 
-namespace Widgets
+namespace Widgets.ActiveWidgets
 {
     /// <summary>
     /// This class creates the most essential widgets at startup and manages their state.

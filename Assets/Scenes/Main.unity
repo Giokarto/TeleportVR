@@ -7794,7 +7794,7 @@ MonoBehaviour:
   dummyImage: {fileID: 1609621274}
   videoTransformType: 0
   imtpEncoder: {fileID: 1678106452}
-  receiveAudio: {fileID: 0}
+  receiveAudio: {fileID: 2003449244}
 --- !u!114 &1562753099 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -3010126064790280443, guid: 8376e5037528d434cab49e987b7a4e72, type: 3}
