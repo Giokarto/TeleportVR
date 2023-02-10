@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ScreenshotCapture : MonoBehaviour
 {
@@ -15,6 +13,14 @@ public class ScreenshotCapture : MonoBehaviour
             Application.dataPath,
             width, height,
             System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            TakeHiResShot();
+        }
     }
 
     public void TakeHiResShot()
