@@ -36,7 +36,7 @@ namespace Training.Calibration.ArmLength
             //StateManager.Instance.onStateChangeTo[StateManager.States.HUD].Add((s) => StopCalibration(), once: true);
 
             // get objectives
-            foreach (var comp in (FindObjectOfType(typeof(XROrigin)) as XROrigin).gameObject.GetComponentsInChildren<XROffset>())
+            foreach (var comp in (FindObjectOfType(typeof(XROrigin)) as XROrigin).gameObject.GetComponentsInChildren<BioIkObjectiveWithOffset>())
             {
                 if (comp.isRight)
                 {
