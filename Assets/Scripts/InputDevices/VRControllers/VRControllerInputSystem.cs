@@ -30,24 +30,26 @@ namespace InputDevices.VRControllers
         
         public static event Action<float, float> OnTriggerChange = delegate{};
         protected void InvokeTriggerChange(float left, float right) {OnTriggerChange?.Invoke(left, right);}
-        
+
+        /// <summary>
+        /// variable used in GetControllers, moved outside to the class to not create garbage on the heap in each update
+        /// </summary>
+        private List<InputDevice> foundControllers = new List<InputDevice>();
         private bool GetControllers()
         {
-            var foundControllersLeft = new List<InputDevice>();
-            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Left, foundControllersLeft);
-            if (foundControllersLeft.Count > 0)
+            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Left, foundControllers);
+            if (foundControllers.Count > 0)
             {
-                controllerLeft = foundControllersLeft[0];
+                controllerLeft = foundControllers[0];
             }
             
-            var foundControllersRight = new List<InputDevice>();
-            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Right, foundControllersRight);
-            if (foundControllersRight.Count > 0)
+            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Right, foundControllers);
+            if (foundControllers.Count > 0)
             {
-                controllerRight = foundControllersRight[0];
+                controllerRight = foundControllers[0];
             }
             
-            controllersAvailable = foundControllersLeft.Count > 0 && foundControllersRight.Count > 0;
+            controllersAvailable = controllerLeft != null && controllerRight != null;
             return controllersAvailable;
         }
 

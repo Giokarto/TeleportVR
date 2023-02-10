@@ -44,6 +44,9 @@ namespace ServerConnection.MockServer
             _rightRenderer = RightEye.GetComponentInChildren<Renderer>();
         }
         
+        /// <summary>
+        /// This is especially inefficient with creating a new Texture in every update. Use only for testing!
+        /// </summary>
         public void Update()
         {
             _connectedToServer = random.NextDouble() < 0.98 ? ConnectedToServer : !ConnectedToServer;
