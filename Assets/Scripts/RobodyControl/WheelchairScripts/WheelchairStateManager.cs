@@ -3,79 +3,85 @@ using System.Collections.Generic;
 using OperatorUserInterface;
 using UnityEngine;
 
-
-public class WheelchairStateManager : Singleton<WheelchairStateManager>
+namespace RobodyControl
 {
-    [SerializeField] private GameObject[] WheelchairModels;
-    [SerializeField] private GameObject UpperBody, Legs;
-    public const float HUDAlpha = .4f;
-
-    public bool visible
+    public class WheelchairStateManager : Singleton<WheelchairStateManager>
     {
-        get { return _visible; }
-        set
+        [SerializeField] private GameObject[] WheelchairModels;
+        [SerializeField] private GameObject UpperBody, Legs;
+        public const float HUDAlpha = .4f;
+
+        public bool visible
         {
-            _visible = value;
-            SetVisibility(_visible);
+            get { return _visible; }
+            set
+            {
+                _visible = value;
+                SetVisibility(_visible);
+            }
         }
-    }
-    private bool _visible = true;
-    private Scene internalScene;
 
-    private void Start()
-    {
-        internalScene = SceneManager.Instance.currentScene;
-    }
+        private bool _visible = true;
+        private Scene internalScene;
 
-    void Update()
-    {
-        // if state changed update visibility accordingly
-        if (SceneManager.Instance.currentScene != internalScene)
+        private void Start()
         {
-            SetVisibility(SceneManager.Instance.currentScene != Scene.REAL);
             internalScene = SceneManager.Instance.currentScene;
         }
-    }
 
-    /// <summary>
-    /// shows / hides the classes game objects
-    /// </summary>
-    /// <param name="show">if true objs are shown, otherwise hidden</param>
-    /// <param name="alpha">optional transpaceny</param>
-    public void SetVisibility(bool show, float alpha = 1)
-    {
-        _visible = show;
-        List<GameObject> models = new List<GameObject>(WheelchairModels);
-        foreach (var model in models)
+        void Update()
         {
-            if (model != null)
+            // if state changed update visibility accordingly
+            if (SceneManager.Instance.currentScene != internalScene)
             {
-                model.SetActive(show);
+                SetVisibility(SceneManager.Instance.currentScene != Scene.REAL);
+                internalScene = SceneManager.Instance.currentScene;
             }
         }
-        models.Add(UpperBody);
-        models.Add(Legs);
-        // if BioIK is needed for real roboy, only the meshes might need to be disabled, but for now just disable it all
-        foreach (var obj in models)
+
+        /// <summary>
+        /// shows / hides the classes game objects
+        /// </summary>
+        /// <param name="show">if true objs are shown, otherwise hidden</param>
+        /// <param name="alpha">optional transpaceny</param>
+        public void SetVisibility(bool show, float alpha = 1)
         {
-            if (obj == null)
+            _visible = show;
+            List<GameObject> models = new List<GameObject>(WheelchairModels);
+            foreach (var model in models)
             {
-                continue;
+                if (model != null)
+                {
+                    model.SetActive(show);
+                }
             }
-            foreach (var r in obj.GetComponentsInChildren<Renderer>())
+
+            models.Add(UpperBody);
+            models.Add(Legs);
+            // if BioIK is needed for real roboy, only the meshes might need to be disabled, but for now just disable it all
+            foreach (var obj in models)
             {
-                r.enabled = show;
-                if (alpha < 1)
+                if (obj == null)
                 {
-                    MaterialExtensions.ToFadeMode(r.material);
+                    continue;
                 }
-                else
+
+                foreach (var r in obj.GetComponentsInChildren<Renderer>())
                 {
-                    MaterialExtensions.ToOpaqueMode(r.material);
+                    r.enabled = show;
+                    if (alpha < 1)
+                    {
+                        MaterialExtensions.ToFadeMode(r.material);
+                    }
+                    else
+                    {
+                        MaterialExtensions.ToOpaqueMode(r.material);
+                    }
+
+                    Color color = r.material.color;
+                    color.a = alpha;
+                    r.material.color = color;
                 }
-                Color color = r.material.color;
-                color.a = alpha;
-                r.material.color = color;
             }
         }
     }

@@ -4,7 +4,7 @@ using InputDevices.VRControllers;
 using UnityEngine;
 using UnityEngine.XR;
 
-namespace InputDevices
+namespace RobodyControl
 {
     public class EnableControlManager : Singleton<EnableControlManager>
     {

@@ -2,28 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ParentToWheelchair : MonoBehaviour
+namespace RobodyControl
 {
-    private bool parented;
-    // Start is called before the first frame update
-    void Start()
+    public class ParentToWheelchair : MonoBehaviour
     {
-        parented = false;
-    }
+        private bool parented;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (!parented)
+        // Start is called before the first frame update
+        void Start()
         {
-            try
-            {
-                transform.SetParent(WheelchairStateManager.Instance.gameObject.transform, true);
-                parented = true;
-            }
-            catch (System.Exception)
-            {
+            parented = false;
+        }
 
+        // Update is called once per frame
+        void Update()
+        {
+            if (!parented)
+            {
+                try
+                {
+                    transform.SetParent(WheelchairStateManager.Instance.gameObject.transform, true);
+                    parented = true;
+                }
+                catch (System.Exception)
+                {
+
+                }
             }
         }
     }

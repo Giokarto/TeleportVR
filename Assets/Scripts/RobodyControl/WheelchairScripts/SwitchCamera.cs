@@ -3,28 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SwitchCamera : MonoBehaviour
+namespace RobodyControl
 {
-    public GameObject[] Cams;
-    int currentCam;
-
-    public Text txtCameraInfo;
-
-    void Start()
+    public class SwitchCamera : MonoBehaviour
     {
-        currentCam = 0;
-        Cams[currentCam].GetComponent<Camera>().enabled = true;
-        txtCameraInfo.text = "View: " + Cams[0].name;
-    }
+        public GameObject[] Cams;
+        int currentCam;
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.C))
+        public Text txtCameraInfo;
+
+        void Start()
         {
-            Cams[currentCam].GetComponent<Camera>().enabled = false;
-            currentCam = (++currentCam) % Cams.Length;
+            currentCam = 0;
             Cams[currentCam].GetComponent<Camera>().enabled = true;
-            txtCameraInfo.text = "View: " + Cams[currentCam].name;
+            txtCameraInfo.text = "View: " + Cams[0].name;
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                Cams[currentCam].GetComponent<Camera>().enabled = false;
+                currentCam = (++currentCam) % Cams.Length;
+                Cams[currentCam].GetComponent<Camera>().enabled = true;
+                txtCameraInfo.text = "View: " + Cams[currentCam].name;
+            }
         }
     }
 }
