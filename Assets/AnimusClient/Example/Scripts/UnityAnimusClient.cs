@@ -519,7 +519,7 @@ namespace AnimusClient
             return new[] { _leftTexture, _rightTexture };
         }
 
-        public override bool EnableVision(bool stereo)
+        public bool EnableVision(bool stereo)
         {
             stereovision = stereo;
             if (!animusManager.openModalitiesSuccess)
@@ -541,12 +541,6 @@ namespace AnimusClient
                 camLeft.stereoTargetEye = StereoTargetEyeMask.Left;
             }
             return true;
-        }
-
-        public override void DisableVision()
-        {
-            _leftPlane.SetActive(false);
-            _rightPlane.SetActive(false);
         }
         #endregion
 
