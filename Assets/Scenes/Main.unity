@@ -7448,6 +7448,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Settings: {fileID: 8099478082166116833}
+  HUD: {fileID: 7595953839926563141}
 --- !u!114 &1433417877 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8980600750901095577, guid: 8376e5037528d434cab49e987b7a4e72, type: 3}

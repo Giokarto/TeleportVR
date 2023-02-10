@@ -10,10 +10,13 @@ namespace OperatorUserInterface
     public class SettingsManager : MonoBehaviour
     {
         public GameObject Settings;
+        public GameObject HUD;
 
         public void ChangeSettingsState()
         {
-            Settings.SetActive(!Settings.activeSelf);
+            bool settingsActive = !Settings.activeSelf;
+            Settings.SetActive(settingsActive);
+            HUD.SetActive(!settingsActive);
             
             // While settings are active, turn off robot motions
             // TODO: find out how to do it, this doesn't work
