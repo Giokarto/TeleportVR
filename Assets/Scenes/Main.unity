@@ -7790,6 +7790,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e1f192c59c54fbd87c25983cfdf6704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aiortcServerURL: localhost:8080
+  dummyImage: {fileID: 1609621274}
+  videoTransformType: 0
+  imtpEncoder: {fileID: 1678106452}
+  receiveAudio: {fileID: 0}
 --- !u!114 &1562753099 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -3010126064790280443, guid: 8376e5037528d434cab49e987b7a4e72, type: 3}

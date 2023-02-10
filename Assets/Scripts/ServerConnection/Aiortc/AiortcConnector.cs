@@ -1,15 +1,10 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Unity.WebRTC;
 using Unity.XR.CoreUtils;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
@@ -31,6 +26,11 @@ namespace ServerConnection.Aiortc
         private Renderer rightRenderer;
 
         private Renderer leftFaceDetectionRenderer;
+
+        /// <summary>
+        /// Indicates if a data channel is open.
+        /// </summary>
+        public bool isConnected { get; private set; }
 
         public enum VideoTransformType
         {
@@ -117,8 +117,15 @@ namespace ServerConnection.Aiortc
                 //Debug.Log($"{str}");
                 //textReceive.text = System.Text.Encoding.UTF8.GetString(bytes);
             };
-            onDataChannelOpen = () => { SendMsg(); };
-            onDataChannelClose = () => { };
+            onDataChannelOpen = () =>
+            {
+                SendMsg();
+                isConnected = true;
+            };
+            onDataChannelClose = () =>
+            {
+                isConnected = false;
+            };
             WebRTC.Initialize();
             StartCoroutine(WebRTC.Update());
             Connect();

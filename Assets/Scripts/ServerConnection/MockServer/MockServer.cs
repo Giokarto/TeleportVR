@@ -25,11 +25,12 @@ namespace ServerConnection.MockServer
         private Texture2D _rightTexture;
         private Renderer _leftRenderer;
         private Renderer _rightRenderer;
-        
+
+        private bool _connectedToServer;
         
         public void Start()
         {
-            ConnectedToServer = false;
+            _connectedToServer = false;
             
             videoPlayer = new GameObject("mockVideo", typeof(VideoPlayer)).GetComponent<VideoPlayer>();
             videoPlayer.playOnAwake = false;
@@ -45,7 +46,7 @@ namespace ServerConnection.MockServer
         
         public void Update()
         {
-            ConnectedToServer = random.NextDouble() < 0.98 ? ConnectedToServer : !ConnectedToServer;
+            _connectedToServer = random.NextDouble() < 0.98 ? ConnectedToServer : !ConnectedToServer;
 
             RenderTexture videoTexture = (RenderTexture)videoPlayer.texture;
             
@@ -60,7 +61,7 @@ namespace ServerConnection.MockServer
             _rightRenderer.material.mainTexture = _leftTexture;
         }
 
-        public override bool ConnectedToServer { get; protected set; }
+        public override bool ConnectedToServer => _connectedToServer;
 
         public override Dictionary<Modality, bool> ModalityConnected { get; }
             = Enum.GetValues(typeof(Modality)).Cast<Enum>().ToDictionary(e => (Modality)e, v => false);

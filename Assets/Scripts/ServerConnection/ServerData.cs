@@ -16,7 +16,7 @@ namespace ServerConnection
         /// <summary>
         /// Is the server connection established?
         /// </summary>
-        public abstract bool ConnectedToServer { get; protected set; }
+        public abstract bool ConnectedToServer { get; }
         
         /// <summary>
         /// Which modalities are connected
