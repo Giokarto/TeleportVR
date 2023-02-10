@@ -55,7 +55,7 @@ namespace InputDevices.VRControllers
         {
             if (!GetControllers())
             {
-                Debug.Log("Could not find XR controllers!");
+                Debug.LogWarning("Could not find XR controllers!");
             }
         }
 
