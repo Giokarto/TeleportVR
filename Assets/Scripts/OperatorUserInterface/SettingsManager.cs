@@ -1,6 +1,7 @@
 using System;
 using InputDevices;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 namespace OperatorUserInterface
 {
@@ -12,18 +13,34 @@ namespace OperatorUserInterface
         public GameObject Settings;
         public GameObject HUD;
 
+        private XRInteractorLineVisual[] PointerRenderers;
+
         public void ChangeSettingsState()
         {
             bool settingsActive = !Settings.activeSelf;
             Settings.SetActive(settingsActive);
             HUD.SetActive(!settingsActive);
             
+            foreach (var interactorLineVisual in PointerRenderers)
+            {
+                interactorLineVisual.enabled = settingsActive;
+            }
+            
             // While settings are active, turn off robot motions
             // TODO: find out how to do it, this doesn't work
             // EnableControlManager.Instance.leftBioIKGroup.SetEnabled(!Settings.activeSelf);
             // EnableControlManager.Instance.rightBioIKGroup.SetEnabled(!Settings.activeSelf);
         }
-        
+
+        private void Start()
+        {
+            PointerRenderers = FindObjectsOfType<XRInteractorLineVisual>();
+            foreach (var interactorLineVisual in PointerRenderers)
+            {
+                interactorLineVisual.enabled = false;
+            }
+        }
+
         private void OnEnable()
         {
             InputSystem.OnLeftPrimaryButton += ChangeSettingsState;

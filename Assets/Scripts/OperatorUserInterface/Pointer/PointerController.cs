@@ -1,53 +1,54 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using InputDevices.VRControllers;
+﻿using InputDevices.VRControllers;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
-/// <summary>
-/// A pointer used with the SenseGlove, where a ray is coming from the gloves position and orientation.
-/// </summary>
-public class PointerController : Pointer
+namespace OperatorUserInterface
 {
-    private XRBaseController teleport;
-    private InputDevice right;
-
     /// <summary>
-    /// Send the ray the sense glove is pointing at.
+    /// A pointer used with the SenseGlove, where a ray is coming from the gloves position and orientation.
     /// </summary>
-    public override void GetPointerPosition()
+    public class PointerController : Pointer
     {
-        //PushPointerPosition(teleport.pointerOriginZ.position, teleport.pointerOriginZ.rotation.eulerAngles);
-        PushPointerPosition(teleport.transform.position, teleport.transform.eulerAngles);
-    }
+        private XRBaseController teleport;
+        private InputDevice right;
 
-    /// <summary>
-    /// At the start, this method sets the reference to the first found SenseGlove_Teleport script.
-    /// </summary>
-    public override void SubclassStart()
-    {
-        Object[] objects = Resources.FindObjectsOfTypeAll(typeof(XRBaseController));
-        if (objects.Length > 0)
+        /// <summary>
+        /// Send the ray the sense glove is pointing at.
+        /// </summary>
+        public override void GetPointerPosition()
         {
-            teleport = (XRBaseController) objects[0];
+            //PushPointerPosition(teleport.pointerOriginZ.position, teleport.pointerOriginZ.rotation.eulerAngles);
+            PushPointerPosition(teleport.transform.position, teleport.transform.eulerAngles);
         }
 
-        right = VRControllerInputSystem.controllerRight;
-        
-        VRControllerInputSystem.OnTriggerChange += (l, r) =>
+        /// <summary>
+        /// At the start, this method sets the reference to the first found SenseGlove_Teleport script.
+        /// </summary>
+        public override void SubclassStart()
         {
-            //CurvedUIInputModule.CustomControllerButtonState = r > 0.5;
-        }; // TODO: remove in ondestroy
-    }
+            Object[] objects = Resources.FindObjectsOfTypeAll(typeof(XRBaseController));
+            if (objects.Length > 0)
+            {
+                teleport = (XRBaseController)objects[0];
+            }
 
-    /// <summary>
-    /// Update the ray the sense glove is pointing at.
-    /// </summary>
-    void Update()
-    {
-        GetPointerPosition();
-        var pressed = (right.TryGetFeatureValue(CommonUsages.primaryButton, out var btn) && btn) ;
-        CurvedUIInputModule.CustomControllerButtonState = pressed;
+            right = VRControllerInputSystem.controllerRight;
+
+            VRControllerInputSystem.OnTriggerChange += (l, r) =>
+            {
+                //CurvedUIInputModule.CustomControllerButtonState = r > 0.5;
+            }; // TODO: remove in ondestroy
+        }
+
+        /// <summary>
+        /// Update the ray the sense glove is pointing at.
+        /// </summary>
+        void Update()
+        {
+            GetPointerPosition();
+            var pressed = (right.TryGetFeatureValue(CommonUsages.primaryButton, out var btn) && btn);
+            CurvedUIInputModule.CustomControllerButtonState = pressed;
+        }
     }
 }
