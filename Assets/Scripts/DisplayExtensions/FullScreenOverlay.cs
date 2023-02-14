@@ -18,6 +18,11 @@ namespace DisplayExtensions
         private Material overlayMat;
 
         /// <summary>
+        /// Variable to hold a texture from each update.
+        /// </summary>
+        protected Texture currentTexture;
+
+        /// <summary>
         /// Each overlay adds a material to the renderer. This retrieves its index. The index can get changed
         /// if an earlier overlay is destroyed. We assume the index is the same for left and right plane.
         /// </summary>
@@ -73,8 +78,8 @@ namespace DisplayExtensions
 
         protected void Update()
         {
-            var texture = GetOverlayTexture();
-            
+            currentTexture = GetOverlayTexture();
+            // in child classes: assign currentTexture where it belongs to
         }
     }
 }

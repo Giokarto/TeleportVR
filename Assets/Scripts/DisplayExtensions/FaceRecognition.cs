@@ -11,6 +11,9 @@ using Rect = OpenCVForUnity.CoreModule.Rect;
 
 namespace DisplayExtensions
 {
+    /// <summary>
+    /// Face recognition for testing purposes on the Unity side. Is too slow to use in production.
+    /// </summary>
     public class FaceRecognition : FullScreenOverlay
     {
         private string filename;
@@ -46,11 +49,11 @@ namespace DisplayExtensions
         
         void Update()
         {
-            var t = GetOverlayTexture();
+            currentTexture = GetOverlayTexture();
             
             //set rawimage texture
-            this.GetComponent<RawImage>().texture = t;
-            leftRenderer.materials[1].mainTexture = t;
+            this.GetComponent<RawImage>().texture = currentTexture;
+            leftRenderer.materials[1].mainTexture = currentTexture;
         }
 
         public override Texture GetOverlayTexture()
