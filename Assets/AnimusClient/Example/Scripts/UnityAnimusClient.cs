@@ -328,7 +328,7 @@ namespace AnimusClient
                 }
 
                 // only set vision when it's visible
-                if (SceneManager.Instance.currentScene != Scene.REAL)
+                if (SceneManager.Instance.currentScene != Scene.MAIN)
                 {
                     return false;
                 }

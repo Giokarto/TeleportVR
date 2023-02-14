@@ -44,7 +44,7 @@ namespace RobodyControl
             currentState = SceneManager.Instance.currentScene;
             switch (currentState)
             {
-                case Scene.REAL:
+                case Scene.MAIN:
                     arms.MaximumVelocity = armControlLimits.velocity;
                     arms.MaximumAcceleration = armControlLimits.acceleration;
                     leftHand.MaximumVelocity = handControlLimits.velocity;

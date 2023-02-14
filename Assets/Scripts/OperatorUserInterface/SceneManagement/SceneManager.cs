@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using InputDevices;
 using ServerConnection;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Widgets;
 using UnitySceneManager = UnityEngine.SceneManagement.SceneManager;
 
@@ -10,9 +11,8 @@ namespace OperatorUserInterface
 {
     public enum Scene
     {
-        MAIN, // contains only Roboy and necessary control elements, otherwise empty
-        LOBBY, // training scene with mirror to get used to the simulation; tutorial
-        REAL // real world scene, streaming camera from Roboy
+        MAIN, // contains only Roboy and necessary control elements
+        TRAINING, // training scene with mirror to get used to the simulation; tutorial
     }
 
     /// <summary>
@@ -30,8 +30,7 @@ namespace OperatorUserInterface
         private Dictionary<Scene, String> sceneNames = new Dictionary<Scene, string>()
         {
             { Scene.MAIN, "Main" },
-            { Scene.LOBBY, "Training" },
-            { Scene.REAL, "HUD" }
+            { Scene.TRAINING, "Training" }
         };
 
         public float lastSwitch { get; private set; } = float.NegativeInfinity;
@@ -53,11 +52,12 @@ namespace OperatorUserInterface
 
             foreach (var GO in UnitySceneManager.GetActiveScene().GetRootGameObjects())
             {
+                // Not required if we load the scene additively, but no harm to keep it.
                 DontDestroyOnLoad(GO);
             }
 
             currentScene = Scene.MAIN;
-            LoadScene(Scene.LOBBY);
+            LoadScene(Scene.TRAINING, false);
         }
 
         private void OnEnable()
@@ -74,19 +74,19 @@ namespace OperatorUserInterface
         {
             switch (currentScene)
             {
-                case Scene.LOBBY:
-                    LoadScene(Scene.REAL);
+                case Scene.TRAINING:
+                    LoadScene(Scene.MAIN);
                     break;
-                case Scene.REAL:
-                    LoadScene(Scene.LOBBY);
+                case Scene.MAIN:
+                    LoadScene(Scene.TRAINING);
                     break;
                 default:
-                    Debug.LogError($"Trying to switch from the scene {currentScene}. This is not allowed.");
+                    Debug.LogError($"Trying to switch from an unknown scene: {currentScene}.");
                     break;
             }
         }
 
-        private void LoadScene(Scene scene)
+        private void LoadScene(Scene scene, bool playAudio = true)
         {
             if (Time.time - lastSwitch < 1) // don't load scene if the last change was less than 1 second ago
             {
@@ -95,15 +95,14 @@ namespace OperatorUserInterface
             
             lastSwitch = Time.time;
 
+            Debug.Log($"Loading scene {sceneNames[scene]}");
             switch (scene)
             {
-                case Scene.MAIN:
-                    Debug.LogError("Not allowed to return back to empty main scene");
-                    return;
-                case Scene.LOBBY:
+                case Scene.TRAINING:
                     serverConnection.EmbodyRoboy(false);
+                    UnitySceneManager.LoadSceneAsync(sceneNames[scene], LoadSceneMode.Additive);
                     break;
-                case Scene.REAL:
+                case Scene.MAIN:
                     if (!serverConnection.ConnectedToServer)
                     {
                         Debug.Log("Couldn't switch to real world because the server connection is not established.");
@@ -114,23 +113,22 @@ namespace OperatorUserInterface
                     realAlreadyVisited = true;
                     ResetRobody();
                     serverConnection.EmbodyRoboy(true);
+
+                    UnitySceneManager.UnloadSceneAsync(sceneNames[Scene.TRAINING]);
                     break;
             }
 
-            if (currentScene != Scene.MAIN)
+            if (playAudio)
             {
                 transitionAudioPlayer.Play();
             }
-
-            Debug.Log($"Loading scene {sceneNames[scene]}");
-            UnitySceneManager.LoadSceneAsync(sceneNames[scene]);
 
             currentScene = scene;
         }
 
         /// <summary>
-        /// Reset all joints to 0 before going to Real. See <see cref="StateManager"/>.
-        /// TODO: Instead of setting the joints here, create two Robody objects, one in Real and one in Lobby? Or at least move this peace of code somewhere else.
+        /// Reset all joints to 0 before going to the real world.
+        /// TODO: Move this peace of code somewhere else.
         /// </summary>
         private void ResetRobody()
         {

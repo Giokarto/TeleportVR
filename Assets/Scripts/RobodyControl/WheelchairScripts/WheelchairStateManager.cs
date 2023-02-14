@@ -34,7 +34,7 @@ namespace RobodyControl
             // if state changed update visibility accordingly
             if (SceneManager.Instance.currentScene != internalScene)
             {
-                SetVisibility(SceneManager.Instance.currentScene != Scene.REAL);
+                SetVisibility(SceneManager.Instance.currentScene != Scene.MAIN);
                 internalScene = SceneManager.Instance.currentScene;
             }
         }
