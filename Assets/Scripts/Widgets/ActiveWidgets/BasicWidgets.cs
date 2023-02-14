@@ -10,7 +10,7 @@ namespace Widgets.ActiveWidgets
         private IconWidget wifiWidget;
         private IconWidget micWidget;
         private IconWidget speakerWidget;
-        private IconWidget motorsWidget;
+        private IconWidget motionWidget;
 
         private ServerData serverData;
 
@@ -19,7 +19,7 @@ namespace Widgets.ActiveWidgets
             wifiWidget = WidgetFactory.Instance.CreateIconWidget("WifiRed", WidgetPosition.Top, "wifiWidget");
             micWidget = WidgetFactory.Instance.CreateIconWidget("MicroUnavailable", WidgetPosition.Top, "micWidget");
             speakerWidget = WidgetFactory.Instance.CreateIconWidget("SpeakersUnavailable", WidgetPosition.Top, "speakerWidget");
-            motorsWidget = WidgetFactory.Instance.CreateIconWidget("MotorsRed", WidgetPosition.Top, "motorsWidget");
+            motionWidget = WidgetFactory.Instance.CreateIconWidget("HandUnavailable", WidgetPosition.Top, "motionWidget");
 
             serverData = ServerData.Instance;
         }
@@ -31,14 +31,14 @@ namespace Widgets.ActiveWidgets
                 wifiWidget.SetIcon("WifiRed");
                 micWidget.SetIcon("MicroUnavailable");
                 speakerWidget.SetIcon("SpeakersUnavailable");
-                motorsWidget.SetIcon("MotorsRed");
+                motionWidget.SetIcon("HandUnavailable");
             }
             else
             {
                 wifiWidget.SetIcon("WifiGreen");
-                micWidget.SetIcon(serverData.ModalityConnected[Modality.AUDITION]? "Micro" : "MicroDisabled");
-                speakerWidget.SetIcon(serverData.ModalityConnected[Modality.AUDITION]? "Speakers" : "SpeakersUnavailable");
-                motorsWidget.SetIcon(serverData.ModalityConnected[Modality.AUDITION]? "MotorsGreen" : "MotorsRed");
+                micWidget.SetIcon(serverData.ModalityConnected[Modality.VOICE]? "Micro" : "MicroDisabled");
+                speakerWidget.SetIcon(serverData.ModalityConnected[Modality.AUDITION]? "Speakers" : "SpeakersOff");
+                motionWidget.SetIcon(serverData.ModalityConnected[Modality.MOTOR]? "HandEnabled" : "HandDisabled");
             }
         }
     }

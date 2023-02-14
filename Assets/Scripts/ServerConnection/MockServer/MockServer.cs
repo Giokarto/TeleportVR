@@ -50,6 +50,13 @@ namespace ServerConnection.MockServer
         public void Update()
         {
             _connectedToServer = random.NextDouble() < 0.98 ? ConnectedToServer : !ConnectedToServer;
+            foreach (Modality modality in Enum.GetValues(typeof(Modality)))
+            {
+                var change = random.NextDouble() >= 0.97;
+                ModalityConnected[modality] = !change
+                    ? ModalityConnected[modality]
+                    : !ModalityConnected[modality];
+            }
 
             RenderTexture videoTexture = (RenderTexture)videoPlayer.texture;
             
