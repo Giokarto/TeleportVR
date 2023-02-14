@@ -21,7 +21,7 @@ namespace ServerConnection.Aiortc
             imtpEncoder.rightEye = RightEye;
         }
 
-        public override int[][] FaceCoordinates => aiortcConnector.faceCoordinates;
+        public override int[][] FaceCoordinates => imtpEncoder.faceCoordinates;
 
         public override bool ConnectedToServer => aiortcConnector.isConnected;
 

@@ -75,8 +75,6 @@ namespace ServerConnection.Aiortc
         private DelegateOnClose onDataChannelClose;
         private DelegateOnDataChannel onDataChannel;
 
-        public Int32[][] faceCoordinates = { };
-
         /// <summary>
         /// Initializes game components and data channel behavior then tries to start the connection
         /// </summary>
@@ -97,25 +95,8 @@ namespace ServerConnection.Aiortc
                 var str = System.Text.Encoding.UTF8.GetString(bytes);
                 if (str.StartsWith("faces: "))
                 {
-                    faceCoordinates = JsonConvert.DeserializeObject<Int32[][]>(str.Substring(7));
-
-                    // var texture2D = leftFaceDetectionRenderer.material.mainTexture as Texture2D;
-                    // foreach (var face in faceCoordinates)
-                    // {
-                    //     Debug.Log($"red face {face[0]}, {face[1]}, {face[2]}, {face[3]}");
-                    //     for (int i = face[0]; i < face[0]+face[2]; i++)
-                    //     {
-                    //         for (int j = face[1]; j < face[1]+face[3]; j++)
-                    //         {
-                    //             texture2D.SetPixel(i, texture2D.height - j, Color.red);
-                    //         }
-                    //     }
-                    // }
-                    // texture2D.Apply();
-                    // leftFaceDetectionRenderer.material.mainTexture = texture2D;
+                    imtpEncoder.faceCoordinates = JsonConvert.DeserializeObject<Int32[][]>(str.Substring(7));
                 }
-                //Debug.Log($"{str}");
-                //textReceive.text = System.Text.Encoding.UTF8.GetString(bytes);
             };
             onDataChannelOpen = () =>
             {

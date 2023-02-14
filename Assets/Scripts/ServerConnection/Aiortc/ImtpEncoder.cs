@@ -16,6 +16,8 @@ namespace ServerConnection.Aiortc
         private Renderer leftEyeRenderer, righEyeRenderer;
         private Texture2D lastReceivedTexture;
 
+        public Int32[][] faceCoordinates = { };
+
         public enum VideoStreamViewType
         {
             Single,
