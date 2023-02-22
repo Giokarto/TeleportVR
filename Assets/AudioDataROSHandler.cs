@@ -96,6 +96,8 @@ public class AudioDataROSHandler : MonoBehaviour
             if (Audio == null) Audio = GetComponent<AudioSource>();
             Audio.volume = volume;
             AudioSettings.outputSampleRate = 48000;
+          
+            
         }
         yield return null;
     }
@@ -107,11 +109,85 @@ public class AudioDataROSHandler : MonoBehaviour
 
     private void ProcessAudio(Int16MultiArrayMsg data)
     {
+#if UNITY_EDITOR
+        StartCoroutine(ProcessAudioData(data.data));
+#else
         if (InputManager.Instance.IsUserActive())
         {
             StartCoroutine(ProcessAudioData(data.data));
         }
+#endif
             
+    }
+
+    IEnumerator ProcessAudioData(short[] receivedAudio)
+    {
+        receivedCount++;
+        SourceSampleRate = 48000;// 16000;// BitConverter.ToInt32(_sampleRateByte, 0);
+        SourceChannels = 1;// BitConverter.ToInt32(_channelsByte, 0);
+
+        float[] ABuffer = Array.ConvertAll(receivedAudio, (a) => a / 32767f);
+
+        for (int i = 0; i < ABuffer.Length / 2; i++)
+        {
+            ABufferQueue.Enqueue(ABuffer[i]);
+        }
+
+        CreateClip();
+
+        yield return null;
+    }
+
+    void CreateClip()
+    {
+        //Debug.Log("Creating clip");
+        if (samplerate != (int)SourceSampleRate || channel != SourceChannels)
+        {
+            //Debug.Log("Streaming audio into an audio clip");
+            samplerate = (int)SourceSampleRate;
+            channel = SourceChannels;
+
+
+            if (Audio != null) Audio.Stop();
+            if (audioClip != null) DestroyImmediate(audioClip);
+
+            //audioClip = AudioClip.Create("StreamingAudio", samplerate * SourceChannels, SourceChannels, samplerate, true, OnAudioRead, OnAudioSetPosition);
+
+            audioClip = AudioClip.Create("StreamingAudio", 48000 * 4, 2, 48000, true, OnAudioRead, OnAudioSetPosition);
+            Audio = GetComponent<AudioSource>();
+            Audio.clip = audioClip;
+            Audio.loop = true;
+            Audio.Play();   
+            
+        }
+
+    }
+
+    void OnAudioRead(float[] data)
+    {
+        //Debug.Log($"size of data: {data.Length} \t size of buf: {ABufferQueue.Count}");
+        int count = 0;
+
+        while (count < data.Length)
+        {
+            if (ABufferQueue.Count > 0)
+            {
+
+                //lock (_asyncLock)
+                data[count] = ABufferQueue.Dequeue();
+                //ABufferQueue.TryDequeue(out data[count]);
+            }
+            else { data[count] = 0f; }
+
+            position++;
+            count++;
+        }
+
+    }
+
+    void OnAudioSetPosition(int newPosition)
+    {
+        position = newPosition;
     }
 
     [Range(0f, 1f)]
@@ -142,73 +218,6 @@ public class AudioDataROSHandler : MonoBehaviour
         Audio.Play();
 
         yield return null;
-    }
-
-    IEnumerator ProcessAudioData(short[] receivedAudio)
-    {
-        receivedCount++;
-        SourceSampleRate = 48000;// 16000;// BitConverter.ToInt32(_sampleRateByte, 0);
-        SourceChannels = 1;// BitConverter.ToInt32(_channelsByte, 0);
-
-        float[] ABuffer = Array.ConvertAll(receivedAudio, (a) => a / 32767f);
-
-        for (int i = 0; i < ABuffer.Length / 2; i++)
-        {
-            ABufferQueue.Enqueue(ABuffer[i]);
-        }
-
-        CreateClip();
-
-        yield return null;
-    }
-
-    void CreateClip()
-    {
-        //Debug.Log("Creating clip");
-        if (samplerate != (int)SourceSampleRate || channel != SourceChannels)
-        {
-            //Debug.Log("Streaming audio into an audio clip");
-            samplerate = (int)SourceSampleRate;
-            channel = SourceChannels;
-
-            if (Audio != null) Audio.Stop();
-            if (audioClip != null) DestroyImmediate(audioClip);
-
-            //audioClip = AudioClip.Create("StreamingAudio", samplerate * SourceChannels, SourceChannels, samplerate, true, OnAudioRead, OnAudioSetPosition);
-            audioClip = AudioClip.Create("StreamingAudio", 48000 * 4, 2, 48000, true, OnAudioRead, OnAudioSetPosition);
-            Audio = GetComponent<AudioSource>();
-            Audio.clip = audioClip;
-            Audio.loop = true;
-            Audio.Play();
-        }
-
-    }
-
-    void OnAudioRead(float[] data)
-    {
-        //Debug.Log($"size of data: {data.Length} \t size of buf: {ABufferQueue.Count}");
-        int count = 0;
-
-        while (count < data.Length)
-        {
-            if (ABufferQueue.Count > 0)
-            {
-
-                //lock (_asyncLock)
-                data[count] = ABufferQueue.Dequeue();
-                //ABufferQueue.TryDequeue(out data[count]);
-            }
-            //else { data[count] = 0f; }
-
-            position++;
-            count++;
-        }
-
-    }
-
-    void OnAudioSetPosition(int newPosition)
-    {
-        position = newPosition;
     }
 
     private float[] ToFloatArray(byte[] byteArray)
@@ -364,7 +373,8 @@ public class AudioDataROSHandler : MonoBehaviour
             //msg.data = AudioInts.ToArray();
             //msg.data = ToByteArray(samples);
             //Debug.Log($"ros: {msg.data.Length}");
-            ros.Publish(outgoingTopicName, msg);
+            
+            //ros.Publish(outgoingTopicName, msg);
 
         }
         lastSample = pos;
