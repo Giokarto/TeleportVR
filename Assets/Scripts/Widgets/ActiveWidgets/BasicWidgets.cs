@@ -19,7 +19,7 @@ namespace Widgets.ActiveWidgets
             wifiWidget = WidgetFactory.Instance.CreateIconWidget("WifiRed", WidgetPosition.Top, "wifiWidget");
             micWidget = WidgetFactory.Instance.CreateIconWidget("MicroUnavailable", WidgetPosition.Top, "micWidget");
             speakerWidget = WidgetFactory.Instance.CreateIconWidget("SpeakersUnavailable", WidgetPosition.Top, "speakerWidget");
-            motionWidget = WidgetFactory.Instance.CreateIconWidget("HandUnavailable", WidgetPosition.Top, "motionWidget");
+            motionWidget = WidgetFactory.Instance.CreateIconWidget("MotionUnavailable", WidgetPosition.Top, "motionWidget");
 
             serverData = ServerData.Instance;
         }
@@ -31,14 +31,14 @@ namespace Widgets.ActiveWidgets
                 wifiWidget.SetIcon("WifiRed");
                 micWidget.SetIcon("MicroUnavailable");
                 speakerWidget.SetIcon("SpeakersUnavailable");
-                motionWidget.SetIcon("HandUnavailable");
+                motionWidget.SetIcon("MotionUnavailable");
             }
             else
             {
                 wifiWidget.SetIcon("WifiGreen");
                 micWidget.SetIcon(serverData.ModalityConnected[Modality.VOICE]? "Micro" : "MicroDisabled");
                 speakerWidget.SetIcon(serverData.ModalityConnected[Modality.AUDITION]? "Speakers" : "SpeakersOff");
-                motionWidget.SetIcon(serverData.ModalityConnected[Modality.MOTOR]? "HandEnabled" : "HandDisabled");
+                motionWidget.SetIcon(serverData.ModalityConnected[Modality.MOTOR]? "MotionOn" : "MotionOff");
             }
         }
     }
