@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using InputDevices;
+using RobodyControl;
 using ServerConnection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -41,14 +42,10 @@ namespace OperatorUserInterface
 
         private AudioSource transitionAudioPlayer;
 
-        private BioIK.BioIK[] bioIks;
-
         private void Start()
         {
             serverConnection = ServerData.Instance;
             transitionAudioPlayer = GetComponent<AudioSource>();
-
-            bioIks = FindObjectsOfType<BioIK.BioIK>();
 
             foreach (var GO in UnitySceneManager.GetActiveScene().GetRootGameObjects())
             {
@@ -111,7 +108,7 @@ namespace OperatorUserInterface
                     }
 
                     realAlreadyVisited = true;
-                    ResetRobody();
+                    RobotMotionManager.Instance.ResetRobody(jointsFromServer: realAlreadyVisited);
                     serverConnection.EmbodyRoboy(true);
 
                     UnitySceneManager.UnloadSceneAsync(sceneNames[Scene.TRAINING]);
@@ -126,53 +123,5 @@ namespace OperatorUserInterface
             currentScene = scene;
         }
 
-        /// <summary>
-        /// Reset all joints to 0 before going to the real world.
-        /// TODO: Move this peace of code somewhere else.
-        /// </summary>
-        private void ResetRobody()
-        {
-            if (!realAlreadyVisited)
-            {
-                Debug.Log("resetting robot body");
-                foreach (var body in bioIks)
-                {
-                    // switch to instantaneous movement type for BioIK so that the transition to joint targets 0 is immediate 
-                    body.MotionType = BioIK.MotionType.Instantaneous;
-
-                    foreach (var segment in body.Segments)
-                    {
-                        body.ResetPosture(segment);
-                    }
-                }
-            }
-            else
-            {
-                // go to the latest joint targets before leaving HUD
-                var jointValues = serverConnection.GetLatestJointValues();
-                if (jointValues.Count > 0)
-                {
-                    int i = 0;
-                    foreach (var body in bioIks)
-                    {
-                        if (body.name.Contains("shadow"))
-                        {
-                            continue;
-                        }
-
-                        foreach (var segment in body.Segments)
-                        {
-                            if (segment.Joint != null)
-                            {
-                                //Debug.Log($"{body.name}: {segment.Joint.name} {i}");
-                                segment.Joint.X.SetTargetValue(jointValues[i]);
-
-                                i++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 }

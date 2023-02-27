@@ -1,5 +1,6 @@
 using System;
 using InputDevices;
+using RobodyControl;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -27,9 +28,7 @@ namespace OperatorUserInterface
             }
             
             // While settings are active, turn off robot motions
-            // TODO: find out how to do it, this doesn't work
-            // EnableControlManager.Instance.leftBioIKGroup.SetEnabled(!Settings.activeSelf);
-            // EnableControlManager.Instance.rightBioIKGroup.SetEnabled(!Settings.activeSelf);
+            RobotMotionManager.Instance.EnableMotion(!settingsActive);
         }
 
         private void Start()
