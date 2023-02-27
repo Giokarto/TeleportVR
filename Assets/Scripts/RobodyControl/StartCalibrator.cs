@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using InputSystem = InputDevices.InputSystem;
@@ -36,9 +37,17 @@ namespace RobodyControl
             if (withRotation)
             {
                 // Change transform orientation
-                var rotate = new Vector3(0f, -eye.rotation.eulerAngles.y, 0f); // goal.rotation.eulerAngles.y
-                var newRot = transform.rotation.eulerAngles + rotate;
-                transform.rotation = Quaternion.Euler(newRot);
+                var rotate = new Vector3(0f, -eye.rotation.eulerAngles.y, 0f);
+                transform.Rotate(rotate);
+                
+                // Rotation changes world space position of the goal (Roboy's head gets straight) -> we need to move again after the head moves!
+                // Empirically, rotation of the head takes about 10 frames
+                // Solution: just repeat the calibration for the next 1 second (it is smoother than waiting 1 second and then recalibrating)
+                var now = DateTime.Now;
+                while (DateTime.Now < now + TimeSpan.FromSeconds(1))
+                {
+                    yield return WaitAndCalibrate(0, false);
+                }
             }
         }
 
