@@ -26,7 +26,15 @@ namespace OperatorUserInterface
             
             foreach (var interactorLineVisual in PointerRenderers)
             {
-                interactorLineVisual.enabled = settingsActive;
+                // The default of CurvedUIInputModule is Right Hand. Even if usedHand is set to Both,
+                // it prioritizes the right hand and input from the left doesn't get correctly processed.
+                // Therefore, don't show the line visual from the left controller to not confuse the operator.
+                // Possible future improvement: switch the line visual between hands depending on which
+                // controller is currently active.
+                if (!interactorLineVisual.gameObject.name.Contains("Left"))
+                {
+                    interactorLineVisual.enabled = settingsActive;
+                }
             }
             
             // While settings are active, turn off robot motions
