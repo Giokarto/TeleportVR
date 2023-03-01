@@ -16,6 +16,8 @@ namespace OperatorUserInterface
 
         private XRInteractorLineVisual[] PointerRenderers;
 
+        private Action[] buttonsRestore;
+
         public void ChangeSettingsState()
         {
             bool settingsActive = !Settings.activeSelf;
@@ -29,6 +31,17 @@ namespace OperatorUserInterface
             
             // While settings are active, turn off robot motions
             RobotMotionManager.Instance.EnableMotion(!settingsActive);
+
+            // While settings are active, remove actions from other buttons
+            if (settingsActive)
+            {
+                buttonsRestore = InputSystem.StripActions();
+                InputSystem.OnLeftPrimaryButton += ChangeSettingsState;
+            }
+            else
+            {
+                InputSystem.RestoreActions(buttonsRestore);
+            }
         }
 
         private void Start()

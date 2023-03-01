@@ -36,12 +36,6 @@ namespace RobodyControl
         {
             foreach (var body in bioIks)
             {
-                foreach (var segment in body.Segments)
-                {
-                    segment.enabled = enable;
-                    Debug.Log($"enable {enable} segment {segment}");
-                }
-
                 body.enabled = enable;
             }
         }

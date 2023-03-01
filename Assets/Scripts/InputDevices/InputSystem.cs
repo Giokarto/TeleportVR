@@ -35,6 +35,35 @@ namespace InputDevices
         
         public static event Action OnAnyButton = delegate{};
         protected void InvokeAnyButton() {OnAnyButton?.Invoke();}
+
+        public static Action[] StripActions()
+        {
+            Action[] restore = {
+                OnAnyButton,
+                OnLeftMenuButton,
+                OnLeftPrimaryButton,
+                OnLeftSecondaryButton,
+                OnRightPrimaryButton,
+                OnRightSecondaryButton
+            };
+            OnAnyButton = delegate{};
+            OnLeftMenuButton = delegate{};
+            OnLeftPrimaryButton = delegate{};
+            OnLeftSecondaryButton = delegate{};
+            OnRightPrimaryButton = delegate{};
+            OnRightSecondaryButton = delegate{};
+            return restore;
+        }
+
+        public static void RestoreActions(Action[] restore)
+        {
+            OnAnyButton = restore[0];
+            OnLeftMenuButton = restore[1];
+            OnLeftPrimaryButton = restore[2];
+            OnLeftSecondaryButton = restore[3];
+            OnRightPrimaryButton = restore[4];
+            OnRightSecondaryButton = restore[5];
+        }
         
         
         // TODO: joystick to drive the wheelchair
