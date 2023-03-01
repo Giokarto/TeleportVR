@@ -8753,10 +8753,10 @@ MonoBehaviour:
   gazeClickTimerDelay: 1
   gazeTimedClickProgressImage: {fileID: 0}
   worldSpaceMouseSensitivity: 1
-  usedHand: 1
+  usedHand: 0
   pointerTransformOverride: {fileID: 0}
-  rightXRController: {fileID: 0}
-  leftXRController: {fileID: 0}
+  rightXRController: {fileID: 6021411800947965133}
+  leftXRController: {fileID: 6021411801494514845}
 --- !u!114 &1741652246
 MonoBehaviour:
   m_ObjectHideFlags: 0
