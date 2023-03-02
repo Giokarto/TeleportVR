@@ -12,6 +12,9 @@ public class DisplayMover : MonoBehaviour
     [SerializeField] private bool isLeft;
     private float timer;
 
+    // originally was in (Deprecated)Widgets.WidgetInteraction
+    private bool settingsAreActive = false;
+
     List<UnityEngine.XR.InputDevice> controller = new List<UnityEngine.XR.InputDevice>();
 
     private float _speed = 0.2f;
@@ -64,7 +67,7 @@ public class DisplayMover : MonoBehaviour
     {
         if (controller.Count > 0)
         {
-            if (Widgets.WidgetInteraction.settingsAreActive)
+            if (settingsAreActive)
             {
                 // use the joystick to move the displays horizontally or vertically
                 Vector2 axisValue;
@@ -95,7 +98,7 @@ public class DisplayMover : MonoBehaviour
             UnityEngine.XR.InputDeviceCharacteristics.Left : UnityEngine.XR.InputDeviceCharacteristics.Right;
             UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(role, controller);
 
-            if (Widgets.WidgetInteraction.settingsAreActive)
+            if (settingsAreActive)
             {
                 Dictionary<KeyCode, Vector3> moveDict = isLeft ? _moveDictLeft : _moveDictRight;
 
@@ -110,7 +113,7 @@ public class DisplayMover : MonoBehaviour
         }
 
         // save the offset between sessions every 0.2s
-        if (Widgets.WidgetInteraction.settingsAreActive)
+        if (settingsAreActive)
         {
             if (timer >= 0.2)
             {

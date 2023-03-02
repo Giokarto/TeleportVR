@@ -18,52 +18,49 @@ Assets/Plugins/Editor/JetBrains*
 /[Mm]emoryCaptures/
 #exclude all ProjectSettings
 /[Pp]rojectSettings/
-/[Uu]ser[Ss]ettings/*
-/UserSettings
+/[Uu]ser[Ss]ettings/
 
-/Assets/Rewired/
+# Asset meta data should only be ignored when the corresponding asset is also ignored
+!/[Aa]ssets/**/*.meta
 
 # exclude SenseGlove SDK
 /Assets/SenseGlove/
-
-/Assets/SenseGlove/
 /Assets/SenseGlove.meta
+# exclude Rewired SDK
 /Assets/Rewired/
 /Assets/Rewired.meta
-
-/Assets/SenseGlove/
-/Assets/SenseGlove.meta
-/Assets/Rewired/
-/Assets/Rewired.meta
-
 # exclude the Animus SDK
-/Assets/AnimusClient/
+/Assets/AnimusClient/*
 # except for the UnityAnimusClient and ClientLogic, because we change them
-!/Assets/AnimusClient/Example/Scripts/UnityAnimusClient.cs
-!/Assets/AnimusClient/Example/Scripts/ClientLogic.cs
+# it is not possible to re-include a file if a parent directory of that file is excluded -> need to un-ignore every single subdirectory separately
+!/Assets/AnimusClient/Example
+/Assets/AnimusClient/Example/*
+!/Assets/AnimusClient/Example/Scripts
+/Assets/AnimusClient/Example/Scripts/*
+!/Assets/AnimusClient/Example/Scripts/UnityAnimusClient.cs*
+!/Assets/AnimusClient/Example/Scripts/ClientLogic.cs*
 
 # exclude OpenCVForUnity
 /Assets/OpenCVForUnity/
+/Assets/OpenCVForUnity.meta
 
 # exclude Ultimate 10 Shaders
 /Assets/Ultimate\ 10\ Plus\ Shaders/
 
-# exclude the OUI ThirdParty Assets
-Assets/OperatorUserInterface/ThirdParty/
-Assets/OperatorUserInterface/Plugins/
+# XRI package
+/Assets/XRI/
+/Assets/XRI.meta
 
-# exclude the Showroom
-Assets/OperatorUserInterface/Models/Showroom/
+# exclude the ThirdParty Assets
+Assets/Scripts/ThirdParty/
+Assets/Scripts/Plugins/
 
 # exclude the username and password for Animus
 Assets/Prefabs/Animus/AnimusPasswordSetter.prefab
-Assets/Scripts/AnimusPasswordStore.cs
+**/AnimusPasswordStore.cs
 
 # currently too big for git
 Assets/Wheelchair/LowerLimbs_v50.obj
-
-# Asset meta data should only be ignored when the corresponding asset is also ignored
-!/[Aa]ssets/**/*.meta
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
@@ -119,3 +116,9 @@ MonoBleedingEdge/*
 Teleport_Data/*
 gitex-visiton/*
 gitex-with-audio/*
+
+# packages get sometimes automatically created
+packages/
+
+# different meta files for git branches
+*.meta~*

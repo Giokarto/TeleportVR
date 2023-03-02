@@ -1,0 +1,135 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6491266855963491000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5256828580279742356}
+  - component: {fileID: 1924195715327297946}
+  - component: {fileID: 178037885098133015}
+  - component: {fileID: 6572508388397505067}
+  - component: {fileID: 4264791759501449806}
+  m_Layer: 0
+  m_Name: AnimusConnection
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5256828580279742356
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6491266855963491000}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1924195715327297946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6491266855963491000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b01deb2f5812f1f41abca3cb4b500fad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clientLogic: {fileID: 178037885098133015}
+--- !u!114 &178037885098133015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6491266855963491000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6f22a5669377b559b7a27c87025aa96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnimusManager: {fileID: 6572508388397505067}
+  unityClient: {fileID: 4264791759501449806}
+  robotName: Roboy3
+  AccountEmail: 
+  AccountPassword: 
+  requiredModalities:
+  - motor
+  - voice
+  - audition
+  - emotion
+  - vision
+--- !u!114 &6572508388397505067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6491266855963491000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 849537eeae0cce0fdb151c7c593905ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  loginSuccess: 0
+  loginResultAvailable: 0
+  loginReturn: 
+  searchSuccess: 0
+  searchResultsAvailable: 0
+  searchReturn: 
+  connectToRobotFinished: 0
+  connectedToRobotSuccess: 0
+  openModalitiesFinished: 0
+  openModalitiesSuccess: 0
+  robotResults: 
+--- !u!114 &4264791759501449806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6491266855963491000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0c2d9a872640ec1fb4b561ddb953dba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OVRRig: {fileID: 0}
+  TrackingSpace: {fileID: 0}
+  stereovision: 1
+  undistortion: 0
+  LeftEye: {fileID: 0}
+  RightEye: {fileID: 0}
+  _leftPlane: {fileID: 0}
+  _rightPlane: {fileID: 0}
+  robotHead: {fileID: 0}
+  robotBase: {fileID: 0}
+  robotLeftHandObjective: {fileID: 0}
+  robotRightHandObjective: {fileID: 0}
+  humanRightHand: {fileID: 0}
+  humanLeftHand: {fileID: 0}
+  humanHead: {fileID: 0}
+  bodyToBaseOffset: {x: 0, y: 0, z: 0}
+  ForwardDeadzone: 0
+  SidewaysDeadzone: 0
+  RotationDeadzone: 0
+  _myIKBody: {fileID: 0}
+  _myIKHead: {fileID: 0}
+  motorEnabled: 0
+  LeftButton1: 0
+  LeftButton2: 0
+  RightButton1: 0
+  RightButton2: 0
+  currentEmotion: 
+  oldEmotion: 
