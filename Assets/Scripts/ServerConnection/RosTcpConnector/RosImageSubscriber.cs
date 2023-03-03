@@ -5,89 +5,95 @@ using UnityEngine;
 using CompressedImage = RosMessageTypes.Sensor.CompressedImageMsg;
 using Image = RosMessageTypes.Sensor.ImageMsg;
 
-
-public class RosImageSubscriber : MonoBehaviour
+namespace ServerConnection.RosTcpConnector
 {
-    public string TopicName;
-
-    private bool messageProcessed = false;
-    private Texture2D texture2D;
-    // TODO @zuzkau pass meshrenderer for eye planes by reference or generate here
-    [SerializeField] private MeshRenderer meshRenderer, secondaryMeshRenderer;
-    [SerializeField] bool monoVision = false; // if true duplicates the image from meshRenderer to secondaryMeshRenderer
-
-    private int frameCount = 0;
-    private int receivedCount = 0;
-    private float dt = 0.0f;
-    public int FPS = 0;         // Frames Per Second
-    public int RPS = 0;         // Received Per Second
-    private int updateRate = 1; // 1 update per sec
-
-    private void Start()
+    public class RosImageSubscriber : MonoBehaviour
     {
-        ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(TopicName, GetImage);
-        texture2D = new Texture2D(1280, 720);//, TextureFormat.BGRA32, false);
-    }
+        public string TopicName;
 
-    private void Update()
-    {
-        if (messageProcessed)
+        private bool messageProcessed = false;
+
+        private Texture2D texture2D;
+
+        // TODO @zuzkau pass meshrenderer for eye planes by reference or generate here
+        [SerializeField] private MeshRenderer meshRenderer, secondaryMeshRenderer;
+
+        [SerializeField]
+        bool monoVision = false; // if true duplicates the image from meshRenderer to secondaryMeshRenderer
+
+        private int frameCount = 0;
+        private int receivedCount = 0;
+        private float dt = 0.0f;
+        public int FPS = 0; // Frames Per Second
+        public int RPS = 0; // Received Per Second
+        private int updateRate = 1; // 1 update per sec
+
+        private void Start()
         {
-            meshRenderer.material.mainTexture = texture2D;
-            if (monoVision) secondaryMeshRenderer.material.mainTexture = texture2D;
-            frameCount++;
-            messageProcessed = false;
+            ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(TopicName, GetImage);
+            texture2D = new Texture2D(1280, 720); //, TextureFormat.BGRA32, false);
         }
 
-        UpdateFPS();
-    }
-
-    private void GetImage(CompressedImage Message)
-    {
-        if (!meshRenderer.gameObject.activeInHierarchy) meshRenderer.gameObject.SetActive(true);
-        if (monoVision && !secondaryMeshRenderer.gameObject.activeInHierarchy) secondaryMeshRenderer.gameObject.SetActive(true);
-        receivedCount++;
-
-        if (!messageProcessed)
+        private void Update()
         {
-            //Debug.Log($"length: {Message.data.Length}");
-            StartCoroutine(ProcessImage(Message.data));
+            if (messageProcessed)
+            {
+                meshRenderer.material.mainTexture = texture2D;
+                if (monoVision) secondaryMeshRenderer.material.mainTexture = texture2D;
+                frameCount++;
+                messageProcessed = false;
+            }
+
+            UpdateFPS();
+        }
+
+        private void GetImage(CompressedImage Message)
+        {
+            if (!meshRenderer.gameObject.activeInHierarchy) meshRenderer.gameObject.SetActive(true);
+            if (monoVision && !secondaryMeshRenderer.gameObject.activeInHierarchy)
+                secondaryMeshRenderer.gameObject.SetActive(true);
+            receivedCount++;
+
+            if (!messageProcessed)
+            {
+                //Debug.Log($"length: {Message.data.Length}");
+                StartCoroutine(ProcessImage(Message.data));
+            }
+        }
+
+        private void UpdateFPS()
+        {
+            dt += Time.deltaTime;
+            if (dt > 1.0f / updateRate)
+            {
+                FPS = Mathf.RoundToInt(frameCount / dt);
+                RPS = Mathf.RoundToInt(receivedCount / dt);
+                frameCount = 0;
+                receivedCount = 0;
+                dt -= 1.0f / updateRate;
+            }
+        }
+
+        private IEnumerator ProcessImage(byte[] ReceivedImage)
+        {
+            //Color32[] bgradata = new Color32[720 * 1280];
+
+            //for (int i = 0; i < ReceivedImage.Length; i += 3)
+            //{
+            //    bgradata[i / 3] = new Color32(ReceivedImage[i + 2], ReceivedImage[i + 1], ReceivedImage[i], 255);
+            //}
+            //texture2D.SetPixels32(bgradata);
+            //texture2D.Apply();
+
+            texture2D.LoadImage(ReceivedImage);
+
+            meshRenderer.material.SetTexture("_MainTex", texture2D);
+            if (monoVision) secondaryMeshRenderer.material.SetTexture("_MainTex", texture2D);
+            messageProcessed = true;
+
+            yield return null;
         }
     }
-
-    private void UpdateFPS()
-    {
-        dt += Time.deltaTime;
-        if (dt > 1.0f / updateRate)
-        {
-            FPS = Mathf.RoundToInt(frameCount / dt);
-            RPS = Mathf.RoundToInt(receivedCount / dt);
-            frameCount = 0;
-            receivedCount = 0;
-            dt -= 1.0f / updateRate;
-        }
-    }
-
-    private IEnumerator ProcessImage(byte[] ReceivedImage)
-    {
-        //Color32[] bgradata = new Color32[720 * 1280];
-
-        //for (int i = 0; i < ReceivedImage.Length; i += 3)
-        //{
-        //    bgradata[i / 3] = new Color32(ReceivedImage[i + 2], ReceivedImage[i + 1], ReceivedImage[i], 255);
-        //}
-        //texture2D.SetPixels32(bgradata);
-        //texture2D.Apply();
-
-        texture2D.LoadImage(ReceivedImage);
-        
-        meshRenderer.material.SetTexture("_MainTex", texture2D);
-        if (monoVision) secondaryMeshRenderer.material.SetTexture("_MainTex", texture2D);
-        messageProcessed = true;
-
-        yield return null;
-    }
-}
 
 //public class SubscriberCamera : MonoBehaviour
 //{
@@ -209,3 +215,4 @@ public class RosImageSubscriber : MonoBehaviour
 //        yield return null;
 //    }
 //}
+}
