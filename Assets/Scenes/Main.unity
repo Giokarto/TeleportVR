@@ -2373,6 +2373,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 512530023}
+  - component: {fileID: 512530024}
   m_Layer: 0
   m_Name: RosServer
   m_TagString: Untagged
@@ -2400,6 +2401,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &512530024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512530022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f27abfc231e24b628a97e06b7f887ec8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LeftEyePrefab: {fileID: 650765655978913324, guid: 4a3c88a14733a5e4ab063c535704a717,
+    type: 3}
+  RightEyePrefab: {fileID: 522820554026848309, guid: 5fb006a593b5d054995f24fe7b79ad74,
+    type: 3}
+  LeftEye: {fileID: 0}
+  RightEye: {fileID: 0}
+  vision: {fileID: 475412278}
+  jointPose: {fileID: 1086971377}
+  headPose: {fileID: 469497750}
+  audio: {fileID: 36843162}
 --- !u!1 &513805664
 GameObject:
   m_ObjectHideFlags: 0
@@ -11597,7 +11620,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d433fcd0bc47946469185d1a6651c74f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseConfigFile: 0
+  UseConfigFile: 1
 --- !u!1 &2041970888 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8980600750488074647, guid: 8376e5037528d434cab49e987b7a4e72,

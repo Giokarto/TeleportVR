@@ -1,0 +1,80 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.Robotics.ROSTCPConnector;
+using UnityEngine;
+
+namespace ServerConnection.RosTcpConnector
+{
+    public class RosServerData : ServerData
+    {
+        private ROSConnection ros;
+        
+        public RosImageSubscriber vision;
+        public RosJointPosePublisher jointPose;
+        public RosDevicePosePublisher headPose;
+        public RosAudioDataHandler audio;
+        private void Start()
+        {
+            ros = ROSConnection.GetOrCreateInstance();
+        }
+
+        private void Update()
+        {
+            ModalityConnected[Modality.MOTOR] = jointPose.enabled && headPose.enabled;
+            ModalityConnected[Modality.VOICE] = audio.isActiveAndEnabled;
+            ModalityConnected[Modality.VISION] = vision.isActiveAndEnabled;
+            ModalityConnected[Modality.EMOTION] = false;
+            ModalityConnected[Modality.AUDITION] = audio.isActiveAndEnabled;
+        }
+
+        public override bool ConnectedToServer
+        {
+            get => !ros.HasConnectionError;
+        }
+
+        public override Dictionary<Modality, bool> ModalityConnected { get; }
+            = Enum.GetValues(typeof(Modality)).Cast<Enum>().ToDictionary(e => (Modality)e, v => false);
+        
+        public override float GetVisionLatency()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override float GetVisionFps()
+        {
+            return vision.FPS;
+        }
+
+        public override Texture2D[] GetVisionTextures()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void SetMotorOn(bool on)
+        {
+            jointPose.enabled = on;
+            headPose.enabled = on;
+        }
+
+        public override void ChangeGrip(float left, float right)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override List<float> GetLatestJointValues()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override void SetPresenceIndicatorOn(bool on)
+        {
+            // no presence indicator
+        }
+
+        public override void SetEmotion(string emotion)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+}
