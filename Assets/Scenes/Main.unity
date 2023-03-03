@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -259,6 +259,256 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 819049a361f354ea4b9cac723854e0ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &36843159
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 36843160}
+  - component: {fileID: 36843162}
+  - component: {fileID: 36843163}
+  - component: {fileID: 36843161}
+  m_Layer: 0
+  m_Name: RosAudioHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &36843160
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36843159}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 512530023}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &36843161
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36843159}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &36843162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36843159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce16511752af3ba48bd3a565af060f57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FPS: 0
+  RPS: 0
+  SourceChannels: 2
+  SourceSampleRate: 48000
+  DeviceSampleRate: 48000
+  Audio: {fileID: 36843163}
+  outgoingTopicName: /operator/audio
+  incomingTopicName: /audio/audio
+  AudioMic: {fileID: 36843161}
+  DetectedDevices: 
+  OutputSampleRate: 11025
+  OutputChannels: 1
+  volume: 1
+--- !u!82 &36843163
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36843159}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &62469044 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7266776439113672348, guid: 8376e5037528d434cab49e987b7a4e72, type: 3}
@@ -403,7 +653,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 800, y: 80}
   savedColor: {r: 1, g: 1, b: 1, a: 0.09803922}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &67615024
 MonoBehaviour:
@@ -541,7 +791,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 160, y: 30}
   savedColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  savedTextUV0: {x: 0, y: 0.0078125, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0.0078125}
   savedFill: 0
 --- !u!114 &109195387
 MonoBehaviour:
@@ -753,7 +1003,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 160, y: 30}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &159941211
 MonoBehaviour:
@@ -1306,7 +1556,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 0.9044118, g: 0.96440166, b: 1, a: 1}
-  savedTextUV0: {x: 0.3046875, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0.3046875, y: 0}
   savedFill: 0
 --- !u!114 &314125638
 MonoBehaviour:
@@ -1897,6 +2147,119 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d64906ef7f0a0d94f8795f731dabd54a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &469497748
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 469497749}
+  - component: {fileID: 469497750}
+  m_Layer: 0
+  m_Name: RosDevicePosePublisher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &469497749
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469497748}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 512530023}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &469497750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469497748}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f135a995647914aa8cba9bf1ea8762, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  topicRoot: /operator/device/
+  publishMessageFrequency: 0.01
+--- !u!1 &475412275
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 475412276}
+  - component: {fileID: 475412278}
+  - component: {fileID: 475412277}
+  m_Layer: 0
+  m_Name: RosImageSubscribers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &475412276
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475412275}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 512530023}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &475412277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475412275}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b82ae4e98f707141815c56e6d8e702c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TopicName: 
+  meshRenderer: {fileID: 0}
+  secondaryMeshRenderer: {fileID: 0}
+  monoVision: 0
+  FPS: 0
+  RPS: 0
+--- !u!114 &475412278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 475412275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b82ae4e98f707141815c56e6d8e702c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TopicName: /image/left/image_compressed
+  meshRenderer: {fileID: 0}
+  secondaryMeshRenderer: {fileID: 0}
+  monoVision: 1
+  FPS: 0
+  RPS: 0
 --- !u!1 &481574769
 GameObject:
   m_ObjectHideFlags: 0
@@ -1941,6 +2304,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clearPlayerPrefs: 0
+--- !u!1 &512530022
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 512530023}
+  m_Layer: 0
+  m_Name: RosServer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &512530023
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512530022}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.2750344, y: 0.3469708, z: -0.69273394}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 475412276}
+  - {fileID: 1086971376}
+  - {fileID: 36843160}
+  - {fileID: 1410235163}
+  - {fileID: 469497749}
+  - {fileID: 2036257557}
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &513805664
 GameObject:
   m_ObjectHideFlags: 0
@@ -5053,7 +5452,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 54, y: 52}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &722699698
 MonoBehaviour:
@@ -5260,7 +5659,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &819835815
 MonoBehaviour:
@@ -5401,7 +5800,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &850065041
 MonoBehaviour:
@@ -5756,7 +6155,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 160, y: 30}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &918759995
 MonoBehaviour:
@@ -6056,8 +6455,55 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 20, y: 20}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
+--- !u!1 &1086971375
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1086971376}
+  - component: {fileID: 1086971377}
+  m_Layer: 0
+  m_Name: RosJointPublisher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1086971376
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086971375}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 512530023}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1086971377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1086971375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e498c99c3886cb64fb83a4efe1ee4637, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  topicName: /roboy/pinky/simulation/joint_targets
+  publishMessageFrequency: 0.02
+  BodyIK: {fileID: 618619396}
+  HeadIK: {fileID: 618619395}
 --- !u!114 &1090263528 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1734672372497804485, guid: 8376e5037528d434cab49e987b7a4e72, type: 3}
@@ -6703,7 +7149,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 164.6, y: 17}
   savedColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  savedTextUV0: {x: 0, y: 0.0078125, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0.0078125}
   savedFill: 0
 --- !u!114 &1215007295 stripped
 MonoBehaviour:
@@ -7060,7 +7506,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 0.9044118, g: 0.96440166, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0.26953125, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0.26953125}
   savedFill: 0
 --- !u!114 &1316510975
 MonoBehaviour:
@@ -7196,7 +7642,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 290.5, y: 159.2}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0.0078125, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0.0078125}
   savedFill: 0
 --- !u!114 &1322902413
 MonoBehaviour:
@@ -7310,12 +7756,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 247b726ee80b2304c86422b79c0b3f63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  configName: config.json
   settings:
     OperatorIPD: 63
     OperatorManualOverwrite: 0
     OperatorHorizontal: 0
-    OperatorVertical: 0
+    OperatorVertical: 0.1432849
+    RobotName: 
+    RosIP: 10.1.0.6
 --- !u!114 &1376495787 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -6371880505787038194, guid: 8376e5037528d434cab49e987b7a4e72, type: 3}
@@ -7349,6 +7796,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cc329982edfc412a8a508a8e175eef1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1410235162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1410235163}
+  - component: {fileID: 1410235164}
+  m_Layer: 0
+  m_Name: RosWheelsPublisher
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1410235163
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410235162}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 512530023}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1410235164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410235162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8315290cf063e4b459dccf9501f4d534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  topicRoot: /roboy/pinky/middleware/espchair/wheels/
+  leftTopicName: 
+  rightTopicName: 
+  publishMessageFrequency: 0.02
+  PWM_MIN: 0
+  PWM_MAX: 30
 --- !u!114 &1413217831 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -2308485162609273703, guid: 8376e5037528d434cab49e987b7a4e72, type: 3}
@@ -8653,7 +9149,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 160, y: 30}
   savedColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  savedTextUV0: {x: 0, y: 0.1953125, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0.1953125}
   savedFill: 0
 --- !u!114 &1729757896
 MonoBehaviour:
@@ -8709,6 +9205,7 @@ GameObject:
   - component: {fileID: 1741652247}
   - component: {fileID: 1741652246}
   - component: {fileID: 1741652245}
+  - component: {fileID: 1741652248}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -8742,21 +9239,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2e569dc832500047bf4350b4dae9b97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_ForceModuleActive: 0
   controlMethod: 9
   submitButtonName: Fire1
-  mainEventCamera: {fileID: 0}
-  raycastLayerMask:
-    serializedVersion: 2
-    m_Bits: 32
   gazeUseTimedClick: 0
   gazeClickTimer: 2
   gazeClickTimerDelay: 1
   gazeTimedClickProgressImage: {fileID: 0}
   worldSpaceMouseSensitivity: 1
   usedHand: 0
-  pointerTransformOverride: {fileID: 0}
-  rightXRController: {fileID: 6021411800947965133}
-  leftXRController: {fileID: 6021411801494514845}
+  controllerTransformOverride: {fileID: 0}
 --- !u!114 &1741652246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8804,6 +9302,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 651aa76e8cc8486469816be09993892d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!114 &1741652248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741652243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_FirstSelected: {fileID: 0}
@@ -10066,6 +10579,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cc329982edfc412a8a508a8e175eef1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2036257556
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2036257557}
+  - component: {fileID: 2036257558}
+  m_Layer: 0
+  m_Name: RosConfig
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2036257557
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036257556}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 512530023}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2036257558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036257556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d433fcd0bc47946469185d1a6651c74f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseConfigFile: 0
 --- !u!1 &2041970888 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8980600750488074647, guid: 8376e5037528d434cab49e987b7a4e72, type: 3}
@@ -10327,7 +10884,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 800, y: 80}
   savedColor: {r: 1, g: 1, b: 1, a: 0.09803922}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &2103648727
 MonoBehaviour:
@@ -10454,7 +11011,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 20, y: 20}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &2126901069 stripped
 MonoBehaviour:
@@ -10856,7 +11413,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 144, y: 70}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1 &807907195279143986
 GameObject:
@@ -10894,7 +11451,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 144, y: 70}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1 &836566296846784892
 GameObject:
@@ -10970,7 +11527,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1200, y: 45}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1001 &1242744592450020038
 PrefabInstance:
@@ -11156,7 +11713,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 700, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 0.09803922}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!222 &2039204487901315632
 CanvasRenderer:
@@ -11202,7 +11759,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 0, z: 0}
   savedRectSize: {x: 0, y: 0}
   savedColor: {r: 0, g: 0, b: 0, a: 0}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!4 &2056861097519333525
 Transform:
@@ -11477,7 +12034,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1200, y: 700}
   savedColor: {r: 1, g: 1, b: 1, a: 0.2784314}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!222 &2740056867311733844
 CanvasRenderer:
@@ -11504,7 +12061,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1400, y: 1100}
   savedColor: {r: 1, g: 1, b: 1, a: 0}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!135 &2970198058458690036
 SphereCollider:
@@ -11764,7 +12321,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1200, y: 30}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &3174760831708180066
 MonoBehaviour:
@@ -11949,7 +12506,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1200, y: 700}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!4 &3581542606171204588
 Transform:
@@ -12014,7 +12571,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 20, y: 130}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!114 &3883107260717331384
 MonoBehaviour:
@@ -12211,6 +12768,7 @@ MonoBehaviour:
   quality: 1
   interactable: 1
   blocksRaycasts: 1
+  raycastMyLayerOnly: 1
   forceUseBoxCollider: 0
   angle: 90
   preserveAspect: 1
@@ -12425,6 +12983,7 @@ MonoBehaviour:
   quality: 1
   interactable: 1
   blocksRaycasts: 1
+  raycastMyLayerOnly: 1
   forceUseBoxCollider: 0
   angle: 90
   preserveAspect: 1
@@ -12598,7 +13157,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 0, z: 0}
   savedRectSize: {x: 0, y: 0}
   savedColor: {r: 0, g: 0, b: 0, a: 0}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!114 &4513491853501254386
 MonoBehaviour:
@@ -12757,7 +13316,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 500, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &5132545199589319187
 MonoBehaviour:
@@ -12925,7 +13484,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1200, y: 700}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &5593136134238705520
 MonoBehaviour:
@@ -12944,7 +13503,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 0, z: 0}
   savedRectSize: {x: 0, y: 0}
   savedColor: {r: 0, g: 0, b: 0, a: 0}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!1 &5603783979276388850
 GameObject:
@@ -13035,7 +13594,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 500, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 0.54901963}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1 &5797782393284310088
 GameObject:
@@ -13074,7 +13633,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1001 &5826557875377529290
 PrefabInstance:
@@ -13188,7 +13747,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 301.9, y: 80}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0.30859375, y: 0.2578125, z: 0, w: 0}
+  savedTextUV0: {x: 0.30859375, y: 0.2578125}
   savedFill: 0
 --- !u!114 &5901630179502400940
 MonoBehaviour:
@@ -14867,6 +15426,7 @@ MonoBehaviour:
   quality: 3
   interactable: 1
   blocksRaycasts: 1
+  raycastMyLayerOnly: 1
   forceUseBoxCollider: 0
   angle: 90
   preserveAspect: 1
@@ -14970,7 +15530,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 800, y: 80}
   savedColor: {r: 1, g: 1, b: 1, a: 0.09803922}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &6103261333212663836
 MonoBehaviour:
@@ -15271,7 +15831,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1300, y: 900}
   savedColor: {r: 1, g: 1, b: 1, a: 0.039215688}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!224 &6103261334727831507
 RectTransform:
@@ -15371,7 +15931,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 0.9044118, g: 0.96440166, b: 1, a: 1}
-  savedTextUV0: {x: 0.3046875, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0.3046875, y: 0}
   savedFill: 0
 --- !u!114 &6759462122077543646
 MonoBehaviour:
@@ -15517,7 +16077,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 150, y: 150}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!222 &7525839242712782658
 CanvasRenderer:
@@ -15579,7 +16139,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 500, y: 500}
   savedColor: {r: 1, g: 1, b: 1, a: 0}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!114 &7525839242712782664
 MonoBehaviour:
@@ -15707,7 +16267,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 20, y: 130}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!224 &7854265375952704547
 RectTransform:
@@ -15843,7 +16403,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 500, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 0.54901963}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1 &8588441883346277351
 GameObject:
@@ -16102,5 +16662,5 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1400, y: 30}
   savedColor: {r: 1, g: 1, b: 1, a: 0.19607843}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1

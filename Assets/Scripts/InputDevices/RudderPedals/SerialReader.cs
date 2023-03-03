@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+
+#if RUDDER
 using System.IO.Ports;
+#endif
 
 namespace InputDevices.RudderPedals
 {
     public class SerialReader : MonoBehaviour
     {
+#if RUDDER
         private SerialPort stream;
         [Tooltip("Serial port of the arduino")]
         public string port = "COM6";
@@ -17,7 +21,7 @@ namespace InputDevices.RudderPedals
         public float readTimeout = 0.01f, refresh = 0;
         [SerializeField] private bool connecting = false;
 
-#if RUDDER
+
         void Awake()
         {
             StartCoroutine(TryConnection());
