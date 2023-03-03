@@ -16,8 +16,9 @@ Assets/Plugins/Editor/JetBrains*
 /[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
-#exclude all ProjectSettings
-/[Pp]rojectSettings/
+# don't exclude ProjectSettings, there are important information
+# about Unity version settings, build settings etc.
+# /[Pp]rojectSettings/
 /[Uu]ser[Ss]ettings/
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
