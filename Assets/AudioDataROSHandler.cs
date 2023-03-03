@@ -22,6 +22,7 @@ public class AudioDataROSHandler : MonoBehaviour
     public double DeviceSampleRate = 48000;
 
     private Queue<float> ABufferQueue = new Queue<float>();
+    private int ABufferQueueMaxItems = 48000;
     
     private int position = 0;
     private int samplerate = 44100;
@@ -81,11 +82,10 @@ public class AudioDataROSHandler : MonoBehaviour
         ros.Subscribe<Int16MultiArrayMsg>(incomingTopicName, ProcessAudio);
 
         //Application.runInBackground = true;
-
         SetupAudio();
         StartMicrophonePublisher();
+        CreateClip();
 
-        
     }
 
     private IEnumerator SetupAudio()
@@ -104,7 +104,8 @@ public class AudioDataROSHandler : MonoBehaviour
 
     private void Update()
     {
-        //UpdateFPS();
+        UpdateFPS();
+        StartCoroutine(AddMicData());
     }
 
     private void ProcessAudio(Int16MultiArrayMsg data)
@@ -117,32 +118,36 @@ public class AudioDataROSHandler : MonoBehaviour
             StartCoroutine(ProcessAudioData(data.data));
         }
 #endif
-            
+
     }
 
+    private double now;
     IEnumerator ProcessAudioData(short[] receivedAudio)
     {
         receivedCount++;
-        SourceSampleRate = 48000;// 16000;// BitConverter.ToInt32(_sampleRateByte, 0);
-        SourceChannels = 1;// BitConverter.ToInt32(_channelsByte, 0);
+        //SourceSampleRate = 48000;// 16000;// BitConverter.ToInt32(_sampleRateByte, 0);
+        //SourceChannels = 1;// BitConverter.ToInt32(_channelsByte, 0);
+        Debug.Log("ProcessAudioData: " + ABufferQueue.Count + " "+receivedAudio.Length);
+        now = Time.realtimeSinceStartupAsDouble;
 
         float[] ABuffer = Array.ConvertAll(receivedAudio, (a) => a / 32767f);
-
         for (int i = 0; i < ABuffer.Length / 2; i++)
         {
+            while (ABufferQueue.Count >= ABufferQueueMaxItems)
+            {
+                ABufferQueue.Dequeue();
+            }
             ABufferQueue.Enqueue(ABuffer[i]);
         }
-
-        CreateClip();
 
         yield return null;
     }
 
     void CreateClip()
     {
-        //Debug.Log("Creating clip");
-        if (samplerate != (int)SourceSampleRate || channel != SourceChannels)
-        {
+        Debug.Log("Creating clip");
+        //if (samplerate != (int)SourceSampleRate || channel != SourceChannels)
+        //{
             //Debug.Log("Streaming audio into an audio clip");
             samplerate = (int)SourceSampleRate;
             channel = SourceChannels;
@@ -153,13 +158,16 @@ public class AudioDataROSHandler : MonoBehaviour
 
             //audioClip = AudioClip.Create("StreamingAudio", samplerate * SourceChannels, SourceChannels, samplerate, true, OnAudioRead, OnAudioSetPosition);
 
-            audioClip = AudioClip.Create("StreamingAudio", 48000 * 4, 2, 48000, true, OnAudioRead, OnAudioSetPosition);
+            //clip length has no influence on latency
+            //reducing to 1 channel has no influence on latency
+            //
+            audioClip = AudioClip.Create("StreamingAudio", 48000*4, 1, 48000, true, OnAudioRead, OnAudioSetPosition);
             Audio = GetComponent<AudioSource>();
             Audio.clip = audioClip;
             Audio.loop = true;
             Audio.Play();   
             
-        }
+        //}
 
     }
 
@@ -333,19 +341,18 @@ public class AudioDataROSHandler : MonoBehaviour
         CurrentDeviceName = MicNames[0];
         AudioSettings.outputSampleRate = 48000;
 
-        //Debug.Log("staring mic device...");
+        Debug.Log("starting mic device...");
 
         AudioMic.clip = Microphone.Start(CurrentDeviceName, true, 1, 48000);// OutputSampleRate);
-
         AudioMic.loop = true;
+
         while (!(Microphone.GetPosition(CurrentDeviceName) > 0)) { }
-        while (!stop)
+        /*while (!stop)
         {
             //Debug.Log("entering mic cb");
-            StartCoroutine(AddMicData());
             //AddMicData2();
             yield return null;
-        }
+        }*/
         yield return null;
     }
 
@@ -387,47 +394,44 @@ public class AudioDataROSHandler : MonoBehaviour
         CurrentAudioTimeSample = Microphone.GetPosition(CurrentDeviceName);
         List<short> data = new List<short>();
 
-        if (CurrentAudioTimeSample != LastAudioTimeSample)
+        float[] samples = new float[AudioMic.clip.samples];
+        lock (_asyncLockAudio)
         {
-            float[] samples = new float[AudioMic.clip.samples];
+            AudioMic.clip.GetData(samples, 0);
+        }
+
+        if (CurrentAudioTimeSample > LastAudioTimeSample)
+        {
             lock (_asyncLockAudio)
             {
-                AudioMic.clip.GetData(samples, 0);
-            }
-
-            if (CurrentAudioTimeSample > LastAudioTimeSample)
-            {
-                lock (_asyncLockAudio)
+                for (int i = LastAudioTimeSample; i < CurrentAudioTimeSample; i++)
                 {
-                    for (int i = LastAudioTimeSample; i < CurrentAudioTimeSample; i++)
-                    {
-                        data.Add(FloatToInt16(samples[i]));
-                    }
+                    data.Add(FloatToInt16(samples[i]));
                 }
             }
-            else if (CurrentAudioTimeSample < LastAudioTimeSample)
-            {
-                lock (_asyncLockAudio)
-                {
-                    for (int i = LastAudioTimeSample; i < samples.Length; i++)
-                    {
-                        data.Add(FloatToInt16(samples[i]));
-                    }
-                    for (int i = 0; i < CurrentAudioTimeSample; i++)
-                    {
-                        data.Add(FloatToInt16(samples[i]));
-                    }
-                }
-            }
-            if (data.Count % 2 != 0)
-            {
-                data.Add(0);
-            }
-            data.AddRange(data);
-            msg.data = data.ToArray();
-            //Debug.Log("published audio operator msg");
-            ros.Publish(outgoingTopicName, msg);
         }
+        else if (CurrentAudioTimeSample < LastAudioTimeSample)
+        {
+            lock (_asyncLockAudio)
+            {
+                for (int i = LastAudioTimeSample; i < samples.Length; i++)
+                {
+                    data.Add(FloatToInt16(samples[i]));
+                }
+                for (int i = 0; i < CurrentAudioTimeSample; i++)
+                {
+                    data.Add(FloatToInt16(samples[i]));
+                }
+            }
+        }
+        if (data.Count % 2 != 0)
+        {
+            data.Add(0);
+        }
+        data.AddRange(data);
+        msg.data = data.ToArray();
+        ros.Publish(outgoingTopicName, msg);
+
         yield return null;
     }
 

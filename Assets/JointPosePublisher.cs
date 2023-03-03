@@ -95,6 +95,8 @@ public class JointPosePublisher : MonoBehaviour
         {
             if (segment.Joint != null)
             {
+                // TODO investigate axis2
+                if (segment.Joint.name == "head_axis2") continue;
                 names.Add(segment.Joint.name);
                 velocities.Add(0f);
                 positions.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);

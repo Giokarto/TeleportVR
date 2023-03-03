@@ -12,7 +12,8 @@ public class SubscriberCamera : MonoBehaviour
 
     private bool messageProcessed = false;
     private Texture2D texture2D;
-    [SerializeField] private MeshRenderer meshRenderer;
+    [SerializeField] private MeshRenderer meshRenderer, secondaryMeshRenderer;
+    [SerializeField] bool monoVision = false; // if true duplicates the image from meshRenderer to secondaryMeshRenderer
 
     private int frameCount = 0;
     private int receivedCount = 0;
@@ -32,6 +33,7 @@ public class SubscriberCamera : MonoBehaviour
         if (messageProcessed)
         {
             meshRenderer.material.mainTexture = texture2D;
+            if (monoVision) secondaryMeshRenderer.material.mainTexture = texture2D;
             frameCount++;
             messageProcessed = false;
         }
@@ -42,6 +44,7 @@ public class SubscriberCamera : MonoBehaviour
     private void GetImage(CompressedImage Message)
     {
         if (!meshRenderer.gameObject.activeInHierarchy) meshRenderer.gameObject.SetActive(true);
+        if (monoVision && !secondaryMeshRenderer.gameObject.activeInHierarchy) secondaryMeshRenderer.gameObject.SetActive(true);
         receivedCount++;
 
         if (!messageProcessed)
@@ -78,6 +81,7 @@ public class SubscriberCamera : MonoBehaviour
         texture2D.LoadImage(ReceivedImage);
         
         meshRenderer.material.SetTexture("_MainTex", texture2D);
+        if (monoVision) secondaryMeshRenderer.material.SetTexture("_MainTex", texture2D);
         messageProcessed = true;
 
         yield return null;

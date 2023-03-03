@@ -29,6 +29,7 @@ public class WheelchairStateManager : Singleton<WheelchairStateManager>
 
     void Update()
     {
+        SetVisibility(false);
         // if state changed update visibility accordingly
         if (StateManager.Instance.currentState != internalState)
         {

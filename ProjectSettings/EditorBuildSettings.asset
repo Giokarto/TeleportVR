@@ -68,6 +68,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/TrainingMobile.unity
     guid: c43dc1cd0ab917841b0aefc9e8b753e6
+  - enabled: 0
+    path: Assets/audiotest.unity
+    guid: aaf7a8ce21a240a4ea9bd44a963a01dd
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: e7b0686d0e93c8149a14068d0ef7311d,
       type: 2}
