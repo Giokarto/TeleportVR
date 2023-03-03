@@ -5,7 +5,6 @@ using OpenCVForUnity.UnityUtils;
 using ServerConnection;
 using Unity.XR.CoreUtils;
 using UnityEngine;
-using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 using Rect = OpenCVForUnity.CoreModule.Rect;
 
