@@ -6,6 +6,7 @@ using UnityEngine;
 [ExecuteAlways]
 public class GameConfig : Singleton<GameConfig>
 {
+
     [System.Serializable]
     public class PlayerSettings
     {
@@ -13,22 +14,28 @@ public class GameConfig : Singleton<GameConfig>
         public float OperatorIPD = 63;
         public bool OperatorManualOverwrite = false;
         public float OperatorHorizontal = 0;
-        public float OperatorVertical = 0;
+        public float OperatorVertical = 0.1432849f;//0;
+        public string RobotName = null;
+        public string RosIP = "10.1.0.6";
     }
 
-    public string configName = "config.json";
+
+    public static string configName = "config.json";
     private string path;
     public PlayerSettings settings;
+
 
     void Awake()
     {
         path = Application.persistentDataPath + "/" + configName;
+        //Debug.Log("Game config awake");
         settings = new PlayerSettings();
         try
         {
             var s = File.ReadAllText(path);
             settings = JsonUtility.FromJson<PlayerSettings>(s);
-            Debug.Log($"Successfully loaded settings from {path}");
+            Debug.Log($"Successfully loaded settings from {path}:\n {settings.RosIP}");
+            //Debug.Log(settings.RosIP);
         }
         catch (IOException)
         {
@@ -40,11 +47,12 @@ public class GameConfig : Singleton<GameConfig>
     public void WriteSettings()
     {
         var json = JsonUtility.ToJson(settings, prettyPrint: true);
-        Debug.Log($"Wrote GameSettings to: {path}");
+        //Debug.Log($"Wrote GameSettings to: {path}");
+        //Debug.Log(json);
         File.WriteAllText(path, json);
     }
 
-    private void OnDestroy()
+    private void OnApplicationQuit()
     {
         WriteSettings();
     }
