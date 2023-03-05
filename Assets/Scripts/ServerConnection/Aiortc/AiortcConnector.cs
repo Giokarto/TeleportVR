@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Text;
+using System.Threading;
 using Newtonsoft.Json;
 using Unity.WebRTC;
 using Unity.XR.CoreUtils;
@@ -24,6 +25,7 @@ namespace ServerConnection.Aiortc
 
         private Renderer leftRenderer;
         private Renderer rightRenderer;
+        GameObject LeftEye, RightEye;
 
         private Renderer leftFaceDetectionRenderer;
 
@@ -80,11 +82,12 @@ namespace ServerConnection.Aiortc
         /// </summary>
         void Start()
         {
+            LeftEye = imtpEncoder.leftEye;
             leftRenderer = imtpEncoder.leftEye.GetNamedChild("LeftSphereMaterial").GetComponent<Renderer>();
             leftFaceDetectionRenderer = imtpEncoder.leftEye.GetNamedChild("Plane").GetComponent<Renderer>();
             leftFaceDetectionRenderer.material.mainTexture = new Texture2D(1080, 1080);
             rightRenderer = imtpEncoder.rightEye.GetComponentInChildren<Renderer>();
-
+            RightEye = imtpEncoder.rightEye;
             onDataChannel = channel =>
             {
                 remoteDataChannel = channel;
@@ -97,6 +100,12 @@ namespace ServerConnection.Aiortc
                 {
                     imtpEncoder.faceCoordinates = JsonConvert.DeserializeObject<Int32[][]>(str.Substring(7));
                 }
+                if (str.StartsWith("pong"))
+                {
+                    LeftEye.transform.Rotate(0f,0.1f,0f);
+                }
+                Debug.Log(str);
+                SendMsg();
             };
             onDataChannelOpen = () =>
             {
