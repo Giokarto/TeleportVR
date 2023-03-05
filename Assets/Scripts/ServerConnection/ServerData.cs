@@ -14,7 +14,7 @@ namespace ServerConnection
     {
         #region Setup, General methods
         /// <summary>
-        /// Is the server connection established?
+        /// Is the server connection established?C:\Users\Roboy\projects\src\github.com\Roboy\TeleportVR\Assets\Scripts\ServerConnection\ServerData.cs
         /// </summary>
         public abstract bool ConnectedToServer { get; }
         
@@ -67,24 +67,7 @@ namespace ServerConnection
         ///     2. To be able to replace the plane by a different object (Sphere) for different types of cameras
         ///     3. To not clutter up the scene when the server is not present
         /// </summary>
-        protected void CreateEyeGameObjects()
-        {
-            var anchor = GameObject.Find("LeftEyeAnchor");
-            if (LeftEyePrefab == null)
-            {
-                Debug.Log("LeftEyePrefab not set, loading default plane");
-                LeftEyePrefab = Resources.Load<GameObject>("EyePlanes/LeftEye");
-            }
-            LeftEye = Instantiate(LeftEyePrefab, anchor.transform);
-            
-            anchor = GameObject.Find("RightEyeAnchor");
-            if (RightEyePrefab == null)
-            {
-                Debug.Log("RightEyePrefab not set, loading default plane");
-                RightEyePrefab = Resources.Load<GameObject>("EyePlanes/RightEye");
-            }
-            RightEye = Instantiate(RightEyePrefab, anchor.transform);
-        }
+        public abstract void CreateEyeGameObjects();
 
         /// <summary>
         /// Returns the current latency in ms.

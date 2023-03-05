@@ -76,6 +76,11 @@ namespace ServerConnection.MockServer
         public override Dictionary<Modality, bool> ModalityConnected { get; }
             = Enum.GetValues(typeof(Modality)).Cast<Enum>().ToDictionary(e => (Modality)e, v => false);
 
+        public override void CreateEyeGameObjects()
+        {
+            throw new NotImplementedException();
+        }
+
         public override float GetVisionLatency()
         {
             return random.Next(10, 100);
