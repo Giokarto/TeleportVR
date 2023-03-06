@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [ExecuteAlways]
 public class GameConfig : Singleton<GameConfig>
@@ -42,11 +44,13 @@ public class GameConfig : Singleton<GameConfig>
             Debug.LogError($"Coud not read settings from {path}, using default");
             WriteSettings();
         }
-        
+        #if UNITY_EDITOR
         // Save settings updated in the editor
         EditorApplication.playModeStateChanged += WriteSettingsOnEditorExit;
+        #endif
     }
 
+    #if UNITY_EDITOR
     private void WriteSettingsOnEditorExit(PlayModeStateChange state)
     {
         if (state == PlayModeStateChange.ExitingEditMode)
@@ -54,6 +58,7 @@ public class GameConfig : Singleton<GameConfig>
             WriteSettings();
         }
     }
+    #endif
 
     public void WriteSettings()
     {

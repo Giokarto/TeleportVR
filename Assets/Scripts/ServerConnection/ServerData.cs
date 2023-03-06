@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using InputDevices;
 using InputDevices.VRControllers;
-using UnityEditor;
 using UnityEngine;
 
 namespace ServerConnection

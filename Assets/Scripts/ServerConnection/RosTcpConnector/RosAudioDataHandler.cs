@@ -5,6 +5,7 @@ using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
 using Int16MultiArrayMsg = RosMessageTypes.Std.Int16MultiArrayMsg;
 using System;
+using InputDevices.VRControllers;
 
 namespace ServerConnection.RosTcpConnector
 {
@@ -118,7 +119,7 @@ namespace ServerConnection.RosTcpConnector
 #if UNITY_EDITOR
             StartCoroutine(ProcessAudioData(data.data));
 #else
-        if (InputManager.Instance.IsUserActive())
+        if (VRControllerInputSystem.IsUserActive())
         {
             StartCoroutine(ProcessAudioData(data.data));
         }

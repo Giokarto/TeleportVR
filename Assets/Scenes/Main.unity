@@ -1501,8 +1501,6 @@ MonoBehaviour:
     type: 3}
   RightEyePrefab: {fileID: 522820554026848309, guid: 5fb006a593b5d054995f24fe7b79ad74,
     type: 3}
-  LeftEye: {fileID: 0}
-  RightEye: {fileID: 0}
   aiortcConnector: {fileID: 1543883723}
   imtpEncoder: {fileID: 1678106452}
 --- !u!114 &301797400 stripped
@@ -2211,7 +2209,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &469497749
 Transform:
   m_ObjectHideFlags: 0
@@ -2233,7 +2231,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 469497748}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3f135a995647914aa8cba9bf1ea8762, type: 3}
   m_Name: 
@@ -2284,7 +2282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b82ae4e98f707141815c56e6d8e702c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TopicName: 
+  TopicName: /image/right/image_compressed
   meshRenderer: {fileID: 0}
   secondaryMeshRenderer: {fileID: 0}
   monoVision: 0
@@ -2401,12 +2399,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f27abfc231e24b628a97e06b7f887ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LeftEyePrefab: {fileID: 650765655978913324, guid: 4a3c88a14733a5e4ab063c535704a717,
-    type: 3}
-  RightEyePrefab: {fileID: 522820554026848309, guid: 5fb006a593b5d054995f24fe7b79ad74,
-    type: 3}
-  LeftEye: {fileID: 0}
-  RightEye: {fileID: 0}
+  LeftEyePrefab: {fileID: 0}
+  RightEyePrefab: {fileID: 0}
   vision: {fileID: 475412278}
   jointPose: {fileID: 1086971377}
   headPose: {fileID: 469497750}
@@ -7238,7 +7232,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1086971376
 Transform:
   m_ObjectHideFlags: 0
@@ -7419,8 +7413,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LeftEyePrefab: {fileID: 0}
   RightEyePrefab: {fileID: 0}
-  LeftEye: {fileID: 0}
-  RightEye: {fileID: 0}
 --- !u!4 &1119057765
 Transform:
   m_ObjectHideFlags: 0
