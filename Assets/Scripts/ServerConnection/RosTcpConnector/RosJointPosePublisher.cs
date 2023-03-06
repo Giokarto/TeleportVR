@@ -2,13 +2,14 @@ using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
 using JointStateMsg=RosMessageTypes.Sensor.JointStateMsg;
 using System.Collections.Generic;
+using InputDevices.VRControllers;
 
 namespace ServerConnection.RosTcpConnector
 {
     public class RosJointPosePublisher : MonoBehaviour
     {
         ROSConnection ros;
-        public string topicName = "/operator/joint_target";
+        public string topicName = "/operator/joint_target"; // /roboy/pinky/simulation/joint_targets
         public float publishMessageFrequency = 0.01f;
 
         public BioIK.BioIK BodyIK;
@@ -18,8 +19,6 @@ namespace ServerConnection.RosTcpConnector
         private JointStateMsg msg;
         List<double> positions, velocities;
         List<string> names;
-
-        private bool motionEnabled, lastMenuBtn;
 
         // TODO move finger joint names definitions somewhere sane
         private List<string> fingerJointNames = new List<string> { "thumb_", "index_", "middle_", "pinky_" };
@@ -37,34 +36,27 @@ namespace ServerConnection.RosTcpConnector
             positions = new List<double>();
             velocities = new List<double>();
             names = new List<string>();
-
-            motionEnabled = true;
         }
 
-        // Update is called once per frame
+        /// <summary>
+        /// Called if script active - set in <see cref="ServerData.SetMotorOn"/>
+        /// </summary>
         void Update()
         {
             bool btn;
             // TODO @zuzkau refactor input manager & uncomment line 47:51
-            //if (InputManager.Instance.ControllerLeft.TryGetFeatureValue(UnityEngine.XR.CommonUsages.menuButton, out btn) && btn && !lastMenuBtn)
-            //{
-            //    motionEnabled = !motionEnabled;
-            //}
-            //lastMenuBtn = btn;
-
             // reset joints to 0 when the headset is not on
             //if (!InputManager.Instance.IsUserActive())
             //{
             //    ResetJoints();
             //    ros.Publish(topicName, GetLatestJointStates());
-            //    motionEnabled = false;
             //}
 
             timeElapsed += Time.deltaTime;
 
             if (timeElapsed > publishMessageFrequency)
             {
-                if (motionEnabled) ros.Publish(topicName, GetLatestJointStates());
+                ros.Publish(topicName, GetLatestJointStates());
                 timeElapsed = 0;
             }
         }
@@ -103,7 +95,6 @@ namespace ServerConnection.RosTcpConnector
                     names.Add(segment.Joint.name);
                     velocities.Add(0f);
                     positions.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
-
                 }
             }
 
@@ -121,7 +112,7 @@ namespace ServerConnection.RosTcpConnector
                 }
             }
 
-            // Distribure angle on elbow_*_axis0 to axis0 and axis1 equally
+            // Distribute angle on elbow_*_axis0 to axis0 and axis1 equally
             // TODO sort our these magic numbers
             const int elbowRightAxis0 = 6;
             const int elbowLeftAxis0 = 14;
@@ -132,15 +123,8 @@ namespace ServerConnection.RosTcpConnector
 
             // hand
             float left_open = 0, right_open = 0;
-            // TODO @zuzkau refactor input manager & uncomment line 134:140
-            //if (InputManager.Instance.GetLeftController())
-            //    InputManager.Instance.ControllerLeft
-            //        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left_open);
-
-            //if (InputManager.Instance.GetRightController())
-            //    InputManager.Instance.ControllerRight
-            //        .TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
-
+            VRControllerInputSystem.controllerLeft.TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left_open);
+            VRControllerInputSystem.controllerRight.TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
 
             // 4 values for right and left
             for (int i = 0; i < 4; i++)
