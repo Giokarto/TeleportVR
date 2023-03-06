@@ -63,7 +63,7 @@ namespace ServerConnection.RosTcpConnector
 
         public override List<float> GetLatestJointValues()
         {
-            throw new System.NotImplementedException();
+            return new List<float>();
         }
 
         protected override void SetPresenceIndicatorOn(bool on)

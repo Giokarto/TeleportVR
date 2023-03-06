@@ -58,7 +58,7 @@ namespace ServerConnection
         /// Object to whose texture the vision textures from the server will be projected.
         /// </summary>
         public GameObject LeftEyePrefab, RightEyePrefab;
-        [SerializeField] protected GameObject LeftEye, RightEye;
+        [NonSerialized] public GameObject LeftEye, RightEye;
 
         /// <summary>
         /// Creates a plane / sphere from prefab to project the video to, and adds it as a child of the Eye Anchor.
