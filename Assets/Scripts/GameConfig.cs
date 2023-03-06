@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 [ExecuteAlways]
@@ -10,13 +12,12 @@ public class GameConfig : Singleton<GameConfig>
     [System.Serializable]
     public class PlayerSettings
     {
-        [Range(40, 90)]
-        public float OperatorIPD = 63;
+        [Range(40, 90)] public float OperatorIPD = 63;
         public bool OperatorManualOverwrite = false;
         public float OperatorHorizontal = 0;
-        public float OperatorVertical = 0.1432849f;//0;
+        public float OperatorVertical = 0.1432849f; //0;
         public string RobotName = null;
-        public string RosIP = "10.1.0.6";
+        public string RosIP = "10.7.0.3";
     }
 
 
@@ -35,11 +36,21 @@ public class GameConfig : Singleton<GameConfig>
             var s = File.ReadAllText(path);
             settings = JsonUtility.FromJson<PlayerSettings>(s);
             Debug.Log($"Successfully loaded settings from {path}:\n {settings.RosIP}");
-            //Debug.Log(settings.RosIP);
         }
         catch (IOException)
         {
             Debug.LogError($"Coud not read settings from {path}, using default");
+            WriteSettings();
+        }
+        
+        // Save settings updated in the editor
+        EditorApplication.playModeStateChanged += WriteSettingsOnEditorExit;
+    }
+
+    private void WriteSettingsOnEditorExit(PlayModeStateChange state)
+    {
+        if (state == PlayModeStateChange.ExitingEditMode)
+        {
             WriteSettings();
         }
     }
@@ -47,8 +58,7 @@ public class GameConfig : Singleton<GameConfig>
     public void WriteSettings()
     {
         var json = JsonUtility.ToJson(settings, prettyPrint: true);
-        //Debug.Log($"Wrote GameSettings to: {path}");
-        //Debug.Log(json);
+        Debug.Log($"Wrote GameSettings to: {path}");
         File.WriteAllText(path, json);
     }
 

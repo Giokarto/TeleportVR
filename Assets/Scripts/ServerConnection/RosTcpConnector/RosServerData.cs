@@ -59,7 +59,6 @@ namespace ServerConnection.RosTcpConnector
 
         public override void ChangeGrip(float left, float right)
         {
-            throw new System.NotImplementedException();
         }
 
         public override List<float> GetLatestJointValues()
