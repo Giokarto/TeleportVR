@@ -15,7 +15,6 @@ namespace ServerConnection.RosTcpConnector
 
         private Texture2D texture2D;
 
-        // TODO @zuzkau pass meshrenderer for eye planes by reference or generate here
         [SerializeField] private MeshRenderer meshRenderer, secondaryMeshRenderer;
 
         [SerializeField]

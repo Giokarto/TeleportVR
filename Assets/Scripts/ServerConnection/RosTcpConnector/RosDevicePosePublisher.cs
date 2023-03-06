@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using InputDevices.VRControllers;
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
 using PoseMsg = RosMessageTypes.Geometry.PoseMsg;
@@ -49,25 +50,24 @@ namespace ServerConnection.RosTcpConnector
                 foreach (var device in deviceNames)
                 {
                     topicName = topicRoot + device;
-                    // TODO @zuzkau refactor input manager & uncomment line 51:68
-                    //var inputDevice = InputManager.Instance.GetDeviceByName(device);
-                    //if (inputDevice.HasValue)
-                    //{
-                    //    if (inputDevice.Value.TryGetFeatureValue(UnityEngine.XR.CommonUsages.devicePosition, out var _))
-                    //    {
-                    //        ros.Publish(topicName + "pose", GetLatestDevicePose(inputDevice.Value));
-                    //        ros.Publish(topicName + "velocity", GetLatestDeviceVelocity(inputDevice.Value));
-                    //        ros.Publish(topicName + "acceleration", GetLatestDeviceAcceleration(inputDevice.Value));
-                    //    }
-                    //    else
-                    //    {
-                    //        Debug.LogWarning($"{inputDevice.Value.name} is not tracked");
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    Debug.LogWarning($"{inputDevice.Value.name} is not available");
-                    //}
+                    var inputDevice = VRControllerInputSystem.GetDeviceByName(device);
+                    if (inputDevice != null)
+                    {
+                        if (inputDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.devicePosition, out var _))
+                        {
+                            ros.Publish(topicName + "pose", GetLatestDevicePose(inputDevice));
+                            ros.Publish(topicName + "velocity", GetLatestDeviceVelocity(inputDevice));
+                            ros.Publish(topicName + "acceleration", GetLatestDeviceAcceleration(inputDevice));
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"{inputDevice.name} is not tracked");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"{device} is not available");
+                    }
 
                 }
 

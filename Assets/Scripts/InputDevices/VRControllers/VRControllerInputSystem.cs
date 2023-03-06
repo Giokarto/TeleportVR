@@ -14,6 +14,7 @@ namespace InputDevices.VRControllers
     {
         public static InputDevice controllerLeft { get; private set; }
         public static InputDevice controllerRight { get; private set; }
+        public static InputDevice headset { get; private set; }
         
         private bool controllersAvailable;
 
@@ -49,7 +50,13 @@ namespace InputDevices.VRControllers
                 controllerRight = foundControllers[0];
             }
             
-            controllersAvailable = controllerLeft != null && controllerRight != null;
+            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.HeadMounted, foundControllers);
+            if (foundControllers.Count > 0)
+            {
+                headset = foundControllers[0];
+            }
+
+            controllersAvailable = controllerLeft != null && controllerRight != null && headset != null;
             return controllersAvailable;
         }
 
@@ -136,5 +143,27 @@ namespace InputDevices.VRControllers
             }
         }
 
+        public static InputDevice GetDeviceByName(string name)
+        {
+            if (name.Contains("left"))
+            {
+                return controllerLeft;
+            }
+
+            if (name.Contains("right"))
+            {
+                return controllerRight;
+            }
+
+            if (name.Contains("head"))
+            {
+                return headset;
+            }
+            
+            else
+            {
+                throw new NullReferenceException($"Device with name {name} not found!");
+            }
+        }
     }
 }
