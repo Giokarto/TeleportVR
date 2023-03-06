@@ -43,14 +43,12 @@ namespace ServerConnection.RosTcpConnector
         /// </summary>
         void Update()
         {
-            bool btn;
-            // TODO @zuzkau refactor input manager & uncomment line 47:51
             // reset joints to 0 when the headset is not on
-            //if (!InputManager.Instance.IsUserActive())
-            //{
-            //    ResetJoints();
-            //    ros.Publish(topicName, GetLatestJointStates());
-            //}
+            if (!VRControllerInputSystem.IsUserActive())
+            {
+                ResetJoints();
+                ros.Publish(topicName, GetLatestJointStates());
+            }
 
             timeElapsed += Time.deltaTime;
 
@@ -63,14 +61,10 @@ namespace ServerConnection.RosTcpConnector
 
         void ResetJoints()
         {
-            //foreach (var segment in HeadIK.Segments)
-            //{
-            //    //HeadIK.ResetPosture(segment);
-            //    if (segment.Joint != null)
-            //    {
-            //        segment.Joint.
-            //    }
-            //}
+            foreach (var segment in HeadIK.Segments)
+            {
+                HeadIK.ResetPosture(segment);
+            }
             foreach (var segment in BodyIK.Segments)
             {
                 BodyIK.ResetPosture(segment);

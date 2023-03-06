@@ -143,6 +143,12 @@ namespace InputDevices.VRControllers
             }
         }
 
+        private static bool userPresentInHeadset;
+        public static bool IsUserActive()
+        {
+            return headset.TryGetFeatureValue(CommonUsages.userPresence, out userPresentInHeadset) && userPresentInHeadset;
+        }
+
         public static InputDevice GetDeviceByName(string name)
         {
             if (name.Contains("left"))
