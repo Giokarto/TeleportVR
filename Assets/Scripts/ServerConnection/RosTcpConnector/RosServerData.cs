@@ -73,7 +73,7 @@ namespace ServerConnection.RosTcpConnector
 
         public override void SetEmotion(string emotion)
         {
-            throw new System.NotImplementedException();
+            // no emotions
         }
     }
 }

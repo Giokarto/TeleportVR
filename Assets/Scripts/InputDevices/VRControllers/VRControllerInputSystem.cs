@@ -70,13 +70,18 @@ namespace InputDevices.VRControllers
         /// <param name="actionToInvoke"></param>
         private void HandleButtonPress(bool isPressed, ref bool previouslyPressed, Action actionToInvoke)
         {
-            // TODO: fix pressing buttons, this doesn't work properly
-            Debug.Log($"buttons: {isPressed}, {previouslyPressed}");
             if (isPressed)
             {
                 if (!previouslyPressed)
                 {
-                    actionToInvoke();
+                    try
+                    {
+                        actionToInvoke();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                    }
                 }
 
                 previouslyPressed = true;
