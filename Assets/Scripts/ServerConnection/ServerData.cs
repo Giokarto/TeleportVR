@@ -22,7 +22,7 @@ namespace ServerConnection
         /// </summary>
         public abstract Dictionary<Modality, bool> ModalityConnected { get; }
         
-        private void OnEnable()
+        protected void OnEnable()
         {
             VRControllerInputSystem.OnGripChange += ChangeGrip;
             InputSystem.OnLeftPrimaryButton += SendHearts;

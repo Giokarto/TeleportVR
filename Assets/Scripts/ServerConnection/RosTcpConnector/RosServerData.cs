@@ -9,6 +9,7 @@ namespace ServerConnection.RosTcpConnector
     public class RosServerData : ServerData
     {
         private ROSConnection ros;
+        private Light light;
         
         public RosImageSubscriber vision;
         public RosJointPosePublisher jointPose;
@@ -18,6 +19,15 @@ namespace ServerConnection.RosTcpConnector
         private void Start()
         {
             ros = ROSConnection.GetOrCreateInstance();
+            light = FindObjectOfType<Light>();
+        }
+
+        private new void OnEnable()
+        {
+            base.OnEnable();
+            LeftEye.transform.position = new Vector3(0, 0, 8);
+            RightEye.transform.position = new Vector3(0, 0, 8);
+
         }
 
         private void Update()
@@ -57,6 +67,7 @@ namespace ServerConnection.RosTcpConnector
             jointPose.enabled = on;
             headPose.enabled = on;
             wheels.enabled = on;
+            light.enabled = on;
         }
 
         public override void ChangeGrip(float left, float right)
