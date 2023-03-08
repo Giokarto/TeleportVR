@@ -14,6 +14,7 @@ namespace ServerConnection.RosTcpConnector
         public RosJointPosePublisher jointPose;
         public RosDevicePosePublisher headPose;
         public RosAudioDataHandler audio;
+        public RosWheelsPwmPublisher wheels;
         private void Start()
         {
             ros = ROSConnection.GetOrCreateInstance();
@@ -55,6 +56,7 @@ namespace ServerConnection.RosTcpConnector
         {
             jointPose.enabled = on;
             headPose.enabled = on;
+            wheels.enabled = on;
         }
 
         public override void ChangeGrip(float left, float right)

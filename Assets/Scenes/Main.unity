@@ -2405,6 +2405,7 @@ MonoBehaviour:
   jointPose: {fileID: 1086971377}
   headPose: {fileID: 469497750}
   audio: {fileID: 36843162}
+  wheels: {fileID: 1410235164}
 --- !u!1 &513805664
 GameObject:
   m_ObjectHideFlags: 0
@@ -8554,7 +8555,7 @@ MonoBehaviour:
     OperatorIPD: 63
     OperatorManualOverwrite: 0
     OperatorHorizontal: 0
-    OperatorVertical: 0
+    OperatorVertical: 0.1432849
     RobotName: 
     RosIP: 10.7.0.3
 --- !u!114 &1376495787 stripped
@@ -8609,7 +8610,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1410235163
 Transform:
   m_ObjectHideFlags: 0

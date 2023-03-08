@@ -99,7 +99,9 @@ namespace InputDevices.VRControllers
                 previouslyPressed = false;
             }
         }
-        
+
+        private float left, right;
+        private Vector2 leftVec, rightVec;
         public override void Update()
         {
             if (!controllersAvailable)
@@ -124,7 +126,6 @@ namespace InputDevices.VRControllers
             HandleButtonPress(controllerRight.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn, 
                 ref wasPressedRightSecondary, InvokeRightSecondaryButton);
 
-            float left, right = 0;
             if ((controllerLeft.TryGetFeatureValue(CommonUsages.grip, out left) && left>0) ||
                 (controllerRight.TryGetFeatureValue(CommonUsages.grip, out right) && right>0))
             {
@@ -135,6 +136,15 @@ namespace InputDevices.VRControllers
                 (controllerRight.TryGetFeatureValue(CommonUsages.trigger, out right) && right>0))
             {
                 InvokeTriggerChange(left, right);
+            }
+            
+            if (controllerLeft.TryGetFeatureValue(CommonUsages.primary2DAxis, out leftVec))
+            {
+                joystickX[inputSystemOrder] = leftVec.x;
+            }
+            if (controllerRight.TryGetFeatureValue(CommonUsages.primary2DAxis, out rightVec))
+            {
+                joystickY[inputSystemOrder] = rightVec.y;
             }
 
             if (anyButtonCurrentlyPressed)

@@ -4,6 +4,7 @@ using Unity.Robotics.ROSTCPConnector;
 using Int16Msg = RosMessageTypes.Std.Int16Msg;
 using System.Linq;
 using System;
+using InputDevices;
 
 namespace ServerConnection.RosTcpConnector
 {
@@ -52,9 +53,8 @@ namespace ServerConnection.RosTcpConnector
 
         void GetLatestWheelCommand(out short leftCmd, out short rightCmd)
         {
-            // TODO @zuzkau refactor input manager & uncomment line 54:55
-            var linear = 0; // InputManager.Instance.GetControllerJoystick(true).y;
-            var angular = 0; //-InputManager.Instance.GetControllerJoystick(false).x;
+            var linear = InputSystem.GetJoystickY();
+            var angular = InputSystem.GetJoystickX();
 
             double l = linear - angular / 2;
             double r = linear + angular / 2;
