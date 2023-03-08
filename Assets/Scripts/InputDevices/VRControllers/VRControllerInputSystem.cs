@@ -31,6 +31,22 @@ namespace InputDevices.VRControllers
         
         public static event Action<float, float> OnTriggerChange = delegate{};
         protected void InvokeTriggerChange(float left, float right) {OnTriggerChange?.Invoke(left, right);}
+        public static Action<float, float>[] StripActions()
+        {
+            Action<float, float>[] restore = {
+                OnGripChange,
+                OnTriggerChange
+            };
+            OnGripChange = delegate{};
+            OnTriggerChange = delegate{};
+            return restore;
+        }
+
+        public static void RestoreActions(Action<float, float>[] restore)
+        {
+            OnGripChange = restore[0];
+            OnTriggerChange = restore[1];
+        }
 
         /// <summary>
         /// variable used in GetControllers, moved outside to the class to not create garbage on the heap in each update

@@ -1,8 +1,10 @@
+using System;
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
 using JointStateMsg=RosMessageTypes.Sensor.JointStateMsg;
 using System.Collections.Generic;
 using InputDevices.VRControllers;
+using UnityEngine.XR.Interaction.Toolkit.Transformers;
 
 namespace ServerConnection.RosTcpConnector
 {
@@ -71,7 +73,22 @@ namespace ServerConnection.RosTcpConnector
             }
         }
 
+        private float leftGrip, rightGrip;
+        public void SaveGripState(float left, float right)
+        {
+            leftGrip = left;
+            rightGrip = right;
+        }
 
+        private void OnEnable()
+        {
+            VRControllerInputSystem.OnGripChange += SaveGripState;
+        }
+
+        private void OnDisable()
+        {
+            VRControllerInputSystem.OnGripChange -= SaveGripState;
+        }
 
         JointStateMsg GetLatestJointStates()
         {
@@ -116,21 +133,17 @@ namespace ServerConnection.RosTcpConnector
             positions[elbowLeftAxis0] /= 2;
 
             // hand
-            float left_open = 0, right_open = 0;
-            VRControllerInputSystem.controllerLeft.TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out left_open);
-            VRControllerInputSystem.controllerRight.TryGetFeatureValue(UnityEngine.XR.CommonUsages.grip, out right_open);
-
             // 4 values for right and left
             for (int i = 0; i < 4; i++)
             {
-                positions.Add(right_open);
+                positions.Add(rightGrip);
                 velocities.Add(0);
                 names.Add(fingerJointNames[i] + "right");
             }
 
             for (int i = 0; i < 4; i++)
             {
-                positions.Add(left_open);
+                positions.Add(leftGrip);
                 velocities.Add(0);
                 names.Add(fingerJointNames[i] + "left");
             }

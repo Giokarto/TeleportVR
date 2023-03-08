@@ -1,5 +1,6 @@
 using System;
 using InputDevices;
+using InputDevices.VRControllers;
 using RobodyControl;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -17,6 +18,7 @@ namespace OperatorUserInterface
         private XRInteractorLineVisual[] PointerRenderers;
 
         private Action[] buttonsRestore;
+        private Action<float, float>[] triggersRestore;
 
         public void ChangeSettingsState()
         {
@@ -44,11 +46,13 @@ namespace OperatorUserInterface
             if (settingsActive)
             {
                 buttonsRestore = InputSystem.StripActions();
+                triggersRestore = VRControllerInputSystem.StripActions();
                 InputSystem.OnLeftPrimaryButton += ChangeSettingsState;
             }
             else
             {
                 InputSystem.RestoreActions(buttonsRestore);
+                VRControllerInputSystem.RestoreActions(triggersRestore);
             }
         }
 
