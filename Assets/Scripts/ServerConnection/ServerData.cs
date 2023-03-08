@@ -130,7 +130,8 @@ namespace ServerConnection
         public abstract void ChangeGrip(float left, float right);
 
         /// <summary>
-        /// Returns the current body pose. Can be used to save these values and restore them later (e.g. when changing the scenes).
+        /// Returns the current body pose of the real robot.
+        /// Can be used to save these values and restore them later (e.g. when changing the scenes).
         /// </summary>
         public abstract List<float> GetLatestJointValues();
 

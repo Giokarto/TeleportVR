@@ -68,15 +68,29 @@ namespace ServerConnection.RosTcpConnector
             headPose.enabled = on;
             wheels.enabled = on;
             light.enabled = on;
+
+            // when leaving HUD, save joint values to restore later
+            if (!on)
+            {
+                var currentRobodyJointValues = new List<float>();
+                foreach (var segment in jointPose.BodyIK.Segments)
+                {
+                    if (segment.Joint != null)
+                    {
+                        currentRobodyJointValues.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
+                    }
+                }
+            }
         }
 
         public override void ChangeGrip(float left, float right)
         {
         }
 
+        private List<float> currentRobodyJointValues;
         public override List<float> GetLatestJointValues()
         {
-            return new List<float>();
+            return currentRobodyJointValues;
         }
 
         protected override void SetPresenceIndicatorOn(bool on)
