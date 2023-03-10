@@ -39,6 +39,15 @@ namespace ServerConnection.RosTcpConnector
             ModalityConnected[Modality.AUDITION] = audio.isActiveAndEnabled;
         }
 
+        public override string IPaddress
+        {
+            get => ros.RosIPAddress;
+            set
+            {
+                ros.RosIPAddress = value;
+            }
+        }
+
         public override bool ConnectedToServer
         {
             get => !ros.HasConnectionError;

@@ -27,6 +27,12 @@ namespace ServerConnection.MockServer
         private Renderer _rightRenderer;
 
         private bool _connectedToServer;
+
+        public override string IPaddress
+        {
+            get => "localhost";
+            set {}
+        }
         
         public void Start()
         {

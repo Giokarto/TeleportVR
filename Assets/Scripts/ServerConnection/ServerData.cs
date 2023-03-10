@@ -12,6 +12,26 @@ namespace ServerConnection
     public abstract class ServerData: Singleton<ServerData>
     {
         #region Setup, General methods
+
+        public abstract string IPaddress { get; set; }
+
+        
+        /// <summary>
+        /// Hardcoded IP addresses for use either over VPN, or on local network.
+        /// </summary>
+        /// <param name="local"></param>
+        public void UseLocalServer(bool local)
+        {
+            if (local)
+            {
+                IPaddress = "10.1.0.6";
+            }
+            else
+            {
+                IPaddress = "10.7.0.3";
+            }
+        }
+        
         /// <summary>
         /// Is the server connection established?
         /// </summary>
