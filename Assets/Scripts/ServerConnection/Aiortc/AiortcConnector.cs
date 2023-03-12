@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Text;
 using System.Threading;
+using CurvedUI;
 using Newtonsoft.Json;
+using ServerConnection.RosTcpConnector;
 using Unity.WebRTC;
 using Unity.XR.CoreUtils;
 using UnityEngine;
@@ -26,7 +28,7 @@ namespace ServerConnection.Aiortc
         private Renderer leftRenderer;
         private Renderer rightRenderer;
         GameObject LeftEye, RightEye;
-
+        private bool initialized = false;
         private Renderer leftFaceDetectionRenderer;
 
         /// <summary>
@@ -71,7 +73,7 @@ namespace ServerConnection.Aiortc
         private RTCPeerConnection pc;
         private MediaStream receiveStream;
 
-        private RTCDataChannel dataChannel, remoteDataChannel;
+        public RTCDataChannel dataChannel, remoteDataChannel;
         private DelegateOnMessage onDataChannelMessage;
         private DelegateOnOpen onDataChannelOpen;
         private DelegateOnClose onDataChannelClose;
@@ -100,10 +102,14 @@ namespace ServerConnection.Aiortc
                 {
                     imtpEncoder.faceCoordinates = JsonConvert.DeserializeObject<Int32[][]>(str.Substring(7));
                 }
-                if (str.StartsWith("pong"))
+
+                if (!initialized)
                 {
-                    LeftEye.transform.Rotate(0f,0.1f,0f);
+                    this.AddComponentIfMissing <WebRTCHeadPositionListener>();
+                    this.AddComponentIfMissing <WebRTCHeadPositionSender>();
+                    initialized = true;
                 }
+
                 Debug.Log(str);
                 SendMsg();
             };
@@ -263,6 +269,22 @@ namespace ServerConnection.Aiortc
             }
         }
 
+        /// <summary>
+        /// GetDataChannel
+        /// </summary>
+        public RTCDataChannel GetDataChannel(string name)
+        {
+            if (dataChannel.Label == name)
+            {
+                return dataChannel;
+            }
+            else
+            {
+                Debug.LogWarning("Data channel not found: " + name);
+                return null;
+            }
+        }
+        
         /// <summary>
         /// Sends connection web request to dedicated server
         /// </summary>
