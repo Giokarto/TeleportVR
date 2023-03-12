@@ -15,7 +15,6 @@ namespace ServerConnection.RosTcpConnector
 
         private Texture2D texture2D;
 
-        // TODO @zuzkau pass meshrenderer for eye planes by reference or generate here
         [SerializeField] private MeshRenderer meshRenderer, secondaryMeshRenderer;
 
         [SerializeField]
@@ -30,6 +29,11 @@ namespace ServerConnection.RosTcpConnector
 
         private void Start()
         {
+            if (meshRenderer == null)
+            {
+                meshRenderer = ServerData.Instance.RightEye.GetComponentInChildren<MeshRenderer>();
+                secondaryMeshRenderer = ServerData.Instance.LeftEye.GetComponentInChildren<MeshRenderer>();
+            }
             ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(TopicName, GetImage);
             texture2D = new Texture2D(1280, 720); //, TextureFormat.BGRA32, false);
         }
@@ -56,7 +60,6 @@ namespace ServerConnection.RosTcpConnector
 
             if (!messageProcessed)
             {
-                //Debug.Log($"length: {Message.data.Length}");
                 StartCoroutine(ProcessImage(Message.data));
             }
         }

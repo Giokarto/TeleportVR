@@ -20,6 +20,12 @@ namespace ServerConnection.Aiortc
             imtpEncoder.rightEye = RightEye;
         }
 
+        public override string IPaddress
+        {
+            get => aiortcConnector.aiortcServerURL;
+            set => aiortcConnector.aiortcServerURL = value + ":8080";
+        }
+
         public override int[][] FaceCoordinates => imtpEncoder.faceCoordinates;
 
         public override bool ConnectedToServer => aiortcConnector.isConnected;

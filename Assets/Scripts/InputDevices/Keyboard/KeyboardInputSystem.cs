@@ -22,6 +22,20 @@ namespace InputDevices.Keyboard
             
             if (Input.anyKeyDown)
                 InvokeAnyButton();
+
+            if (Input.GetKey(KeyCode.LeftArrow))
+                joystickX[inputSystemOrder] = -1;
+            else
+                joystickX[inputSystemOrder] = 0;
+            if (Input.GetKey(KeyCode.RightArrow))
+                joystickX[inputSystemOrder] += 1;
+
+            if (Input.GetKey(KeyCode.UpArrow))
+                joystickY[inputSystemOrder] = 1;
+            else
+                joystickY[inputSystemOrder] = 0;
+            if (Input.GetKey(KeyCode.DownArrow))
+                joystickY[inputSystemOrder] -= 1;
         }
     }
 }

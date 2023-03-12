@@ -17,7 +17,7 @@ namespace ServerConnection.Aiortc
     /// </summary>
     public class AiortcConnector : MonoBehaviour
     {
-        [SerializeField] private string aiortcServerURL;
+        public string aiortcServerURL;
         [SerializeField] private RawImage dummyImage;
         [SerializeField] private VideoTransformType videoTransformType;
         [SerializeField] private ImtpEncoder imtpEncoder;

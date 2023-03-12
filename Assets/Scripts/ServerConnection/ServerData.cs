@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using InputDevices;
 using InputDevices.VRControllers;
-using UnityEditor;
 using UnityEngine;
 
 namespace ServerConnection
@@ -13,6 +12,26 @@ namespace ServerConnection
     public abstract class ServerData: Singleton<ServerData>
     {
         #region Setup, General methods
+
+        public abstract string IPaddress { get; set; }
+
+        
+        /// <summary>
+        /// Hardcoded IP addresses for use either over VPN, or on local network.
+        /// </summary>
+        /// <param name="local"></param>
+        public void UseLocalServer(bool local)
+        {
+            if (local)
+            {
+                IPaddress = "10.1.0.6";
+            }
+            else
+            {
+                IPaddress = "10.7.0.3";
+            }
+        }
+        
         /// <summary>
         /// Is the server connection established?C:\Users\Roboy\projects\src\github.com\Roboy\TeleportVR\Assets\Scripts\ServerConnection\ServerData.cs
         /// </summary>
@@ -23,7 +42,7 @@ namespace ServerConnection
         /// </summary>
         public abstract Dictionary<Modality, bool> ModalityConnected { get; }
         
-        private void OnEnable()
+        protected void OnEnable()
         {
             VRControllerInputSystem.OnGripChange += ChangeGrip;
             InputSystem.OnLeftPrimaryButton += SendHearts;
@@ -58,7 +77,7 @@ namespace ServerConnection
         /// Object to whose texture the vision textures from the server will be projected.
         /// </summary>
         public GameObject LeftEyePrefab, RightEyePrefab;
-        [SerializeField] protected GameObject LeftEye, RightEye;
+        [NonSerialized] public GameObject LeftEye, RightEye;
 
         /// <summary>
         /// Creates a plane / sphere from prefab to project the video to, and adds it as a child of the Eye Anchor.
@@ -114,7 +133,8 @@ namespace ServerConnection
         public abstract void ChangeGrip(float left, float right);
 
         /// <summary>
-        /// Returns the current body pose. Can be used to save these values and restore them later (e.g. when changing the scenes).
+        /// Returns the current body pose of the real robot.
+        /// Can be used to save these values and restore them later (e.g. when changing the scenes).
         /// </summary>
         public abstract List<float> GetLatestJointValues();
 

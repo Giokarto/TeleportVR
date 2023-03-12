@@ -1,7 +1,6 @@
 using System;
-using InputDevices.VRControllers;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
 
 namespace InputDevices
 {
@@ -12,7 +11,7 @@ namespace InputDevices
     /// The buttons are named after classic VR controllers, but can be connected to any input device.
     ///
     /// Derived classes should check for input from a specific input device and invoke the delegates
-    /// in Update. Derived classes can also define own delegates. See <see cref="VRControllerInputSystem"/>
+    /// in Update. Derived classes can also define own delegates. See <see cref="VRControllers.VRControllerInputSystem"/>
     /// </summary>
     public abstract class InputSystem : MonoBehaviour
     {
@@ -64,13 +63,47 @@ namespace InputDevices
             OnRightPrimaryButton = restore[4];
             OnRightSecondaryButton = restore[5];
         }
-        
-        
-        // TODO: joystick to drive the wheelchair
+
+        // x-values from all input systems
+        protected static float[] joystickX;
+        public static float GetJoystickX()
+        {
+            return SelectAbsoluteMaximum(joystickX);
+        }
+
+        // y-values from all input systems
+        protected static float[] joystickY;
+        public static float GetJoystickY()
+        {
+            return SelectAbsoluteMaximum(joystickY);
+        }
+
+        private static float SelectAbsoluteMaximum(float[] array)
+        {
+            float max = 0;
+            foreach (var i in array)
+            {
+                if (Math.Abs(i) > Math.Abs(max))
+                {
+                    max = i;
+                }
+            }
+            return max;
+        }
 
         /// <summary>
         /// Derived classes should check input here and invoke the delegates.
         /// </summary>
         public abstract void Update();
+
+        protected int inputSystemOrder;
+        private static List<InputSystem> registeredInputSystems = new List<InputSystem>();
+        public void Awake()
+        {
+            this.inputSystemOrder = registeredInputSystems.Count;
+            InputSystem.registeredInputSystems.Add(this);
+            Array.Resize(ref joystickX, registeredInputSystems.Count);
+            Array.Resize(ref joystickY, registeredInputSystems.Count);
+        }
     }
 }

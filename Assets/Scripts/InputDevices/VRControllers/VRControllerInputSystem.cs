@@ -14,6 +14,7 @@ namespace InputDevices.VRControllers
     {
         public static InputDevice controllerLeft { get; private set; }
         public static InputDevice controllerRight { get; private set; }
+        public static InputDevice headset { get; private set; }
         
         private bool controllersAvailable;
 
@@ -30,6 +31,22 @@ namespace InputDevices.VRControllers
         
         public static event Action<float, float> OnTriggerChange = delegate{};
         protected void InvokeTriggerChange(float left, float right) {OnTriggerChange?.Invoke(left, right);}
+        public static Action<float, float>[] StripActions()
+        {
+            Action<float, float>[] restore = {
+                OnGripChange,
+                OnTriggerChange
+            };
+            OnGripChange = delegate{};
+            OnTriggerChange = delegate{};
+            return restore;
+        }
+
+        public static void RestoreActions(Action<float, float>[] restore)
+        {
+            OnGripChange = restore[0];
+            OnTriggerChange = restore[1];
+        }
 
         /// <summary>
         /// variable used in GetControllers, moved outside to the class to not create garbage on the heap in each update
@@ -49,7 +66,13 @@ namespace InputDevices.VRControllers
                 controllerRight = foundControllers[0];
             }
             
-            controllersAvailable = controllerLeft != null && controllerRight != null;
+            UnityEngine.XR.InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.HeadMounted, foundControllers);
+            if (foundControllers.Count > 0)
+            {
+                headset = foundControllers[0];
+            }
+
+            controllersAvailable = controllerLeft != null && controllerRight != null && headset != null;
             return controllersAvailable;
         }
 
@@ -70,13 +93,18 @@ namespace InputDevices.VRControllers
         /// <param name="actionToInvoke"></param>
         private void HandleButtonPress(bool isPressed, ref bool previouslyPressed, Action actionToInvoke)
         {
-            // TODO: fix pressing buttons, this doesn't work properly
-            Debug.Log($"buttons: {isPressed}, {previouslyPressed}");
             if (isPressed)
             {
                 if (!previouslyPressed)
                 {
-                    actionToInvoke();
+                    try
+                    {
+                        actionToInvoke();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                    }
                 }
 
                 previouslyPressed = true;
@@ -87,7 +115,9 @@ namespace InputDevices.VRControllers
                 previouslyPressed = false;
             }
         }
-        
+
+        private float left, right;
+        private Vector2 leftVec, rightVec;
         public override void Update()
         {
             if (!controllersAvailable)
@@ -112,7 +142,6 @@ namespace InputDevices.VRControllers
             HandleButtonPress(controllerRight.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn, 
                 ref wasPressedRightSecondary, InvokeRightSecondaryButton);
 
-            float left, right = 0;
             if ((controllerLeft.TryGetFeatureValue(CommonUsages.grip, out left) && left>0) ||
                 (controllerRight.TryGetFeatureValue(CommonUsages.grip, out right) && right>0))
             {
@@ -124,6 +153,15 @@ namespace InputDevices.VRControllers
             {
                 InvokeTriggerChange(left, right);
             }
+            
+            if (controllerLeft.TryGetFeatureValue(CommonUsages.primary2DAxis, out leftVec))
+            {
+                joystickX[inputSystemOrder] = leftVec.x;
+            }
+            if (controllerRight.TryGetFeatureValue(CommonUsages.primary2DAxis, out rightVec))
+            {
+                joystickY[inputSystemOrder] = rightVec.y;
+            }
 
             if (anyButtonCurrentlyPressed)
             {
@@ -131,5 +169,33 @@ namespace InputDevices.VRControllers
             }
         }
 
+        private static bool userPresentInHeadset;
+        public static bool IsUserActive()
+        {
+            return headset.TryGetFeatureValue(CommonUsages.userPresence, out userPresentInHeadset) && userPresentInHeadset;
+        }
+
+        public static InputDevice GetDeviceByName(string name)
+        {
+            if (name.Contains("left"))
+            {
+                return controllerLeft;
+            }
+
+            if (name.Contains("right"))
+            {
+                return controllerRight;
+            }
+
+            if (name.Contains("head"))
+            {
+                return headset;
+            }
+            
+            else
+            {
+                throw new NullReferenceException($"Device with name {name} not found!");
+            }
+        }
     }
 }
