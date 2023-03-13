@@ -34,6 +34,10 @@ namespace Widgets
             textMeshPro.color = Color.black;
         }
 
+        /// <summary>
+        /// How long the message will be showing, in seconds.
+        /// </summary>
+        /// <param name="duration">in seconds</param>
         public void SetDuration(float duration)
         {
             this.duration = duration;

@@ -1,3 +1,4 @@
+using System;
 using ServerConnection;
 
 namespace Widgets.ActiveWidgets
@@ -24,6 +25,7 @@ namespace Widgets.ActiveWidgets
             serverData = ServerData.Instance;
         }
 
+        public DateTime nextConnectionCheck = DateTime.Now + TimeSpan.FromSeconds(30);
         public void Update()
         {
             if (!serverData.ConnectedToServer)
@@ -32,9 +34,19 @@ namespace Widgets.ActiveWidgets
                 micWidget.SetIcon("MicroUnavailable");
                 speakerWidget.SetIcon("SpeakersUnavailable");
                 motionWidget.SetIcon("MotionUnavailable");
+
+                if (nextConnectionCheck < DateTime.Now)
+                {
+                    WidgetFactory.Instance.CreateToastrWidget(
+                        $"Trying to connect to server: {ServerData.Instance.IPaddress}", 5, "Connection error");
+                    WidgetFactory.Instance.CreateToastrWidget(
+                        $"Please make sure the server is in the same network.", 5, "Connection error 2");
+                    nextConnectionCheck = DateTime.Now + TimeSpan.FromSeconds(30);
+                }
             }
             else
             {
+                nextConnectionCheck = DateTime.Now + TimeSpan.FromSeconds(30);
                 wifiWidget.SetIcon("WifiGreen");
                 micWidget.SetIcon(serverData.ModalityConnected[Modality.VOICE]? "Micro" : "MicroDisabled");
                 speakerWidget.SetIcon(serverData.ModalityConnected[Modality.AUDITION]? "Speakers" : "SpeakersOff");
