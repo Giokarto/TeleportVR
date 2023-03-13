@@ -76,7 +76,7 @@ namespace RobodyControl
                         {
                             if (segment.Joint != null)
                             {
-                                //Debug.Log($"{body.name}: {segment.Joint.name} {i}");
+                                Debug.Log($"loading joint: {body.name}: {segment.Joint.name} {i} with target value {jointValues[i]}");
                                 segment.Joint.X.SetTargetValue(jointValues[i]);
 
                                 i++;

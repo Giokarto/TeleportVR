@@ -106,12 +106,11 @@ namespace OperatorUserInterface
                         WidgetFactory.Instance.CreateToastrWidget("Could not connect to server!", 3, "noConnection");
                         return;
                     }
-
-                    realAlreadyVisited = true;
                     RobotMotionManager.Instance.ResetRobody(jointsFromServer: realAlreadyVisited);
                     serverConnection.EmbodyRoboy(true);
 
                     UnitySceneManager.UnloadSceneAsync(sceneNames[Scene.TRAINING]);
+                    realAlreadyVisited = true;
                     break;
             }
 
