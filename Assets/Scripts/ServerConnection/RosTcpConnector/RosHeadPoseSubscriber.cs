@@ -9,7 +9,7 @@ using Image = RosMessageTypes.Sensor.ImageMsg;
 
 namespace ServerConnection.RosTcpConnector
 {
-    public class RosHeadPositionSubscriber : HeadPositionListenerBase
+    public class RosHeadPoseSubscriber : HeadPositionListenerBase
     {
         //public ROSConnection ros;
         public MeshRenderer meshRenderer;

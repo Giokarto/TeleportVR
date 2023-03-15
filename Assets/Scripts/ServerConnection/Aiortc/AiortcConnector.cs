@@ -24,12 +24,15 @@ namespace ServerConnection.Aiortc
         [SerializeField] private VideoTransformType videoTransformType;
         [SerializeField] private ImtpEncoder imtpEncoder;
         [SerializeField] private AudioSource receiveAudio;
+        [SerializeField] private HeadPositionProtocol _headPositionProtocol;
 
         private Renderer leftRenderer;
         private Renderer rightRenderer;
         GameObject LeftEye, RightEye;
         private bool initialized = false;
         private Renderer leftFaceDetectionRenderer;
+        private float timeElapsed;
+        public float publishMessageFrequency = 1.0f;
 
         /// <summary>
         /// Indicates if a data channel is open.
@@ -73,9 +76,9 @@ namespace ServerConnection.Aiortc
         private RTCPeerConnection pc;
         private MediaStream receiveStream;
 
-        public RTCDataChannel dataChannel, remoteDataChannel;
+        public RTCDataChannel pingDataChannel, mcDataChannel, jsDataChannel;
         private DelegateOnMessage onDataChannelMessage;
-        private DelegateOnOpen onDataChannelOpen;
+        private DelegateOnOpen onDataChannelOpen, onMCDataChannelOpen, onJSDataChannelOpen;
         private DelegateOnClose onDataChannelClose;
         private DelegateOnDataChannel onDataChannel;
 
@@ -92,8 +95,7 @@ namespace ServerConnection.Aiortc
             RightEye = imtpEncoder.rightEye;
             onDataChannel = channel =>
             {
-                remoteDataChannel = channel;
-                remoteDataChannel.OnMessage = onDataChannelMessage;
+                Debug.Log("dannyb current channel name: " + channel.Label);
             };
             onDataChannelMessage = bytes =>
             {
@@ -106,12 +108,11 @@ namespace ServerConnection.Aiortc
                 if (!initialized)
                 {
                     this.AddComponentIfMissing <WebRTCHeadPositionListener>();
-                    this.AddComponentIfMissing <WebRTCHeadPositionSender>();
+                    this.AddComponentIfMissing <WebRTCJointPositionSender>();
                     initialized = true;
                 }
 
                 Debug.Log(str);
-                SendMsg();
             };
             onDataChannelOpen = () =>
             {
@@ -121,6 +122,16 @@ namespace ServerConnection.Aiortc
             onDataChannelClose = () =>
             {
                 isConnected = false;
+            };
+
+            onMCDataChannelOpen = () =>
+            {
+                Debug.Log("dannyb opens movement compensation data channel");
+            };
+            
+            onJSDataChannelOpen = () =>
+            {
+                Debug.Log("dannyb opens joint state  data channel");
             };
             WebRTC.Initialize();
             StartCoroutine(WebRTC.Update());
@@ -217,9 +228,13 @@ namespace ServerConnection.Aiortc
             pc.OnDataChannel = onDataChannel;
             RTCDataChannelInit conf = new RTCDataChannelInit();
             conf.ordered = true;
-            dataChannel = pc.CreateDataChannel("ping", conf);
-            dataChannel.OnOpen = onDataChannelOpen;
-            dataChannel.OnMessage = onDataChannelMessage;
+            pingDataChannel = pc.CreateDataChannel("ping", conf);
+            pingDataChannel.OnOpen = onDataChannelOpen;
+            pingDataChannel.OnMessage = onDataChannelMessage;
+            mcDataChannel = pc.CreateDataChannel("motion_compensation", conf);
+            mcDataChannel.OnOpen = onMCDataChannelOpen;
+            jsDataChannel = pc.CreateDataChannel("joint_state", conf);
+            jsDataChannel.OnOpen = onJSDataChannelOpen;
             StartCoroutine(CreateDesc(RTCSdpType.Offer));
         }
 
@@ -274,9 +289,9 @@ namespace ServerConnection.Aiortc
         /// </summary>
         public RTCDataChannel GetDataChannel(string name)
         {
-            if (dataChannel.Label == name)
+            if (pingDataChannel.Label == name)
             {
-                return dataChannel;
+                return pingDataChannel;
             }
             else
             {
@@ -306,6 +321,7 @@ namespace ServerConnection.Aiortc
             Debug.Log($"aiortcSignaling5: {req.downloadHandler.text}");
 
             var resMsg = JsonUtility.FromJson<SignalingMsg>(req.downloadHandler.text);
+            Debug.Log(resMsg);
 
             StartCoroutine(SetDesc(Side.Remote, resMsg.ToDesc()));
         }
@@ -325,6 +341,13 @@ namespace ServerConnection.Aiortc
             leftRenderer.material.mainTexture = dummyImage.texture as Texture2D;
             rightRenderer.material.mainTexture = dummyImage.texture as Texture2D;
 
+            timeElapsed += Time.deltaTime;
+
+            if (timeElapsed > publishMessageFrequency && initialized)
+            {
+                SendMsg();
+                timeElapsed = 0;
+            }
             /*
             var originalTargetTexture = cam.targetTexture;
             cam.targetTexture = rt;
@@ -338,7 +361,7 @@ namespace ServerConnection.Aiortc
         public void SendMsg()
         {
             Debug.Log($"SendMsg ping");
-            dataChannel.Send("ping");
+            pingDataChannel.Send("ping");
         }
     }
 }

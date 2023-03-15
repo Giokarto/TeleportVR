@@ -69,24 +69,5 @@ namespace ServerConnection.Aiortc
             return new List<float>();
         }
         
-        public override void CreateEyeGameObjects()
-        {
-            var anchor = GameObject.Find("LeftEyeAnchor");
-            if (LeftEyePrefab == null)
-            {
-                Debug.Log("LeftEyePrefab not set, loading default plane");
-                LeftEyePrefab = Resources.Load<GameObject>("EyePlanes/LeftEye");
-            }
-            LeftEye = Instantiate(LeftEyePrefab, new Vector3(0,0,0) ,anchor.transform.rotation);
-            
-            anchor = GameObject.Find("RightEyeAnchor");
-            if (RightEyePrefab == null)
-            {
-                Debug.Log("RightEyePrefab not set, loading default plane");
-                RightEyePrefab = Resources.Load<GameObject>("EyePlanes/RightEye");
-            }
-            RightEye = Instantiate(RightEyePrefab, new Vector3(0,0,0) ,  anchor.transform.rotation);
-            RightEye.transform.Rotate(0f,180f,0f);
-        }
     }
 }

@@ -36,7 +36,7 @@ namespace ServerConnection.RosTcpConnector
                 secondaryMeshRenderer = ServerData.Instance.LeftEye.GetComponentInChildren<MeshRenderer>();
             }
             ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(TopicName, GetImage);
-            texture2D = new Texture2D(1280, 720); //, TextureFormat.BGRA32, false);
+            texture2D = new Texture2D(512*2, 512); //, TextureFormat.BGRA32, false);
         }
 
         private void Update()
@@ -89,7 +89,23 @@ namespace ServerConnection.RosTcpConnector
             //texture2D.SetPixels32(bgradata);
             //texture2D.Apply();
 
-            texture2D.LoadImage(ReceivedImage);
+            var tex = new Texture2D(512, 512);
+            tex.LoadImage(ReceivedImage);
+            for (int i = 0; i < tex.width; i++)
+            {
+                for (int j = 0; j < tex.height; j++)
+                {
+                    texture2D.SetPixel(i, j, tex.GetPixel(i, j));
+                    texture2D.SetPixel(i + 512, j, tex.GetPixel(i, j));
+                    texture2D.SetPixel(i, j + 512, tex.GetPixel(i, j));
+                }
+            }
+
+            texture2D.Apply();
+            
+            byte[] bytes = texture2D.EncodeToPNG();
+            File.WriteAllBytes("C:\\Users\\Roboy\\projects\\src\\github.com\\Roboy\\image_3.jpg", bytes);
+            File.WriteAllBytes("C:\\Users\\Roboy\\projects\\src\\github.com\\Roboy\\image_2.jpg", ReceivedImage);
 
             meshRenderer.material.SetTexture("_MainTex", texture2D);
             if (monoVision) secondaryMeshRenderer.material.SetTexture("_MainTex", texture2D);

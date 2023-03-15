@@ -16,22 +16,27 @@ public class WebRTCHeadPositionListener : HeadPositionListenerBase
     {
         base.Start();
         Debug.Log("dannyb initializing WebRTCHeadPositionListener");
-        dataChannel = GetComponent<AiortcConnector>().dataChannel;
+        dataChannel = GetComponent<AiortcConnector>().mcDataChannel;
         dataChannel.OnMessage += OnMessage;
     }
 
     private void OnMessage(byte[] bytes)
     {
         var str = System.Text.Encoding.UTF8.GetString(bytes);
-        //Debug.Log("DannyB: " + str);
-        // Create a new instance of the Random class
-        var random = new Random();
-
-        // Generate three random radians between 0 and 2*pi (i.e., a full circle)
-        float randomRadians1 = (float)(random.NextDouble() * Math.PI * 2.0);
-        //var obj = JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
-        //if (obj != null)
-        ProcessHeadMessage(new Vector3(0f,randomRadians1,0f));
+        try
+        {
+            var obj = JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
+            if (obj != null)
+            {
+                ProcessHeadMessage(obj.toVector3());
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log("DannyB could not process head message ");
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public void Dispose()

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using InputDevices.VRControllers;
 using Newtonsoft.Json;
@@ -9,8 +10,9 @@ using UnityEngine;
 using UnityEngine.XR;
 using Unity.WebRTC;
 
-public class WebRTCHeadPositionSender : MonoBehaviour
+public class WebRTCJointPositionSender : MonoBehaviour
 {
+    private List<string> deviceNames = new List<string> { "controller/left/", "controller/right/", "headset/" };
     private RTCPeerConnection peerConnection;
     private RTCDataChannel dataChannel;
     private float timeElapsed;
@@ -20,15 +22,7 @@ public class WebRTCHeadPositionSender : MonoBehaviour
     public void Start()
     {
         Debug.Log("dannyb initializing WebRTCHeadPositionSender");
-        dataChannel = GetComponent<AiortcConnector>().dataChannel;
-    }
-
-    private void OnDataChannel(RTCDataChannel channel)
-    {
-        if (channel.Label == "ping")
-        {
-            dataChannel = channel;
-        }
+        dataChannel = GetComponent<AiortcConnector>().jsDataChannel;
     }
 
     private void SendMessage()
@@ -42,13 +36,38 @@ public class WebRTCHeadPositionSender : MonoBehaviour
         var device = VRControllerInputSystem.GetDeviceByName("headset/");
         device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.devicePosition, out Vector3 devicePosition);
         var rosPosition = RosUtils.Vector2Ros(devicePosition);
+        string[] name;
+        double[] position;
+        double[] velocity;
+        /*
+        foreach (var device in deviceNames)
+        {
+            var inputDevice = VRControllerInputSystem.GetDeviceByName(device);
+            if (inputDevice != null)
+            {
+                if (inputDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.devicePosition, out var _))
+                {
+                    ros.Publish(topicName + "pose", GetLatestDevicePose(inputDevice));
+                    ros.Publish(topicName + "velocity", GetLatestDeviceVelocity(inputDevice));
+                    ros.Publish(topicName + "acceleration", GetLatestDeviceAcceleration(inputDevice));
+                }
+                else
+                {
+                    Debug.LogWarning($"{inputDevice.name} is not tracked");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"{device} is not available");
+            }
+
+        }*/
         return new WebRTCHeadPositionListener.HeadPositionMessage
         {
             head_axis0 = rosPosition.x,
             head_axis1 = rosPosition.y,
             head_axis2 = rosPosition.z
         };
-
     }
 
     private void Update()
@@ -61,10 +80,4 @@ public class WebRTCHeadPositionSender : MonoBehaviour
             timeElapsed = 0;
         }
     }
-
-    public void Dispose()
-    {
-        peerConnection.OnDataChannel -= OnDataChannel;
-    }
-   
 }
