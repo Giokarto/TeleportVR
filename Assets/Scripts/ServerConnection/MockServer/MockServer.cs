@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ImgprocModule;
@@ -64,17 +65,12 @@ namespace ServerConnection.MockServer
                     : !ModalityConnected[modality];
             }
 
-            RenderTexture videoTexture = (RenderTexture)videoPlayer.texture;
+            Texture2D tex = new Texture2D(360, 360);
+            byte[] test = File.ReadAllBytes("C:\\Users\\Roboy\\projects\\src\\github.com\\Roboy\\image_double.jpg");
+            tex.LoadImage(test);
             
-            Texture2D convertedTexture = new Texture2D(videoTexture.width, videoTexture.width, TextureFormat.ARGB32, false);
-            RenderTexture.active = videoTexture;
-            convertedTexture.ReadPixels(new UnityEngine.Rect(0, 0, videoTexture.width, videoTexture.height), 0, 0);
-            convertedTexture.Apply();
-            
-            _leftTexture = convertedTexture;
-            
-            _leftRenderer.material.mainTexture = _leftTexture;
-            _rightRenderer.material.mainTexture = _leftTexture;
+            _leftRenderer.material.mainTexture = tex;
+            _rightRenderer.material.mainTexture = tex;
         }
 
         public override bool ConnectedToServer => _connectedToServer;
