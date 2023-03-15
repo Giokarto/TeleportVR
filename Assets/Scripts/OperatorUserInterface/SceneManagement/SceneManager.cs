@@ -75,6 +75,7 @@ namespace OperatorUserInterface
                     LoadScene(Scene.MAIN);
                     break;
                 case Scene.MAIN:
+                    RobotMotionManager.Instance.SaveJoints();
                     LoadScene(Scene.TRAINING);
                     break;
                 default:
@@ -106,7 +107,7 @@ namespace OperatorUserInterface
                         WidgetFactory.Instance.CreateToastrWidget("Could not connect to server!", 3, "noConnection");
                         return;
                     }
-                    RobotMotionManager.Instance.ResetRobody(jointsFromServer: realAlreadyVisited);
+                    RobotMotionManager.Instance.ResetRobody(useSavedJoints: realAlreadyVisited);
                     serverConnection.EmbodyRoboy(true);
 
                     UnitySceneManager.UnloadSceneAsync(sceneNames[Scene.TRAINING]);

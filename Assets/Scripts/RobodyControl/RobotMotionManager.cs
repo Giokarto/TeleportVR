@@ -1,5 +1,5 @@
 using System;
-using ServerConnection;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RobodyControl
@@ -12,12 +12,9 @@ namespace RobodyControl
 
         private BioIK.BioIK[] bioIks;
 
-        [SerializeField] private ServerData serverConnection;
-
         private void Start()
         {
             bioIks = FindObjectsOfType<BioIK.BioIK>();
-            serverConnection = ServerData.Instance;
         }
 
         /// <summary>
@@ -40,12 +37,45 @@ namespace RobodyControl
             }
         }
 
+        private List<float> savedJoints;
+        /// <summary>
+        /// Saves the current joint positions of the Roboy model (not the real Robody!) to be restored later.
+        /// Used when transitioning from the real world back to the training scene.
+        /// </summary>
+        public void SaveJoints()
+        {
+            savedJoints = GetLatestJointState();
+        }
+
+        /// <summary>
+        /// Returns a list of current joint values of the Roboy model.
+        /// <see cref="ServerConnection.ServerData.GetLatestJointValues"/> returns the values of the real Robody.
+        /// </summary>
+        /// <returns></returns>
+        public List<float> GetLatestJointState()
+        {
+            List<float> joints = new List<float>();
+            foreach (var body in bioIks)
+            {
+                foreach (var segment in body.Segments)
+                {
+                    if (segment.Joint != null)
+                    {
+                        Debug.Log($"saving joint: {body.name}: {segment.Joint.name} with target value {(float)segment.Joint.X.CurrentValue}");
+                        joints.Add((float)segment.Joint.X.CurrentValue);
+                    }
+                }
+            }
+
+            return joints;
+        }
+
         /// <summary>
         /// Resets all joints to the actual state of the real robot (or initial state). Used before switching to the real world.
         /// </summary>
-        public void ResetRobody(bool jointsFromServer = false)
+        public void ResetRobody(bool useSavedJoints = true)
         {
-            if (!jointsFromServer)
+            if (!useSavedJoints)
             {
                 foreach (var body in bioIks)
                 {
@@ -61,23 +91,17 @@ namespace RobodyControl
             else
             {
                 // go to the latest joint targets before leaving HUD
-                var jointValues = serverConnection.GetLatestJointValues();
-                if (jointValues.Count > 0)
+                if (savedJoints.Count > 0)
                 {
                     int i = 0;
                     foreach (var body in bioIks)
                     {
-                        if (body.name.Contains("shadow"))
-                        {
-                            continue;
-                        }
-
                         foreach (var segment in body.Segments)
                         {
                             if (segment.Joint != null)
                             {
-                                Debug.Log($"loading joint: {body.name}: {segment.Joint.name} {i} with target value {jointValues[i]}");
-                                segment.Joint.X.SetTargetValue(jointValues[i]);
+                                Debug.Log($"loading joint: {body.name}: {segment.Joint.name} {i} with target value {savedJoints[i]}");
+                                segment.Joint.X.SetTargetValue(savedJoints[i]);
 
                                 i++;
                             }

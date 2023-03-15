@@ -4,6 +4,7 @@ using System.Linq;
 using OpenCVForUnity.CoreModule;
 using OpenCVForUnity.ImgprocModule;
 using OpenCVForUnity.UnityUtils;
+using RobodyControl;
 using UnityEngine;
 using UnityEngine.Video;
 using Random = System.Random;
@@ -101,9 +102,10 @@ namespace ServerConnection.MockServer
         public override void SetEmotion(string emotion) {}
         protected override void SetMotorOn(bool on) {}
         public override void ChangeGrip(float left, float right) {}
+
         public override List<float> GetLatestJointValues()
         {
-            return new List<float>();
+            return RobotMotionManager.Instance.GetLatestJointState();
         }
     }
 }

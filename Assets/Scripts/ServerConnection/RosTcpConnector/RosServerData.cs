@@ -78,38 +78,15 @@ namespace ServerConnection.RosTcpConnector
             wheels.enabled = on;
             light.enabled = on;
             audio.enabled = on;
-
-            // when leaving HUD, save joint values to restore later
-            if (!on)
-            {
-                currentRobodyJointValues = new List<float>();
-                foreach (var segment in jointPose.HeadIK.Segments)
-                {
-                    if (segment.Joint != null)
-                    {
-                        Debug.Log($"saving joint: {segment.Joint.name} with value {(float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad}");
-                        currentRobodyJointValues.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
-                    }
-                }
-                foreach (var segment in jointPose.BodyIK.Segments)
-                {
-                    if (segment.Joint != null)
-                    {
-                        Debug.Log($"saving joint: {segment.Joint.name}");
-                        currentRobodyJointValues.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
-                    }
-                }
-            }
         }
 
         public override void ChangeGrip(float left, float right)
         {
         }
-
-        private List<float> currentRobodyJointValues;
+        
         public override List<float> GetLatestJointValues()
         {
-            return currentRobodyJointValues;
+            throw new NotImplementedException();
         }
 
         protected override void SetPresenceIndicatorOn(bool on)

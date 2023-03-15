@@ -48,6 +48,7 @@ namespace ServerConnection.RosTcpConnector
             // reset joints to 0 when the headset is not on
             if (!VRControllerInputSystem.IsUserActive())
             {
+                Debug.Log("user inactive, resetting joints to 0");
                 ResetJoints();
                 ros.Publish(topicName, GetLatestJointStates());
             }
