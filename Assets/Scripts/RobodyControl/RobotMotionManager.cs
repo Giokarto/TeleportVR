@@ -61,7 +61,6 @@ namespace RobodyControl
                 {
                     if (segment.Joint != null)
                     {
-                        Debug.Log($"saving joint: {body.name}: {segment.Joint.name} with target value {(float)segment.Joint.X.CurrentValue}");
                         joints.Add((float)segment.Joint.X.CurrentValue);
                     }
                 }
@@ -100,7 +99,6 @@ namespace RobodyControl
                         {
                             if (segment.Joint != null)
                             {
-                                Debug.Log($"loading joint: {body.name}: {segment.Joint.name} {i} with target value {savedJoints[i]}");
                                 segment.Joint.X.SetTargetValue(savedJoints[i]);
 
                                 i++;
