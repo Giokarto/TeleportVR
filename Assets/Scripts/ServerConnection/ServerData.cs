@@ -33,7 +33,7 @@ namespace ServerConnection
         }
         
         /// <summary>
-        /// Is the server connection established?
+        /// Is the server connection established?C:\Users\Roboy\projects\src\github.com\Roboy\TeleportVR\Assets\Scripts\ServerConnection\ServerData.cs
         /// </summary>
         public abstract bool ConnectedToServer { get; }
         
@@ -86,7 +86,7 @@ namespace ServerConnection
         ///     2. To be able to replace the plane by a different object (Sphere) for different types of cameras
         ///     3. To not clutter up the scene when the server is not present
         /// </summary>
-        protected void CreateEyeGameObjects()
+        public void CreateEyeGameObjects()
         {
             var anchor = GameObject.Find("LeftEyeAnchor");
             if (LeftEyePrefab == null)
@@ -94,7 +94,7 @@ namespace ServerConnection
                 Debug.Log("LeftEyePrefab not set, loading default plane");
                 LeftEyePrefab = Resources.Load<GameObject>("EyePlanes/LeftEye");
             }
-            LeftEye = Instantiate(LeftEyePrefab, anchor.transform);
+            LeftEye = Instantiate(LeftEyePrefab, new Vector3(0,0,0) ,anchor.transform.rotation);
             
             anchor = GameObject.Find("RightEyeAnchor");
             if (RightEyePrefab == null)
@@ -102,7 +102,8 @@ namespace ServerConnection
                 Debug.Log("RightEyePrefab not set, loading default plane");
                 RightEyePrefab = Resources.Load<GameObject>("EyePlanes/RightEye");
             }
-            RightEye = Instantiate(RightEyePrefab, anchor.transform);
+            RightEye = Instantiate(RightEyePrefab, new Vector3(0,0,0) ,  anchor.transform.rotation);
+            RightEye.transform.Rotate(0f,180f,0f);
         }
 
         /// <summary>

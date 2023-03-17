@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Text;
+using System.Threading;
+using CurvedUI;
 using Newtonsoft.Json;
+using ServerConnection.RosTcpConnector;
 using Unity.WebRTC;
 using Unity.XR.CoreUtils;
 using UnityEngine;
@@ -21,11 +24,15 @@ namespace ServerConnection.Aiortc
         [SerializeField] private VideoTransformType videoTransformType;
         [SerializeField] private ImtpEncoder imtpEncoder;
         [SerializeField] private AudioSource receiveAudio;
+        [SerializeField] private HeadPositionProtocol _headPositionProtocol;
 
         private Renderer leftRenderer;
         private Renderer rightRenderer;
-
+        GameObject LeftEye, RightEye;
+        private bool initialized = false;
         private Renderer leftFaceDetectionRenderer;
+        private float timeElapsed;
+        public float publishMessageFrequency = 1.0f;
 
         /// <summary>
         /// Indicates if a data channel is open.
@@ -69,9 +76,9 @@ namespace ServerConnection.Aiortc
         private RTCPeerConnection pc;
         private MediaStream receiveStream;
 
-        private RTCDataChannel dataChannel, remoteDataChannel;
+        public RTCDataChannel pingDataChannel, mcDataChannel, jsDataChannel;
         private DelegateOnMessage onDataChannelMessage;
-        private DelegateOnOpen onDataChannelOpen;
+        private DelegateOnOpen onDataChannelOpen, onMCDataChannelOpen, onJSDataChannelOpen;
         private DelegateOnClose onDataChannelClose;
         private DelegateOnDataChannel onDataChannel;
 
@@ -80,15 +87,15 @@ namespace ServerConnection.Aiortc
         /// </summary>
         void Start()
         {
+            LeftEye = imtpEncoder.leftEye;
             leftRenderer = imtpEncoder.leftEye.GetNamedChild("LeftSphereMaterial").GetComponent<Renderer>();
             leftFaceDetectionRenderer = imtpEncoder.leftEye.GetNamedChild("Plane").GetComponent<Renderer>();
             leftFaceDetectionRenderer.material.mainTexture = new Texture2D(1080, 1080);
             rightRenderer = imtpEncoder.rightEye.GetComponentInChildren<Renderer>();
-
+            RightEye = imtpEncoder.rightEye;
             onDataChannel = channel =>
             {
-                remoteDataChannel = channel;
-                remoteDataChannel.OnMessage = onDataChannelMessage;
+                Debug.Log("dannyb current channel name: " + channel.Label);
             };
             onDataChannelMessage = bytes =>
             {
@@ -97,6 +104,15 @@ namespace ServerConnection.Aiortc
                 {
                     imtpEncoder.faceCoordinates = JsonConvert.DeserializeObject<Int32[][]>(str.Substring(7));
                 }
+
+                if (!initialized)
+                {
+                    this.AddComponentIfMissing <WebRTCHeadPositionListener>();
+                    this.AddComponentIfMissing <WebRTCJointPositionSender>();
+                    initialized = true;
+                }
+
+                Debug.Log(str);
             };
             onDataChannelOpen = () =>
             {
@@ -106,6 +122,16 @@ namespace ServerConnection.Aiortc
             onDataChannelClose = () =>
             {
                 isConnected = false;
+            };
+
+            onMCDataChannelOpen = () =>
+            {
+                Debug.Log("dannyb opens movement compensation data channel");
+            };
+            
+            onJSDataChannelOpen = () =>
+            {
+                Debug.Log("dannyb opens joint state  data channel");
             };
             WebRTC.Initialize();
             StartCoroutine(WebRTC.Update());
@@ -202,9 +228,13 @@ namespace ServerConnection.Aiortc
             pc.OnDataChannel = onDataChannel;
             RTCDataChannelInit conf = new RTCDataChannelInit();
             conf.ordered = true;
-            dataChannel = pc.CreateDataChannel("ping", conf);
-            dataChannel.OnOpen = onDataChannelOpen;
-            dataChannel.OnMessage = onDataChannelMessage;
+            pingDataChannel = pc.CreateDataChannel("ping", conf);
+            pingDataChannel.OnOpen = onDataChannelOpen;
+            pingDataChannel.OnMessage = onDataChannelMessage;
+            mcDataChannel = pc.CreateDataChannel("motion_compensation", conf);
+            mcDataChannel.OnOpen = onMCDataChannelOpen;
+            jsDataChannel = pc.CreateDataChannel("joint_state", conf);
+            jsDataChannel.OnOpen = onJSDataChannelOpen;
             StartCoroutine(CreateDesc(RTCSdpType.Offer));
         }
 
@@ -255,6 +285,22 @@ namespace ServerConnection.Aiortc
         }
 
         /// <summary>
+        /// GetDataChannel
+        /// </summary>
+        public RTCDataChannel GetDataChannel(string name)
+        {
+            if (pingDataChannel.Label == name)
+            {
+                return pingDataChannel;
+            }
+            else
+            {
+                Debug.LogWarning("Data channel not found: " + name);
+                return null;
+            }
+        }
+        
+        /// <summary>
         /// Sends connection web request to dedicated server
         /// </summary>
         private IEnumerator aiortcSignaling(SignalingMsg msg)
@@ -275,6 +321,7 @@ namespace ServerConnection.Aiortc
             Debug.Log($"aiortcSignaling5: {req.downloadHandler.text}");
 
             var resMsg = JsonUtility.FromJson<SignalingMsg>(req.downloadHandler.text);
+            Debug.Log(resMsg);
 
             StartCoroutine(SetDesc(Side.Remote, resMsg.ToDesc()));
         }
@@ -294,6 +341,13 @@ namespace ServerConnection.Aiortc
             leftRenderer.material.mainTexture = dummyImage.texture as Texture2D;
             rightRenderer.material.mainTexture = dummyImage.texture as Texture2D;
 
+            timeElapsed += Time.deltaTime;
+
+            if (timeElapsed > publishMessageFrequency && initialized)
+            {
+                SendMsg();
+                timeElapsed = 0;
+            }
             /*
             var originalTargetTexture = cam.targetTexture;
             cam.targetTexture = rt;
@@ -307,7 +361,7 @@ namespace ServerConnection.Aiortc
         public void SendMsg()
         {
             Debug.Log($"SendMsg ping");
-            dataChannel.Send("ping");
+            pingDataChannel.Send("ping");
         }
     }
 }

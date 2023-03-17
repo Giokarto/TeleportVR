@@ -1,0 +1,60 @@
+using System;
+using System.Text;
+using Newtonsoft.Json;
+using ServerConnection.Aiortc;
+using UnityEngine;
+using UnityEngine.XR;
+using Unity.WebRTC;
+using Random = System.Random;
+
+public class WebRTCHeadPositionListener : HeadPositionListenerBase
+{
+    private RTCPeerConnection peerConnection;
+    private RTCDataChannel dataChannel;
+
+    public void Start()
+    {
+        base.Start();
+        Debug.Log("dannyb initializing WebRTCHeadPositionListener");
+        dataChannel = GetComponent<AiortcConnector>().mcDataChannel;
+        dataChannel.OnMessage += OnMessage;
+    }
+
+    private void OnMessage(byte[] bytes)
+    {
+        var str = System.Text.Encoding.UTF8.GetString(bytes);
+        try
+        {
+            var obj = JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
+            if (obj != null)
+            {
+                ProcessHeadMessage(obj.toVector3());
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log("DannyB could not process head message ");
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public void Dispose()
+    {
+        if (dataChannel != null)
+        {
+            dataChannel.OnMessage -= OnMessage;
+        }
+    }
+    public class HeadPositionMessage
+    {
+        public float head_axis0 { get; set; }
+        public float head_axis1 { get; set; }
+        public float head_axis2 { get; set; }
+
+        public Vector3 toVector3()
+        {
+            return new Vector3(head_axis0, head_axis1, head_axis2);
+        }
+    }
+}

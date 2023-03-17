@@ -55,7 +55,7 @@ namespace ServerConnection.RosTcpConnector
 
         public override Dictionary<Modality, bool> ModalityConnected { get; }
             = Enum.GetValues(typeof(Modality)).Cast<Enum>().ToDictionary(e => (Modality)e, v => false);
-        
+
         public override float GetVisionLatency()
         {
             throw new System.NotImplementedException();

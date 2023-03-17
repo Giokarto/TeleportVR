@@ -14,7 +14,6 @@ namespace ServerConnection.Aiortc
     {
         [SerializeField] private AiortcConnector aiortcConnector;
         [SerializeField] private ImtpEncoder imtpEncoder;
-
         public void Start()
         {
             imtpEncoder.leftEye = LeftEye;
@@ -69,5 +68,6 @@ namespace ServerConnection.Aiortc
         {
             return new List<float>();
         }
+        
     }
 }
