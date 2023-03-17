@@ -7,24 +7,27 @@ using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
 using Unity.WebRTC;
 
-public enum HeadPositionProtocol
+namespace ServerConnection.Aiortc
 {
-    ROS2,
-    WebRTC
-}
-
-public class HeadPositionListenerFactory : MonoBehaviour
-{ 
-    public static void CreateListener(AiortcConnector gameObject, HeadPositionProtocol protocol)
+    public enum HeadPositionProtocol
     {
-        switch (protocol)
+        ROS2,
+        WebRTC
+    }
+
+    public class HeadPositionListenerFactory : MonoBehaviour
+    {
+        public static void CreateListener(AiortcConnector gameObject, HeadPositionProtocol protocol)
         {
-            case HeadPositionProtocol.ROS2:
-                gameObject.AddComponentIfMissing<RosHeadPoseSubscriber>();
-                break;
-            case HeadPositionProtocol.WebRTC:
-                gameObject.AddComponentIfMissing<RosHeadPoseSubscriber>();
-                break;
+            switch (protocol)
+            {
+                case HeadPositionProtocol.ROS2:
+                    gameObject.AddComponentIfMissing<RosHeadPoseSubscriber>();
+                    break;
+                case HeadPositionProtocol.WebRTC:
+                    gameObject.AddComponentIfMissing<RosHeadPoseSubscriber>();
+                    break;
+            }
         }
     }
 }
