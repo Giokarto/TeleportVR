@@ -2180,7 +2180,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 475412275}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b82ae4e98f707141815c56e6d8e702c, type: 3}
   m_Name: 
@@ -2189,6 +2189,8 @@ MonoBehaviour:
   meshRenderer: {fileID: 0}
   secondaryMeshRenderer: {fileID: 0}
   monoVision: 0
+  primary: 0
+  secondaryImageSubscriber: {fileID: 0}
   FPS: 0
   RPS: 0
 --- !u!114 &475412278
@@ -2207,6 +2209,8 @@ MonoBehaviour:
   meshRenderer: {fileID: 0}
   secondaryMeshRenderer: {fileID: 0}
   monoVision: 1
+  primary: 0
+  secondaryImageSubscriber: {fileID: 475412277}
   FPS: 0
   RPS: 0
 --- !u!1 &481574769

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +22,9 @@ namespace ServerConnection.RosTcpConnector
         [SerializeField]
         bool monoVision = false; // if true duplicates the image from meshRenderer to secondaryMeshRenderer
 
+        [SerializeField] bool primary;
+        [SerializeField] RosImageSubscriber secondaryImageSubscriber;
+
         private int frameCount = 0;
         private int receivedCount = 0;
         private float dt = 0.0f;
@@ -37,6 +41,7 @@ namespace ServerConnection.RosTcpConnector
             }
             ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(TopicName, GetImage);
             texture2D = new Texture2D(512*2, 512); //, TextureFormat.BGRA32, false);
+            auxTexture = new Texture2D(1,1); // auxTexture.LoadImage(ReceivedImage) changes the dimensions according to the image
         }
 
         private void Update()
@@ -44,7 +49,7 @@ namespace ServerConnection.RosTcpConnector
             if (messageProcessed)
             {
                 meshRenderer.material.mainTexture = texture2D;
-                if (monoVision) secondaryMeshRenderer.material.mainTexture = texture2D;
+                if (monoVision || primary) secondaryMeshRenderer.material.mainTexture = texture2D;
                 frameCount++;
                 messageProcessed = false;
             }
@@ -78,37 +83,45 @@ namespace ServerConnection.RosTcpConnector
             }
         }
 
+        [NonSerialized] public Texture2D auxTexture;
         private IEnumerator ProcessImage(byte[] ReceivedImage)
         {
-            //Color32[] bgradata = new Color32[720 * 1280];
-
-            //for (int i = 0; i < ReceivedImage.Length; i += 3)
-            //{
-            //    bgradata[i / 3] = new Color32(ReceivedImage[i + 2], ReceivedImage[i + 1], ReceivedImage[i], 255);
-            //}
-            //texture2D.SetPixels32(bgradata);
-            //texture2D.Apply();
-
-            var tex = new Texture2D(512, 512);
-            tex.LoadImage(ReceivedImage);
-            for (int i = 0; i < tex.width; i++)
+            // The received image is a square from one eye. We need to:
+            // 1. Pad it with the other image, width must be twice as much as height to map correctly to the sphere.
+            // 2. Flip it, otherwise the view on the sphere is mirrored.
+            
+            auxTexture.LoadImage(ReceivedImage);
+            if (!(monoVision || primary))
             {
-                for (int j = 0; j < tex.height; j++)
-                {
-                    texture2D.SetPixel(i, j, tex.GetPixel(i, j));
-                    texture2D.SetPixel(i + 512, j, tex.GetPixel(i, j));
-                    texture2D.SetPixel(i, j + 512, tex.GetPixel(i, j));
-                }
+                yield break;
             }
 
+            texture2D.Resize(auxTexture.width * 2, auxTexture.height);
+            
+            for (int i = 0; i < auxTexture.width; i++)
+            {
+                for (int j = 0; j < auxTexture.height; j++)
+                {
+                    if (monoVision)
+                    {
+                        texture2D.SetPixel(auxTexture.width - 1 - i, j, auxTexture.GetPixel(i, j));
+                        texture2D.SetPixel(auxTexture.width - 1 - i + auxTexture.width, j, auxTexture.GetPixel(i, j));
+                    }
+                    else if (primary)
+                    {
+                        texture2D.SetPixel(auxTexture.width - 1 - i, j, auxTexture.GetPixel(i, j));
+                        texture2D.SetPixel(auxTexture.width - 1 - i + auxTexture.width, j, secondaryImageSubscriber.auxTexture.GetPixel(i, j));
+                    }
+                }
+            }
             texture2D.Apply();
             
-            byte[] bytes = texture2D.EncodeToPNG();
+            byte[] bytes = auxTexture.EncodeToPNG();
             File.WriteAllBytes("C:\\Users\\Roboy\\projects\\src\\github.com\\Roboy\\image_3.jpg", bytes);
             File.WriteAllBytes("C:\\Users\\Roboy\\projects\\src\\github.com\\Roboy\\image_2.jpg", ReceivedImage);
 
             meshRenderer.material.SetTexture("_MainTex", texture2D);
-            if (monoVision) secondaryMeshRenderer.material.SetTexture("_MainTex", texture2D);
+            secondaryMeshRenderer.material.SetTexture("_MainTex", texture2D);
             messageProcessed = true;
 
             yield return null;
