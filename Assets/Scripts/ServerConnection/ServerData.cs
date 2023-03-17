@@ -94,7 +94,7 @@ namespace ServerConnection
                 Debug.Log("LeftEyePrefab not set, loading default plane");
                 LeftEyePrefab = Resources.Load<GameObject>("EyePlanes/LeftEye");
             }
-            LeftEye = Instantiate(LeftEyePrefab, new Vector3(0,0,0) ,anchor.transform.rotation);
+            LeftEye = Instantiate(LeftEyePrefab, new Vector3(0,1.068f,0) ,anchor.transform.rotation);
             
             anchor = GameObject.Find("RightEyeAnchor");
             if (RightEyePrefab == null)
@@ -102,7 +102,7 @@ namespace ServerConnection
                 Debug.Log("RightEyePrefab not set, loading default plane");
                 RightEyePrefab = Resources.Load<GameObject>("EyePlanes/RightEye");
             }
-            RightEye = Instantiate(RightEyePrefab, new Vector3(0,0,0) ,  anchor.transform.rotation * Quaternion.Euler(0,180,0));
+            RightEye = Instantiate(RightEyePrefab, new Vector3(0,1.068f,0) ,  anchor.transform.rotation * Quaternion.Euler(0,180,0));
         }
 
         /// <summary>

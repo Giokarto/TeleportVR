@@ -104,13 +104,13 @@ namespace ServerConnection.RosTcpConnector
                 {
                     if (monoVision)
                     {
-                        texture2D.SetPixel(auxTexture.width - 1 - i, j, auxTexture.GetPixel(i, j));
-                        texture2D.SetPixel(auxTexture.width - 1 - i + auxTexture.width, j, auxTexture.GetPixel(i, j));
+                        texture2D.SetPixel(i, j, auxTexture.GetPixel(i, j));
+                        texture2D.SetPixel(i + auxTexture.width, j, auxTexture.GetPixel(i, j));
                     }
                     else if (primary)
                     {
-                        texture2D.SetPixel(auxTexture.width - 1 - i, j, auxTexture.GetPixel(i, j));
-                        texture2D.SetPixel(auxTexture.width - 1 - i + auxTexture.width, j, secondaryImageSubscriber.auxTexture.GetPixel(i, j));
+                        texture2D.SetPixel(i, j, auxTexture.GetPixel(i, j));
+                        texture2D.SetPixel(i + auxTexture.width, j, secondaryImageSubscriber.auxTexture.GetPixel(i, j));
                     }
                 }
             }

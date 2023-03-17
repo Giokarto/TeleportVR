@@ -1292,9 +1292,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae1d07763e24528ab0e91823ad5abb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LeftEyePrefab: {fileID: 8837399872904264781, guid: 29f45f2cb3996c345b0c007ea31dbfec,
+  LeftEyePrefab: {fileID: 2067231661593855430, guid: 0635ffa66aa05c64ea296b2d7193090d,
     type: 3}
-  RightEyePrefab: {fileID: 2359086127704877959, guid: b59654be01c7ca84dbd9a847c7a37864,
+  RightEyePrefab: {fileID: 5157180419957703894, guid: 6d1b2ec250f6a4b44aa5c03d4c9dee59,
     type: 3}
   aiortcConnector: {fileID: 1543883723}
   imtpEncoder: {fileID: 1678106452}
@@ -2306,9 +2306,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f27abfc231e24b628a97e06b7f887ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LeftEyePrefab: {fileID: 8837399872904264781, guid: 29f45f2cb3996c345b0c007ea31dbfec,
+  LeftEyePrefab: {fileID: 2067231661593855430, guid: 0635ffa66aa05c64ea296b2d7193090d,
     type: 3}
-  RightEyePrefab: {fileID: 2359086127704877959, guid: b59654be01c7ca84dbd9a847c7a37864,
+  RightEyePrefab: {fileID: 5157180419957703894, guid: 6d1b2ec250f6a4b44aa5c03d4c9dee59,
     type: 3}
   vision: {fileID: 475412278}
   jointPose: {fileID: 1086971377}
@@ -7226,9 +7226,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9979e58a7da5423b9e79369675e0ad08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LeftEyePrefab: {fileID: 8837399872904264781, guid: 29f45f2cb3996c345b0c007ea31dbfec,
+  LeftEyePrefab: {fileID: 2067231661593855430, guid: 0635ffa66aa05c64ea296b2d7193090d,
     type: 3}
-  RightEyePrefab: {fileID: 2359086127704877959, guid: b59654be01c7ca84dbd9a847c7a37864,
+  RightEyePrefab: {fileID: 5157180419957703894, guid: 6d1b2ec250f6a4b44aa5c03d4c9dee59,
     type: 3}
 --- !u!4 &1119057765
 Transform:

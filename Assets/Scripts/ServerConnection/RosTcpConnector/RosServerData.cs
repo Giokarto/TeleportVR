@@ -33,7 +33,7 @@ namespace ServerConnection.RosTcpConnector
         private void Update()
         {
             ModalityConnected[Modality.MOTOR] = jointPose.enabled && headPose.enabled;
-            ModalityConnected[Modality.VOICE] = audio.isActiveAndEnabled;
+            ModalityConnected[Modality.VOICE] = audio.micEnabled;
             ModalityConnected[Modality.VISION] = vision.isActiveAndEnabled;
             ModalityConnected[Modality.EMOTION] = false;
             ModalityConnected[Modality.AUDITION] = audio.isActiveAndEnabled;

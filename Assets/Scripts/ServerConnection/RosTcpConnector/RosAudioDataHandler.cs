@@ -6,6 +6,8 @@ using Unity.Robotics.ROSTCPConnector;
 using Int16MultiArrayMsg = RosMessageTypes.Std.Int16MultiArrayMsg;
 using System;
 using InputDevices.VRControllers;
+using UnityEngine.Android;
+using Widgets;
 
 namespace ServerConnection.RosTcpConnector
 {
@@ -60,6 +62,8 @@ namespace ServerConnection.RosTcpConnector
 
         private object _asyncLockAudio = new object();
 
+        [NonSerialized] public bool micEnabled = false;
+
         void Start()
         {
 
@@ -88,9 +92,32 @@ namespace ServerConnection.RosTcpConnector
 
             //Application.runInBackground = true;
             SetupAudio();
-            StartMicrophonePublisher();
+            
+            if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
+            {
+                // The user authorized use of the microphone.
+                StartMicrophonePublisher();
+            }
+            else
+            {
+                var callbacks = new PermissionCallbacks();
+                callbacks.PermissionDenied += PermissionCallbacks_PermissionDenied;
+                callbacks.PermissionGranted += PermissionCallbacks_PermissionGranted;
+                Permission.RequestUserPermission(Permission.Microphone, callbacks);
+            }
+            
             CreateClip();
 
+        }
+
+        void PermissionCallbacks_PermissionDenied(string permissionName)
+        {
+            WidgetFactory.Instance.CreateToastrWidget($"Microphone permission denied, microphone data won't be sent.", 5, "Mic Denied");
+        }
+
+        void PermissionCallbacks_PermissionGranted(string permissionName)
+        {
+            StartMicrophonePublisher();
         }
 
         private IEnumerator SetupAudio()
@@ -111,7 +138,11 @@ namespace ServerConnection.RosTcpConnector
         private void Update()
         {
             UpdateFPS();
-            StartCoroutine(AddMicData());
+            if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
+            {
+                // The user authorized use of the microphone.
+                StartCoroutine(AddMicData());
+            }
         }
 
         private void ProcessAudio(Int16MultiArrayMsg data)
@@ -317,7 +348,7 @@ namespace ServerConnection.RosTcpConnector
 
         void StartMicrophonePublisher()
         {
-
+            micEnabled = true;
             ros.RegisterPublisher<Int16MultiArrayMsg>(outgoingTopicName, queue_size: 1);
             msg = new Int16MultiArrayMsg();
 

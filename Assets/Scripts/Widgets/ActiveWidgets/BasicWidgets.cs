@@ -40,7 +40,7 @@ namespace Widgets.ActiveWidgets
                     WidgetFactory.Instance.CreateToastrWidget(
                         $"Trying to connect to server: {ServerData.Instance.IPaddress}", 5, "Connection error");
                     WidgetFactory.Instance.CreateToastrWidget(
-                        $"Please make sure the server is in the same network.", 5, "Connection error 2");
+                        $"Please make sure the server is running and you're in the same network.", 1, "Connection error 2");
                     nextConnectionCheck = DateTime.Now + TimeSpan.FromSeconds(30);
                 }
             }
