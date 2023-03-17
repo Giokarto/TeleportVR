@@ -7,7 +7,7 @@ using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
 using Unity.WebRTC;
 
-namespace ServerConnection.Aiortc
+namespace ServerConnection
 {
     public enum HeadPositionProtocol
     {
