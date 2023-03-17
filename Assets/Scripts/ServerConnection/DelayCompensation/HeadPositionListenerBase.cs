@@ -16,6 +16,7 @@ namespace ServerConnection
 
         public void ProcessHeadMessage(Vector3 headVector)
         {
+            Debug.Log("DannyB ProcessHeadMessage " + headVector);
             headRotationController.ProcessHeadMessage(headVector);
         }
 

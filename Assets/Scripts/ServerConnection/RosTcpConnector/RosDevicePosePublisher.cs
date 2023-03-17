@@ -56,6 +56,12 @@ namespace ServerConnection.RosTcpConnector
                     {
                         if (inputDevice.TryGetFeatureValue(UnityEngine.XR.CommonUsages.devicePosition, out var _))
                         {
+                            if (device.Contains("head"))
+                            {
+                                var qm = GetLatestDevicePose(inputDevice).orientation;
+                                Quaternion q = new Quaternion((float)qm.y, (float)-qm.z, (float)qm.x, (float)qm.y);
+                                Debug.Log($"device pose is {q.eulerAngles}");
+                            }
                             ros.Publish(topicName + "pose", GetLatestDevicePose(inputDevice));
                             ros.Publish(topicName + "velocity", GetLatestDeviceVelocity(inputDevice));
                             ros.Publish(topicName + "acceleration", GetLatestDeviceAcceleration(inputDevice));

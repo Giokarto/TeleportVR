@@ -88,11 +88,9 @@ namespace ServerConnection.Aiortc
         void Start()
         {
             LeftEye = imtpEncoder.leftEye;
-            leftRenderer = imtpEncoder.leftEye.GetNamedChild("LeftSphereMaterial").GetComponent<Renderer>();
-            leftFaceDetectionRenderer = imtpEncoder.leftEye.GetNamedChild("Plane").GetComponent<Renderer>();
-            leftFaceDetectionRenderer.material.mainTexture = new Texture2D(1080, 1080);
-            rightRenderer = imtpEncoder.rightEye.GetComponentInChildren<Renderer>();
             RightEye = imtpEncoder.rightEye;
+            leftRenderer = LeftEye.GetComponentInChildren<Renderer>();
+            rightRenderer = RightEye.GetComponentInChildren<Renderer>();
             onDataChannel = channel =>
             {
                 Debug.Log("dannyb current channel name: " + channel.Label);
@@ -113,6 +111,7 @@ namespace ServerConnection.Aiortc
                 }
 
                 Debug.Log(str);
+                SendMsg();
             };
             onDataChannelOpen = () =>
             {
@@ -215,7 +214,11 @@ namespace ServerConnection.Aiortc
                 if (e.Track is VideoStreamTrack video)
                 {
 
-                    video.OnVideoReceived += tex => { dummyImage.texture = tex; };
+                    video.OnVideoReceived += tex =>
+                    {
+                        Debug.Log("dannyb OnVideoReceived");
+                        dummyImage.texture = tex;
+                    };
                 }
 
                 if (e.Track is AudioStreamTrack audioTrack)
