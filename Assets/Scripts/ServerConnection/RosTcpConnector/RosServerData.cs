@@ -25,8 +25,8 @@ namespace ServerConnection.RosTcpConnector
         private new void OnEnable()
         {
             base.OnEnable();
-            LeftEye.transform.position = new Vector3(0, 0, 8);
-            RightEye.transform.position = new Vector3(0, 0, 8);
+            //LeftEye.transform.position = new Vector3(0, 0, 8);
+            //RightEye.transform.position = new Vector3(0, 0, 8);
 
         }
 
