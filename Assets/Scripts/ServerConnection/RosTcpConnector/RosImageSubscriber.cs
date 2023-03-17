@@ -115,10 +115,6 @@ namespace ServerConnection.RosTcpConnector
                 }
             }
             texture2D.Apply();
-            
-            byte[] bytes = auxTexture.EncodeToPNG();
-            File.WriteAllBytes("C:\\Users\\Roboy\\projects\\src\\github.com\\Roboy\\image_3.jpg", bytes);
-            File.WriteAllBytes("C:\\Users\\Roboy\\projects\\src\\github.com\\Roboy\\image_2.jpg", ReceivedImage);
 
             meshRenderer.material.SetTexture("_MainTex", texture2D);
             secondaryMeshRenderer.material.SetTexture("_MainTex", texture2D);
