@@ -28,7 +28,6 @@ namespace ServerConnection.Aiortc
         private void OnMessage(byte[] bytes)
         {
             var str = System.Text.Encoding.UTF8.GetString(bytes);
-            Debug.Log("DannyB OnMessage " + str);
             try
             {
                 var obj = new HeadPositionMessage();//JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
@@ -61,7 +60,6 @@ namespace ServerConnection.Aiortc
             }
             catch (Exception e)
             {
-                Debug.Log("DannyB could not process head message ");
                 Console.WriteLine(e);
                 throw;
             }

@@ -32,7 +32,8 @@ namespace ServerConnection.Aiortc
         private bool initialized = false;
         private Renderer leftFaceDetectionRenderer;
         private float timeElapsed;
-        public float publishMessageFrequency = 1.0f;
+        public float publishMessageFrequency = 5f;
+        public string[] stun_turn_servers;
 
         /// <summary>
         /// Indicates if a data channel is open.
@@ -47,7 +48,7 @@ namespace ServerConnection.Aiortc
             Rotate
         }
 
-        private enum Side
+        public enum Side
         {
             Local,
             Remote
@@ -73,7 +74,7 @@ namespace ServerConnection.Aiortc
             }
         }
 
-        private RTCPeerConnection pc;
+        public RTCPeerConnection pc;
         private MediaStream receiveStream;
 
         public RTCDataChannel pingDataChannel, mcDataChannel, jsDataChannel;
@@ -108,10 +109,8 @@ namespace ServerConnection.Aiortc
                     this.AddComponentIfMissing <WebRTCHeadPositionListener>();
                     this.AddComponentIfMissing <WebRTCJointPositionSender>();
                     initialized = true;
+                    SendMsg();
                 }
-
-                Debug.Log(str);
-                SendMsg();
             };
             onDataChannelOpen = () =>
             {
@@ -142,6 +141,13 @@ namespace ServerConnection.Aiortc
         /// </summary>
         public void Stop()
         {
+            /*
+            GameObject obj = GameObject.Find("AiortcWebSocket");
+            AiortcWebSocket comp = obj.GetComponent<AiortcWebSocket>();
+            if (comp != null) {
+                Destroy(comp);
+            }*/
+            
             receiveAudio.Stop();
             receiveAudio.clip = null;
             WebRTC.Dispose();
@@ -172,9 +178,10 @@ namespace ServerConnection.Aiortc
                 ev.Track.Dispose();
             };
 
-            pc = new RTCPeerConnection();
+            pc = new RTCPeerConnection();//ref configuration);
             pc.OnIceCandidate = cand =>
             {
+                Debug.Log("dannyb OnIceCandidate");
                 pc.OnIceCandidate = null;
                 var msg = new SignalingMsg
                 {
@@ -197,11 +204,21 @@ namespace ServerConnection.Aiortc
                         msg.video_transform = "rotate";
                         break;
                 }
+                socket = new AiortcWebSocket(this);
 
-                StartCoroutine(aiortcSignaling(msg));
+                
+                //this is the first initialization of Aiortc, it will start the socket connection and after necessary setups it will then make a connection offer 
+                //StartCoroutine(aiortcSignaling(msg));
             };
-            pc.OnIceGatheringStateChange = state => { };
-            pc.OnConnectionStateChange = state => { };
+            pc.OnIceGatheringStateChange = state => {
+                Debug.Log("dannyb OnIceGatheringStateChange " + state);
+                
+            };
+            pc.OnConnectionStateChange = state =>
+            {
+                Debug.Log("dannyb OnConnectionStateChange " + state);
+                
+            };
             pc.OnTrack = e =>
             {
                 if (e.Track.Kind == TrackKind.Video)
@@ -216,6 +233,10 @@ namespace ServerConnection.Aiortc
 
                     video.OnVideoReceived += tex =>
                     {
+                        if (tex == null)
+                        {
+                            Debug.Log("dannyb tex is null");
+                        }
                         Debug.Log("dannyb OnVideoReceived");
                         dummyImage.texture = tex;
                     };
@@ -241,11 +262,14 @@ namespace ServerConnection.Aiortc
             StartCoroutine(CreateDesc(RTCSdpType.Offer));
         }
 
+        public AiortcWebSocket socket;
+
         /// <summary>
         /// Creates description of connection
         /// </summary>
         private IEnumerator CreateDesc(RTCSdpType type)
         {
+            Debug.Log("dannyb CreateDesc");
             if (type == RTCSdpType.Offer)
             {
                 var transceiver1 = pc.AddTransceiver(TrackKind.Video);
@@ -266,8 +290,9 @@ namespace ServerConnection.Aiortc
             StartCoroutine(SetDesc(Side.Local, op.Desc));
         }
 
-        private IEnumerator SetDesc(Side side, RTCSessionDescription desc)
+        public IEnumerator SetDesc(Side side, RTCSessionDescription desc)
         {
+            Debug.Log("dannyB setdesc for side " + side + ":" + desc);
             var op = side == Side.Local ? pc.SetLocalDescription(ref desc) : pc.SetRemoteDescription(ref desc);
             yield return op;
 
@@ -363,8 +388,107 @@ namespace ServerConnection.Aiortc
         /// </summary>
         public void SendMsg()
         {
-            Debug.Log($"SendMsg ping");
             pingDataChannel.Send("ping");
         }
+/*
+        public void ConnectWithUrls(string[] urls)
+        {
+            receiveStream = new MediaStream();
+            receiveStream.OnAddTrack = e =>
+            {
+                if (e.Track is VideoStreamTrack track)
+                {
+                    // You can access received texture using `track.Texture` property.
+                }
+                else if (e.Track is AudioStreamTrack track2)
+                {
+                    // This track is for audio.
+
+                }
+            };
+            receiveStream.OnRemoveTrack = ev =>
+            {
+                dummyImage.texture = null;
+                ev.Track.Dispose();
+            };
+
+            var rtcConfig = new RTCConfiguration();
+            rtcConfig.iceServers = urls;
+            pc = new RTCPeerConnection(new RTCConfiguration());
+            pc.OnIceCandidate = cand =>
+            {
+                Debug.Log("dannyb OnIceCandidate");
+                pc.OnIceCandidate = null;
+                var msg = new SignalingMsg
+                {
+                    type = pc.LocalDescription.type.ToString().ToLower(),
+                    sdp = pc.LocalDescription.sdp
+                };
+
+                switch (videoTransformType)
+                {
+                    case VideoTransformType.None:
+                        msg.video_transform = "none";
+                        break;
+                    case VideoTransformType.EdgeDetection:
+                        msg.video_transform = "edges";
+                        break;
+                    case VideoTransformType.CartoonEffect:
+                        msg.video_transform = "cartoon";
+                        break;
+                    case VideoTransformType.Rotate:
+                        msg.video_transform = "rotate";
+                        break;
+                }
+
+                
+                //this is the first initialization of Aiortc, it will start the socket connection and after necessary setups it will then make a connection offer 
+                this.AddComponentIfMissing <AiortcWebSocket>();
+                //StartCoroutine(aiortcSignaling(msg));
+            };
+            pc.OnIceGatheringStateChange = state => { };
+            pc.OnConnectionStateChange = state => { };
+            pc.OnTrack = e =>
+            {
+                if (e.Track.Kind == TrackKind.Video)
+                {
+                    // Add track to MediaStream for receiver.
+                    // This process triggers `OnAddTrack` event of `MediaStream`.
+                    receiveStream.AddTrack(e.Track);
+                }
+
+                if (e.Track is VideoStreamTrack video)
+                {
+
+                    video.OnVideoReceived += tex =>
+                    {
+                        if (tex == null)
+                        {
+                            Debug.Log("dannyb tex is null");
+                        }
+                        Debug.Log("dannyb OnVideoReceived");
+                        dummyImage.texture = tex;
+                    };
+                }
+
+                if (e.Track is AudioStreamTrack audioTrack)
+                {
+                    receiveAudio.SetTrack(audioTrack);
+                    receiveAudio.loop = true;
+                    receiveAudio.Play();
+                }
+            };
+            pc.OnDataChannel = onDataChannel;
+            RTCDataChannelInit conf = new RTCDataChannelInit();
+            conf.ordered = true;
+            pingDataChannel = pc.CreateDataChannel("ping", conf);
+            pingDataChannel.OnOpen = onDataChannelOpen;
+            pingDataChannel.OnMessage = onDataChannelMessage;
+            mcDataChannel = pc.CreateDataChannel("motion_compensation", conf);
+            mcDataChannel.OnOpen = onMCDataChannelOpen;
+            jsDataChannel = pc.CreateDataChannel("joint_state", conf);
+            jsDataChannel.OnOpen = onJSDataChannelOpen;
+            StartCoroutine(CreateDesc(RTCSdpType.Offer));
+        }*/
     }
 }
