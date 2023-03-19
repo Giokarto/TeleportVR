@@ -9,23 +9,23 @@ using Unity.WebRTC;
 
 namespace ServerConnection.Aiortc
 {
-
+    /*This class will be ran by its own and will set parameters such as stun_urls and robot name which later be used in aiortcConnector. We are making the connection as soon as the app launches*/
     public class AiortcWebSocket
     {
-        private AiortcConnector aiortcConnector;
+        private IAiortcWebSocket aiortcWebSocketInterface;
         private WebSocket ws;
         public string robot_name;
         public string[] stun_urls;
 
-        public AiortcWebSocket(AiortcConnector aiortcConnector)
+        public AiortcWebSocket(IAiortcWebSocket aiortcWebSocketInterface)
         {
-            this.aiortcConnector = aiortcConnector;
+            this.aiortcWebSocketInterface = aiortcWebSocketInterface;
             Start();
         }
 
         void Start()
         {
-            if (aiortcConnector == null)
+            if (aiortcWebSocketInterface == null)
             {
                 Debug.LogError("dannyb can not find aiortc connector");
             }
@@ -104,6 +104,7 @@ namespace ServerConnection.Aiortc
                 }
 
                 stun_urls = stringList.ToArray();
+                aiortcWebSocketInterface.OnWebRtcConfigGathered(stun_urls);
             }
             catch (Exception e)
             {
@@ -144,14 +145,13 @@ namespace ServerConnection.Aiortc
                 {
                     //connection is now possible with robot name
                     robot_name = user;
-                    OfferConnection();
                     return;
                 }
             }
             //no robot is find in the current users, NO CONNECTION case can be handled here
         }
 
-        void OfferConnection()
+        public void OfferConnection()
         {
             try
             {
@@ -160,11 +160,11 @@ namespace ServerConnection.Aiortc
                     Debug.Log("DannyB No robot to operate!");
                     return;
                 }
-                if (aiortcConnector.pc.LocalDescription.sdp != null)
+                if (aiortcWebSocketInterface.GetPeerConnection()!= null && aiortcWebSocketInterface.GetPeerConnection().LocalDescription.sdp != null)
                 {
                     Debug.Log("sending signaling message");
                     WebSocketOfferMessage message = new WebSocketOfferMessage
-                        { type = "offer", target = robot_name, sdp = aiortcConnector.pc.LocalDescription.sdp};
+                        { type = "offer", target = robot_name, sdp =aiortcWebSocketInterface.GetPeerConnection().LocalDescription.sdp};
                     string json = JsonConvert.SerializeObject(message);
                     ws.Send(json);
                 }
@@ -190,7 +190,7 @@ namespace ServerConnection.Aiortc
                     type = RTCSdpType.Answer,
                     sdp = sdp
                 };
-                aiortcConnector.pc.SetRemoteDescription(ref x);
+                aiortcWebSocketInterface.SetRemoteDescription(ref x);
             }
             catch (Exception e)
             {
@@ -201,6 +201,8 @@ namespace ServerConnection.Aiortc
 
         void OnDestroy()
         {
+            stun_urls = null;
+            robot_name = null;
             // Close the WebSocket connection when the script is destroyed
             if (ws != null && ws.ReadyState == WebSocketState.Open)
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using CurvedUI;
@@ -17,7 +18,7 @@ namespace ServerConnection.Aiortc
     /// This class is gathered and modified from https://github.com/gtk2k/Unity_aiortc_sample
     /// It is responsible with creating the connection with aiortc server and set necessary stream services, such as Data, Video and Audio channels
     /// </summary>
-    public class AiortcConnector : MonoBehaviour
+    public class AiortcConnector : MonoBehaviour, IAiortcWebSocket
     {
         public string aiortcServerURL;
         [SerializeField] private RawImage dummyImage;
@@ -26,6 +27,7 @@ namespace ServerConnection.Aiortc
         [SerializeField] private AudioSource receiveAudio;
         [SerializeField] private HeadPositionProtocol _headPositionProtocol;
 
+        public AiortcWebSocket socket;
         private Renderer leftRenderer;
         private Renderer rightRenderer;
         GameObject LeftEye, RightEye;
@@ -33,7 +35,6 @@ namespace ServerConnection.Aiortc
         private Renderer leftFaceDetectionRenderer;
         private float timeElapsed;
         public float publishMessageFrequency = 5f;
-        public string[] stun_turn_servers;
 
         /// <summary>
         /// Indicates if a data channel is open.
@@ -88,6 +89,8 @@ namespace ServerConnection.Aiortc
         /// </summary>
         void Start()
         {
+            socket = new AiortcWebSocket(this);
+            StartCoroutine(CallFunctionRepeatedly(5f, () => socket.stun_urls != null, SomeFunctionToCall));
             LeftEye = imtpEncoder.leftEye;
             RightEye = imtpEncoder.rightEye;
             leftRenderer = LeftEye.GetComponentInChildren<Renderer>();
@@ -133,7 +136,21 @@ namespace ServerConnection.Aiortc
             };
             WebRTC.Initialize();
             StartCoroutine(WebRTC.Update());
-            Connect();
+            //Connect();
+        }
+
+        private void SomeFunctionToCall()
+        {
+            try
+            {
+                Connect(socket.stun_urls);
+
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("DANNYB SOMEFUNCTION ERROR: " + e);
+                throw;
+            }
         }
 
         /// <summary>
@@ -157,7 +174,7 @@ namespace ServerConnection.Aiortc
         /// Sets webrtc connection behaviors by setting up delegate functions, onTrack is very important in particular where incoming connections are listened
         /// Then makes a offer for connection
         /// </summary>
-        public void Connect()
+        public void Connect(string[] urls)
         {
             receiveStream = new MediaStream();
             receiveStream.OnAddTrack = e =>
@@ -178,7 +195,30 @@ namespace ServerConnection.Aiortc
                 ev.Track.Dispose();
             };
 
-            pc = new RTCPeerConnection();//ref configuration);
+            Debug.Log("DannyB stun servers:");
+            List<RTCIceServer> servers = new List<RTCIceServer>();
+            foreach (var url in urls)
+            {
+                if (url.StartsWith("turn"))
+                {
+                    servers.Add(new RTCIceServer
+                    {
+                        urls = new string[] { url },
+                        username = "user",
+                        credential = "password"
+                    });
+                }
+                else
+                {
+                    servers.Add(new RTCIceServer
+                    {
+                        urls = new string[] { url },
+                    });
+                }
+            }
+            var c = new RTCConfiguration();
+            c.iceServers = servers.ToArray();
+            pc = new RTCPeerConnection(ref c);
             pc.OnIceCandidate = cand =>
             {
                 Debug.Log("dannyb OnIceCandidate");
@@ -204,11 +244,16 @@ namespace ServerConnection.Aiortc
                         msg.video_transform = "rotate";
                         break;
                 }
-                socket = new AiortcWebSocket(this);
 
-                
-                //this is the first initialization of Aiortc, it will start the socket connection and after necessary setups it will then make a connection offer 
-                //StartCoroutine(aiortcSignaling(msg));
+                if (socket.robot_name != null)
+                {
+                    Debug.Log("dannyB offering connection!");
+                    socket.OfferConnection();
+                }
+                else
+                {
+                    Debug.Log("dannyB no robot to operate!");
+                }
             };
             pc.OnIceGatheringStateChange = state => {
                 Debug.Log("dannyb OnIceGatheringStateChange " + state);
@@ -262,7 +307,6 @@ namespace ServerConnection.Aiortc
             StartCoroutine(CreateDesc(RTCSdpType.Offer));
         }
 
-        public AiortcWebSocket socket;
 
         /// <summary>
         /// Creates description of connection
@@ -312,6 +356,17 @@ namespace ServerConnection.Aiortc
             }
         }
 
+        
+        public IEnumerator CallFunctionRepeatedly(float interval, Func<bool> condition, Action action)
+        {
+            while (!condition())
+            {
+                Debug.Log("DannyB No stuns yet");
+                yield return new WaitForSeconds(interval);
+            }
+            Debug.Log("DannyB STUNSSSS");
+            action();
+        }
         /// <summary>
         /// GetDataChannel
         /// </summary>
@@ -390,7 +445,25 @@ namespace ServerConnection.Aiortc
         {
             pingDataChannel.Send("ping");
         }
-/*
+        public void OnWebRtcConfigGathered(string[] urls)
+        {
+        }
+
+        public void OnRobotConnected(string robotName)
+        {
+            
+        }
+
+        public RTCPeerConnection GetPeerConnection()
+        {
+            return pc;
+        }
+
+        public void SetRemoteDescription(ref RTCSessionDescription rtcSessionDescription)
+        {
+            pc.SetRemoteDescription(ref rtcSessionDescription);
+        }
+        /*
         public void ConnectWithUrls(string[] urls)
         {
             receiveStream = new MediaStream();
