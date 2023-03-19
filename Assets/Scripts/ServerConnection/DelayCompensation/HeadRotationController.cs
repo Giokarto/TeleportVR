@@ -14,7 +14,7 @@ namespace ServerConnection
         {
             if (leftEyeSphere == null)
             {
-                leftEyeSphere = ServerData.Instance.LeftEye;
+                leftEyeSphere = ServerBase.Instance.LeftEye;
                 Debug.Log( "dannyb found left eye");
             }
             else
@@ -24,7 +24,7 @@ namespace ServerConnection
 
             if (rightEyeSphere == null)
             {
-                rightEyeSphere = ServerData.Instance.RightEye;
+                rightEyeSphere = ServerBase.Instance.RightEye;
                 Debug.Log("dannyb found right eye");
             }
             else

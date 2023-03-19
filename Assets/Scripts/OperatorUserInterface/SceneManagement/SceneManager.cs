@@ -38,13 +38,13 @@ namespace OperatorUserInterface
 
         private bool realAlreadyVisited = false;
 
-        [SerializeField] private ServerData serverConnection;
+        [SerializeField] private ServerBase serverConnection;
 
         private AudioSource transitionAudioPlayer;
 
         private void Start()
         {
-            serverConnection = ServerData.Instance;
+            serverConnection = ServerBase.Instance;
             transitionAudioPlayer = GetComponent<AudioSource>();
 
             foreach (var GO in UnitySceneManager.GetActiveScene().GetRootGameObjects())

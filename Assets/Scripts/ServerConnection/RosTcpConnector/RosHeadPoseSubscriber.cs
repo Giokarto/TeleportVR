@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using RosMessageTypes.Sensor;
+using ServerConnection.ServerCommunicatorBase;
 using Unity.Robotics.ROSTCPConnector;
 using UnityEngine;
 using CompressedImage = RosMessageTypes.Sensor.CompressedImageMsg;

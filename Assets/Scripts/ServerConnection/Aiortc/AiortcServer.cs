@@ -6,11 +6,11 @@ using UnityEngine;
 namespace ServerConnection.Aiortc
 {
     /// <summary>
-    /// Implementation of <see cref="ServerData"/> with WebRTC.
+    /// Implementation of <see cref="ServerBase"/> with WebRTC.
     /// Uses <see cref="AiortcConnector"/> and <see cref="ImtpEncoder"/> under the hood,
     /// this is a public wrapper of these classes.
     /// </summary>
-    public class AiortcServer : ServerData
+    public class AiortcServer : ServerBase
     {
         [SerializeField] private AiortcConnector aiortcConnector;
         [SerializeField] private ImtpEncoder imtpEncoder;

@@ -112,7 +112,7 @@ namespace ServerConnection.Aiortc
                     this.AddComponentIfMissing <WebRTCHeadPositionListener>();
                     this.AddComponentIfMissing <WebRTCJointPositionSender>();
                     initialized = true;
-                    SendMsg();
+                    SendMsg(); 
                 }
             };
             onDataChannelOpen = () =>
@@ -266,6 +266,7 @@ namespace ServerConnection.Aiortc
             };
             pc.OnTrack = e =>
             {
+                Debug.Log($"dannyb OnTrack {e.Track.Kind}");
                 if (e.Track.Kind == TrackKind.Video)
                 {
                     // Add track to MediaStream for receiver.
@@ -276,6 +277,7 @@ namespace ServerConnection.Aiortc
                 if (e.Track is VideoStreamTrack video)
                 {
 
+                    Debug.Log($"dannyb OnTrack2 {e.Track.Kind}");
                     video.OnVideoReceived += tex =>
                     {
                         if (tex == null)
@@ -302,7 +304,7 @@ namespace ServerConnection.Aiortc
             pingDataChannel.OnMessage = onDataChannelMessage;
             mcDataChannel = pc.CreateDataChannel("motion_compensation", conf);
             mcDataChannel.OnOpen = onMCDataChannelOpen;
-            jsDataChannel = pc.CreateDataChannel("joint_state", conf);
+            jsDataChannel = pc.CreateDataChannel("joint_targets", conf);
             jsDataChannel.OnOpen = onJSDataChannelOpen;
             StartCoroutine(CreateDesc(RTCSdpType.Offer));
         }
@@ -336,7 +338,7 @@ namespace ServerConnection.Aiortc
 
         public IEnumerator SetDesc(Side side, RTCSessionDescription desc)
         {
-            Debug.Log("dannyB setdesc for side " + side + ":" + desc);
+            Debug.Log("dannyB setdesc for side " + side + ":" + desc.sdp);
             var op = side == Side.Local ? pc.SetLocalDescription(ref desc) : pc.SetRemoteDescription(ref desc);
             yield return op;
 

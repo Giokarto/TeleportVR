@@ -80,7 +80,7 @@ namespace DisplayExtensions
         /// <returns></returns>
         Rect[] GetFaces()
         {
-            var textures = ServerData.Instance.GetVisionTextures();
+            var textures = ServerBase.Instance.GetVisionTextures();
             
             //convert left texture to rgb mat
             Utils.texture2DToMat(textures[0], rgbaMat);

@@ -13,7 +13,7 @@ namespace Widgets.ActiveWidgets
         private IconWidget speakerWidget;
         private IconWidget motionWidget;
 
-        private ServerData serverData;
+        private ServerBase _serverBase;
 
         public void Start()
         {
@@ -22,13 +22,13 @@ namespace Widgets.ActiveWidgets
             speakerWidget = WidgetFactory.Instance.CreateIconWidget("SpeakersUnavailable", WidgetPosition.Top, "speakerWidget");
             motionWidget = WidgetFactory.Instance.CreateIconWidget("MotionUnavailable", WidgetPosition.Top, "motionWidget");
 
-            serverData = ServerData.Instance;
+            _serverBase = ServerBase.Instance;
         }
 
         public DateTime nextConnectionCheck = DateTime.Now + TimeSpan.FromSeconds(30);
         public void Update()
         {
-            if (!serverData.ConnectedToServer)
+            if (!_serverBase.ConnectedToServer)
             {
                 wifiWidget.SetIcon("WifiRed");
                 micWidget.SetIcon("MicroUnavailable");
@@ -38,7 +38,7 @@ namespace Widgets.ActiveWidgets
                 if (nextConnectionCheck < DateTime.Now)
                 {
                     WidgetFactory.Instance.CreateToastrWidget(
-                        $"Trying to connect to server: {ServerData.Instance.IPaddress}", 5, "Connection error");
+                        $"Trying to connect to server: {ServerBase.Instance.IPaddress}", 5, "Connection error");
                     WidgetFactory.Instance.CreateToastrWidget(
                         $"Please make sure the server is running and you're in the same network.", 1, "Connection error 2");
                     nextConnectionCheck = DateTime.Now + TimeSpan.FromSeconds(30);
@@ -48,9 +48,9 @@ namespace Widgets.ActiveWidgets
             {
                 nextConnectionCheck = DateTime.Now + TimeSpan.FromSeconds(30);
                 wifiWidget.SetIcon("WifiGreen");
-                micWidget.SetIcon(serverData.ModalityConnected[Modality.VOICE]? "Micro" : "MicroDisabled");
-                speakerWidget.SetIcon(serverData.ModalityConnected[Modality.AUDITION]? "Speakers" : "SpeakersOff");
-                motionWidget.SetIcon(serverData.ModalityConnected[Modality.MOTOR]? "MotionOn" : "MotionOff");
+                micWidget.SetIcon(_serverBase.ModalityConnected[Modality.VOICE]? "Micro" : "MicroDisabled");
+                speakerWidget.SetIcon(_serverBase.ModalityConnected[Modality.AUDITION]? "Speakers" : "SpeakersOff");
+                motionWidget.SetIcon(_serverBase.ModalityConnected[Modality.MOTOR]? "MotionOn" : "MotionOff");
             }
         }
     }

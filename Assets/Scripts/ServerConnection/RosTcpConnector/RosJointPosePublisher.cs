@@ -4,6 +4,7 @@ using Unity.Robotics.ROSTCPConnector;
 using JointStateMsg=RosMessageTypes.Sensor.JointStateMsg;
 using System.Collections.Generic;
 using InputDevices.VRControllers;
+using RobodyControl;
 using UnityEngine.XR.Interaction.Toolkit.Transformers;
 
 namespace ServerConnection.RosTcpConnector
@@ -14,8 +15,8 @@ namespace ServerConnection.RosTcpConnector
         public string topicName = "/operator/joint_target"; // /roboy/pinky/simulation/joint_targets
         public float publishMessageFrequency = 0.01f;
 
-        public BioIK.BioIK BodyIK;
-        public BioIK.BioIK HeadIK;
+        private BioIK.BioIK BodyIK;
+        private BioIK.BioIK HeadIK;
 
         private float timeElapsed;
         private JointStateMsg msg;
@@ -28,6 +29,8 @@ namespace ServerConnection.RosTcpConnector
         // Start is called before the first frame update
         void Start()
         {
+            BodyIK = ServerBase.Instance.BodyIK;
+            HeadIK = ServerBase.Instance.HeadIK;
 
             ros = ROSConnection.GetOrCreateInstance();
             ros.RegisterPublisher<JointStateMsg>(topicName);
@@ -41,17 +44,17 @@ namespace ServerConnection.RosTcpConnector
         }
 
         /// <summary>
-        /// Called if script active - set in <see cref="ServerData.SetMotorOn"/>
+        /// Called if script active - set in <see cref="ServerBase.SetMotorOn"/>
         /// </summary>
         void Update()
         {
             // reset joints to 0 when the headset is not on
-            if (!VRControllerInputSystem.IsUserActive())
-            {
-                Debug.Log("user inactive, resetting joints to 0");
-                ResetJoints();
-                ros.Publish(topicName, GetLatestJointStates());
-            }
+            // if (!VRControllerInputSystem.IsUserActive())
+            // {
+            //     Debug.Log("user inactive, resetting joints to 0");
+            //     RobotMotionManager.Instance.ResetRobody(useSavedJoints: false, instantaneous: false);
+            //     ros.Publish(topicName, GetLatestJointStates());
+            // }
 
             timeElapsed += Time.deltaTime;
 
@@ -59,18 +62,6 @@ namespace ServerConnection.RosTcpConnector
             {
                 ros.Publish(topicName, GetLatestJointStates());
                 timeElapsed = 0;
-            }
-        }
-
-        void ResetJoints()
-        {
-            foreach (var segment in HeadIK.Segments)
-            {
-                HeadIK.ResetPosture(segment);
-            }
-            foreach (var segment in BodyIK.Segments)
-            {
-                BodyIK.ResetPosture(segment);
             }
         }
 
@@ -83,6 +74,8 @@ namespace ServerConnection.RosTcpConnector
 
         private void OnEnable()
         {
+            // Change grip through the input system, don't send it directly from reading the controllers.
+            // This way changing the grip state can be paused, e.g. when a menu is open.
             VRControllerInputSystem.OnGripChange += SaveGripState;
         }
 

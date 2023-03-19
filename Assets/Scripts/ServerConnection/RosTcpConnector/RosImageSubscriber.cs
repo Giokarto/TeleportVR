@@ -36,8 +36,8 @@ namespace ServerConnection.RosTcpConnector
         {
             if (meshRenderer == null)
             {
-                meshRenderer = ServerData.Instance.RightEye.GetComponentInChildren<MeshRenderer>();
-                secondaryMeshRenderer = ServerData.Instance.LeftEye.GetComponentInChildren<MeshRenderer>();
+                meshRenderer = ServerBase.Instance.RightEye.GetComponentInChildren<MeshRenderer>();
+                secondaryMeshRenderer = ServerBase.Instance.LeftEye.GetComponentInChildren<MeshRenderer>();
             }
             ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(TopicName, GetImage);
             texture2D = new Texture2D(512*2, 512); //, TextureFormat.BGRA32, false);

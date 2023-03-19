@@ -15,7 +15,7 @@ namespace ServerConnection.MockServer
     /// <summary>
     /// This class mocks a server connection. It displays an Obama video instead of real-world stream.
     /// </summary>
-    public class MockServer : ServerData
+    public class MockServer : ServerBase
     {
         private Random random = new Random();
 

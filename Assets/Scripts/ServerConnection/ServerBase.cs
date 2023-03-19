@@ -9,9 +9,9 @@ namespace ServerConnection
     /// <summary>
     /// Abstract class that provides methods for communication with the server.
     /// </summary>
-    public abstract class ServerData: Singleton<ServerData>
+    public abstract class ServerBase: Singleton<ServerBase>
     {
-        #region Setup, General methods
+        #region Setup, General methods and properties
 
         public abstract string IPaddress { get; set; }
 
@@ -137,6 +137,11 @@ namespace ServerConnection
         #endregion
 
         #region Motor
+
+        /// <summary>
+        /// BioIK object that holds the pose of the joints.
+        /// </summary>
+        public BioIK.BioIK HeadIK, BodyIK;
         
         /// <summary>
         /// Enable or disable motor on the actual robot.

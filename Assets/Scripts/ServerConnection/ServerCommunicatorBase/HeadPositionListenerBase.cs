@@ -5,7 +5,7 @@ using ServerConnection.RosTcpConnector;
 using UnityEngine;
 
 
-namespace ServerConnection
+namespace ServerConnection.ServerCommunicatorBase
 {
     /*
      * Main purpose is to get incoming head position either from ros2 or webrtc and perform delay compensation
@@ -13,7 +13,7 @@ namespace ServerConnection
     public abstract class HeadPositionListenerBase : MonoBehaviour
     {
         private HeadRotationController headRotationController;
-
+        
         public void ProcessHeadMessage(Vector3 headVector)
         {
             headRotationController.ProcessHeadMessage(headVector);
@@ -25,5 +25,7 @@ namespace ServerConnection
             GameObject go = GameObject.Find("HeadRotationController");
             headRotationController = go.GetComponent<HeadRotationController>();
         }
+        
+        
     }
 }

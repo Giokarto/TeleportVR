@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ServerConnection;
 using UnityEngine;
 
 namespace RobodyControl
@@ -49,7 +50,7 @@ namespace RobodyControl
 
         /// <summary>
         /// Returns a list of current joint values of the Roboy model.
-        /// <see cref="ServerConnection.ServerData.GetLatestJointValues"/> returns the values of the real Robody.
+        /// <see cref="ServerBase.GetLatestJointValues"/> returns the values of the real Robody.
         /// </summary>
         /// <returns></returns>
         public List<float> GetLatestJointState()
@@ -72,14 +73,17 @@ namespace RobodyControl
         /// <summary>
         /// Resets all joints to the actual state of the real robot (or initial state). Used before switching to the real world.
         /// </summary>
-        public void ResetRobody(bool useSavedJoints = true)
+        public void ResetRobody(bool useSavedJoints = true, bool instantaneous = true)
         {
             if (!useSavedJoints)
             {
                 foreach (var body in bioIks)
                 {
-                    // switch to instantaneous movement type for BioIK so that the transition to joint targets 0 is immediate 
-                    body.MotionType = BioIK.MotionType.Instantaneous;
+                    // switch to instantaneous movement type for BioIK so that the transition to joint targets 0 is immediate
+                    if (instantaneous)
+                    {
+                        body.MotionType = BioIK.MotionType.Instantaneous;
+                    }
 
                     foreach (var segment in body.Segments)
                     {

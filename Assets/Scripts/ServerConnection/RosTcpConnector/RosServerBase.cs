@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ServerConnection.RosTcpConnector
 {
-    public class RosServerData : ServerData
+    public class RosServerBase : ServerBase
     {
         private ROSConnection ros;
         private Light light;

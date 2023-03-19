@@ -9,7 +9,10 @@ using Unity.WebRTC;
 
 namespace ServerConnection.Aiortc
 {
-    /*This class will be ran by its own and will set parameters such as stun_urls and robot name which later be used in aiortcConnector. We are making the connection as soon as the app launches*/
+    /// <summary>
+    /// This class will be ran by its own and will set parameters such as stun_urls and robot name which later be used in aiortcConnector.
+    /// We are creating the connection as soon as the app launches.
+    /// </summary>
     public class AiortcWebSocket
     {
         private IAiortcWebSocket aiortcWebSocketInterface;
