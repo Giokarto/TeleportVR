@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace RobodyControl
 {
+    /// <summary>
+    /// Limits the maximum velocity and acceleration of the robot model.
+    /// </summary>
     public class BioIKLatencyManager : MonoBehaviour
     {
         [System.Serializable]

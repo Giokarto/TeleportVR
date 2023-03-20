@@ -38,7 +38,7 @@ namespace ServerConnection.Aiortc
                 JToken myToken = jsonObject["head position"];
                 //var name = myToken.ToObject<HeadPositionMessage>();
                 Debug.Log("dannyb head name: " + myToken);
-                var obj = new WebRTCMessages.HeadPositionMessage();//JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
+                var obj = new HeadPositionMessage();//JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
                 if (obj != null)
                 {
                     if (current <= -0.5f)

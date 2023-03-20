@@ -38,6 +38,10 @@ namespace RobodyControl
             }
         }
 
+        /// <summary>
+        /// List of joint values (the last state of Roboy when leaving the real world).
+        /// Only use in this class, the order of the values in this list might get confused otherwise.
+        /// </summary>
         private List<float> savedJoints;
         /// <summary>
         /// Saves the current joint positions of the Roboy model (not the real Robody!) to be restored later.
@@ -45,29 +49,42 @@ namespace RobodyControl
         /// </summary>
         public void SaveJoints()
         {
-            savedJoints = GetLatestJointState();
-        }
-
-        /// <summary>
-        /// Returns a list of current joint values of the Roboy model.
-        /// <see cref="ServerBase.GetLatestJointValues"/> returns the values of the real Robody.
-        /// </summary>
-        /// <returns></returns>
-        public List<float> GetLatestJointState()
-        {
-            List<float> joints = new List<float>();
+            savedJoints = new List<float>();
             foreach (var body in bioIks)
             {
                 foreach (var segment in body.Segments)
                 {
                     if (segment.Joint != null)
                     {
-                        joints.Add((float)segment.Joint.X.CurrentValue);
+                        savedJoints.Add((float)segment.Joint.X.CurrentValue);
                     }
                 }
             }
+        }
 
-            return joints;
+        private Dictionary<string, float> currentJointState = new Dictionary<string, float>();
+        /// <summary>
+        /// Returns the current state of all joints.
+        /// To be used by the server class (<see cref="ServerBase"/>) to send the goal states to the server.
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, float> GetAllCurrentJointStates()
+        {
+            currentJointState.Clear();
+            foreach (var body in bioIks)
+            {
+                if (!body.gameObject.name.Contains("shadow"))
+                {
+                    foreach (var segment in body.Segments)
+                    {
+                        if (segment.Joint != null)
+                        {
+                            currentJointState.Add(segment.Joint.name, (float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
+                        }
+                    }
+                }
+            }
+            return currentJointState;
         }
 
         /// <summary>

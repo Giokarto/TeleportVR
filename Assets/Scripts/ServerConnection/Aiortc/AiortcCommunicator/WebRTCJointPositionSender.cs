@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using InputDevices.VRControllers;
 using Newtonsoft.Json;
-using RosMessageTypes.Geometry;
-using ServerConnection.Aiortc;
 using ServerConnection.RosTcpConnector;
 using ServerConnection.ServerCommunicatorBase;
 using UnityEngine;
-using UnityEngine.XR;
 using Unity.WebRTC;
 
 namespace ServerConnection.Aiortc
@@ -33,34 +26,18 @@ namespace ServerConnection.Aiortc
             HeadIK = ServerBase.Instance.HeadIK;
         }
 
-        private void SendMessage()
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        private string GetJointPositionsMessage()
         {
-            var json = JsonConvert.SerializeObject(GetLatestHeadPose());
-            dataChannel.Send(json);
-        }
+            var jointPositions = RobodyControl.RobotMotionManager.Instance.GetAllCurrentJointStates();
+            return JsonConvert.SerializeObject(jointPositions);
+            
+            // TODO sort out magical numbers as in ROS publisher, distribute values equally in elbows
 
-        public WebRTCMessages.HeadPositionMessage GetLatestHeadPose()
-        {
-            var message = new WebRTCMessages.HeadPositionMessage()
-            {
-                head_axis0 = 0f,
-                head_axis1 = 0f,
-                head_axis2 = 0f
-            };
-            foreach (var segment in HeadIK.Segments)
-            {
-                if (segment.Joint != null)
-                {
-                    if (segment.Joint.name == "head_axis2")
-                        message.head_axis2 = (float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad;
-                    if (segment.Joint.name == "head_axis1")
-                        message.head_axis1 = (float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad;
-                    if (segment.Joint.name == "head_axis0")
-                        message.head_axis0 = (float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad;
-                }
-            }
-
-            return message;
+            // hand - fingers
+            // TODO
         }
 
         private void Update()
@@ -69,7 +46,8 @@ namespace ServerConnection.Aiortc
 
             if (timeElapsed > publishMessageFrequency)
             {
-                SendMessage();
+                var message = GetJointPositionsMessage();
+                dataChannel.Send(message);
                 timeElapsed = 0;
             }
         }

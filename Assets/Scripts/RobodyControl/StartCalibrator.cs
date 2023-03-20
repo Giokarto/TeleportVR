@@ -6,8 +6,8 @@ using InputSystem = InputDevices.InputSystem;
 namespace RobodyControl
 {
     /// <summary>
-    /// This script moves the associated transfrom such that the reference eye transform matches the goal. 
-    /// Calibration is done calibrationTime number of seconds after the game has started, to insure the operator
+    /// This script moves the associated transform such that the reference eye transform matches the goal. 
+    /// Calibration is done <see cref="calibrationTime"/> number of seconds after the game has started, to insure the operator
     /// has enough time to settle.
     /// Used to move the initial camera position to match with Roboy's head.
     /// </summary>

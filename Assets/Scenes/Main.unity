@@ -5372,7 +5372,7 @@ PrefabInstance:
     - target: {fileID: 8980600751714240473, guid: 8376e5037528d434cab49e987b7a4e72,
         type: 3}
       propertyPath: Scroll.y
-      value: 2394
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8980600751714240473, guid: 8376e5037528d434cab49e987b7a4e72,
         type: 3}

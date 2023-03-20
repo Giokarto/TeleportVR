@@ -101,7 +101,7 @@ namespace ServerConnection.MockServer
 
         public override List<float> GetLatestJointValues()
         {
-            return RobotMotionManager.Instance.GetLatestJointState();
+            throw new NotImplementedException();
         }
     }
 }
