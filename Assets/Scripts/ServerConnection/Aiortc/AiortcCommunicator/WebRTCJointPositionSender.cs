@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json;
 using ServerConnection.RosTcpConnector;
 using ServerConnection.ServerCommunicatorBase;
@@ -42,6 +43,10 @@ namespace ServerConnection.Aiortc
 
         private void Update()
         {
+            if (dataChannel == null)
+            {
+                dataChannel = FindObjectOfType<AiortcConnector>().jsDataChannel;
+            }
             timeElapsed += Time.deltaTime;
 
             if (timeElapsed > publishMessageFrequency)

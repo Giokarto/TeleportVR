@@ -15,6 +15,7 @@ namespace ServerConnection.Aiortc
     /// </summary>
     public class AiortcWebSocket
     {
+        public string URL = "ws://83.229.87.110:8080";
         private IAiortcWebSocket aiortcWebSocketInterface;
         private WebSocket ws;
         public string robot_name;
@@ -34,7 +35,7 @@ namespace ServerConnection.Aiortc
             }
             Debug.Log("DannyB open AiortcWebSocket");
             // Create a new WebSocket instance
-            ws = new WebSocket("ws://83.229.87.110:8080","json");
+            ws = new WebSocket(URL,"json");
 
             // Register event handlers for the WebSocket instance
             ws.OnOpen += OnWebSocketOpen;

@@ -23,9 +23,17 @@ namespace ServerConnection.Aiortc
         {
             base.Start();
             Debug.Log("dannyb initializing WebRTCHeadPositionListener");
-            dataChannel = GetComponent<AiortcConnector>().pingDataChannel;
-            dataChannel.OnMessage += OnMessage;
         }
+
+        public void Update()
+        {
+            if (dataChannel == null)
+            {
+                dataChannel = FindObjectOfType<AiortcConnector>().pingDataChannel;
+                dataChannel.OnMessage += OnMessage;
+            }
+        }
+
         //dannyb OnMessage: stats {"Codec": "H264Encoder / libx264", " Target FPS": "5", "Current FPS": "5.00500464188291", "Target Resolution": "480p", "Est. Bandwidth": 246.88, "...Target kBit": 10000.0, "fpsTarget kBit": 1000.0, "..Current kBit": 141.92476950792314, "head position": "{\"head_axis0\": -8.916703717249375e-29, \"head_axis1\": 4.956035581926682e-13, \"head_axis2\": 9.499068198692826e-12}"}
         private void OnMessage(byte[] bytes)
         {

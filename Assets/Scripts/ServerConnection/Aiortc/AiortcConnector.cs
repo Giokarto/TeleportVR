@@ -1,15 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using CurvedUI;
-using Newtonsoft.Json;
-using ServerConnection.RosTcpConnector;
 using Unity.WebRTC;
-using Unity.XR.CoreUtils;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 namespace ServerConnection.Aiortc
@@ -22,7 +15,6 @@ namespace ServerConnection.Aiortc
     {
         public string aiortcServerURL;
         [SerializeField] private RawImage dummyImage;
-        [SerializeField] private VideoTransformType videoTransformType;
         [SerializeField] private ImtpEncoder imtpEncoder;
         [SerializeField] private AudioSource receiveAudio;
         [SerializeField] private HeadPositionProtocol _headPositionProtocol;
@@ -31,8 +23,6 @@ namespace ServerConnection.Aiortc
         private Renderer leftRenderer;
         private Renderer rightRenderer;
         GameObject LeftEye, RightEye;
-        private bool initialized = false;
-        private Renderer leftFaceDetectionRenderer;
         private float timeElapsed;
         public float publishMessageFrequency = 5f;
 
@@ -41,48 +31,9 @@ namespace ServerConnection.Aiortc
         /// </summary>
         public bool isConnected { get; private set; }
 
-        public enum VideoTransformType
-        {
-            None,
-            EdgeDetection,
-            CartoonEffect,
-            Rotate
-        }
-
-        public enum Side
-        {
-            Local,
-            Remote
-        }
-
-
-        /// <summary>
-        /// Sets the signalling message which can be offer for outgoing connection and answer for incomming connection
-        /// </summary>
-        private class SignalingMsg
-        {
-            public string type;
-            public string sdp;
-            public string video_transform;
-
-            public RTCSessionDescription ToDesc()
-            {
-                return new RTCSessionDescription
-                {
-                    type = type == "offer" ? RTCSdpType.Offer : RTCSdpType.Answer,
-                    sdp = sdp
-                };
-            }
-        }
 
         public RTCPeerConnection pc;
-        private MediaStream receiveStream;
-
         public RTCDataChannel pingDataChannel, mcDataChannel, jsDataChannel;
-        private DelegateOnMessage onDataChannelMessage;
-        private DelegateOnOpen onDataChannelOpen, onMCDataChannelOpen, onJSDataChannelOpen;
-        private DelegateOnClose onDataChannelClose;
-        private DelegateOnDataChannel onDataChannel;
 
         /// <summary>
         /// Initializes game components and data channel behavior then tries to start the connection
@@ -90,69 +41,98 @@ namespace ServerConnection.Aiortc
         void Start()
         {
             socket = new AiortcWebSocket(this);
-            StartCoroutine(CallFunctionRepeatedly(5f, () => socket.stun_urls != null, SomeFunctionToCall));
+            StartCoroutine(TryConnect());
             LeftEye = imtpEncoder.leftEye;
             RightEye = imtpEncoder.rightEye;
             leftRenderer = LeftEye.GetComponentInChildren<Renderer>();
             rightRenderer = RightEye.GetComponentInChildren<Renderer>();
-            onDataChannel = channel =>
-            {
-                Debug.Log("dannyb current channel name: " + channel.Label);
-            };
-            onDataChannelMessage = bytes =>
-            {
-                var str = System.Text.Encoding.UTF8.GetString(bytes);
-                if (str.StartsWith("faces: "))
-                {
-                    imtpEncoder.faceCoordinates = JsonConvert.DeserializeObject<Int32[][]>(str.Substring(7));
-                }
-
-                if (!initialized)
-                {
-                    this.AddComponentIfMissing <WebRTCHeadPositionListener>();
-                    this.AddComponentIfMissing <WebRTCJointPositionSender>();
-                    initialized = true;
-                    SendMsg(); 
-                }
-            };
-            onDataChannelOpen = () =>
-            {
-                SendMsg();
-                isConnected = true;
-            };
-            onDataChannelClose = () =>
-            {
-                isConnected = false;
-            };
-
-            onMCDataChannelOpen = () =>
-            {
-                Debug.Log("dannyb opens movement compensation data channel");
-            };
             
-            onJSDataChannelOpen = () =>
-            {
-                Debug.Log("dannyb opens joint state  data channel");
-            };
             WebRTC.Initialize();
             StartCoroutine(WebRTC.Update());
             //Connect();
         }
 
-        private void SomeFunctionToCall()
+        private void InitMultimediaTracks(RTCPeerConnection pc)
         {
-            try
+            pc.OnTrack = e =>
             {
-                Connect(socket.stun_urls);
+                if (e.Track is VideoStreamTrack video)
+                {
+                    video.OnVideoReceived += tex =>
+                    {
+                        if (tex == null)
+                        {
+                            Debug.Log("dannyb tex is null");
+                        }
+                        Debug.Log("dannyb OnVideoReceived");
+                        dummyImage.texture = tex;
+                    };
+                }
 
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("DANNYB SOMEFUNCTION ERROR: " + e);
-                throw;
-            }
+                if (e.Track is AudioStreamTrack audioTrack)
+                {
+                    receiveAudio.SetTrack(audioTrack);
+                    receiveAudio.loop = true;
+                    receiveAudio.Play();
+                }
+            };
         }
 
+        private RTCDataChannel InitPingChannel(RTCPeerConnection pc)
+        {
+            RTCDataChannelInit conf = new RTCDataChannelInit();
+            conf.ordered = true;
+            pingDataChannel = pc.CreateDataChannel("ping", conf);
+            
+            pingDataChannel.OnOpen = () =>
+            {
+                SendPingMsg();
+            };
+            pingDataChannel.OnMessage = bytes =>
+            {
+                Debug.Log("Received message in ping channel!");
+                SendPingMsg();
+            };
+            
+            return pingDataChannel;
+        }
+
+        private RTCDataChannel InitMotionCompensationChannel(RTCPeerConnection pc)
+        {
+            var conf = new RTCDataChannelInit();
+            conf.ordered = true;
+            
+            mcDataChannel = pc.CreateDataChannel("motion_compensation", conf);
+            mcDataChannel.OnOpen = () =>
+            {
+                Debug.Log("New channel open: movement compensation data channel");
+            };
+            
+            return mcDataChannel;
+        }
+        
+        private RTCDataChannel InitJointStatesChannel(RTCPeerConnection pc)
+        {
+            var conf = new RTCDataChannelInit();
+            conf.ordered = true;
+            
+            jsDataChannel = pc.CreateDataChannel("joint_targets", conf);
+            jsDataChannel.OnOpen = () =>
+            {
+                Debug.Log("New channel open: joint state data channel");
+            };
+
+            return jsDataChannel;
+        }
+        
+        /// <summary>
+        /// Sends message to data channel
+        /// </summary>
+        private void SendPingMsg()
+        {
+            pingDataChannel.Send("ping");
+        }
+        
         /// <summary>
         /// Stops the webrtc connection
         /// </summary>
@@ -170,31 +150,8 @@ namespace ServerConnection.Aiortc
             WebRTC.Dispose();
         }
 
-        /// <summary>
-        /// Sets webrtc connection behaviors by setting up delegate functions, onTrack is very important in particular where incoming connections are listened
-        /// Then makes a offer for connection
-        /// </summary>
-        public void Connect(string[] urls)
+        private RTCIceServer[] GetICEServers(string[] urls)
         {
-            receiveStream = new MediaStream();
-            receiveStream.OnAddTrack = e =>
-            {
-                if (e.Track is VideoStreamTrack track)
-                {
-                    // You can access received texture using `track.Texture` property.
-                }
-                else if (e.Track is AudioStreamTrack track2)
-                {
-                    // This track is for audio.
-
-                }
-            };
-            receiveStream.OnRemoveTrack = ev =>
-            {
-                dummyImage.texture = null;
-                ev.Track.Dispose();
-            };
-
             Debug.Log("DannyB stun servers:");
             List<RTCIceServer> servers = new List<RTCIceServer>();
             foreach (var url in urls)
@@ -216,38 +173,28 @@ namespace ServerConnection.Aiortc
                     });
                 }
             }
+            
+            return servers.ToArray();
+        }
+        
+        /// <summary>
+        /// Sets webrtc connection behaviors by setting up delegate functions, onTrack is very important in particular where incoming connections are listened
+        /// Then makes a offer for connection
+        /// </summary>
+        public void Connect(string[] urls)
+        {
+            
             var c = new RTCConfiguration();
-            c.iceServers = servers.ToArray();
+            c.iceServers = GetICEServers(urls);
             pc = new RTCPeerConnection(ref c);
             pc.OnIceCandidate = cand =>
             {
-                Debug.Log("dannyb OnIceCandidate");
                 pc.OnIceCandidate = null;
-                var msg = new SignalingMsg
-                {
-                    type = pc.LocalDescription.type.ToString().ToLower(),
-                    sdp = pc.LocalDescription.sdp
-                };
-
-                switch (videoTransformType)
-                {
-                    case VideoTransformType.None:
-                        msg.video_transform = "none";
-                        break;
-                    case VideoTransformType.EdgeDetection:
-                        msg.video_transform = "edges";
-                        break;
-                    case VideoTransformType.CartoonEffect:
-                        msg.video_transform = "cartoon";
-                        break;
-                    case VideoTransformType.Rotate:
-                        msg.video_transform = "rotate";
-                        break;
-                }
 
                 if (socket.robot_name != null)
                 {
                     Debug.Log("dannyB offering connection!");
+                    // TODO: "OnIceCandidate" is a wrong place for this
                     socket.OfferConnection();
                 }
                 else
@@ -255,60 +202,35 @@ namespace ServerConnection.Aiortc
                     Debug.Log("dannyB no robot to operate!");
                 }
             };
-            pc.OnIceGatheringStateChange = state => {
-                Debug.Log("dannyb OnIceGatheringStateChange " + state);
-                
-            };
             pc.OnConnectionStateChange = state =>
             {
                 Debug.Log("dannyb OnConnectionStateChange " + state);
-                
-            };
-            pc.OnTrack = e =>
-            {
-                Debug.Log($"dannyb OnTrack {e.Track.Kind}");
-                if (e.Track.Kind == TrackKind.Video)
+                switch (state)
                 {
-                    // Add track to MediaStream for receiver.
-                    // This process triggers `OnAddTrack` event of `MediaStream`.
-                    receiveStream.AddTrack(e.Track);
-                }
-
-                if (e.Track is VideoStreamTrack video)
-                {
-
-                    Debug.Log($"dannyb OnTrack2 {e.Track.Kind}");
-                    video.OnVideoReceived += tex =>
-                    {
-                        if (tex == null)
-                        {
-                            Debug.Log("dannyb tex is null");
-                        }
-                        Debug.Log("dannyb OnVideoReceived");
-                        dummyImage.texture = tex;
-                    };
-                }
-
-                if (e.Track is AudioStreamTrack audioTrack)
-                {
-                    receiveAudio.SetTrack(audioTrack);
-                    receiveAudio.loop = true;
-                    receiveAudio.Play();
+                    case RTCPeerConnectionState.Connected:
+                        isConnected = true;
+                        break;
+                    default:
+                        isConnected = false;
+                        break;
                 }
             };
-            pc.OnDataChannel = onDataChannel;
-            RTCDataChannelInit conf = new RTCDataChannelInit();
-            conf.ordered = true;
-            pingDataChannel = pc.CreateDataChannel("ping", conf);
-            pingDataChannel.OnOpen = onDataChannelOpen;
-            pingDataChannel.OnMessage = onDataChannelMessage;
-            mcDataChannel = pc.CreateDataChannel("motion_compensation", conf);
-            mcDataChannel.OnOpen = onMCDataChannelOpen;
-            jsDataChannel = pc.CreateDataChannel("joint_targets", conf);
-            jsDataChannel.OnOpen = onJSDataChannelOpen;
+            InitMultimediaTracks(pc);
+            
+            pingDataChannel = InitPingChannel(pc);
+            mcDataChannel = InitMotionCompensationChannel(pc);
+            jsDataChannel = InitJointStatesChannel(pc);
+            
+            
             StartCoroutine(CreateDesc(RTCSdpType.Offer));
         }
 
+        
+        public enum Side
+        {
+            Local,
+            Remote
+        }
 
         /// <summary>
         /// Creates description of connection
@@ -358,17 +280,24 @@ namespace ServerConnection.Aiortc
             }
         }
 
-        
-        public IEnumerator CallFunctionRepeatedly(float interval, Func<bool> condition, Action action)
+        public IEnumerator TryConnect()
         {
-            while (!condition())
+            while (socket.stun_urls == null)
             {
                 Debug.Log("DannyB No stuns yet");
-                yield return new WaitForSeconds(interval);
+                yield return new WaitForSeconds(2);
             }
-            Debug.Log("DannyB STUNSSSS");
-            action();
+            try
+            {
+                Connect(socket.stun_urls);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Connection not successful!");
+                Debug.LogException(e);
+            }
         }
+        
         /// <summary>
         /// GetDataChannel
         /// </summary>
@@ -382,6 +311,37 @@ namespace ServerConnection.Aiortc
             {
                 Debug.LogWarning("Data channel not found: " + name);
                 return null;
+            }
+        }
+        
+
+        /*
+        [SerializeField] private VideoTransformType videoTransformType;
+        
+        public enum VideoTransformType
+        {
+            None,
+            EdgeDetection,
+            CartoonEffect,
+            Rotate
+        }
+        
+        /// <summary>
+        /// Sets the signalling message which can be offer for outgoing connection and answer for incomming connection
+        /// </summary>
+        private class SignalingMsg
+        {
+            public string type;
+            public string sdp;
+            public string video_transform;
+
+            public RTCSessionDescription ToDesc()
+            {
+                return new RTCSessionDescription
+                {
+                    type = type == "offer" ? RTCSdpType.Offer : RTCSdpType.Answer,
+                    sdp = sdp
+                };
             }
         }
         
@@ -409,7 +369,7 @@ namespace ServerConnection.Aiortc
             Debug.Log(resMsg);
 
             StartCoroutine(SetDesc(Side.Remote, resMsg.ToDesc()));
-        }
+        }*/
 
         /// <summary>
         /// Webrtc frame updates are listened here and for every incoming texture it is setting spherical game object texture with coming frames
@@ -418,34 +378,16 @@ namespace ServerConnection.Aiortc
         /// </summary>
         void Update()
         {
-            // if (imtpEncoder != null)
-            // {
-            //     imtpEncoder.SetLastReceivedTexture(dummyImage.texture);
-            // }
-
             leftRenderer.material.mainTexture = dummyImage.texture as Texture2D;
             rightRenderer.material.mainTexture = dummyImage.texture as Texture2D;
 
             timeElapsed += Time.deltaTime;
 
-            if (timeElapsed > publishMessageFrequency && initialized)
+            if (timeElapsed > publishMessageFrequency && isConnected)
             {
-                SendMsg();
+                SendPingMsg();
                 timeElapsed = 0;
             }
-            /*
-            var originalTargetTexture = cam.targetTexture;
-            cam.targetTexture = rt;
-            cam.Render();
-            cam.targetTexture = originalTargetTexture;*/
-        }
-
-        /// <summary>
-        /// Sends message to data channel
-        /// </summary>
-        public void SendMsg()
-        {
-            pingDataChannel.Send("ping");
         }
         public void OnWebRtcConfigGathered(string[] urls)
         {
@@ -465,105 +407,5 @@ namespace ServerConnection.Aiortc
         {
             pc.SetRemoteDescription(ref rtcSessionDescription);
         }
-        /*
-        public void ConnectWithUrls(string[] urls)
-        {
-            receiveStream = new MediaStream();
-            receiveStream.OnAddTrack = e =>
-            {
-                if (e.Track is VideoStreamTrack track)
-                {
-                    // You can access received texture using `track.Texture` property.
-                }
-                else if (e.Track is AudioStreamTrack track2)
-                {
-                    // This track is for audio.
-
-                }
-            };
-            receiveStream.OnRemoveTrack = ev =>
-            {
-                dummyImage.texture = null;
-                ev.Track.Dispose();
-            };
-
-            var rtcConfig = new RTCConfiguration();
-            rtcConfig.iceServers = urls;
-            pc = new RTCPeerConnection(new RTCConfiguration());
-            pc.OnIceCandidate = cand =>
-            {
-                Debug.Log("dannyb OnIceCandidate");
-                pc.OnIceCandidate = null;
-                var msg = new SignalingMsg
-                {
-                    type = pc.LocalDescription.type.ToString().ToLower(),
-                    sdp = pc.LocalDescription.sdp
-                };
-
-                switch (videoTransformType)
-                {
-                    case VideoTransformType.None:
-                        msg.video_transform = "none";
-                        break;
-                    case VideoTransformType.EdgeDetection:
-                        msg.video_transform = "edges";
-                        break;
-                    case VideoTransformType.CartoonEffect:
-                        msg.video_transform = "cartoon";
-                        break;
-                    case VideoTransformType.Rotate:
-                        msg.video_transform = "rotate";
-                        break;
-                }
-
-                
-                //this is the first initialization of Aiortc, it will start the socket connection and after necessary setups it will then make a connection offer 
-                this.AddComponentIfMissing <AiortcWebSocket>();
-                //StartCoroutine(aiortcSignaling(msg));
-            };
-            pc.OnIceGatheringStateChange = state => { };
-            pc.OnConnectionStateChange = state => { };
-            pc.OnTrack = e =>
-            {
-                if (e.Track.Kind == TrackKind.Video)
-                {
-                    // Add track to MediaStream for receiver.
-                    // This process triggers `OnAddTrack` event of `MediaStream`.
-                    receiveStream.AddTrack(e.Track);
-                }
-
-                if (e.Track is VideoStreamTrack video)
-                {
-
-                    video.OnVideoReceived += tex =>
-                    {
-                        if (tex == null)
-                        {
-                            Debug.Log("dannyb tex is null");
-                        }
-                        Debug.Log("dannyb OnVideoReceived");
-                        dummyImage.texture = tex;
-                    };
-                }
-
-                if (e.Track is AudioStreamTrack audioTrack)
-                {
-                    receiveAudio.SetTrack(audioTrack);
-                    receiveAudio.loop = true;
-                    receiveAudio.Play();
-                }
-            };
-            pc.OnDataChannel = onDataChannel;
-            RTCDataChannelInit conf = new RTCDataChannelInit();
-            conf.ordered = true;
-            pingDataChannel = pc.CreateDataChannel("ping", conf);
-            pingDataChannel.OnOpen = onDataChannelOpen;
-            pingDataChannel.OnMessage = onDataChannelMessage;
-            mcDataChannel = pc.CreateDataChannel("motion_compensation", conf);
-            mcDataChannel.OnOpen = onMCDataChannelOpen;
-            jsDataChannel = pc.CreateDataChannel("joint_state", conf);
-            jsDataChannel.OnOpen = onJSDataChannelOpen;
-            StartCoroutine(CreateDesc(RTCSdpType.Offer));
-        }*/
     }
 }
