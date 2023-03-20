@@ -6,7 +6,10 @@ using UnityEngine;
 namespace RobodyControl
 {
     /// <summary>
-    /// Enables and disables moving the robot body.
+    /// Controls the joints in Roboy model:
+    /// - Enables and disables movements (e.g. when Settings are open, the body shouldn't move).
+    /// - Can save the current state and restore it later
+    /// - Gathers all the joint states, to be sent as goal for the real Robody
     /// </summary>
     public class RobotMotionManager : Singleton<RobotMotionManager>
     {
