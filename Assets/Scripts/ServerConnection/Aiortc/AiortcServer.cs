@@ -28,7 +28,7 @@ namespace ServerConnection.Aiortc
 
         public override int[][] FaceCoordinates => imtpEncoder.faceCoordinates;
 
-        public override bool ConnectedToServer => aiortcConnector.isConnected;
+        public override bool ConnectedToServer => aiortcConnector.RobotConnected;
 
         public override Dictionary<Modality, bool> ModalityConnected { get; }
             = Enum.GetValues(typeof(Modality)).Cast<Enum>().ToDictionary(e => (Modality)e, v => false);

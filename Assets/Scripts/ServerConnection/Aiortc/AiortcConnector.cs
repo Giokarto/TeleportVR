@@ -26,14 +26,15 @@ namespace ServerConnection.Aiortc
         private float timeElapsed;
         public float publishMessageFrequency = 5f;
 
-        /// <summary>
-        /// Indicates if a data channel is open.
-        /// </summary>
-        public bool isConnected { get; private set; }
+        private bool peerConnectionConnected;
+        public bool RobotConnected { get; private set; }
 
 
         public RTCPeerConnection pc;
         public RTCDataChannel pingDataChannel, mcDataChannel, jsDataChannel;
+
+        public WebRTCHeadPositionListener headPositionListener;
+        public WebRTCJointPositionSender jointPositionSender;
 
         /// <summary>
         /// Initializes game components and data channel behavior then tries to start the connection
@@ -107,6 +108,9 @@ namespace ServerConnection.Aiortc
             {
                 Debug.Log("New channel open: movement compensation data channel");
             };
+
+            headPositionListener.dataChannel = mcDataChannel;
+            mcDataChannel.OnMessage += headPositionListener.OnMessage;
             
             return mcDataChannel;
         }
@@ -121,6 +125,8 @@ namespace ServerConnection.Aiortc
             {
                 Debug.Log("New channel open: joint state data channel");
             };
+
+            jointPositionSender.dataChannel = jsDataChannel;
 
             return jsDataChannel;
         }
@@ -199,7 +205,7 @@ namespace ServerConnection.Aiortc
                 }
                 else
                 {
-                    Debug.Log("dannyB no robot to operate!");
+                    Debug.LogError("dannyB no robot to operate!");
                 }
             };
             pc.OnConnectionStateChange = state =>
@@ -208,10 +214,10 @@ namespace ServerConnection.Aiortc
                 switch (state)
                 {
                     case RTCPeerConnectionState.Connected:
-                        isConnected = true;
+                        peerConnectionConnected = true;
                         break;
                     default:
-                        isConnected = false;
+                        peerConnectionConnected = false;
                         break;
                 }
             };
@@ -383,7 +389,7 @@ namespace ServerConnection.Aiortc
 
             timeElapsed += Time.deltaTime;
 
-            if (timeElapsed > publishMessageFrequency && isConnected)
+            if (timeElapsed > publishMessageFrequency && RobotConnected)
             {
                 SendPingMsg();
                 timeElapsed = 0;
@@ -395,7 +401,8 @@ namespace ServerConnection.Aiortc
 
         public void OnRobotConnected(string robotName)
         {
-            
+            Debug.Log($"robot {robotName} connected");
+            RobotConnected = true;
         }
 
         public RTCPeerConnection GetPeerConnection()

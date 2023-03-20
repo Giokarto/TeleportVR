@@ -10,21 +10,14 @@ namespace ServerConnection.Aiortc
     public class WebRTCJointPositionSender : DevicePoseSenderBase
     {
         private RTCPeerConnection peerConnection;
-        private RTCDataChannel dataChannel;
+        public RTCDataChannel dataChannel;
         private float timeElapsed;
         public float publishMessageFrequency = 0.01f;
-        
-        private BioIK.BioIK HeadIK;
-        private BioIK.BioIK BodyIK;
 
 
         public void Start()
         {
             Debug.Log("dannyb initializing WebRTCJointPositionSender");
-            dataChannel = GetComponent<AiortcConnector>().jsDataChannel;
-            
-            BodyIK = ServerBase.Instance.BodyIK;
-            HeadIK = ServerBase.Instance.HeadIK;
         }
 
         /// <summary>
@@ -43,17 +36,16 @@ namespace ServerConnection.Aiortc
 
         private void Update()
         {
-            if (dataChannel == null)
+            if (dataChannel != null && dataChannel.ReadyState == RTCDataChannelState.Open)
             {
-                dataChannel = FindObjectOfType<AiortcConnector>().jsDataChannel;
-            }
-            timeElapsed += Time.deltaTime;
+                timeElapsed += Time.deltaTime;
 
-            if (timeElapsed > publishMessageFrequency)
-            {
-                var message = GetJointPositionsMessage();
-                dataChannel.Send(message);
-                timeElapsed = 0;
+                if (timeElapsed > publishMessageFrequency)
+                {
+                    var message = GetJointPositionsMessage();
+                    dataChannel.Send(message);
+                    timeElapsed = 0;
+                }
             }
         }
     }

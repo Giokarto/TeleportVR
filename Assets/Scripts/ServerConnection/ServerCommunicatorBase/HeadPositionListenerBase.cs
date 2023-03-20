@@ -22,8 +22,7 @@ namespace ServerConnection.ServerCommunicatorBase
         protected virtual void Start()
         {
             Debug.Log("DannyB start HeadPositionListenerBase");
-            GameObject go = GameObject.Find("HeadRotationController");
-            headRotationController = go.GetComponent<HeadRotationController>();
+            headRotationController = FindObjectOfType<HeadRotationController>();
         }
         
         

@@ -196,6 +196,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vrGestureRecognizer: {fileID: 0}
+--- !u!1 &15462988
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 15462989}
+  - component: {fileID: 15462990}
+  m_Layer: 0
+  m_Name: HeadPositionListener
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &15462989
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15462988}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 298658156}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &15462990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15462988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c45b717b9b5c39d4792de01fa0e4faeb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &23973646 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4177823132692205648, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -692,7 +735,7 @@ GameObject:
   - component: {fileID: 68435635}
   - component: {fileID: 68435636}
   m_Layer: 0
-  m_Name: HeadRotationController
+  m_Name: MotionCompensation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1276,6 +1319,8 @@ Transform:
   - {fileID: 1542706658}
   - {fileID: 2003449243}
   - {fileID: 68435635}
+  - {fileID: 15462989}
+  - {fileID: 1448399494}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -8498,6 +8543,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cc329982edfc412a8a508a8e175eef1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1448399493
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1448399494}
+  - component: {fileID: 1448399495}
+  m_Layer: 0
+  m_Name: JointPositionSender
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1448399494
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1448399493}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 298658156}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1448399495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1448399493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1169b3241c8a3654e9f7cf5c6ccb592f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  publishMessageFrequency: 0.01
 --- !u!114 &1458118164 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9176280722161430420, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -8826,11 +8915,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aiortcServerURL: http://10.7.0.3:8080
   dummyImage: {fileID: 1609621274}
-  videoTransformType: 0
   imtpEncoder: {fileID: 1678106452}
   receiveAudio: {fileID: 2003449244}
   _headPositionProtocol: 0
   publishMessageFrequency: 1
+  headPositionListener: {fileID: 15462990}
+  jointPositionSender: {fileID: 1448399495}
 --- !u!1 &1545471391 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8980600750893642668, guid: 8376e5037528d434cab49e987b7a4e72,
