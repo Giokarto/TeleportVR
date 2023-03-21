@@ -32,12 +32,14 @@ namespace ServerConnection.Aiortc
             try
             {
                 str.Remove(0, 5);
-                Debug.Log("Dannyb XXXX" + str);
+                //Debug.Log("Dannyb XXXX" + str);
                 JObject jsonObject = JObject.Parse(str);
                 JToken myToken = jsonObject["head position"];
                 //var name = myToken.ToObject<HeadPositionMessage>();
-                Debug.Log("dannyb head name: " + myToken);
-                var obj = new HeadPositionMessage();//JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
+                var obj = JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
+                Debug.Log("dannyb head name: " + obj.toVector3());
+                ProcessHeadMessage(obj.toVector3());
+                /*
                 if (obj != null)
                 {
                     if (current <= -0.5f)
@@ -63,7 +65,7 @@ namespace ServerConnection.Aiortc
                     obj.head_axis1 = 0f;//right left
                     obj.head_axis2 = 0f;//yaw
                     ProcessHeadMessage(obj.toVector3());
-                }
+                }*/
             }
             catch (Exception e)
             {

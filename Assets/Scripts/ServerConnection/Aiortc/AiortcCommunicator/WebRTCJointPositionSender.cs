@@ -44,6 +44,7 @@ namespace ServerConnection.Aiortc
                 {
                     var message = GetJointPositionsMessage();
                     dataChannel.Send(message);
+                    Debug.Log("Sending joint poses!\n " + message);
                     timeElapsed = 0;
                 }
             }

@@ -2,33 +2,34 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace ServerConnection.Aiortc
 {
     /// <summary>
     /// Implementation of <see cref="ServerBase"/> with WebRTC.
-    /// Uses <see cref="AiortcConnector"/> and <see cref="ImtpEncoder"/> under the hood,
+    /// Uses <see cref="Aiortc.AiortcConnector"/> and <see cref="ImtpEncoder"/> under the hood,
     /// this is a public wrapper of these classes.
     /// </summary>
     public class AiortcServer : ServerBase
     {
-        [SerializeField] private AiortcConnector aiortcConnector;
-        [SerializeField] private ImtpEncoder imtpEncoder;
+        [FormerlySerializedAs("aiortcConnector")] [SerializeField] private AiortcConnector AiortcConnector;
+        //[SerializeField] private ImtpEncoder imtpEncoder;
         public void Start()
         {
-            imtpEncoder.leftEye = LeftEye;
-            imtpEncoder.rightEye = RightEye;
+            AiortcConnector.LeftEye = LeftEye;
+            AiortcConnector.RightEye = RightEye;
         }
 
         public override string IPaddress
         {
-            get => aiortcConnector.aiortcServerURL;
-            set => aiortcConnector.aiortcServerURL = value + ":8080";
+            get => AiortcConnector.aiortcServerURL;
+            set => AiortcConnector.aiortcServerURL = value + ":8080";
         }
 
-        public override int[][] FaceCoordinates => imtpEncoder.faceCoordinates;
+        //public override int[][] FaceCoordinates => imtpEncoder.faceCoordinates;
 
-        public override bool ConnectedToServer => aiortcConnector.RobotConnected;
+        public override bool ConnectedToServer => AiortcConnector.RobotConnected;
 
         public override Dictionary<Modality, bool> ModalityConnected { get; }
             = Enum.GetValues(typeof(Modality)).Cast<Enum>().ToDictionary(e => (Modality)e, v => false);

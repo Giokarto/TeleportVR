@@ -168,7 +168,7 @@ namespace ServerConnection.Aiortc
                 {
                     Debug.Log("sending signaling message");
                     WebSocketOfferMessage message = new WebSocketOfferMessage
-                        { type = "offer", target = robot_name, sdp =aiortcWebSocketInterface.GetPeerConnection().LocalDescription.sdp};
+                        { type = "offer", target = robot_name, sdp = aiortcWebSocketInterface.GetPeerConnection().LocalDescription.sdp};
                     string json = JsonConvert.SerializeObject(message);
                     ws.Send(json);
                 }
