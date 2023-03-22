@@ -59,6 +59,7 @@ namespace ServerConnection.Aiortc
 
         protected override void SetMotorOn(bool on)
         {
+            AiortcConnector.SetMotorOn(on);
         }
 
         public override void ChangeGrip(float left, float right)

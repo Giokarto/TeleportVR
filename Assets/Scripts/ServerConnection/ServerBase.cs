@@ -95,6 +95,7 @@ namespace ServerConnection
                 LeftEyePrefab = Resources.Load<GameObject>("EyePlanes/LeftEye");
             }
             LeftEye = Instantiate(LeftEyePrefab, new Vector3(0,1.068f,0) ,anchor.transform.rotation);
+            //LeftEye.transform.parent = anchor.transform;
             
             anchor = GameObject.Find("RightEyeAnchor");
             if (RightEyePrefab == null)
@@ -103,6 +104,7 @@ namespace ServerConnection
                 RightEyePrefab = Resources.Load<GameObject>("EyePlanes/RightEye");
             }
             RightEye = Instantiate(RightEyePrefab, new Vector3(0,1.068f,0) ,  anchor.transform.rotation * Quaternion.Euler(0,180,0));
+            //RightEye.transform.parent = anchor.transform;
         }
 
         /// <summary>

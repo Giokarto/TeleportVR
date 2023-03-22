@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Unity.WebRTC;
 using UnityEngine;
@@ -19,7 +20,9 @@ namespace ServerConnection.Aiortc
         [SerializeField] private RawImage dummyImage;
         [SerializeField] private bool UsingSocket;
         [SerializeField] private AudioSource receiveAudio;
-        
+
+        private bool currentlyStreaming = false;
+
 
         public AiortcWebSocket socket;
         private Renderer leftRenderer;
@@ -43,30 +46,52 @@ namespace ServerConnection.Aiortc
         /// </summary>
         void Start()
         {
-            StartCoroutine(TryConnect());
             leftRenderer = LeftEye.GetComponentInChildren<Renderer>();
             rightRenderer = RightEye.GetComponentInChildren<Renderer>();
-            
+
             WebRTC.Initialize();
             StartCoroutine(WebRTC.Update());
             if (!UsingSocket)
             {
-                Connect(null);  
+                Connect(null);
             }
             else
             {
                 socket = new AiortcWebSocket(this);
+                StartCoroutine(TryConnectWithSocket());
             }
         }
 
-        
+        /// <summary>
+        /// Enable / disable sending and rendering received data for all modalities.
+        /// </summary>
+        public void SetMotorOn(bool on)
+        {
+            currentlyStreaming = on;
+            headPositionListener.enabled = on;
+            jointPositionSender.enabled = on;
+            if (videoTransceiver != null)
+            {
+                videoTransceiver.Receiver.Track.Enabled = on;
+            }
+
+            if (audioTransciever != null)
+            {
+                audioTransciever.Sender.Track.Enabled = on;
+                audioTransciever.Receiver.Track.Enabled = on;
+            }
+            receiveAudio.enabled = on;
+        }
+
+
         private string _defaulMicrophone;
         private AudioClip m_clipInput;
         private MediaStream _sendStream;
-        [SerializeField]
-        private AudioSource _audioSourceInput;
-        private AudioStreamTrack track;
-        
+        [SerializeField] private AudioSource _audioSourceInput;
+        private AudioStreamTrack micInputTrack;
+        private RTCRtpTransceiver videoTransceiver;
+        private RTCRtpTransceiver audioTransciever;
+
         private void InitMultimediaTracks(RTCPeerConnection pc)
         {
             pc.OnTrack = e =>
@@ -79,6 +104,7 @@ namespace ServerConnection.Aiortc
                         {
                             Debug.Log("dannyb tex is null");
                         }
+
                         Debug.Log("dannyb OnVideoReceived");
                         dummyImage.texture = tex;
                     };
@@ -90,14 +116,36 @@ namespace ServerConnection.Aiortc
                     receiveAudio.SetTrack(audioTrack);
                     receiveAudio.loop = true;
                     receiveAudio.Play();
+                    receiveAudio.enabled = currentlyStreaming;
                 }
             };
-            
-            var transceiver1 = pc.AddTransceiver(TrackKind.Video);
-            transceiver1.Direction = RTCRtpTransceiverDirection.RecvOnly;
-            var transceiver2 = pc.AddTransceiver(TrackKind.Audio);
-            transceiver2.Direction = RTCRtpTransceiverDirection.SendRecv;
-            
+
+            videoTransceiver = pc.AddTransceiver(TrackKind.Video);
+            videoTransceiver.Direction = RTCRtpTransceiverDirection.RecvOnly;
+            audioTransciever = pc.AddTransceiver(TrackKind.Audio);
+            audioTransciever.Direction = RTCRtpTransceiverDirection.SendRecv;
+
+
+            string[] excludeCodecMimeType = { "video/red", "video/ulpfec", "video/rtx" };
+            var capabilities = RTCRtpSender.GetCapabilities(TrackKind.Video);
+            var availableCodecs = capabilities.codecs
+                .Where(codec => !excludeCodecMimeType.Contains(codec.mimeType))
+                .ToList();
+            var list = availableCodecs
+                .Select(codec => new Dropdown.OptionData { text = codec.mimeType + " " + codec.sdpFmtpLine })
+                .ToList();
+
+            /*if (WebRTCSettings.UseVideoCodec != null)
+            {
+                var codecs = new[] {WebRTCSettings.UseVideoCodec};
+                foreach (var transceiver in _pc1.GetTransceivers())
+                {
+                    if (pc1Senders.Contains(transceiver.Sender))
+                    {
+                        transceiver.SetCodecPreferences(codecs);
+                    }
+                }
+            }*/
             _defaulMicrophone = Microphone.devices[0];
             Microphone.GetDeviceCaps(_defaulMicrophone, out int minFreq, out int maxFreq);
             m_clipInput = Microphone.Start(_defaulMicrophone, true, 1, 48000);
@@ -106,8 +154,14 @@ namespace ServerConnection.Aiortc
             _audioSourceInput.clip = m_clipInput;
             _audioSourceInput.loop = true;
             _audioSourceInput.Play();
-            track = new AudioStreamTrack(_audioSourceInput);
-            transceiver2.Sender.ReplaceTrack(track);
+            micInputTrack = new AudioStreamTrack(_audioSourceInput);
+            audioTransciever.Sender.ReplaceTrack(micInputTrack);
+
+
+            videoTransceiver.Receiver.Track.Enabled = currentlyStreaming;
+            audioTransciever.Sender.Track.Enabled = currentlyStreaming;
+            audioTransciever.Receiver.Track.Enabled = currentlyStreaming;
+
             //  pc.AddTrack(track);
         }
 
@@ -117,21 +171,12 @@ namespace ServerConnection.Aiortc
             RTCDataChannelInit conf = new RTCDataChannelInit();
             conf.ordered = true;
             pingDataChannel = pc.CreateDataChannel("ping", conf);
-            
-            pingDataChannel.OnOpen = () =>
-            {
-                SendPingMsg();
-            };
-            pingDataChannel.OnMessage = bytes =>
-            {
-                Debug.Log("Received message in ping channel!");
-            };
 
-            pingDataChannel.OnClose = () =>
-            {
-                Debug.Log("Ping channel is closed!");
-            }; 
-            
+            pingDataChannel.OnOpen = () => { SendPingMsg(); };
+            pingDataChannel.OnMessage = bytes => { Debug.Log("Received message in ping channel!"); };
+
+            pingDataChannel.OnClose = () => { Debug.Log("Ping channel is closed!"); };
+
             return pingDataChannel;
         }
 
@@ -139,35 +184,29 @@ namespace ServerConnection.Aiortc
         {
             var conf = new RTCDataChannelInit();
             conf.ordered = true;
-            
+
             mcDataChannel = pc.CreateDataChannel("motion_compensation", conf);
-            mcDataChannel.OnOpen = () =>
-            {
-                Debug.Log("New channel open: movement compensation data channel");
-            };
+            mcDataChannel.OnOpen = () => { Debug.Log("New channel open: movement compensation data channel"); };
 
             headPositionListener.dataChannel = mcDataChannel;
             mcDataChannel.OnMessage += headPositionListener.OnMessage;
-            
+
             return mcDataChannel;
         }
-        
+
         private RTCDataChannel InitJointStatesChannel(RTCPeerConnection pc)
         {
             var conf = new RTCDataChannelInit();
             conf.ordered = true;
-            
+
             jsDataChannel = pc.CreateDataChannel("joint_targets", conf);
-            jsDataChannel.OnOpen = () =>
-            {
-                Debug.Log("New channel open: joint state data channel");
-            };
+            jsDataChannel.OnOpen = () => { Debug.Log("New channel open: joint state data channel"); };
 
             jointPositionSender.dataChannel = jsDataChannel;
 
             return jsDataChannel;
         }
-        
+
         /// <summary>
         /// Sends message to data channel
         /// </summary>
@@ -175,7 +214,7 @@ namespace ServerConnection.Aiortc
         {
             pingDataChannel.Send("ping");
         }
-        
+
         /// <summary>
         /// Stops the webrtc connection
         /// </summary>
@@ -187,7 +226,7 @@ namespace ServerConnection.Aiortc
             if (comp != null) {
                 Destroy(comp);
             }*/
-            
+
             receiveAudio.Stop();
             receiveAudio.clip = null;
             WebRTC.Dispose();
@@ -240,8 +279,9 @@ namespace ServerConnection.Aiortc
             });
             return servers.ToArray();
         }
-        
+
         private DateTime lastIceCandidateTime;
+
         /// <summary>
         /// Sets webrtc connection behaviors by setting up delegate functions, onTrack is very important in particular where incoming connections are listened
         /// Then makes a offer for connection
@@ -265,11 +305,9 @@ namespace ServerConnection.Aiortc
                 anyIce = true;
                 //pc.OnIceCandidate = null;
                 Debug.Log("DannyB OnIceCandidate: " + cand.Candidate);
-                
             };
 
-            
-            
+
             pc.OnIceGatheringStateChange = state =>
             {
                 Debug.Log("DannyB OnIceGatheringStateChange: " + state);
@@ -311,12 +349,12 @@ namespace ServerConnection.Aiortc
                                 msg.video_transform = "rotate";
                                 break;
                         }
-                        StartCoroutine(aiortcSignaling(msg));   
+
+                        StartCoroutine(aiortcSignaling(msg));
                     }
-                    
                 }
             };
-            
+
             pc.OnConnectionStateChange = state =>
             {
                 Debug.Log("dannyb OnConnectionStateChange " + state);
@@ -333,16 +371,16 @@ namespace ServerConnection.Aiortc
                 }
             };
             InitMultimediaTracks(pc);
-            
+
             pingDataChannel = InitPingChannel(pc);
             mcDataChannel = InitMotionCompensationChannel(pc);
             jsDataChannel = InitJointStatesChannel(pc);
-            
-            
+
+
             StartCoroutine(CreateDesc(RTCSdpType.Offer));
         }
 
-        
+
         public enum Side
         {
             Local,
@@ -393,17 +431,14 @@ namespace ServerConnection.Aiortc
             }
         }
 
-        public IEnumerator TryConnect()
+        public IEnumerator TryConnectWithSocket()
         {
-            if (socket == null)
-            {
-                yield return null;
-            }
             while (socket.stun_urls == null)
             {
                 Debug.Log("DannyB No stuns yet");
                 yield return new WaitForSeconds(2);
             }
+
             try
             {
                 Connect(socket.stun_urls);
@@ -414,7 +449,7 @@ namespace ServerConnection.Aiortc
                 Debug.LogException(e);
             }
         }
-        
+
         /// <summary>
         /// GetDataChannel
         /// </summary>
@@ -430,11 +465,10 @@ namespace ServerConnection.Aiortc
                 return null;
             }
         }
-        
 
-        
+
         [SerializeField] private VideoTransformType videoTransformType;
-        
+
         public enum VideoTransformType
         {
             None,
@@ -442,7 +476,7 @@ namespace ServerConnection.Aiortc
             CartoonEffect,
             Rotate
         }
-        
+
         /// <summary>
         /// Sets the signalling message which can be offer for outgoing connection and answer for incomming connection
         /// </summary>
@@ -461,7 +495,7 @@ namespace ServerConnection.Aiortc
                 };
             }
         }
-        
+
         /// <summary>
         /// Sends connection web request to dedicated server
         /// </summary>
@@ -490,6 +524,7 @@ namespace ServerConnection.Aiortc
 
         private bool connectionStarted = false;
         private bool anyIce = false;
+
         /// <summary>
         /// Webrtc frame updates are listened here and for every incoming texture it is setting spherical game object texture with coming frames
         /// Frames can be also transfered to ImtpEncoder class and can be manipulated further, currently disabled because it is causing rendering 
@@ -537,9 +572,11 @@ namespace ServerConnection.Aiortc
                             msg.video_transform = "rotate";
                             break;
                     }
-                    StartCoroutine(aiortcSignaling(msg));   
+
+                    StartCoroutine(aiortcSignaling(msg));
                 }
             }
+
             leftRenderer.material.mainTexture = dummyImage.texture as Texture2D;
             rightRenderer.material.mainTexture = dummyImage.texture as Texture2D;
 
@@ -551,6 +588,7 @@ namespace ServerConnection.Aiortc
                 timeElapsed = 0;
             }
         }
+
         public void OnWebRtcConfigGathered(string[] urls)
         {
         }
