@@ -12,7 +12,7 @@ namespace ServerConnection.RosTcpConnector
     public class RosJointPosePublisher : MonoBehaviour
     {
         ROSConnection ros;
-        public string topicName = "/operator/joint_target"; // /roboy/pinky/simulation/joint_targets
+        public string topicName = "/operator/joint_target";
         public float publishMessageFrequency = 0.01f;
 
         private BioIK.BioIK BodyIK;
@@ -96,10 +96,11 @@ namespace ServerConnection.RosTcpConnector
                 if (segment.Joint != null)
                 {
                     // TODO investigate axis2
-                    if (segment.Joint.name == "head_axis2") continue;
+                    //if (segment.Joint.name == "head_axis2") continue;
                     names.Add(segment.Joint.name);
                     velocities.Add(0f);
                     positions.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
+                    Debug.Log($"publishing head {segment.Joint.name} with value {(float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad}");
                 }
             }
 

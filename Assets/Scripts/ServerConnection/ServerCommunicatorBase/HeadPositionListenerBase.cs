@@ -16,6 +16,7 @@ namespace ServerConnection.ServerCommunicatorBase
         
         public void ProcessHeadMessage(Vector3 headVector)
         {
+            (headVector.x, headVector.y) = (headVector.y, headVector.x);
             headRotationController.ProcessHeadMessage(headVector);
         }
 

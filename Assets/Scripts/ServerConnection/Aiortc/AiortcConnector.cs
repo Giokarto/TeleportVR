@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text;
 using Unity.WebRTC;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using Widgets;
 
 namespace ServerConnection.Aiortc
 {
@@ -41,6 +43,8 @@ namespace ServerConnection.Aiortc
         public WebRTCHeadPositionListener headPositionListener;
         public WebRTCJointPositionSender jointPositionSender;
 
+
+        private VideoStreamTrack ReceiveVideo;
         /// <summary>
         /// Initializes game components and data channel behavior then tries to start the connection
         /// </summary>
@@ -72,7 +76,7 @@ namespace ServerConnection.Aiortc
             jointPositionSender.enabled = on;
             if (videoTransceiver != null)
             {
-                videoTransceiver.Receiver.Track.Enabled = on;
+                videoTransceiver.Receiver.Track.Enabled = true; // on;
             }
 
             if (audioTransciever != null)
@@ -98,7 +102,23 @@ namespace ServerConnection.Aiortc
             {
                 if (e.Track is VideoStreamTrack video)
                 {
-                    video.OnVideoReceived += tex =>
+                    Debug.Log("other side added video stream track");
+                    ReceiveVideo = video;
+                    
+                    /*var mimetype = "H264";
+                    var videoCodec = RTCRtpSender.GetCapabilities(TrackKind.Video).codecs.FirstOrDefault(c => c.mimeType.Contains(mimetype));
+                    if (videoCodec == null)
+                    {
+                        Debug.Log("DannyB can not set can not set videoCodec");
+                    }
+                    else 
+                    {
+                        Debug.Log("DannyB set videoCodec to h264");
+                        var sender = pc.AddTrack(ReceiveVideo);
+                        var transceiver = pc.GetTransceivers().First(t => t.Sender == sender);
+                        transceiver.SetCodecPreferences(new[] {videoCodec});
+                    }*/
+                    ReceiveVideo.OnVideoReceived += tex =>
                     {
                         if (tex == null)
                         {
@@ -119,21 +139,21 @@ namespace ServerConnection.Aiortc
                     receiveAudio.enabled = currentlyStreaming;
                 }
             };
-
+            
             videoTransceiver = pc.AddTransceiver(TrackKind.Video);
             videoTransceiver.Direction = RTCRtpTransceiverDirection.RecvOnly;
             audioTransciever = pc.AddTransceiver(TrackKind.Audio);
             audioTransciever.Direction = RTCRtpTransceiverDirection.SendRecv;
 
 
-            string[] excludeCodecMimeType = { "video/red", "video/ulpfec", "video/rtx" };
+            /*string[] excludeCodecMimeType = { "video/red", "video/ulpfec", "video/rtx" };
             var capabilities = RTCRtpSender.GetCapabilities(TrackKind.Video);
             var availableCodecs = capabilities.codecs
                 .Where(codec => !excludeCodecMimeType.Contains(codec.mimeType))
                 .ToList();
             var list = availableCodecs
                 .Select(codec => new Dropdown.OptionData { text = codec.mimeType + " " + codec.sdpFmtpLine })
-                .ToList();
+                .ToList();*/
 
             /*if (WebRTCSettings.UseVideoCodec != null)
             {
@@ -146,6 +166,9 @@ namespace ServerConnection.Aiortc
                     }
                 }
             }*/
+
+
+            //initialize outgoing audio properties
             _defaulMicrophone = Microphone.devices[0];
             Microphone.GetDeviceCaps(_defaulMicrophone, out int minFreq, out int maxFreq);
             m_clipInput = Microphone.Start(_defaulMicrophone, true, 1, 48000);
@@ -158,11 +181,10 @@ namespace ServerConnection.Aiortc
             audioTransciever.Sender.ReplaceTrack(micInputTrack);
 
 
-            videoTransceiver.Receiver.Track.Enabled = currentlyStreaming;
+            videoTransceiver.Receiver.Track.Enabled = true; // currentlyStreaming;
             audioTransciever.Sender.Track.Enabled = currentlyStreaming;
             audioTransciever.Receiver.Track.Enabled = currentlyStreaming;
 
-            //  pc.AddTrack(track);
         }
 
 
@@ -212,7 +234,14 @@ namespace ServerConnection.Aiortc
         /// </summary>
         private void SendPingMsg()
         {
-            pingDataChannel.Send("ping");
+            if (pingDataChannel.ReadyState == RTCDataChannelState.Open)
+            {
+                pingDataChannel.Send("ping");
+            }
+            else
+            {
+                Debug.Log("ping data channel not open");
+            }
         }
 
         /// <summary>
@@ -304,7 +333,7 @@ namespace ServerConnection.Aiortc
                 lastIceCandidateTime = DateTime.Now;
                 anyIce = true;
                 //pc.OnIceCandidate = null;
-                Debug.Log("DannyB OnIceCandidate: " + cand.Candidate);
+                // Debug.Log("DannyB OnIceCandidate: " + cand.Candidate);
             };
 
 
@@ -518,6 +547,14 @@ namespace ServerConnection.Aiortc
 
             var resMsg = JsonUtility.FromJson<SignalingMsg>(req.downloadHandler.text);
             Debug.Log(resMsg);
+
+            if (resMsg == null)
+            {
+                Debug.LogAssertion("Connection to server failed: signaling message was null!");
+                WidgetFactory.Instance.CreateToastrWidget(
+                    $"Connection to server failed: can't reach the server", 2, "Server error");
+                yield break;
+            }
 
             StartCoroutine(SetDesc(Side.Remote, resMsg.ToDesc()));
         }

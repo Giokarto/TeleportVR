@@ -1302,7 +1302,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &298658156
 Transform:
   m_ObjectHideFlags: 0
@@ -2308,7 +2308,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &512530023
 Transform:
   m_ObjectHideFlags: 0
@@ -2346,8 +2346,8 @@ MonoBehaviour:
     type: 3}
   RightEyePrefab: {fileID: 5157180419957703894, guid: 6d1b2ec250f6a4b44aa5c03d4c9dee59,
     type: 3}
-  HeadIK: {fileID: 0}
-  BodyIK: {fileID: 0}
+  HeadIK: {fileID: 618619395}
+  BodyIK: {fileID: 618619396}
   vision: {fileID: 475412278}
   jointPose: {fileID: 1086971377}
   headPose: {fileID: 469497750}
@@ -8409,7 +8409,7 @@ MonoBehaviour:
     OperatorHorizontal: 0
     OperatorVertical: 0.1432849
     RobotName: 
-    RosIP: 10.7.0.3
+    RosIP: 10.1.0.6
 --- !u!114 &1376495787 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -6371880505787038194, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -9040,7 +9040,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e1f192c59c54fbd87c25983cfdf6704, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aiortcServerURL: http://10.7.0.3:8080
+  aiortcServerURL: http://10.1.0.6:8080
   dummyImage: {fileID: 1609621274}
   UsingSocket: 1
   receiveAudio: {fileID: 2003449244}
