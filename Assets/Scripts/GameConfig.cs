@@ -19,7 +19,7 @@ public class GameConfig : Singleton<GameConfig>
         public float OperatorHorizontal = 0;
         public float OperatorVertical = 0.1432849f; //0;
         public string RobotName = null;
-        public string RosIP = "10.7.0.3";
+        public string RosIP = "10.1.0.6";
     }
 
 
@@ -31,7 +31,7 @@ public class GameConfig : Singleton<GameConfig>
     void Awake()
     {
         path = Application.persistentDataPath + "/" + configName;
-        //Debug.Log("Game config awake");
+        //Debug.Log($"Using game config from: {path}");
         settings = new PlayerSettings();
         try
         {

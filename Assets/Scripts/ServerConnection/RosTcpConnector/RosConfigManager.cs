@@ -14,6 +14,10 @@ namespace ServerConnection.RosTcpConnector
         {
             if (GameConfig.Instance.settings.RosIP != "" && UseConfigFile)
                 ROSConnection.GetOrCreateInstance().RosIPAddress = GameConfig.Instance.settings.RosIP;
+            else
+            {
+                ROSConnection.GetOrCreateInstance().RosIPAddress = "10.1.0.6";
+            }
         }
 
         void Update()
