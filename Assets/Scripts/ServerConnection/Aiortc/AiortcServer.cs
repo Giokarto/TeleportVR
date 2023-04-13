@@ -13,13 +13,7 @@ namespace ServerConnection.Aiortc
     /// </summary>
     public class AiortcServer : ServerBase
     {
-        [FormerlySerializedAs("aiortcConnector")] [SerializeField] private AiortcConnector AiortcConnector;
-        //[SerializeField] private ImtpEncoder imtpEncoder;
-        public void Start()
-        {
-            AiortcConnector.LeftEye = LeftEye;
-            AiortcConnector.RightEye = RightEye;
-        }
+        [SerializeField] private AiortcConnector AiortcConnector;
 
         public override string IPaddress
         {

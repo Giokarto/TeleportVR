@@ -10,11 +10,10 @@ namespace ServerConnection.Aiortc
     /// </summary>
     public class ImtpEncoder : MonoBehaviour
     {
-        [SerializeField] public GameObject leftEye;
-        [SerializeField] public GameObject rightEye;
         [SerializeField] private VideoStreamViewType videoStreamViewType;
         private Renderer leftEyeRenderer, righEyeRenderer;
         private Texture2D lastReceivedTexture;
+        public AiortcConnector aiortcConnector;
 
         public Int32[][] faceCoordinates = { };
 
@@ -29,8 +28,8 @@ namespace ServerConnection.Aiortc
         /// </summary>
         public void Start()
         {
-            leftEyeRenderer = leftEye.GetComponentInChildren<Renderer>();
-            righEyeRenderer = rightEye.GetComponentInChildren<Renderer>();
+            leftEyeRenderer = ServerBase.Instance.LeftEye.GetComponentInChildren<Renderer>();
+            righEyeRenderer = ServerBase.Instance.RightEye.GetComponentInChildren<Renderer>();
         }
 
         /// <summary>
@@ -49,6 +48,11 @@ namespace ServerConnection.Aiortc
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private void Update()
+        {
+            SetLastReceivedTexture(aiortcConnector.dummyImage.texture);
         }
 
         /// <summary>
@@ -125,8 +129,19 @@ namespace ServerConnection.Aiortc
         /// </summary>
         private void UpdateTextures()
         {
-            leftEyeRenderer.material.mainTexture = GetEyeTexture2D(lastReceivedTexture, "left");
-            righEyeRenderer.material.mainTexture = GetEyeTexture2D(lastReceivedTexture, "right");
+            var data = System.IO.File.ReadAllBytes("../image_double.jpg");
+            if (lastReceivedTexture == null)
+            {
+                lastReceivedTexture = Texture2D.normalTexture;
+            }
+
+            lastReceivedTexture.LoadImage(data);
+            
+            //leftEyeRenderer.material.mainTexture = aiortcConnector.dummyImage.texture as Texture2D;
+            //righEyeRenderer.material.mainTexture = aiortcConnector.dummyImage.texture as Texture2D;
+            
+            leftEyeRenderer.material.mainTexture = lastReceivedTexture;
+            righEyeRenderer.material.mainTexture = lastReceivedTexture;
         }
     }
 }

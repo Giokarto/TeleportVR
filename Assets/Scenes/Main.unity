@@ -1337,9 +1337,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae1d07763e24528ab0e91823ad5abb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LeftEyePrefab: {fileID: 2067231661593855430, guid: 0635ffa66aa05c64ea296b2d7193090d,
+  LeftEyePrefab: {fileID: 1603418823353298669, guid: ee4544e67c7d6d44f88504747652e4e9,
     type: 3}
-  RightEyePrefab: {fileID: 5157180419957703894, guid: 6d1b2ec250f6a4b44aa5c03d4c9dee59,
+  RightEyePrefab: {fileID: 5775249674080609356, guid: f020a0431ea9bec4088d8a69671f3576,
     type: 3}
   HeadIK: {fileID: 618619395}
   BodyIK: {fileID: 618619396}
@@ -9044,12 +9044,10 @@ MonoBehaviour:
   dummyImage: {fileID: 1609621274}
   UsingSocket: 0
   receiveAudio: {fileID: 2003449244}
-  LeftEye: {fileID: 0}
-  RightEye: {fileID: 0}
   publishMessageFrequency: 1
   headPositionListener: {fileID: 15462990}
   jointPositionSender: {fileID: 1448399495}
-  _audioSourceInput: {fileID: 548087374}
+  _audioSourceInput: {fileID: 2003449244}
   videoTransformType: 0
 --- !u!1 &1545471391 stripped
 GameObject:
@@ -9515,7 +9513,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1678106451
 Transform:
   m_ObjectHideFlags: 0
@@ -9542,9 +9540,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b67e1b0e62824b33861217e96ebc3f7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftEye: {fileID: 0}
-  rightEye: {fileID: 0}
   videoStreamViewType: 1
+  aiortcConnector: {fileID: 1543883723}
 --- !u!114 &1681029451 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3618323638041159356, guid: 8376e5037528d434cab49e987b7a4e72,

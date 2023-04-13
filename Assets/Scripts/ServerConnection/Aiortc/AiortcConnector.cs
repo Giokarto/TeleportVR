@@ -19,7 +19,7 @@ namespace ServerConnection.Aiortc
     public class AiortcConnector : MonoBehaviour, IAiortcWebSocket
     {
         public string aiortcServerURL;
-        [SerializeField] private RawImage dummyImage;
+        [SerializeField] public RawImage dummyImage;
         [SerializeField] private bool UsingSocket;
         [SerializeField] private AudioSource receiveAudio;
 
@@ -27,9 +27,6 @@ namespace ServerConnection.Aiortc
 
 
         public AiortcWebSocket socket;
-        private Renderer leftRenderer;
-        private Renderer rightRenderer;
-        public GameObject LeftEye, RightEye;
         private float timeElapsed;
         public float publishMessageFrequency = 5f;
 
@@ -50,9 +47,6 @@ namespace ServerConnection.Aiortc
         /// </summary>
         void Start()
         {
-            leftRenderer = LeftEye.GetComponentInChildren<Renderer>();
-            rightRenderer = RightEye.GetComponentInChildren<Renderer>();
-
             WebRTC.Initialize();
             StartCoroutine(WebRTC.Update());
             if (!UsingSocket)
@@ -95,7 +89,10 @@ namespace ServerConnection.Aiortc
         private AudioStreamTrack micInputTrack;
         private RTCRtpTransceiver videoTransceiver;
         private RTCRtpTransceiver audioTransciever;
-
+        
+        /// <summary>
+        /// Initializes multimedia tracks. adds operator audio channel as well as on track listeners
+        /// </summary>
         private void InitMultimediaTracks(RTCPeerConnection pc)
         {
             pc.OnTrack = e =>
@@ -104,35 +101,21 @@ namespace ServerConnection.Aiortc
                 {
                     Debug.Log("other side added video stream track");
                     ReceiveVideo = video;
-                    
-                    /*var mimetype = "H264";
-                    var videoCodec = RTCRtpSender.GetCapabilities(TrackKind.Video).codecs.FirstOrDefault(c => c.mimeType.Contains(mimetype));
-                    if (videoCodec == null)
-                    {
-                        Debug.Log("DannyB can not set can not set videoCodec");
-                    }
-                    else 
-                    {
-                        Debug.Log("DannyB set videoCodec to h264");
-                        var sender = pc.AddTrack(ReceiveVideo);
-                        var transceiver = pc.GetTransceivers().First(t => t.Sender == sender);
-                        transceiver.SetCodecPreferences(new[] {videoCodec});
-                    }*/
                     ReceiveVideo.OnVideoReceived += tex =>
                     {
                         if (tex == null)
                         {
-                            Debug.Log("dannyb tex is null");
+                            Debug.Log("tex is null");
                         }
 
-                        Debug.Log("dannyb OnVideoReceived");
+                        Debug.Log("OnVideoReceived");
                         dummyImage.texture = tex;
                     };
                 }
 
                 if (e.Track is AudioStreamTrack audioTrack)
                 {
-                    Debug.Log("dannyb audio source added");
+                    Debug.Log("audio source added");
                     receiveAudio.SetTrack(audioTrack);
                     receiveAudio.loop = true;
                     receiveAudio.Play();
@@ -145,27 +128,6 @@ namespace ServerConnection.Aiortc
             audioTransciever = pc.AddTransceiver(TrackKind.Audio);
             audioTransciever.Direction = RTCRtpTransceiverDirection.SendRecv;
 
-
-            /*string[] excludeCodecMimeType = { "video/red", "video/ulpfec", "video/rtx" };
-            var capabilities = RTCRtpSender.GetCapabilities(TrackKind.Video);
-            var availableCodecs = capabilities.codecs
-                .Where(codec => !excludeCodecMimeType.Contains(codec.mimeType))
-                .ToList();
-            var list = availableCodecs
-                .Select(codec => new Dropdown.OptionData { text = codec.mimeType + " " + codec.sdpFmtpLine })
-                .ToList();*/
-
-            /*if (WebRTCSettings.UseVideoCodec != null)
-            {
-                var codecs = new[] {WebRTCSettings.UseVideoCodec};
-                foreach (var transceiver in _pc1.GetTransceivers())
-                {
-                    if (pc1Senders.Contains(transceiver.Sender))
-                    {
-                        transceiver.SetCodecPreferences(codecs);
-                    }
-                }
-            }*/
 
 
             //initialize outgoing audio properties
@@ -187,7 +149,9 @@ namespace ServerConnection.Aiortc
 
         }
 
-
+        /// <summary>
+        /// Initializes ping data channel
+        /// </summary>
         private RTCDataChannel InitPingChannel(RTCPeerConnection pc)
         {
             RTCDataChannelInit conf = new RTCDataChannelInit();
@@ -195,13 +159,19 @@ namespace ServerConnection.Aiortc
             pingDataChannel = pc.CreateDataChannel("ping", conf);
 
             pingDataChannel.OnOpen = () => { SendPingMsg(); };
-            pingDataChannel.OnMessage = bytes => { Debug.Log("Received message in ping channel!"); };
+            pingDataChannel.OnMessage = bytes =>
+            {
+                //Debug.Log("Received message in ping channel!");
+            };
 
             pingDataChannel.OnClose = () => { Debug.Log("Ping channel is closed!"); };
 
             return pingDataChannel;
         }
-
+        
+        /// <summary>
+        /// Initializes motion compensation data channel
+        /// </summary>
         private RTCDataChannel InitMotionCompensationChannel(RTCPeerConnection pc)
         {
             var conf = new RTCDataChannelInit();
@@ -216,6 +186,9 @@ namespace ServerConnection.Aiortc
             return mcDataChannel;
         }
 
+        /// <summary>
+        /// Initializes joint states data channel
+        /// </summary>
         private RTCDataChannel InitJointStatesChannel(RTCPeerConnection pc)
         {
             var conf = new RTCDataChannelInit();
@@ -263,39 +236,9 @@ namespace ServerConnection.Aiortc
 
         private RTCIceServer[] GetICEServers(string[] urls)
         {
-            Debug.Log("DannyB stun servers:");
+            Debug.Log("stun servers:");
             List<RTCIceServer> servers = new List<RTCIceServer>();
-            /*foreach (var url in urls)
-            {
-                if (url.StartsWith("turn"))
-                {
-                    Debug.Log("DannyB turn server :" + url);
-                    servers.Add(new RTCIceServer
-                    {
-                        urls = new string[] { url },
-                        username = "roboy",
-                        credential = "4dE5?3sgPb0fOrw5Vh"
-                    });
-                }
-                else
-                {
-                    servers.Add(new RTCIceServer
-                    {
-                        urls = new string[] { url },
-                    });
-                }
-            }
             
-            servers.Add(new RTCIceServer
-            {
-                urls = new string[] { urls[2], urls[3]},
-                username = "roboy",
-                credential = "4dE5?3sgPb0fOrw5Vh"
-            });
-            servers.Add(new RTCIceServer
-            {
-                urls = new string[] { "stun:83.229.87.110:3478" },
-            });*/
             servers.Add(new RTCIceServer
             {
                 urls = new string[] { "turn:83.229.87.110:3478" },
@@ -332,27 +275,25 @@ namespace ServerConnection.Aiortc
             {
                 lastIceCandidateTime = DateTime.Now;
                 anyIce = true;
-                //pc.OnIceCandidate = null;
-                // Debug.Log("DannyB OnIceCandidate: " + cand.Candidate);
             };
 
 
             pc.OnIceGatheringStateChange = state =>
             {
-                Debug.Log("DannyB OnIceGatheringStateChange: " + state);
+                Debug.Log("OnIceGatheringStateChange: " + state);
                 if (state == RTCIceGatheringState.Complete)
                 {
                     if (UsingSocket)
                     {
                         if (socket.robot_name != null)
                         {
-                            Debug.Log("dannyB offering connection!");
+                            Debug.Log("offering connection!");
                             // TODO: "OnIceCandidate" is a wrong place for this
                             socket.OfferConnection();
                         }
                         else
                         {
-                            Debug.LogError("dannyB no robot to operate!");
+                            Debug.LogError("no robot to operate!");
                         }
                     }
                     else
@@ -386,7 +327,7 @@ namespace ServerConnection.Aiortc
 
             pc.OnConnectionStateChange = state =>
             {
-                Debug.Log("dannyb OnConnectionStateChange " + state);
+                Debug.Log("OnConnectionStateChange " + state);
                 switch (state)
                 {
                     case RTCPeerConnectionState.Connected:
@@ -421,7 +362,7 @@ namespace ServerConnection.Aiortc
         /// </summary>
         private IEnumerator CreateDesc(RTCSdpType type)
         {
-            Debug.Log("dannyb CreateDesc");
+            Debug.Log("CreateDesc");
             if (type == RTCSdpType.Offer)
             {
             }
@@ -437,10 +378,13 @@ namespace ServerConnection.Aiortc
 
             StartCoroutine(SetDesc(Side.Local, op.Desc));
         }
-
+        
+        /// <summary>
+        /// Sets description of connection according to side
+        /// </summary>
         public IEnumerator SetDesc(Side side, RTCSessionDescription desc)
         {
-            Debug.Log("dannyB setdesc for side " + side + ":" + desc.sdp);
+            Debug.Log("setdesc for side " + side + ":" + desc.sdp);
             var op = side == Side.Local ? pc.SetLocalDescription(ref desc) : pc.SetRemoteDescription(ref desc);
             yield return op;
 
@@ -459,12 +403,15 @@ namespace ServerConnection.Aiortc
                 StartCoroutine(CreateDesc(RTCSdpType.Answer));
             }
         }
-
+        
+        /// <summary>
+        /// When connection is done through socket, whenever stun urls available this method tries to start the connection
+        /// </summary>
         public IEnumerator TryConnectWithSocket()
         {
             while (socket.stun_urls == null)
             {
-                Debug.Log("DannyB No stuns yet");
+                Debug.Log("No stuns yet");
                 yield return new WaitForSeconds(2);
             }
 
@@ -577,13 +524,13 @@ namespace ServerConnection.Aiortc
                 {
                     if (socket.robot_name != null)
                     {
-                        Debug.Log("dannyB offering connection!");
+                        Debug.Log("offering connection!");
                         // TODO: "OnIceCandidate" is a wrong place for this
                         socket.OfferConnection();
                     }
                     else
                     {
-                        Debug.LogError("dannyB no robot to operate!");
+                        Debug.LogError("no robot to operate!");
                     }
                 }
                 else
@@ -613,9 +560,6 @@ namespace ServerConnection.Aiortc
                     StartCoroutine(aiortcSignaling(msg));
                 }
             }
-
-            leftRenderer.material.mainTexture = dummyImage.texture as Texture2D;
-            rightRenderer.material.mainTexture = dummyImage.texture as Texture2D;
 
             timeElapsed += Time.deltaTime;
 

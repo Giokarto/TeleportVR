@@ -101,7 +101,7 @@ namespace OperatorUserInterface
                     UnitySceneManager.LoadSceneAsync(sceneNames[scene], LoadSceneMode.Additive);
                     break;
                 case Scene.MAIN:
-                    if (!serverConnection.ConnectedToServer)
+                    if (false)//(!serverConnection.ConnectedToServer)
                     {
                         Debug.Log("Couldn't switch to real world because the server connection is not established.");
                         WidgetFactory.Instance.CreateToastrWidget("Could not connect to server!", 3, "noConnection");

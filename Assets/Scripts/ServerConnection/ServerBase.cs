@@ -103,7 +103,8 @@ namespace ServerConnection
                 Debug.Log("RightEyePrefab not set, loading default plane");
                 RightEyePrefab = Resources.Load<GameObject>("EyePlanes/RightEye");
             }
-            RightEye = Instantiate(RightEyePrefab, new Vector3(0,1.068f,0) ,  anchor.transform.rotation * Quaternion.Euler(0,180,0));
+
+            RightEye = Instantiate(RightEyePrefab, new Vector3(0, 1.068f, 0), anchor.transform.rotation); // * Quaternion.Euler(0,180,0));
             //RightEye.transform.parent = anchor.transform;
         }
 

@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace ServerConnection.Aiortc
 {
+    /// <summary>
+    /// Head position class in json format
+    /// </summary>
     public class HeadPositionMessage
     {
         public float head_axis0 { get; set; }
@@ -16,6 +19,9 @@ namespace ServerConnection.Aiortc
         }
     }
 
+    /// <summary>
+    /// Joint pose model class, has relevant methods
+    /// </summary>
     public class JointPoseMessage
     {
         private Dictionary<string, float> jointPoses = new Dictionary<string, float>();

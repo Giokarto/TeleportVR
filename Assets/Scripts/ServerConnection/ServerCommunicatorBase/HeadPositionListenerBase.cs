@@ -22,7 +22,7 @@ namespace ServerConnection.ServerCommunicatorBase
 
         protected virtual void Start()
         {
-            Debug.Log("DannyB start HeadPositionListenerBase");
+            Debug.Log("start HeadPositionListenerBase");
             headRotationController = FindObjectOfType<HeadRotationController>();
         }
         

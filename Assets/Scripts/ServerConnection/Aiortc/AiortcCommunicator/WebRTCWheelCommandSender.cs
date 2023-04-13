@@ -10,12 +10,14 @@ namespace ServerConnection.Aiortc
     /// <summary>
     /// This class handles of initialization and sends operator's head position to joint states data channel
     /// </summary>
-    public class WebRTCJointPositionSender : DevicePoseSenderBase
+    public class WebRTCWheelCommandSender
     {
         private RTCPeerConnection peerConnection;
         public RTCDataChannel dataChannel;
         private float timeElapsed;
-        public float publishMessageFrequency = 0.01f;
+        public float publishMessageFrequency = 0.02f;
+        public int PWM_MIN = 0;
+        public int PWM_MAX = 30;
 
 
         public void Start()
