@@ -129,19 +129,19 @@ namespace ServerConnection.Aiortc
         /// </summary>
         private void UpdateTextures()
         {
-            var data = System.IO.File.ReadAllBytes("../image_double.jpg");
-            if (lastReceivedTexture == null)
-            {
-                lastReceivedTexture = Texture2D.normalTexture;
-            }
-
-            lastReceivedTexture.LoadImage(data);
+            // var data = System.IO.File.ReadAllBytes("../image_double.jpg");
+            // if (lastReceivedTexture == null)
+            // {
+            //     lastReceivedTexture = Texture2D.normalTexture;
+            // }
+            //
+            // lastReceivedTexture.LoadImage(data);
+            //
+            // leftEyeRenderer.material.mainTexture = lastReceivedTexture;
+            // righEyeRenderer.material.mainTexture = lastReceivedTexture;
             
-            //leftEyeRenderer.material.mainTexture = aiortcConnector.dummyImage.texture as Texture2D;
-            //righEyeRenderer.material.mainTexture = aiortcConnector.dummyImage.texture as Texture2D;
-            
-            leftEyeRenderer.material.mainTexture = lastReceivedTexture;
-            righEyeRenderer.material.mainTexture = lastReceivedTexture;
+            leftEyeRenderer.material.mainTexture = aiortcConnector.dummyImage.texture as Texture2D;
+            righEyeRenderer.material.mainTexture = aiortcConnector.dummyImage.texture as Texture2D;
         }
     }
 }

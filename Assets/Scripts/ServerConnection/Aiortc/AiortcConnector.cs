@@ -35,10 +35,11 @@ namespace ServerConnection.Aiortc
 
 
         public RTCPeerConnection pc;
-        public RTCDataChannel pingDataChannel, mcDataChannel, jsDataChannel;
+        public RTCDataChannel pingDataChannel, mcDataChannel, jsDataChannel, wcDataChannel;
 
         public WebRTCHeadPositionListener headPositionListener;
         public WebRTCJointPositionSender jointPositionSender;
+        public WebRTCWheelCommandSender wheelCommandSender;
 
 
         private VideoStreamTrack ReceiveVideo;
@@ -68,6 +69,7 @@ namespace ServerConnection.Aiortc
             currentlyStreaming = on;
             headPositionListener.enabled = on;
             jointPositionSender.enabled = on;
+            wheelCommandSender.enabled = on;
             if (videoTransceiver != null)
             {
                 videoTransceiver.Receiver.Track.Enabled = true; // on;
@@ -203,6 +205,22 @@ namespace ServerConnection.Aiortc
         }
 
         /// <summary>
+        /// Initializes joint states data channel
+        /// </summary>
+        private RTCDataChannel InitWheelCommandsChannel(RTCPeerConnection pc)
+        {
+            var conf = new RTCDataChannelInit();
+            conf.ordered = true;
+
+            wcDataChannel = pc.CreateDataChannel("wheel_commands", conf);
+            wcDataChannel.OnOpen = () => { Debug.Log("New channel open: wheel commands data channel"); };
+
+            wheelCommandSender.dataChannel = wcDataChannel;
+
+            return wcDataChannel;
+        }
+
+        /// <summary>
         /// Sends message to data channel
         /// </summary>
         private void SendPingMsg()
@@ -283,45 +301,8 @@ namespace ServerConnection.Aiortc
                 Debug.Log("OnIceGatheringStateChange: " + state);
                 if (state == RTCIceGatheringState.Complete)
                 {
-                    if (UsingSocket)
-                    {
-                        if (socket.robot_name != null)
-                        {
-                            Debug.Log("offering connection!");
-                            // TODO: "OnIceCandidate" is a wrong place for this
-                            socket.OfferConnection();
-                        }
-                        else
-                        {
-                            Debug.LogError("no robot to operate!");
-                        }
-                    }
-                    else
-                    {
-                        var msg = new SignalingMsg
-                        {
-                            type = pc.LocalDescription.type.ToString().ToLower(),
-                            sdp = pc.LocalDescription.sdp
-                        };
-
-                        switch (videoTransformType)
-                        {
-                            case VideoTransformType.None:
-                                msg.video_transform = "none";
-                                break;
-                            case VideoTransformType.EdgeDetection:
-                                msg.video_transform = "edges";
-                                break;
-                            case VideoTransformType.CartoonEffect:
-                                msg.video_transform = "cartoon";
-                                break;
-                            case VideoTransformType.Rotate:
-                                msg.video_transform = "rotate";
-                                break;
-                        }
-
-                        StartCoroutine(aiortcSignaling(msg));
-                    }
+                    Debug.Log("ICE gathering finished -> starting connection");
+                    StartConnection();
                 }
             };
 
@@ -345,6 +326,7 @@ namespace ServerConnection.Aiortc
             pingDataChannel = InitPingChannel(pc);
             mcDataChannel = InitMotionCompensationChannel(pc);
             jsDataChannel = InitJointStatesChannel(pc);
+            wcDataChannel = InitWheelCommandsChannel(pc);
 
 
             StartCoroutine(CreateDesc(RTCSdpType.Offer));
@@ -442,17 +424,6 @@ namespace ServerConnection.Aiortc
             }
         }
 
-
-        [SerializeField] private VideoTransformType videoTransformType;
-
-        public enum VideoTransformType
-        {
-            None,
-            EdgeDetection,
-            CartoonEffect,
-            Rotate
-        }
-
         /// <summary>
         /// Sets the signalling message which can be offer for outgoing connection and answer for incomming connection
         /// </summary>
@@ -509,6 +480,39 @@ namespace ServerConnection.Aiortc
         private bool connectionStarted = false;
         private bool anyIce = false;
 
+
+        void StartConnection()
+        {
+            if (connectionStarted)
+            {
+                Debug.LogWarning("Connection already started! Not reconnecting");
+                return;
+            }
+            connectionStarted = true;
+            if (UsingSocket)
+            {
+                if (socket.robot_name != null)
+                {
+                    Debug.Log("offering connection!");
+                    socket.OfferConnection();
+                }
+                else
+                {
+                    Debug.LogError("no robot to operate!");
+                }
+            }
+            else
+            {
+                var msg = new SignalingMsg
+                {
+                    type = pc.LocalDescription.type.ToString().ToLower(),
+                    sdp = pc.LocalDescription.sdp
+                };
+
+                StartCoroutine(aiortcSignaling(msg));
+            }
+        }
+
         /// <summary>
         /// Webrtc frame updates are listened here and for every incoming texture it is setting spherical game object texture with coming frames
         /// Frames can be also transfered to ImtpEncoder class and can be manipulated further, currently disabled because it is causing rendering 
@@ -519,46 +523,7 @@ namespace ServerConnection.Aiortc
             if (anyIce && DateTime.Now - lastIceCandidateTime > TimeSpan.FromSeconds(2) && !connectionStarted)
             {
                 Debug.Log("No ICE candidate for a while -> starting connection");
-                connectionStarted = true;
-                if (UsingSocket)
-                {
-                    if (socket.robot_name != null)
-                    {
-                        Debug.Log("offering connection!");
-                        // TODO: "OnIceCandidate" is a wrong place for this
-                        socket.OfferConnection();
-                    }
-                    else
-                    {
-                        Debug.LogError("no robot to operate!");
-                    }
-                }
-                else
-                {
-                    var msg = new SignalingMsg
-                    {
-                        type = pc.LocalDescription.type.ToString().ToLower(),
-                        sdp = pc.LocalDescription.sdp
-                    };
-
-                    switch (videoTransformType)
-                    {
-                        case VideoTransformType.None:
-                            msg.video_transform = "none";
-                            break;
-                        case VideoTransformType.EdgeDetection:
-                            msg.video_transform = "edges";
-                            break;
-                        case VideoTransformType.CartoonEffect:
-                            msg.video_transform = "cartoon";
-                            break;
-                        case VideoTransformType.Rotate:
-                            msg.video_transform = "rotate";
-                            break;
-                    }
-
-                    StartCoroutine(aiortcSignaling(msg));
-                }
+                StartConnection();
             }
 
             timeElapsed += Time.deltaTime;

@@ -36,18 +36,20 @@ namespace ServerConnection.Aiortc
             var str = System.Text.Encoding.UTF8.GetString(bytes);
             try
             {
-                str.Remove(0, 5);
+                //str.Remove(0, 5);
                 JObject jsonObject = JObject.Parse(str);
-                JToken myToken = jsonObject["head position"];
-                //var name = myToken.ToObject<HeadPositionMessage>();
-                var obj = JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
-                ProcessHeadMessage(obj.toVector3());
-                
+                if (jsonObject.ContainsKey("head position"))
+                {
+                    JToken myToken = jsonObject["head position"];
+                    //var name = myToken.ToObject<HeadPositionMessage>();
+                    var obj = JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
+                    ProcessHeadMessage(obj.toVector3());
+                }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                Debug.LogError(e);
+                //throw;
             }
         }
 

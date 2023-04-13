@@ -11,7 +11,7 @@ namespace ServerConnection.RosTcpConnector
     public class RosWheelsPwmPublisher : MonoBehaviour
     {
         ROSConnection ros;
-        public string topicRoot = "/roboy/pinky/middleware/espchair/wheels/";
+        public string topicRoot = "/operator/wheels/";
         public string leftTopicName, rightTopicName;
         public float publishMessageFrequency = 0.02f;
         public int PWM_MIN = 0;
