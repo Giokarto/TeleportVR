@@ -165,7 +165,7 @@ namespace ServerConnection.RosTcpConnector
             receivedCount++;
             //SourceSampleRate = 48000;// 16000;// BitConverter.ToInt32(_sampleRateByte, 0);
             //SourceChannels = 1;// BitConverter.ToInt32(_channelsByte, 0);
-            Debug.Log("ProcessAudioData: " + ABufferQueue.Count + " " + receivedAudio.Length);
+            //Debug.Log("ProcessAudioData: " + ABufferQueue.Count + " " + receivedAudio.Length);
             now = Time.realtimeSinceStartupAsDouble;
 
             float[] ABuffer = Array.ConvertAll(receivedAudio, (a) => a / 32767f);

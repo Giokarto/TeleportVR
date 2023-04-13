@@ -2342,9 +2342,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f27abfc231e24b628a97e06b7f887ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LeftEyePrefab: {fileID: 2067231661593855430, guid: 0635ffa66aa05c64ea296b2d7193090d,
+  LeftEyePrefab: {fileID: 1263259913936781943, guid: e3c1f9be9f0d6414fb7c3761c250d385,
     type: 3}
-  RightEyePrefab: {fileID: 5157180419957703894, guid: 6d1b2ec250f6a4b44aa5c03d4c9dee59,
+  RightEyePrefab: {fileID: 1263259913936781943, guid: e3c1f9be9f0d6414fb7c3761c250d385,
     type: 3}
   HeadIK: {fileID: 618619395}
   BodyIK: {fileID: 618619396}
