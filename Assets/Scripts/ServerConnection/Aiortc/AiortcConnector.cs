@@ -257,16 +257,26 @@ namespace ServerConnection.Aiortc
             Debug.Log("stun servers:");
             List<RTCIceServer> servers = new List<RTCIceServer>();
             
-            servers.Add(new RTCIceServer
+            foreach (var url in urls)
             {
-                urls = new string[] { "turn:83.229.87.110:3478" },
-                username = "roboy",
-                credential = "4dE5?3sgPb0fOrw5Vh"
-            });
-            servers.Add(new RTCIceServer
-            {
-                urls = new string[] { "stun:stun.l.google.com:19302" },
-            });
+                Debug.Log("DannyB server :" + url);
+                if (url.StartsWith("turn"))
+                {
+                    servers.Add(new RTCIceServer
+                    {
+                        urls = new string[] { url },
+                        username = "roboy",
+                        credential = "4dE5?3sgPb0fOrw5Vh"
+                    });
+                }
+                else
+                {
+                    servers.Add(new RTCIceServer
+                    {
+                        urls = new string[] { url },
+                    });
+                }
+            }
             return servers.ToArray();
         }
 
