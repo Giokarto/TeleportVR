@@ -156,11 +156,11 @@ namespace InputDevices.VRControllers
             
             if (controllerLeft.TryGetFeatureValue(CommonUsages.primary2DAxis, out leftVec))
             {
-                joystickX[inputSystemOrder] = leftVec.x;
+                joystickY[inputSystemOrder] = leftVec.y;
             }
             if (controllerRight.TryGetFeatureValue(CommonUsages.primary2DAxis, out rightVec))
             {
-                joystickY[inputSystemOrder] = rightVec.y;
+                joystickX[inputSystemOrder] = rightVec.x;
             }
 
             if (anyButtonCurrentlyPressed)

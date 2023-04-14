@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731707, g: 0.13414726, b: 0.12107857, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -690,7 +690,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 800, y: 80}
   savedColor: {r: 1, g: 1, b: 1, a: 0.09803922}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &67615024
 MonoBehaviour:
@@ -1425,7 +1425,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 0.9044118, g: 0.96440166, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0.0078125, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0.0078125}
   savedFill: 0
 --- !u!114 &314125638
 MonoBehaviour:
@@ -1624,7 +1624,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 144, y: 70}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &352368475
 MonoBehaviour:
@@ -2343,9 +2343,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f27abfc231e24b628a97e06b7f887ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LeftEyePrefab: {fileID: 1263259913936781943, guid: e3c1f9be9f0d6414fb7c3761c250d385,
+  LeftEyePrefab: {fileID: 1603418823353298669, guid: ee4544e67c7d6d44f88504747652e4e9,
     type: 3}
-  RightEyePrefab: {fileID: 1263259913936781943, guid: e3c1f9be9f0d6414fb7c3761c250d385,
+  RightEyePrefab: {fileID: 5775249674080609356, guid: f020a0431ea9bec4088d8a69671f3576,
     type: 3}
   HeadIK: {fileID: 618619395}
   BodyIK: {fileID: 618619396}
@@ -6279,7 +6279,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 54, y: 52}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &722699698
 MonoBehaviour:
@@ -6479,7 +6479,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 290.5, y: 159.2}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0.2421875, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0.2421875, y: 0}
   savedFill: 0
 --- !u!114 &784008245
 MonoBehaviour:
@@ -6592,7 +6592,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &819835815
 MonoBehaviour:
@@ -6734,7 +6734,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &850065041
 MonoBehaviour:
@@ -7211,9 +7211,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   publishMessageFrequency: 0.02
-  PWM_MIN: 0
-  PWM_MAX: 30
-  topicRoot: /operator/wheels/
 --- !u!1 &1086971375
 GameObject:
   m_ObjectHideFlags: 0
@@ -8196,7 +8193,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 0.9044118, g: 0.96440166, b: 1, a: 1}
-  savedTextUV0: {x: 0.1953125, y: 0.1953125, z: 0, w: 0}
+  savedTextUV0: {x: 0.1953125, y: 0.1953125}
   savedFill: 0
 --- !u!114 &1316510975
 MonoBehaviour:
@@ -8334,7 +8331,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 290.5, y: 159.2}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0.32421875, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0.32421875}
   savedFill: 0
 --- !u!114 &1322902413
 MonoBehaviour:
@@ -8537,9 +8534,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8315290cf063e4b459dccf9501f4d534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicRoot: /roboy/pinky/middleware/espchair/wheels/
-  leftTopicName: 
-  rightTopicName: 
   publishMessageFrequency: 0.02
   PWM_MIN: 0
   PWM_MAX: 30
@@ -9097,7 +9091,6 @@ MonoBehaviour:
   jointPositionSender: {fileID: 1448399495}
   wheelCommandSender: {fileID: 1030170734}
   _audioSourceInput: {fileID: 2003449244}
-  videoTransformType: 0
 --- !u!1 &1545471391 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8980600750893642668, guid: 8376e5037528d434cab49e987b7a4e72,
@@ -9930,21 +9923,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2e569dc832500047bf4350b4dae9b97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_ForceModuleActive: 0
   controlMethod: 9
   submitButtonName: Fire1
-  mainEventCamera: {fileID: 0}
-  raycastLayerMask:
-    serializedVersion: 2
-    m_Bits: 32
   gazeUseTimedClick: 0
   gazeClickTimer: 2
   gazeClickTimerDelay: 1
   gazeTimedClickProgressImage: {fileID: 0}
   worldSpaceMouseSensitivity: 1
   usedHand: 0
-  pointerTransformOverride: {fileID: 0}
-  rightXRController: {fileID: 6021411800947965133}
-  leftXRController: {fileID: 6021411801494514845}
+  controllerTransformOverride: {fileID: 0}
 --- !u!114 &1741652246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10347,7 +10341,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 144, y: 70}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &1871852007
 MonoBehaviour:
@@ -11222,7 +11216,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 800, y: 80}
   savedColor: {r: 1, g: 1, b: 1, a: 0.09803922}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &2103648727
 MonoBehaviour:
@@ -11658,7 +11652,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 144, y: 70}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1 &807907195279143986
 GameObject:
@@ -11696,7 +11690,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 144, y: 70}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1 &836566296846784892
 GameObject:
@@ -11772,7 +11766,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1200, y: 45}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1001 &1242744592450020038
 PrefabInstance:
@@ -11971,7 +11965,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 700, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 0.09803922}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!222 &2039204487901315632
 CanvasRenderer:
@@ -12017,7 +12011,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 0, z: 0}
   savedRectSize: {x: 0, y: 0}
   savedColor: {r: 0, g: 0, b: 0, a: 0}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!4 &2056861097519333525
 Transform:
@@ -12183,7 +12177,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1200, y: 700}
   savedColor: {r: 1, g: 1, b: 1, a: 0.2784314}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!222 &2740056867311733844
 CanvasRenderer:
@@ -12210,7 +12204,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1400, y: 1100}
   savedColor: {r: 1, g: 1, b: 1, a: 0}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!135 &2970198058458690036
 SphereCollider:
@@ -12477,7 +12471,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1200, y: 30}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &3174760831708180066
 MonoBehaviour:
@@ -12631,7 +12625,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 20, y: 130}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!114 &3883107260717331384
 MonoBehaviour:
@@ -12828,6 +12822,7 @@ MonoBehaviour:
   quality: 1
   interactable: 1
   blocksRaycasts: 1
+  raycastMyLayerOnly: 1
   forceUseBoxCollider: 0
   angle: 90
   preserveAspect: 1
@@ -13079,7 +13074,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 500, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &5132545199589319187
 MonoBehaviour:
@@ -13248,7 +13243,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1200, y: 700}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &5593136134238705520
 MonoBehaviour:
@@ -13267,7 +13262,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 0, z: 0}
   savedRectSize: {x: 0, y: 0}
   savedColor: {r: 0, g: 0, b: 0, a: 0}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!1 &5603783979276388850
 GameObject:
@@ -13358,7 +13353,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 500, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 0.54901963}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1 &5797782393284310088
 GameObject:
@@ -13397,7 +13392,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1001 &5826557875377529290
 PrefabInstance:
@@ -13523,7 +13518,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 301.9, y: 80}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0.62890625, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0.62890625, y: 0}
   savedFill: 0
 --- !u!114 &5901630179502400940
 MonoBehaviour:
@@ -15220,6 +15215,7 @@ MonoBehaviour:
   quality: 3
   interactable: 1
   blocksRaycasts: 1
+  raycastMyLayerOnly: 1
   forceUseBoxCollider: 0
   angle: 90
   preserveAspect: 1
@@ -15323,7 +15319,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 800, y: 80}
   savedColor: {r: 1, g: 1, b: 1, a: 0.09803922}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!114 &6103261333212663836
 MonoBehaviour:
@@ -15623,7 +15619,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1300, y: 900}
   savedColor: {r: 1, g: 1, b: 1, a: 0.039215688}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!224 &6103261334727831507
 RectTransform:
@@ -15723,7 +15719,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 280, y: 100}
   savedColor: {r: 0.9044118, g: 0.96440166, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0.0078125, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0.0078125}
   savedFill: 0
 --- !u!114 &6759462122077543646
 MonoBehaviour:
@@ -15869,7 +15865,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 150, y: 150}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!222 &7525839242712782658
 CanvasRenderer:
@@ -15931,7 +15927,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 500, y: 500}
   savedColor: {r: 1, g: 1, b: 1, a: 0}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!114 &7525839242712782664
 MonoBehaviour:
@@ -16059,7 +16055,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 20, y: 130}
   savedColor: {r: 1, g: 1, b: 1, a: 1}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 0
 --- !u!224 &7854265375952704547
 RectTransform:
@@ -16195,7 +16191,7 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 500, y: 100}
   savedColor: {r: 1, g: 1, b: 1, a: 0.54901963}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
 --- !u!1 &8588441883346277351
 GameObject:
@@ -16453,5 +16449,5 @@ MonoBehaviour:
   savedUp: {x: 0, y: 1, z: 0}
   savedRectSize: {x: 1400, y: 30}
   savedColor: {r: 1, g: 1, b: 1, a: 0.19607843}
-  savedTextUV0: {x: 0, y: 0, z: 0, w: 0}
+  savedTextUV0: {x: 0, y: 0}
   savedFill: 1
