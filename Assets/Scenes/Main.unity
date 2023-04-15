@@ -2215,18 +2215,23 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 475412275}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b82ae4e98f707141815c56e6d8e702c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TopicName: /image/right/image_compressed
+  subscribeLeft: 0
+  LeftTopicName: 
+  subscribeRight: 0
+  RightTopicName: 
   leftMeshRenderer: {fileID: 0}
   rightMeshRenderer: {fileID: 0}
-  renderLeft: 0
-  renderRight: 1
+  monoFallbackTime: 5
+  lastReceivedL: 0
+  lastReceivedR: 0
   FPS: 0
-  RPS: 0
+  RPSL: 0
+  RPSR: 0
 --- !u!114 &475412278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2239,13 +2244,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b82ae4e98f707141815c56e6d8e702c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TopicName: /image/left/image_compressed
+  subscribeLeft: 1
+  LeftTopicName: /image/left/image_compressed
+  subscribeRight: 1
+  RightTopicName: /image/right/image_compressed
   leftMeshRenderer: {fileID: 0}
   rightMeshRenderer: {fileID: 0}
-  renderLeft: 1
-  renderRight: 0
+  monoFallbackTime: 5
+  lastReceivedL: -1000
+  lastReceivedR: -1000
   FPS: 0
-  RPS: 0
+  RPSL: 0
+  RPSR: 0
 --- !u!1 &481574769
 GameObject:
   m_ObjectHideFlags: 0

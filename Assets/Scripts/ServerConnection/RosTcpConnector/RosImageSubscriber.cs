@@ -11,11 +11,16 @@ namespace ServerConnection.RosTcpConnector
 {
     public class RosImageSubscriber : MonoBehaviour
     {
-        public string TopicName;
+        // /image/left/image_compressed
+        
+        [SerializeField] bool subscribeLeft;
+        [SerializeField] public string LeftTopicName;
+        [SerializeField] bool subscribeRight;
+        [SerializeField] public string RightTopicName;
 
-        private bool messageProcessed = false;
+        private bool newImages = false;
 
-        private Texture2D texture2D;
+        private Texture2D texture2DL, texture2DR;
 
         [SerializeField] private MeshRenderer leftMeshRenderer, rightMeshRenderer;
 
@@ -23,59 +28,84 @@ namespace ServerConnection.RosTcpConnector
         //bool monoVision = false; // if true duplicates the image from meshRenderer to secondaryMeshRenderer
         
         
-        [SerializeField] bool renderLeft, renderRight;
+        [SerializeField] public float monoFallbackTime = 5.0f; // Time after which rendering falls back to mono if no images have been received for both eyes
 
         //[SerializeField] bool primary;
         //[SerializeField] RosImageSubscriber secondaryImageSubscriber;
 
         private int frameCount = 0;
-        private int receivedCount = 0;
+        private int receivedCountL = 0, receivedCountR = 0;
+        public float lastReceivedL = -1000, lastReceivedR = -1000;
         private float dt = 0.0f;
         public int FPS = 0; // Frames Per Second
-        public int RPS = 0; // Received Per Second
+        public int RPSL = 0, RPSR = 0; // Received Per Second
         private int updateRate = 1; // 1 update per sec
 
         private void Start()
         {
             if (leftMeshRenderer == null)
-            {
                 leftMeshRenderer = ServerBase.Instance.LeftEye.GetComponentInChildren<MeshRenderer>();
-            }
+
             if (rightMeshRenderer == null)
-            {
                 rightMeshRenderer = ServerBase.Instance.RightEye.GetComponentInChildren<MeshRenderer>();
-            }
-            ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(TopicName, GetImage);
-            texture2D = new Texture2D(1024, 1024); //, TextureFormat.BGRA32, false);
+
+            if (subscribeLeft && LeftTopicName != "")
+                ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(LeftTopicName, GetImageL);
+            if (subscribeRight && RightTopicName != "")
+                ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(RightTopicName, GetImageR);
+            
+            texture2DL = new Texture2D(1024, 1024);
+            texture2DR = new Texture2D(1024, 1024); //, TextureFormat.BGRA32, false);
             //auxTexture = new Texture2D(1,1); // auxTexture.LoadImage(ReceivedImage) changes the dimensions according to the image
         }
 
         private void Update()
         {
-            if (messageProcessed)
+            if (newImages)
             {
-                if (renderLeft && !leftMeshRenderer.gameObject.activeInHierarchy) leftMeshRenderer.gameObject.SetActive(true);
-                if (renderRight && !rightMeshRenderer.gameObject.activeInHierarchy) rightMeshRenderer.gameObject.SetActive(true);
+                if (!leftMeshRenderer.gameObject.activeInHierarchy) leftMeshRenderer.gameObject.SetActive(true);
+                if (!rightMeshRenderer.gameObject.activeInHierarchy) rightMeshRenderer.gameObject.SetActive(true);
 
-                if (renderLeft) leftMeshRenderer.material.mainTexture = texture2D;
-                if (renderRight) rightMeshRenderer.material.mainTexture = texture2D;
+                // Put correct images to the corresponding hemispheres,
+                // but if images for one side are too old, fall back to mono
+                // and assign that image to both eyes
+                if (receivedCountL > 0)
+                {
+                    leftMeshRenderer.material.mainTexture = texture2DL;
+                    if (Time.time - lastReceivedR > monoFallbackTime)
+                        rightMeshRenderer.material.mainTexture = texture2DL;
+                }
+
+                if (receivedCountR > 0)
+                {
+                    rightMeshRenderer.material.mainTexture = texture2DR;
+                    if (Time.time - lastReceivedL > monoFallbackTime)
+                        leftMeshRenderer.material.mainTexture = texture2DR;
+                }
                 
                 frameCount++;
-                messageProcessed = false;
+                newImages = false;
             }
 
             UpdateFPS();
         }
 
-        private void GetImage(CompressedImage Message)
+        private void GetImageL(CompressedImage Message)
         {
-            Debug.Log("Received image in " + TopicName);
-            receivedCount++;
-
-            if (!messageProcessed)
-            {
-                StartCoroutine(ProcessImage(Message.data));
-            }
+            receivedCountL++;
+            lastReceivedL = Time.time;
+            texture2DL.LoadImage(Message.data);
+            texture2DL.Apply();
+            newImages = true;
+        }
+        
+        private void GetImageR(CompressedImage Message)
+        {
+            receivedCountR++;
+            lastReceivedR = Time.time;
+            texture2DR.LoadImage(Message.data);
+            texture2DR.Apply();
+            newImages = true;
         }
 
         private void UpdateFPS()
@@ -84,59 +114,13 @@ namespace ServerConnection.RosTcpConnector
             if (dt > 1.0f / updateRate)
             {
                 FPS = Mathf.RoundToInt(frameCount / dt);
-                RPS = Mathf.RoundToInt(receivedCount / dt);
+                RPSL = Mathf.RoundToInt(receivedCountL / dt);
+                RPSR = Mathf.RoundToInt(receivedCountR / dt);
                 frameCount = 0;
-                receivedCount = 0;
+                receivedCountL = 0;
+                receivedCountR = 0;
                 dt -= 1.0f / updateRate;
             }
-        }
-
-        [NonSerialized] public Texture2D auxTexture;
-        private IEnumerator ProcessImage(byte[] ReceivedImage)
-        {
-            // The received image is a square from one eye. We need to:
-            // 1. Pad it with the other image, width must be twice as much as height to map correctly to the sphere.
-            // 2. Flip it, otherwise the view on the sphere is mirrored.
-
-            texture2D.LoadImage(ReceivedImage);
-            texture2D.Apply();
-            //meshRenderer.material.SetTexture("_MainTex", texture2D);
-            //secondaryMeshRenderer.material.SetTexture("_MainTex", texture2D);
-            messageProcessed = true;
-            yield break;
-            /*
-            auxTexture.LoadImage(ReceivedImage);
-            if (!(monoVision || primary))
-            {
-                yield break;
-            }
-
-            texture2D.Resize(auxTexture.width * 2, auxTexture.height);
-            
-            for (int i = 0; i < auxTexture.width; i++)
-            {
-                for (int j = 0; j < auxTexture.height; j++)
-                {
-                    if (monoVision)
-                    {
-                        texture2D.SetPixel(i, j, auxTexture.GetPixel(i, j));
-                        texture2D.SetPixel(i + auxTexture.width, j, auxTexture.GetPixel(i, j));
-                    }
-                    else if (primary)
-                    {
-                        texture2D.SetPixel(i, j, auxTexture.GetPixel(i, j));
-                        texture2D.SetPixel(i + auxTexture.width, j, secondaryImageSubscriber.auxTexture.GetPixel(i, j));
-                    }
-                }
-            }
-            texture2D.Apply();
-
-            meshRenderer.material.SetTexture("_MainTex", texture2D);
-            secondaryMeshRenderer.material.SetTexture("_MainTex", texture2D);
-            messageProcessed = true;
-
-            yield return null;
-            */
         }
     }
 
