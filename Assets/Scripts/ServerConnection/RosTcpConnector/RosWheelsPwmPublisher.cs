@@ -56,8 +56,8 @@ namespace ServerConnection.RosTcpConnector
             var linear = InputSystem.GetJoystickY();
             var angular = InputSystem.GetJoystickX();
 
-            double l = linear - angular / 2;
-            double r = linear + angular / 2;
+            double l = linear + angular / 2;
+            double r = linear - angular / 2;
 
             double[] drive = new double[] { l, r };
             drive = drive.Select(x => Math.Min(1, Math.Max(-1, x))).ToArray();
