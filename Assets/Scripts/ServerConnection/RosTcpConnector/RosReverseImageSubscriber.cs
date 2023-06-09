@@ -44,6 +44,10 @@ namespace ServerConnection.RosTcpConnector
 
             ROSConnection.GetOrCreateInstance().Subscribe<CompressedImageMsg>(leftTopicName, GetImageL);
             ROSConnection.GetOrCreateInstance().Subscribe<CompressedImageMsg>(rightTopicName, GetImageR);
+
+            // Add debug log statements
+            Debug.Log("Subscribed to left topic: " + leftTopicName);
+            Debug.Log("Subscribed to right topic: " + rightTopicName);
         }
 
         private void Update()
@@ -84,6 +88,10 @@ namespace ServerConnection.RosTcpConnector
             texture2DL.LoadImage(imageData);
             texture2DL.Apply();
             newImages = true;
+
+            // Add debug log statements
+            Debug.Log("Received image on left topic: " + leftTopicName);
+            Debug.Log("Received image data length: " + imageData.Length);
         }
 
         private void GetImageR(CompressedImageMsg message)
@@ -94,6 +102,10 @@ namespace ServerConnection.RosTcpConnector
             texture2DR.LoadImage(imageData);
             texture2DR.Apply();
             newImages = true;
+
+            // Add debug log statements
+            Debug.Log("Received image on right topic: " + rightTopicName);
+            Debug.Log("Received image data length: " + imageData.Length);
         }
 
         private void UpdateFPS()
@@ -106,6 +118,8 @@ namespace ServerConnection.RosTcpConnector
                 RPSR = receivedCountR;
                 frameCount = 0;
                 dt -= 1.0f;
+
+                // Add debug log statement
                 Debug.Log("FPS: " + FPS + ", RPSL: " + RPSL + ", RPSR: " + RPSR);
             }
             frameCount++;
