@@ -79,6 +79,9 @@ namespace ServerConnection
         /// </summary>
         public GameObject LeftEyePrefab, RightEyePrefab;
         [NonSerialized] public GameObject LeftEye, RightEye;
+        [NonSerialized] public GameObject LeftReverseEye, RightReverseEye;
+
+        
 
         /// <summary>
         /// Creates a plane / sphere from prefab to project the video to, and adds it as a child of the Eye Anchor.
