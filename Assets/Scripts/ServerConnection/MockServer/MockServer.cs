@@ -27,6 +27,10 @@ namespace ServerConnection.MockServer
         private Texture2D _rightTexture;
         private Renderer _leftRenderer;
         private Renderer _rightRenderer;
+        private Texture2D _leftReveresTexture;
+        private Texture2D _rightReveresTexture;
+        private Renderer _leftReveresRenderer;
+        private Renderer _rightReverseRenderer;
 
         private bool _connectedToServer;
 
@@ -50,6 +54,10 @@ namespace ServerConnection.MockServer
             
             _leftRenderer = LeftEye.GetComponentInChildren<Renderer>();
             _rightRenderer = RightEye.GetComponentInChildren<Renderer>();
+            
+            
+            _leftReveresRenderer = LeftReverseEye.GetComponentInChildren<Renderer>();
+            _rightReverseRenderer = RightReverseEye.GetComponentInChildren<Renderer>();
         }
         
         /// <summary>
@@ -72,6 +80,8 @@ namespace ServerConnection.MockServer
             
             _leftRenderer.material.mainTexture = tex;
             _rightRenderer.material.mainTexture = tex;
+            _leftReveresRenderer.material.mainTexture = tex;
+           _rightReverseRenderer.material.mainTexture = tex;
         }
 
         public override bool ConnectedToServer => _connectedToServer;

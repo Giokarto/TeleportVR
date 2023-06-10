@@ -14,7 +14,7 @@ namespace ServerConnection.RosTcpConnector
         [SerializeField] private string rightTopicName ="/camera2/color/image_raw";
         [SerializeField] private MeshRenderer leftMeshRenderer;
         [SerializeField] private MeshRenderer rightMeshRenderer;
-        [SerializeField] public float fallbackTime = 5.0f;
+        [SerializeField] public float monoFallbackTime = 5.0f;
         [SerializeField] private RawImage leftRawImage;
         [SerializeField] private RawImage rightRawImage;
 
@@ -30,6 +30,7 @@ namespace ServerConnection.RosTcpConnector
         public int FPS = 0;
         public int RPSL = 0;
         public int RPSR = 0;
+        private int updateRate = 1; // 1 update per sec
 
         private void Start()
         {
@@ -44,6 +45,7 @@ namespace ServerConnection.RosTcpConnector
 
             ROSConnection.GetOrCreateInstance().Subscribe<CompressedImageMsg>(leftTopicName, GetImageL);
             ROSConnection.GetOrCreateInstance().Subscribe<CompressedImageMsg>(rightTopicName, GetImageR);
+            
 
             // Add debug log statements
             Debug.Log("Subscribed to left topic: " + leftTopicName);
@@ -54,31 +56,33 @@ namespace ServerConnection.RosTcpConnector
         {
             if (newImages)
             {
-                UpdateMeshRenderers();
-                UpdateFPS();
+                if (!leftMeshRenderer.gameObject.activeInHierarchy) leftMeshRenderer.gameObject.SetActive(true);
+                if (!rightMeshRenderer.gameObject.activeInHierarchy) rightMeshRenderer.gameObject.SetActive(true);
 
-                receivedCountL = 0;
-                receivedCountR = 0;
+                if (receivedCountL > 0)
+                {
+                    leftMeshRenderer.material.mainTexture = texture2DL;
+                    if (Time.time - lastReceivedR > monoFallbackTime)
+                        rightMeshRenderer.material.mainTexture = texture2DL;
+                }
+
+                if (receivedCountR > 0)
+                {
+                    rightMeshRenderer.material.mainTexture = texture2DR;
+                    if (Time.time - lastReceivedL > monoFallbackTime)
+                        leftMeshRenderer.material.mainTexture = texture2DR;
+                }
+
+                frameCount++;
                 newImages = false;
             }
+
+            UpdateFPS();
+
+            receivedCountL = 0;
+            receivedCountR = 0;
         }
 
-        private void UpdateMeshRenderers()
-        {
-            if (receivedCountL > 0)
-            {
-                leftMeshRenderer.material.mainTexture = texture2DL;
-                if (Time.time - lastReceivedR > fallbackTime)
-                    rightMeshRenderer.material.mainTexture = texture2DL;
-            }
-
-            if (receivedCountR > 0)
-            {
-                rightMeshRenderer.material.mainTexture = texture2DR;
-                if (Time.time - lastReceivedL > fallbackTime)
-                    leftMeshRenderer.material.mainTexture = texture2DR;
-            }
-        }
 
         private void GetImageL(CompressedImageMsg message)
         {
@@ -88,10 +92,6 @@ namespace ServerConnection.RosTcpConnector
             texture2DL.LoadImage(imageData);
             texture2DL.Apply();
             newImages = true;
-
-            // Add debug log statements
-            Debug.Log("Received image on left topic: " + leftTopicName);
-            Debug.Log("Received image data length: " + imageData.Length);
         }
 
         private void GetImageR(CompressedImageMsg message)
@@ -102,27 +102,24 @@ namespace ServerConnection.RosTcpConnector
             texture2DR.LoadImage(imageData);
             texture2DR.Apply();
             newImages = true;
-
-            // Add debug log statements
-            Debug.Log("Received image on right topic: " + rightTopicName);
-            Debug.Log("Received image data length: " + imageData.Length);
         }
+
 
         private void UpdateFPS()
         {
             dt += Time.deltaTime;
-            if (dt > 1.0f)
+            if (dt > 1.0f / updateRate)
             {
-                FPS = frameCount;
-                RPSL = receivedCountL;
-                RPSR = receivedCountR;
+                FPS = Mathf.RoundToInt(frameCount / dt);
+                RPSL = Mathf.RoundToInt(receivedCountL / dt);
+                RPSR = Mathf.RoundToInt(receivedCountR / dt);
                 frameCount = 0;
-                dt -= 1.0f;
+                dt -= 1.0f / updateRate;
 
-                // Add debug log statement
                 Debug.Log("FPS: " + FPS + ", RPSL: " + RPSL + ", RPSR: " + RPSR);
             }
             frameCount++;
         }
+
     }
 }

@@ -57,6 +57,8 @@ namespace ServerConnection
             InputSystem.OnLeftPrimaryButton -= SendHearts;
             Destroy(LeftEye);
             Destroy(RightEye);
+            Destroy(LeftReverseEye);
+            Destroy(RightReverseEye);
         }
 
         /// <summary>
@@ -70,15 +72,19 @@ namespace ServerConnection
             SetPresenceIndicatorOn(embody);
             LeftEye.SetActive(embody);
             RightEye.SetActive(embody);
+            LeftReverseEye.SetActive(embody);
+            RightReverseEye.SetActive(embody);
         }
         
         #endregion
 
         #region Vision
-        
+
         /// <summary>
         /// Object to whose texture the vision textures from the server will be projected.
         /// </summary>
+        /// RightReverseEyePrefab
+        public GameObject LeftReverseEyePrefab, RightReverseEyePrefab;
         public GameObject LeftEyePrefab, RightEyePrefab;
         [NonSerialized] public GameObject LeftEye, RightEye;
         [NonSerialized] public GameObject LeftReverseEye, RightReverseEye;
@@ -114,6 +120,17 @@ namespace ServerConnection
             RightEye = Instantiate(RightEyePrefab, new Vector3(0, 1.068f, 0), anchor.transform.rotation);
             RightEye.SetLayerRecursively(LayerMask.NameToLayer("RightEye"));
             //RightEye.transform.parent = anchor.transform;
+            
+            // Create the reverse eye game objects
+            var reverseAnchor = GameObject.Find("LeftReverseEyeAnchor");
+            var rotation = reverseAnchor.transform.rotation;
+            LeftReverseEye = Instantiate(LeftReverseEyePrefab, new Vector3(0, -1.068f, 0), rotation);
+            LeftReverseEye.SetLayerRecursively(LayerMask.NameToLayer("ReverseLeftEye"));
+
+            reverseAnchor = GameObject.Find("RightReverseEyeAnchor");
+            RightReverseEye = Instantiate(RightReverseEyePrefab, new Vector3(0, -1.068f, 0), rotation);
+            RightReverseEye.SetLayerRecursively(LayerMask.NameToLayer("ReverseRightEye"));
+        
         }
 
         /// <summary>
