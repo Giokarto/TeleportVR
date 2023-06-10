@@ -19,7 +19,7 @@ public class GameConfig : Singleton<GameConfig>
         public float OperatorHorizontal = 0;
         public float OperatorVertical = 0.1432849f; //0;
         public string RobotName = null;
-        public string RosIP = "10.1.0.6";
+        public string RosIP = "10.23.5.249";
     }
 
 

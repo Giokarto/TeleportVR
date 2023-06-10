@@ -1302,7 +1302,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &298658156
 Transform:
   m_ObjectHideFlags: 0
@@ -1324,7 +1324,7 @@ Transform:
   - {fileID: 548087375}
   - {fileID: 1030170733}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &298658157
 MonoBehaviour:
@@ -6118,7 +6118,7 @@ Transform:
   - {fileID: 8773243594013236522}
   - {fileID: 1871084828}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &645403016
 GameObject:
@@ -10598,8 +10598,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 006fd785d74545340ab22d1322265777, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftTopicName: /image/left/image_compressed
-  rightTopicName: /image/right/image_compressed
+  leftTopicName: /camera1/color/image_raw
+  rightTopicName: /camera2/color/image_raw
   leftMeshRenderer: {fileID: 0}
   rightMeshRenderer: {fileID: 0}
   fallbackTime: 5

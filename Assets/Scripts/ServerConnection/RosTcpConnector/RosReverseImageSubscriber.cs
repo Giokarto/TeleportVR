@@ -10,8 +10,8 @@ namespace ServerConnection.RosTcpConnector
 {
     public class RosReverseImageSubscriber : MonoBehaviour
     {
-        [SerializeField] private string leftTopicName = "/image/left/image_compressed";
-        [SerializeField] private string rightTopicName = "/image/right/image_compressed";
+        [SerializeField] private string leftTopicName = "/camera1/color/image_raw";
+        [SerializeField] private string rightTopicName ="/camera2/color/image_raw";
         [SerializeField] private MeshRenderer leftMeshRenderer;
         [SerializeField] private MeshRenderer rightMeshRenderer;
         [SerializeField] public float fallbackTime = 5.0f;
@@ -34,10 +34,10 @@ namespace ServerConnection.RosTcpConnector
         private void Start()
         {
             if (leftMeshRenderer == null)
-                leftMeshRenderer = ServerBase.Instance.LeftEye.GetComponentInChildren<MeshRenderer>();
+                leftMeshRenderer = ServerBase.Instance.LeftReverseEye.GetComponentInChildren<MeshRenderer>();
 
             if (rightMeshRenderer == null)
-                rightMeshRenderer = ServerBase.Instance.RightEye.GetComponentInChildren<MeshRenderer>();
+                rightMeshRenderer = ServerBase.Instance.RightReverseEye.GetComponentInChildren<MeshRenderer>();
 
             texture2DL = new Texture2D(2, 2, TextureFormat.RGB24, false);
             texture2DR = new Texture2D(2, 2, TextureFormat.RGB24, false);

@@ -29,7 +29,9 @@ namespace ServerConnection
             }
             else
             {
-                IPaddress = "10.7.0.3";
+              //  IPaddress = "10.7.0.3";
+
+                IPaddress ="10.23.5.249";
             }
         }
         
