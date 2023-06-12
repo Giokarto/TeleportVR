@@ -58,7 +58,7 @@ namespace ServerConnection.RosTcpConnector
 
             timeElapsed += Time.deltaTime;
 
-            if (timeElapsed > publishMessageFrequency)
+            if (timeElapsed > publishMessageFrequency && VRControllerInputSystem.IsUserActive())
             {
                 ros.Publish(topicName, GetLatestJointStates());
                 timeElapsed = 0;

@@ -172,6 +172,9 @@ namespace InputDevices.VRControllers
         private static bool userPresentInHeadset;
         public static bool IsUserActive()
         {
+#if UNITY_EDITOR
+            return true;
+#endif            
             return headset.TryGetFeatureValue(CommonUsages.userPresence, out userPresentInHeadset) && userPresentInHeadset;
         }
 

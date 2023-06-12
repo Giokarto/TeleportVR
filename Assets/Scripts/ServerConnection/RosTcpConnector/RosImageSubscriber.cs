@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using InputDevices.VRControllers;
 using Unity.Robotics.ROSTCPConnector;
 using UnityEngine;
 using CompressedImage = RosMessageTypes.Sensor.CompressedImageMsg;
@@ -92,15 +93,18 @@ namespace ServerConnection.RosTcpConnector
 
         private void GetImageL(CompressedImage Message)
         {
+            if (!VRControllerInputSystem.IsUserActive()) return;
             receivedCountL++;
             lastReceivedL = Time.time;
             texture2DL.LoadImage(Message.data);
             texture2DL.Apply();
             newImages = true;
+
         }
         
         private void GetImageR(CompressedImage Message)
         {
+            if (!VRControllerInputSystem.IsUserActive()) return;
             receivedCountR++;
             lastReceivedR = Time.time;
             texture2DR.LoadImage(Message.data);
