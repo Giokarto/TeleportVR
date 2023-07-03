@@ -142,12 +142,9 @@ namespace InputDevices.VRControllers
             HandleButtonPress(controllerRight.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn, 
                 ref wasPressedRightSecondary, InvokeRightSecondaryButton);
 
-            if ((controllerLeft.TryGetFeatureValue(CommonUsages.grip, out left) && left>0) ||
-                (controllerRight.TryGetFeatureValue(CommonUsages.grip, out right) && right>0))
-            {
-                InvokeGripChange(left, right);
-            }
-            
+            if (controllerLeft.TryGetFeatureValue(CommonUsages.grip, out left)) InvokeGripChange(left,right);
+            if (controllerRight.TryGetFeatureValue(CommonUsages.grip, out right)) InvokeGripChange(left,right);
+
             if ((controllerLeft.TryGetFeatureValue(CommonUsages.trigger, out left) && left>0) ||
                 (controllerRight.TryGetFeatureValue(CommonUsages.trigger, out right) && right>0))
             {
