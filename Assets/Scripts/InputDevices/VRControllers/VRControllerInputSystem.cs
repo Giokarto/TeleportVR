@@ -16,7 +16,7 @@ namespace InputDevices.VRControllers
         public static InputDevice controllerRight { get; private set; }
         public static InputDevice headset { get; private set; }
         
-        private bool controllersAvailable;
+        private bool controllersAvailable, prevUserActive;
 
         /// <summary>
         /// TryGetFeatureValue returns true for every frame in which the button is pressed, we want to track only
@@ -164,15 +164,37 @@ namespace InputDevices.VRControllers
             {
                 InvokeAnyButton();
             }
+
+            
         }
 
-        private static bool userPresentInHeadset;
+        private static bool userPresentInHeadset, prevUserPresentInHeadset = true;
         public static bool IsUserActive()
         {
-#if UNITY_EDITOR
-            return true;
-#endif            
-            return headset.TryGetFeatureValue(CommonUsages.userPresence, out userPresentInHeadset) && userPresentInHeadset;
+// #if UNITY_EDITOR
+//             return true;
+// #endif            
+            if (!headset.TryGetFeatureValue(CommonUsages.userPresence, out userPresentInHeadset))
+                return false;
+            return userPresentInHeadset;
+        }
+
+        public static bool UserActivated()
+        {
+            
+            var ret =  !prevUserPresentInHeadset && IsUserActive();
+            //Debug.Log($"User activated: {ret}");
+            prevUserPresentInHeadset = IsUserActive();
+            return ret;
+
+        }
+
+        public static bool UserDeactivated()
+        {
+            var ret =  prevUserPresentInHeadset && !IsUserActive();
+            prevUserPresentInHeadset = IsUserActive();
+            //Debug.Log($"User deactivated: {ret}");
+            return ret;
         }
 
         public static InputDevice GetDeviceByName(string name)

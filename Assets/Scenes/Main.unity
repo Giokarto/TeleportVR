@@ -311,7 +311,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &36843160
 Transform:
   m_ObjectHideFlags: 0
@@ -8462,7 +8462,7 @@ MonoBehaviour:
     OperatorHorizontal: 0
     OperatorVertical: 0.1432849
     RobotName: 
-    RosIP: 10.23.5.249
+    RosIP: 10.23.6.169
 --- !u!114 &1376495787 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -6371880505787038194, guid: 8376e5037528d434cab49e987b7a4e72,
