@@ -841,7 +841,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d23c22af8ebb6548aec0e2a251b7114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseConfigFile: 0
+  UseConfigFile: 1
 --- !u!4 &300532950
 Transform:
   m_ObjectHideFlags: 0
@@ -6288,7 +6288,7 @@ PrefabInstance:
     - target: {fileID: 991579244922214202, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.8
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1076834946427720796, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
@@ -6353,7 +6353,7 @@ PrefabInstance:
     - target: {fileID: 2969494099595400440, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.8
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2970198059573095122, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
@@ -6673,7 +6673,7 @@ PrefabInstance:
     - target: {fileID: 6021411800010826260, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6021411800010826263, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
@@ -7263,7 +7263,7 @@ PrefabInstance:
     - target: {fileID: 6021411800807676792, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6021411800807676792, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
@@ -7343,12 +7343,17 @@ PrefabInstance:
     - target: {fileID: 6159874855609958439, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.35
+      value: 0.57
       objectReference: {fileID: 0}
     - target: {fileID: 6159874855609958439, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.33
+      value: 0.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 6159874855609958439, guid: 672391305442d4247958d25d550bd81f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 6176227299025932602, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
@@ -7412,8 +7417,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7341443711394241275, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 7341443711394241275, guid: 672391305442d4247958d25d550bd81f,
+        type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 0.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 7341443711394241275, guid: 672391305442d4247958d25d550bd81f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 7408508227209038530, guid: 672391305442d4247958d25d550bd81f,
         type: 3}
@@ -7515,7 +7530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6df2e16235a5e454a8c5c700095938a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicRoot: /roboy/pinky/middleware/espchair/wheels/
+  topicRoot: /operator/wheels/
   leftTopicName: 
   rightTopicName: 
   publishMessageFrequency: 0.02
@@ -8252,7 +8267,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1480752038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12068,6 +12083,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7627085371395340751, guid: 6f47796c99b088048be73e21a0f57eaf,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f47796c99b088048be73e21a0f57eaf, type: 3}

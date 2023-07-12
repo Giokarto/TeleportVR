@@ -25,7 +25,7 @@ public class SubscriberCamera : MonoBehaviour
     private void Start()
     {
         ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(TopicName, GetImage);
-        texture2D = new Texture2D(1280, 720);//, TextureFormat.BGRA32, false);
+        texture2D = new Texture2D(1280, 1280);//, TextureFormat.BGRA32, false);
     }
 
     private void Update()
