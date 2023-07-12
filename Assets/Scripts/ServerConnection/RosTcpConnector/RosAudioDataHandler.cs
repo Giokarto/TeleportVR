@@ -95,18 +95,18 @@ namespace ServerConnection.RosTcpConnector
             //Application.runInBackground = true;
             SetupAudio();
             
-            if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
-            {
+            //if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
+            //{
                 // The user authorized use of the microphone.
                 StartMicrophonePublisher();
-            }
-            else
-            {
-                var callbacks = new PermissionCallbacks();
-                callbacks.PermissionDenied += PermissionCallbacks_PermissionDenied;
-                callbacks.PermissionGranted += PermissionCallbacks_PermissionGranted;
-                Permission.RequestUserPermission(Permission.Microphone, callbacks);
-            }
+            //}
+            //else
+            //{
+            //    var callbacks = new PermissionCallbacks();
+            //    callbacks.PermissionDenied += PermissionCallbacks_PermissionDenied;
+            //    callbacks.PermissionGranted += PermissionCallbacks_PermissionGranted;
+            //    Permission.RequestUserPermission(Permission.Microphone, callbacks);
+            //}
             
             CreateClip();
 
@@ -140,11 +140,11 @@ namespace ServerConnection.RosTcpConnector
         private void Update()
         {
             UpdateFPS();
-            if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
-            {
+            //if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
+            //{
                 // The user authorized use of the microphone.
                 StartCoroutine(AddMicData());
-            }
+            //}
             //Debug.Log($"activated: {VRControllerInputSystem.UserActivated()}");
             // if (VRControllerInputSystem.UserDeactivated())
             // {
