@@ -3,19 +3,37 @@ using Unity.Robotics.ROSTCPConnector;
 using RosMessageTypes.Sensor;
 using RosMessageTypes.Std;
 using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace ServerConnection.RosTcpConnector
 {
+    [Serializable]
+    public class DistanceColorPair
+    {
+        public float distance;
+        public Color color;
+    }
+
     public class PointCloudReceiver : MonoBehaviour
     {
         ROSConnection m_Ros;
         [SerializeField] public string rosTopic1 = "/camera1/depth/color/points";
         [SerializeField] public string rosTopic2 = "/camera2/depth/color/points";
 
-        // Color scheme for the point cloud, can be changed in the inspector 
-        [SerializeField] public Color[] colorSchema = { Color.red, Color.yellow, Color.green, Color.cyan, Color.blue };
+        // Serialized color scheme for the point cloud
+        [SerializeField] public List<DistanceColorPair> colorScheme = new List<DistanceColorPair>()
+        {
+            new DistanceColorPair { distance = 0.35f, color = Color.red },
+            new DistanceColorPair { distance = 0.40f, color = new Color(1f, 0.5f, 0f) },
+            new DistanceColorPair { distance = 0.45f, color = new Color(1f, 0.75f, 0f) },
+            new DistanceColorPair { distance = 0.50f, color = Color.yellow },
+            new DistanceColorPair { distance = 0.55f, color = new Color(0.1f, 0.9f, 1f) },
+            new DistanceColorPair { distance = 0.60f, color = Color.blue }
+        };
+
         // Maximum number of points to render
-        [SerializeField] public int maxPoints = 10000;  
+        [SerializeField] public int maxPoints = 10000;
 
         private byte[] byteArray;
         private bool isMessageReceived = false;
@@ -128,7 +146,7 @@ namespace ServerConnection.RosTcpConnector
 
                 pcl[n] = new Vector3(x, z, y);
 
-                // Assign color by distance using color schema
+                // Assign color by distance using color scheme
                 pcl_color[n] = ColorByDistance(pcl[n]);
             }
 
@@ -148,14 +166,17 @@ namespace ServerConnection.RosTcpConnector
         {
             float dist = point.magnitude;
 
-            float min_dist = 0.0f;
-            float max_dist = 10.0f;
+            foreach (var pair in colorScheme)
+            {
+                if (dist <= pair.distance)
+                {
+                    return pair.color;
+                }
+            }
 
-            int colorIndex = Mathf.FloorToInt(((dist - min_dist) / (max_dist - min_dist)) * colorSchema.Length);
-            colorIndex = Mathf.Clamp(colorIndex, 0, colorSchema.Length - 1);
-
-            return colorSchema[colorIndex];
+            return Color.green;
         }
+
 
         public Vector3[] GetPCL()
         {

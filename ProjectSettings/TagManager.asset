@@ -45,6 +45,7 @@ TagManager:
   - LeftObjective
   - RightObjective
   - pointcloud
+  - minimap
   layers:
   - Default
   - TransparentFX
@@ -61,7 +62,7 @@ TagManager:
   - ReverseLeftEye
   - ReverseRightEye
   - 
-  - 
+  - pointcloudview
   - pointcloudVisual
   - 
   - 

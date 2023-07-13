@@ -75,14 +75,25 @@ namespace ServerConnection.RosTcpConnector
         public void RGB_cam2(ImageMsg img)
         {
             texRos2 = new Texture2D((int)img.width, (int)img.height, TextureFormat.RGB24, false);
+
+            /*
+            // Swap red and blue channels
+            byte[] correctedData = new byte[img.data.Length];
+            for (int i = 0; i < img.data.Length; i += 3)
+            {
+                correctedData[i] = img.data[i + 2];  // Blue channel
+                correctedData[i + 1] = img.data[i + 1];  // Green channel
+                correctedData[i + 2] = img.data[i];  // Red channel
+            }*/
+            
             texRos2.LoadRawTextureData(img.data);
             texRos2.Apply();
             display2.texture = texRos2;
-            
 
             Debug.Log("Depth image received from " + rosTopic2);
             Debug.Log("Data transferred: " + img.data.Length + " bytes");
         }
+
         public void Depth_cam1(ImageMsg img)
         {
             texRos3 = new Texture2D((int)img.width, (int)img.height, TextureFormat.R16, false);
