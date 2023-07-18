@@ -31,9 +31,9 @@ namespace ServerConnection.Aiortc
         {
             if (aiortcWebSocketInterface == null)
             {
-                Debug.LogError("dannyb can not find aiortc connector");
+                Debug.LogError("can not find aiortc connector");
             }
-            Debug.Log("DannyB open AiortcWebSocket");
+            Debug.Log("open AiortcWebSocket");
             // Create a new WebSocket instance
             ws = new WebSocket(URL,"json");
 
@@ -49,7 +49,7 @@ namespace ServerConnection.Aiortc
 
         void OnWebSocketOpen(object sender, System.EventArgs e)
         {
-            Debug.Log("DannyB WebSocket connection opened.");
+            Debug.Log("WebSocket connection opened.");
 
             // Send a test message to the server
             //ws.Send("Hello, server!");
@@ -63,7 +63,7 @@ namespace ServerConnection.Aiortc
                 switch ((string)jsonObject["type"])
                 {
                     case "id":
-                        Debug.Log("DannyB WebSocket incoming id: " + (string)jsonObject["id"]);
+                        Debug.Log("WebSocket incoming id: " + (string)jsonObject["id"]);
                         WebSocketUserMessage message = new WebSocketUserMessage { type = "username", name = "operator/gorgeous_operator" };
                         string json = JsonConvert.SerializeObject(message);
                         ws.Send(json);
@@ -75,7 +75,7 @@ namespace ServerConnection.Aiortc
                         OnUserList(((JArray)jsonObject["users"])?.ToObject<List<string>>());
                         break;
                     case "answer":
-                        Debug.Log("DannyB WebSocket incoming id: " + e.Data);
+                        Debug.Log("WebSocket incoming id: " + e.Data);
                         OnOfferAccepted((string)jsonObject["sdp"]);
                         break;
                     default:
@@ -89,22 +89,17 @@ namespace ServerConnection.Aiortc
         {
             try
             {
-                /*Debug.Log("DannyB Webrtc config is gathered " + eData);
-                WebRtcConfigJson data = JsonUtility.FromJson<WebRtcConfigJson>(eData);
-                Debug.Log("DannyB WebRtcConfigJson " + data.config);
-                OnConnect(data.GetUrls());*/
-                
                 JObject jsonObject = JObject.Parse(eData);
                 List<string> stringList = new List<string>();
                 foreach (var stun in jsonObject["config"]["stun"])
                 {
                     stringList.Add((string)stun);
-                    Debug.Log("DannyB WebRtcConfigJson stun: " + stun);
+                    Debug.Log("WebRtcConfigJson stun: " + stun);
                 }
                 foreach (var turn in jsonObject["config"]["turn"])
                 {
                     stringList.Add((string)turn);
-                    Debug.Log("DannyB WebRtcConfigJson turn: " + turn);
+                    Debug.Log("WebRtcConfigJson turn: " + turn);
                 }
 
                 stun_urls = stringList.ToArray();
@@ -112,7 +107,7 @@ namespace ServerConnection.Aiortc
             }
             catch (Exception e)
             {
-                Debug.LogError("DANNYB " + e);
+                Debug.LogError("" + e);
                 throw;
             }
         }
@@ -124,12 +119,12 @@ namespace ServerConnection.Aiortc
 */
         void OnWebSocketError(object sender, ErrorEventArgs e)
         {
-            Debug.LogError("DannyB WebSocket error: " + e.Message);
+            Debug.LogError("WebSocket error: " + e.Message);
         }
 
         void OnWebSocketClose(object sender, CloseEventArgs e)
         {
-            Debug.Log("DannyB WebSocket connection closed with reason: " + e.Reason);
+            Debug.Log("WebSocket connection closed with reason: " + e.Reason);
         }
 
         void OnConnect(string[] urls)
@@ -139,11 +134,11 @@ namespace ServerConnection.Aiortc
         
         void OnUserList(List<string> users)
         {
-            Debug.Log("DannyB user list ");
+            Debug.Log("user list ");
 
             foreach (var user in users)
             {
-                Debug.Log("DannyB user: " + user);
+                Debug.Log("user: " + user);
                 //get the first occurrence of "robot" robot
                 if (user.StartsWith("robot"))
                 {
@@ -161,7 +156,7 @@ namespace ServerConnection.Aiortc
             {
                 if (robot_name == null)
                 {
-                    Debug.Log("DannyB No robot to operate!");
+                    Debug.Log("No robot to operate!");
                     return;
                 }
                 if (aiortcWebSocketInterface.GetPeerConnection()!= null && aiortcWebSocketInterface.GetPeerConnection().LocalDescription.sdp != null)
@@ -179,7 +174,7 @@ namespace ServerConnection.Aiortc
             }
             catch (Exception e)
             {
-                Debug.LogError("DANNYB " + e);
+                Debug.LogError(" " + e);
                 throw;
             }
         }
@@ -188,7 +183,7 @@ namespace ServerConnection.Aiortc
         {
             try
             {
-                Debug.Log("dannyb OnOfferAccepted");
+                Debug.Log("OnOfferAccepted");
                 var x = new RTCSessionDescription
                 {
                     type = RTCSdpType.Answer,
@@ -198,7 +193,7 @@ namespace ServerConnection.Aiortc
             }
             catch (Exception e)
             {
-                Debug.LogError("DANNYB " + e);
+                Debug.LogError("" + e);
                 throw;
             }
         }

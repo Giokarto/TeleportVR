@@ -11,8 +11,8 @@ namespace ServerConnection.RosTcpConnector
     public class RosWheelsPwmPublisher : MonoBehaviour
     {
         ROSConnection ros;
-        public string topicRoot = "/roboy/pinky/middleware/espchair/wheels/";
-        public string leftTopicName, rightTopicName;
+        private string topicRoot = "/operator/wheels/";
+        private string leftTopicName, rightTopicName;
         public float publishMessageFrequency = 0.02f;
         public int PWM_MIN = 0;
         public int PWM_MAX = 30;
@@ -56,8 +56,8 @@ namespace ServerConnection.RosTcpConnector
             var linear = InputSystem.GetJoystickY();
             var angular = InputSystem.GetJoystickX();
 
-            double l = linear - angular / 2;
-            double r = linear + angular / 2;
+            double l = linear + angular / 2;
+            double r = linear - angular / 2;
 
             double[] drive = new double[] { l, r };
             drive = drive.Select(x => Math.Min(1, Math.Max(-1, x))).ToArray();

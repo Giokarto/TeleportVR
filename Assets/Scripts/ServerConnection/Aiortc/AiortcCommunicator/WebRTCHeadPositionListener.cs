@@ -12,6 +12,9 @@ using Random = System.Random;
 
 namespace ServerConnection.Aiortc
 {
+    /// <summary>
+    /// This class handles of initialization and handle event of head position channel
+    /// </summary>
     public class WebRTCHeadPositionListener : HeadPositionListenerBase
     {
         private RTCPeerConnection peerConnection;
@@ -22,55 +25,31 @@ namespace ServerConnection.Aiortc
         public void Start()
         {
             base.Start();
-            Debug.Log("dannyb initializing WebRTCHeadPositionListener");
+            Debug.Log("initializing WebRTCHeadPositionListener");
         }
 
-        //dannyb OnMessage: stats {"Codec": "H264Encoder / libx264", " Target FPS": "5", "Current FPS": "5.00500464188291", "Target Resolution": "480p", "Est. Bandwidth": 246.88, "...Target kBit": 10000.0, "fpsTarget kBit": 1000.0, "..Current kBit": 141.92476950792314, "head position": "{\"head_axis0\": -8.916703717249375e-29, \"head_axis1\": 4.956035581926682e-13, \"head_axis2\": 9.499068198692826e-12}"}
+        /// <summary>
+        /// handles incoming head position data
+        /// </summary>
         public void OnMessage(byte[] bytes)
         {
             var str = System.Text.Encoding.UTF8.GetString(bytes);
             try
             {
-                str.Remove(0, 5);
-                //Debug.Log("Dannyb XXXX" + str);
+                //str.Remove(0, 5);
                 JObject jsonObject = JObject.Parse(str);
-                JToken myToken = jsonObject["head position"];
-                //var name = myToken.ToObject<HeadPositionMessage>();
-                var obj = JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
-                Debug.Log("dannyb head name: " + obj.toVector3());
-                ProcessHeadMessage(obj.toVector3());
-                /*
-                if (obj != null)
+                if (jsonObject.ContainsKey("head position"))
                 {
-                    if (current <= -0.5f)
-                    {
-                        goingUp = true;
-                    }
-
-                    if (current >= 0.5f)
-                    {
-                        goingUp = false;
-                    }
-
-                    if (goingUp)
-                    {
-                        current += 0.001f;
-                    }
-                    else
-                    {
-                        current -= 0.001f;
-                    }
-
-                    obj.head_axis0 = current; //up down
-                    obj.head_axis1 = 0f;//right left
-                    obj.head_axis2 = 0f;//yaw
+                    JToken myToken = jsonObject["head position"];
+                    //var name = myToken.ToObject<HeadPositionMessage>();
+                    var obj = JsonConvert.DeserializeObject<HeadPositionMessage>(Encoding.UTF8.GetString(bytes));
                     ProcessHeadMessage(obj.toVector3());
-                }*/
+                }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                Debug.LogError(e);
+                //throw;
             }
         }
 

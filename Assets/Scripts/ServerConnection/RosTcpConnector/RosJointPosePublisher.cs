@@ -58,7 +58,7 @@ namespace ServerConnection.RosTcpConnector
 
             timeElapsed += Time.deltaTime;
 
-            if (timeElapsed > publishMessageFrequency)
+            if (timeElapsed > publishMessageFrequency && VRControllerInputSystem.IsUserActive())
             {
                 ros.Publish(topicName, GetLatestJointStates());
                 timeElapsed = 0;
@@ -100,7 +100,7 @@ namespace ServerConnection.RosTcpConnector
                     names.Add(segment.Joint.name);
                     velocities.Add(0f);
                     positions.Add((float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad);
-                    Debug.Log($"publishing head {segment.Joint.name} with value {(float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad}");
+                    //Debug.Log($"publishing head {segment.Joint.name} with value {(float)segment.Joint.X.CurrentValue * Mathf.Deg2Rad}");
                 }
             }
 

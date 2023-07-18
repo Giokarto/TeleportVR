@@ -21,7 +21,7 @@ namespace ServerConnection.RosTcpConnector
         void Start()
         {
             base.Start();
-            Debug.Log("dannyb initializing RosHeadPositionSubscriber");
+            Debug.Log("initializing RosHeadPositionSubscriber");
             ROSConnection.GetOrCreateInstance().Subscribe<JointStateMsg>("/roboy/pinky/simulation/joint_targets", ProcessJointMessage);
         }
 
@@ -31,22 +31,16 @@ namespace ServerConnection.RosTcpConnector
             string headAxis0 = "head_axis0";
             string headAxis1 = "head_axis1";
             string headAxis2 = "head_axis2";
-
-            foreach (var name in jointState.name)
-            {
-                Debug.Log("dannyb process " + name);
-            }
+            
             int index_axis0 = Array.IndexOf(jointState.name, headAxis0);
             int index_axis1 = Array.IndexOf(jointState.name, headAxis1);
             int index_axis2 = Array.IndexOf(jointState.name, headAxis2);
-            Debug.Log("dannyb process2:  " + index_axis0 + ":"+ index_axis1 + ":"+ index_axis2);
             
             if (index_axis0 >= 0 && index_axis1 >= 0 && index_axis2 >= 0)
             {
                 Vector3 headVector = new Vector3((float)jointState.position[index_axis0],
                     (float)jointState.position[index_axis1],
                     (float)jointState.position[index_axis2]);
-                Debug.Log("dannyb head :" + headVector.ToString());
                 ProcessHeadMessage(headVector);
             }
         }

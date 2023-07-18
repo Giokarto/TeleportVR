@@ -9,7 +9,6 @@ namespace ServerConnection.RosTcpConnector
     public class RosServerBase : ServerBase
     {
         private ROSConnection ros;
-        private Light light;
         
         public RosImageSubscriber vision;
         public RosJointPosePublisher jointPose;
@@ -19,7 +18,6 @@ namespace ServerConnection.RosTcpConnector
         private void Start()
         {
             ros = ROSConnection.GetOrCreateInstance();
-            light = FindObjectOfType<Light>();
         }
 
         private new void OnEnable()
@@ -76,7 +74,6 @@ namespace ServerConnection.RosTcpConnector
             jointPose.enabled = on;
             headPose.enabled = on;
             wheels.enabled = on;
-            light.enabled = on;
             audio.enabled = on;
         }
 

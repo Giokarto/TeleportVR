@@ -7,6 +7,7 @@ using Int16MultiArrayMsg = RosMessageTypes.Std.Int16MultiArrayMsg;
 using System;
 using InputDevices.VRControllers;
 using UnityEngine.Android;
+using UnityEngine.Rendering.PostProcessing;
 using Widgets;
 
 namespace ServerConnection.RosTcpConnector
@@ -26,7 +27,7 @@ namespace ServerConnection.RosTcpConnector
         public double DeviceSampleRate = 48000;
 
         private Queue<float> ABufferQueue = new Queue<float>();
-        private int ABufferQueueMaxItems = 48000;
+        private int ABufferQueueMaxItems = 48000; // 48000
 
         private int position = 0;
         private int samplerate = 44100;
@@ -59,7 +60,7 @@ namespace ServerConnection.RosTcpConnector
         private bool stop = false;
 
         private int lastSample = 0;
-
+        
         private object _asyncLockAudio = new object();
 
         [NonSerialized] public bool micEnabled = false;
@@ -89,22 +90,23 @@ namespace ServerConnection.RosTcpConnector
 
             ros = ROSConnection.GetOrCreateInstance();
             ros.Subscribe<Int16MultiArrayMsg>(incomingTopicName, ProcessAudio);
+            
 
             //Application.runInBackground = true;
             SetupAudio();
             
-            if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
-            {
+            //if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
+            //{
                 // The user authorized use of the microphone.
                 StartMicrophonePublisher();
-            }
-            else
-            {
-                var callbacks = new PermissionCallbacks();
-                callbacks.PermissionDenied += PermissionCallbacks_PermissionDenied;
-                callbacks.PermissionGranted += PermissionCallbacks_PermissionGranted;
-                Permission.RequestUserPermission(Permission.Microphone, callbacks);
-            }
+            //}
+            //else
+            //{
+            //    var callbacks = new PermissionCallbacks();
+            //    callbacks.PermissionDenied += PermissionCallbacks_PermissionDenied;
+            //    callbacks.PermissionGranted += PermissionCallbacks_PermissionGranted;
+            //    Permission.RequestUserPermission(Permission.Microphone, callbacks);
+            //}
             
             CreateClip();
 
@@ -138,23 +140,37 @@ namespace ServerConnection.RosTcpConnector
         private void Update()
         {
             UpdateFPS();
-            if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
-            {
+            //if (Permission.HasUserAuthorizedPermission(Permission.Microphone))
+            //{
                 // The user authorized use of the microphone.
                 StartCoroutine(AddMicData());
-            }
+            //}
+            //Debug.Log($"activated: {VRControllerInputSystem.UserActivated()}");
+            // if (VRControllerInputSystem.UserDeactivated())
+            // {
+            //     //Debug.Log("Unsubscribed from /audio/audio");
+            //     ros.Unsubscribe(incomingTopicName);
+            // }
+            // if (VRControllerInputSystem.UserActivated())
+            // {
+            //     
+            //     //Debug.Log("User activated. Clearing audio buffer");
+            //     ABufferQueue.Clear();
+            //     ros.Subscribe<Int16MultiArrayMsg>(incomingTopicName, ProcessAudio);
+            // }
+            
+            
         }
 
         private void ProcessAudio(Int16MultiArrayMsg data)
         {
-#if UNITY_EDITOR
+            if (!VRControllerInputSystem.IsUserActive()) return;
+            //Debug.LogError($"Processing audio. user present: {VRControllerInputSystem.IsUserActive()}");
+// #if UNITY_EDITOR
+//             StartCoroutine(ProcessAudioData(data.data));
+// #else
             StartCoroutine(ProcessAudioData(data.data));
-#else
-        if (VRControllerInputSystem.IsUserActive())
-        {
-            StartCoroutine(ProcessAudioData(data.data));
-        }
-#endif
+//#endif
 
         }
 
@@ -165,8 +181,10 @@ namespace ServerConnection.RosTcpConnector
             receivedCount++;
             //SourceSampleRate = 48000;// 16000;// BitConverter.ToInt32(_sampleRateByte, 0);
             //SourceChannels = 1;// BitConverter.ToInt32(_channelsByte, 0);
-            Debug.Log("ProcessAudioData: " + ABufferQueue.Count + " " + receivedAudio.Length);
+            //Debug.Log("ProcessAudioData: " + ABufferQueue.Count + " " + receivedAudio.Length);
             now = Time.realtimeSinceStartupAsDouble;
+            //if (receivedCount%100 == 0) 
+            //    Debug.Log($"Adding to buffer while userIsActive: {VRControllerInputSystem.IsUserActive()}");
 
             float[] ABuffer = Array.ConvertAll(receivedAudio, (a) => a / 32767f);
             for (int i = 0; i < ABuffer.Length / 2; i++)
@@ -175,7 +193,7 @@ namespace ServerConnection.RosTcpConnector
                 {
                     ABufferQueue.Dequeue();
                 }
-
+                
                 ABufferQueue.Enqueue(ABuffer[i]);
             }
 
@@ -184,7 +202,7 @@ namespace ServerConnection.RosTcpConnector
 
         void CreateClip()
         {
-            Debug.Log("Creating clip");
+            //Debug.Log("Creating clip");
             //if (samplerate != (int)SourceSampleRate || channel != SourceChannels)
             //{
             //Debug.Log("Streaming audio into an audio clip");
@@ -212,6 +230,10 @@ namespace ServerConnection.RosTcpConnector
 
         void OnAudioRead(float[] data)
         {
+            if (!VRControllerInputSystem.IsUserActive())
+            {
+                return;
+            }
             //Debug.Log($"size of data: {data.Length} \t size of buf: {ABufferQueue.Count}");
             int count = 0;
 

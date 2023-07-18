@@ -16,7 +16,7 @@ namespace InputDevices.VRControllers
         public static InputDevice controllerRight { get; private set; }
         public static InputDevice headset { get; private set; }
         
-        private bool controllersAvailable;
+        private bool controllersAvailable, prevUserActive;
 
         /// <summary>
         /// TryGetFeatureValue returns true for every frame in which the button is pressed, we want to track only
@@ -142,12 +142,9 @@ namespace InputDevices.VRControllers
             HandleButtonPress(controllerRight.TryGetFeatureValue(CommonUsages.secondaryButton, out btn) && btn, 
                 ref wasPressedRightSecondary, InvokeRightSecondaryButton);
 
-            if ((controllerLeft.TryGetFeatureValue(CommonUsages.grip, out left) && left>0) ||
-                (controllerRight.TryGetFeatureValue(CommonUsages.grip, out right) && right>0))
-            {
-                InvokeGripChange(left, right);
-            }
-            
+            if (controllerLeft.TryGetFeatureValue(CommonUsages.grip, out left)) InvokeGripChange(left,right);
+            if (controllerRight.TryGetFeatureValue(CommonUsages.grip, out right)) InvokeGripChange(left,right);
+
             if ((controllerLeft.TryGetFeatureValue(CommonUsages.trigger, out left) && left>0) ||
                 (controllerRight.TryGetFeatureValue(CommonUsages.trigger, out right) && right>0))
             {
@@ -156,23 +153,49 @@ namespace InputDevices.VRControllers
             
             if (controllerLeft.TryGetFeatureValue(CommonUsages.primary2DAxis, out leftVec))
             {
-                joystickX[inputSystemOrder] = leftVec.x;
+                joystickY[inputSystemOrder] = leftVec.y;
             }
             if (controllerRight.TryGetFeatureValue(CommonUsages.primary2DAxis, out rightVec))
             {
-                joystickY[inputSystemOrder] = rightVec.y;
+                joystickX[inputSystemOrder] = rightVec.x;
             }
 
             if (anyButtonCurrentlyPressed)
             {
                 InvokeAnyButton();
             }
+
+            
         }
 
-        private static bool userPresentInHeadset;
+        private static bool userPresentInHeadset, prevUserPresentInHeadset = true;
         public static bool IsUserActive()
         {
-            return headset.TryGetFeatureValue(CommonUsages.userPresence, out userPresentInHeadset) && userPresentInHeadset;
+            // #if UNITY_EDITOR
+            //             return true;
+            // #endif            
+            //if (!headset.TryGetFeatureValue(CommonUsages.userPresence, out bool  userActive))
+            //    return false;
+            headset.TryGetFeatureValue(CommonUsages.userPresence, out bool userActive);
+            return userActive;
+        }
+
+        public static bool UserActivated()
+        {
+            
+            var ret =  !prevUserPresentInHeadset && IsUserActive();
+            //Debug.Log($"User activated: {ret}");
+            prevUserPresentInHeadset = IsUserActive();
+            return ret;
+
+        }
+
+        public static bool UserDeactivated()
+        {
+            var ret =  prevUserPresentInHeadset && !IsUserActive();
+            prevUserPresentInHeadset = IsUserActive();
+            //Debug.Log($"User deactivated: {ret}");
+            return ret;
         }
 
         public static InputDevice GetDeviceByName(string name)
