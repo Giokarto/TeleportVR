@@ -18,8 +18,8 @@ namespace ServerConnection.RosTcpConnector
     public class PointCloudReceiver : MonoBehaviour
     {
         ROSConnection m_Ros;
-        [SerializeField] public string rosTopic1 = "/camera1/depth/color/points";
-        [SerializeField] public string rosTopic2 = "/camera2/depth/color/points";
+        [SerializeField] public string rosTopicPCL1 = "/left_arm_pcd";
+        [SerializeField] public string rosTopicPCL2 = "/left_env_pcd";
 
         // Serialized color scheme for the point cloud
         [SerializeField] public List<DistanceColorPair> colorScheme = new List<DistanceColorPair>()
@@ -55,9 +55,9 @@ namespace ServerConnection.RosTcpConnector
         {
             // Get ROS connection instance and subscribe to the ROS topic
             m_Ros = ROSConnection.instance;
-            m_Ros.Subscribe<PointCloud2Msg>(rosTopic1, PointCloudCallback1);
-            m_Ros.Subscribe<PointCloud2Msg>(rosTopic2, PointCloudCallback2);
-            Debug.Log("Subscribed to point cloud topics: " + rosTopic1 + ", " + rosTopic2);
+            m_Ros.Subscribe<PointCloud2Msg>(rosTopicPCL1, PointCloudCallback1);
+            m_Ros.Subscribe<PointCloud2Msg>(rosTopicPCL2, PointCloudCallback2);
+            Debug.Log("Subscribed to point cloud topics: " + rosTopicPCL1 + ", " + rosTopicPCL2);
         }
 
         private void Update()

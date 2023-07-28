@@ -32,13 +32,13 @@ namespace ServerConnection.RosTcpConnector
         ROSConnection m_Ros;
         ImageMsg img_msg;
 
-        [SerializeField] public string rosTopic1 = "/camera1/color/image_raw";
-        [SerializeField] public string rosTopic2 = "/warn_image";
-        [SerializeField] public string rosTopic3 = "/camera1/depth/image_rect_raw";
-        [SerializeField] public string rosTopic4 = "/camera2/depth/image_rect_raw";
+        [SerializeField] public string rosTopic1 = "/camera_shoulder_left/color/image_raw";
+        [SerializeField] public string rosTopic2 = "/warn_image_back";
+        [SerializeField] public string rosTopic3 = "/camera_back/depth/image_rect_raw";
+        [SerializeField] public string rosTopic4 = "/camera_shoulder_left/depth/image_rect_raw";
         //[SerializeField] public string rosTopic5 = "/camera1/depth/color/points";
 
-        [SerializeField] public string rosDistanceTopic = "/obstacle_distance";
+        //[SerializeField] public string rosDistanceTopic = "/obstacle_distance";
         
         void Start()
         {
@@ -58,7 +58,7 @@ namespace ServerConnection.RosTcpConnector
             Debug.Log("Subscribed to right topic: " + rosTopic4);
             //Debug.Log("Subscribed to right topic - pointclouds*STREAMINROS: " + rosTopic5);
 
-            Debug.Log("Subscribed to distance topic: " + rosDistanceTopic);
+            //Debug.Log("Subscribed to distance topic: " + rosDistanceTopic);
         }
 
         public void RGB_cam1(ImageMsg img)
