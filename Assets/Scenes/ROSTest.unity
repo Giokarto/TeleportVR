@@ -474,11 +474,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 458309955}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0e7d5e092f5f0645820aee09e6b9678, type: 3}
+  m_Script: {fileID: 11500000, guid: 6179a1d7d7cdd434886d53f3f1f3367e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pointCloud: {fileID: 458309956}
-  circleGameObject: {fileID: 0}
+  circleGameObject: {fileID: 1510666968}
 --- !u!114 &458309959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1684,7 +1684,6 @@ GameObject:
   - component: {fileID: 1510666969}
   - component: {fileID: 1510666972}
   - component: {fileID: 1510666971}
-  - component: {fileID: 1510666970}
   m_Layer: 5
   m_Name: minimap
   m_TagString: Untagged
@@ -1716,20 +1715,6 @@ RectTransform:
   m_AnchoredPosition: {x: -118, y: 109.100006}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1510666970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1510666968}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0e7d5e092f5f0645820aee09e6b9678, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pointCloud: {fileID: 458309956}
-  circleGameObject: {fileID: 0}
 --- !u!114 &1510666971
 MonoBehaviour:
   m_ObjectHideFlags: 0
