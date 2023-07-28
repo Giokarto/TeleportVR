@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KeepInsideCircle : MonoBehaviour
+public class StayInsideTheCircle : MonoBehaviour
 {
     public Transform pointCloud; // Reference to the point cloud object
     public GameObject circleGameObject; // Reference to the circle's GameObject
