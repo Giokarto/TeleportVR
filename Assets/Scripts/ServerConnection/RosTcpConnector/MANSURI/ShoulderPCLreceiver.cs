@@ -7,29 +7,11 @@ using UnityEngine;
 
 namespace ServerConnection.RosTcpConnector.MANSURI
 {
-    [Serializable]
-    public class DistanceColorPair
-    {
-        public float distance;
-        public Color color;
-    }
-
-    public class PointCloudReceiver : MonoBehaviour
+    public class ShoulderPCLreceiver : MonoBehaviour
     {
         ROSConnection m_Ros;
-        [SerializeField] public string rosTopicPCL1 = "/left_env_pcd";
-        //[SerializeField] public string rosTopicPCL2 = "/left_env_pcd";
-
-        // Serialized color scheme for the point cloud
-        [SerializeField] public List<DistanceColorPair> colorScheme = new List<DistanceColorPair>()
-        {
-            new DistanceColorPair { distance = 0.35f, color = Color.red },
-            new DistanceColorPair { distance = 0.40f, color = new Color(1f, 0.5f, 0f) },
-            new DistanceColorPair { distance = 0.45f, color = new Color(1f, 0.75f, 0f) },
-            new DistanceColorPair { distance = 0.50f, color = Color.yellow },
-            new DistanceColorPair { distance = 0.55f, color = new Color(0.1f, 0.9f, 1f) },
-            new DistanceColorPair { distance = 0.60f, color = Color.blue }
-        };
+        [SerializeField] public string rosTopicPCL2 = "/left_arm_pcd";
+        [SerializeField] public Color pclColor = Color.white;
 
         // Maximum number of points to render
         [SerializeField] public int maxPoints = 10000;
@@ -38,9 +20,9 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         private bool isMessageReceived = false;
         private int size;
         // Point cloud positions
-        private Vector3[] pcl;
-        // Point cloud colors
-        private Color[] pcl_color;
+        private Vector3[] shoulderPcl;
+        // Point cloud color
+        private Color pclShoulderColor;
         // Width of the point cloud
         private int width;
         // Height of the point cloud
@@ -54,9 +36,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         {
             // Get ROS connection instance and subscribe to the ROS topic
             m_Ros = ROSConnection.instance;
-            m_Ros.Subscribe<PointCloud2Msg>(rosTopicPCL1, PointCloudCallback1);
-            //m_Ros.Subscribe<PointCloud2Msg>(rosTopicPCL2, PointCloudCallback2);
-           // Debug.Log("Subscribed to point cloud topics: " + rosTopicPCL1 + ", " + rosTopicPCL2);
+            m_Ros.Subscribe<PointCloud2Msg>(rosTopicPCL2, PointCloudCallback2);
         }
 
         private void Update()
@@ -69,16 +49,11 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         }
 
         // Callback for when a message is received from the ROS topic
-        private void PointCloudCallback1(PointCloud2Msg message)
-        {
-            ReceiveMessage(message, 1);
-        }
-
-       /*private void PointCloudCallback2(PointCloud2Msg message)
+        private void PointCloudCallback2(PointCloud2Msg message)
         {
             ReceiveMessage(message, 2);
         }
-*/
+
         // Process the received message
         private void ReceiveMessage(PointCloud2Msg message, int camera)
         {
@@ -106,10 +81,10 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 Quaternion rotation = Quaternion.Euler(0, 180, 0);  // Replace with the actual rotation
                 Vector3 translation = new Vector3(0, 0, 0);  // Replace with the actual translation
 
-                for (int i = 0; i < pcl.Length; i++)
+                for (int i = 0; i < shoulderPcl.Length; i++)
                 {
                     // Apply the rotation and translation to each point
-                    pcl[i] = rotation * pcl[i] + translation;
+                    shoulderPcl[i] = rotation * shoulderPcl[i] + translation;
                 }
             }
         }
@@ -122,8 +97,8 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 return;
             }
 
-            pcl = new Vector3[size];
-            pcl_color = new Color[size];
+            shoulderPcl = new Vector3[size];
+            pclShoulderColor = pclColor; // Set the single color for the entire point cloud
 
             int x_posi;
             int y_posi;
@@ -143,48 +118,27 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 y = System.BitConverter.ToSingle(byteArray, y_posi);
                 z = System.BitConverter.ToSingle(byteArray, z_posi);
 
-                pcl[n] = new Vector3(x, z, y);
-
-                // Assign color by distance using color scheme
-                pcl_color[n] = ColorByDistance(pcl[n]);
+                shoulderPcl[n] = new Vector3(x, z, y);
             }
 
             // Sort points by distance
-            System.Array.Sort(pcl, (a, b) => a.magnitude.CompareTo(b.magnitude));
+            System.Array.Sort(shoulderPcl, (a, b) => a.magnitude.CompareTo(b.magnitude));
 
             // Only take the closest maxPoints points
-            if (pcl.Length > maxPoints)
+            if (shoulderPcl.Length > maxPoints)
             {
-                pcl = pcl.Take(maxPoints).ToArray();
-                pcl_color = pcl_color.Take(maxPoints).ToArray();
+                shoulderPcl = shoulderPcl.Take(maxPoints).ToArray();
             }
         }
 
-        // Assign a color to a point based on its distance from the origin
-        private Color ColorByDistance(Vector3 point)
+        public  Vector3[] GetShouderPCL()
         {
-            float dist = point.magnitude;
-
-            foreach (var pair in colorScheme)
-            {
-                if (dist <= pair.distance)
-                {
-                    return pair.color;
-                }
-            }
-
-            return Color.green;
+            return shoulderPcl;
         }
 
-
-        public Vector3[] GetPCL()
+        public  Color GetShoulderPCLColor()
         {
-            return pcl;
-        }
-
-        public Color[] GetPCLColor()
-        {
-            return pcl_color;
+            return pclShoulderColor;
         }
     }
 }

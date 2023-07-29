@@ -6,13 +6,15 @@ using Unity.Robotics.ROSTCPConnector;
 using RosMessageTypes.Sensor;
 using RosMessageTypes.Std;
 
-namespace ServerConnection.RosTcpConnector
+namespace ServerConnection.RosTcpConnector.MANSURI
 {
     public class STREAMINROS : MonoBehaviour
     {
         // Adjust this value to increase or decrease brightness
         [SerializeField] float brightnessFactor = 8f;
-        
+        public static float m_DepthScale = 100.0f;
+        public DistanceTrigger distanceTrigger;
+
         
         Texture2D texRos;
         Texture2D texRos2;
@@ -59,6 +61,9 @@ namespace ServerConnection.RosTcpConnector
             //Debug.Log("Subscribed to right topic - pointclouds*STREAMINROS: " + rosTopic5);
 
             //Debug.Log("Subscribed to distance topic: " + rosDistanceTopic);
+            
+            distanceTrigger = GetComponent<DistanceTrigger>();
+
         }
 
         public void RGB_cam1(ImageMsg img)
@@ -116,6 +121,17 @@ namespace ServerConnection.RosTcpConnector
 
             Debug.Log("Depth image received from " + rosTopic3);
             Debug.Log("Data transferred: " + img.data.Length + " bytes");
+
+            // Get the distance in centimeters
+            float x2 = (float)100;
+            float y2 = (float)200;
+            float distance = (img.data[(int)x2 + (int)y2 * img.width] * m_DepthScale)/100;
+
+            distanceTrigger.SetDistance(distance);
+
+            
+            // Display the distance
+            Debug.Log("Distance: " + distance + " cm");
         }
 
         public void Depth_cam2(ImageMsg img)
@@ -142,7 +158,25 @@ namespace ServerConnection.RosTcpConnector
             Debug.Log("Data transferred: " + img.data.Length + " bytes");
         }
 
-        
+        public void HandleDistanceMessage(Float64Msg msg)
+        {
+            double distance = msg.data;
+
+            Debug.Log(" distance Data transferred: " + msg.data + " mm");
+
+            // If the distance is less than 40cm
+            if (distance <= 40)
+            {
+                // Display the UI image
+                display2.enabled = true;
+            }
+            else
+            {
+                // Hide the UI image
+                display2.enabled = false;
+            }
+        }
+
         
        
        
