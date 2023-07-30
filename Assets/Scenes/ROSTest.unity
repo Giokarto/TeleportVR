@@ -367,7 +367,7 @@ RectTransform:
   m_Children:
   - {fileID: 1671555642}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -562,7 +562,7 @@ RectTransform:
   m_Children:
   - {fileID: 1510666969}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -745,7 +745,7 @@ RectTransform:
   m_Children:
   - {fileID: 1315962807}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1999,8 +1999,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 433870336}
-  distanceThreshold: 40
-  distance: 0
+  distanceThreshold: 110
+  rosDistanceTopic: /obstacle_distance
 --- !u!1 &1713973191
 GameObject:
   m_ObjectHideFlags: 0
@@ -2228,7 +2228,7 @@ RectTransform:
   m_Children:
   - {fileID: 1350276300}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2311,7 +2311,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   brightnessFactor: 8.5
-  distanceTrigger: {fileID: 1671555647}
   display: {fileID: 893932665}
   display2: {fileID: 1671555644}
   display3: {fileID: 1315962809}
@@ -2320,6 +2319,7 @@ MonoBehaviour:
   rosTopic2: /warn_image_back
   rosTopic3: /camera_back/depth/image_rect_raw
   rosTopic4: /camera_shoulder_left/depth/image_rect_raw
+  rosDistanceTopic: /obstacle_distance
 --- !u!1 &1972172590
 GameObject:
   m_ObjectHideFlags: 0
@@ -2349,7 +2349,7 @@ Transform:
   m_Children:
   - {fileID: 632199347}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 385.043, y: 0, z: -358.587}
 --- !u!1 &2012630290
 GameObject:
@@ -2480,7 +2480,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1941638167498996296}
-  - component: {fileID: 8108513221893996272}
+  - component: {fileID: 6265992953747270290}
   m_Layer: 0
   m_Name: ROSConnectionPrefab
   m_TagString: Untagged
@@ -2488,7 +2488,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &8108513221893996272
+--- !u!114 &6265992953747270290
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

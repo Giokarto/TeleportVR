@@ -6,22 +6,33 @@ using Unity.Robotics.ROSTCPConnector;
 using RosMessageTypes.Sensor;
 using RosMessageTypes.Std;
 
-
 namespace ServerConnection.RosTcpConnector.MANSURI
 {
     public class DistanceTrigger : MonoBehaviour
     {
         public GameObject canvas;
-        public float distanceThreshold = 40;
+        public float distanceThreshold = 0.10f; // 40 cm converted to meters
 
         // The distance that will be set from the STREAMINROS class
-        public float distance;
+        private float distance;
 
-        public void SetDistance(float distance)
+        [SerializeField] public string rosDistanceTopic = "/obstacle_distance";
+
+        // Start is called before the first frame update
+        void Start()
         {
-            this.distance = distance;
+            // Subscribe to the ROS topic
+            ROSConnection.instance.Subscribe<Float64Msg>(rosDistanceTopic, HandleDistanceMessage);
+            Debug.Log("Subscribed to distance topic: " + rosDistanceTopic);
         }
 
+        // Callback function to handle the received obstacle distance data
+        private void HandleDistanceMessage(Float64Msg data)
+        {
+            // Update the distance value with the received data
+            distance = (float)data.data;
+        }
+        
         void Update()
         {
             // If the distance is greater than the threshold, show the canvas
@@ -30,7 +41,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 canvas.SetActive(true);
             }
             // If the distance is less than the threshold, hide the canvas
-            else if (distance < distanceThreshold)
+            else
             {
                 canvas.SetActive(false);
             }
