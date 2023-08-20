@@ -67,7 +67,7 @@ public class PointCloudRenderer: MonoBehaviour
         mesh.vertices = combinedPositions;
         mesh.colors = combinedColors;
         mesh.SetIndices(indices, MeshTopology.Points, 0);
-
+        //mesh.Optimize();
         meshFilter.mesh = mesh;
     }
 

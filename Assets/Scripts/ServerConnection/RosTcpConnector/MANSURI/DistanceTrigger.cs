@@ -12,6 +12,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
     {
         public GameObject canvas;
         public float distanceThreshold = 0.10f; // 40 cm converted to meters
+        public GameObject BackSphere;
 
         // The distance that will be set from the STREAMINROS class
         private float distance;
@@ -39,6 +40,13 @@ namespace ServerConnection.RosTcpConnector.MANSURI
             if (distance > distanceThreshold)
             {
                 canvas.SetActive(true);
+                Image imageComponent = BackSphere.GetComponent<Image>();
+                if (imageComponent != null)
+                {
+                    Material mat = imageComponent.material;
+                    mat.SetColor("_ColorFrom", Color.red);
+                    imageComponent.material = mat; // Re-assign the material back to the Image component
+                }
             }
             // If the distance is less than the threshold, hide the canvas
             else

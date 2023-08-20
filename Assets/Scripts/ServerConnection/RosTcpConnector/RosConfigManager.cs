@@ -16,7 +16,7 @@ namespace ServerConnection.RosTcpConnector
                 ROSConnection.GetOrCreateInstance().RosIPAddress = GameConfig.Instance.settings.RosIP;
             else
             {
-                ROSConnection.GetOrCreateInstance().RosIPAddress = "10.23.5.249";
+                ROSConnection.GetOrCreateInstance().RosIPAddress = "10.23.5.58";
             }
         }
 
