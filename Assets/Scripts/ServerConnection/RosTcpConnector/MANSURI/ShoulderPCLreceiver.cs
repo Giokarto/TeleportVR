@@ -19,22 +19,15 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         private byte[] byteArray;
         private bool isMessageReceived = false;
         private int size;
-        // Point cloud positions
         private Vector3[] shoulderPcl;
-        // Point cloud color
         private Color pclShoulderColor;
-        // Width of the point cloud
         private int width;
-        // Height of the point cloud
         private int height;
-        // Row step of the point cloud
         private int row_step;
-        // Point step of the point cloud
         private int point_step;
 
         private void Start()
         {
-            // Get ROS connection instance and subscribe to the ROS topic
             m_Ros = ROSConnection.instance;
             m_Ros.Subscribe<PointCloud2Msg>(rosTopicPCL2, PointCloudCallback2);
         }
@@ -48,13 +41,11 @@ namespace ServerConnection.RosTcpConnector.MANSURI
             }
         }
 
-        // Callback for when a message is received from the ROS topic
         private void PointCloudCallback2(PointCloud2Msg message)
         {
             ReceiveMessage(message, 2);
         }
 
-        // Process the received message
         private void ReceiveMessage(PointCloud2Msg message, int camera)
         {
             if (message.data == null)
@@ -74,19 +65,6 @@ namespace ServerConnection.RosTcpConnector.MANSURI
 
             size = size / point_step;
             isMessageReceived = true;
-            // If this is the second camera, apply a transformation to the points
-            if (camera == 2)
-            {
-                // Define the rotation and translation that represent the relative position and orientation of the two cameras
-                Quaternion rotation = Quaternion.Euler(0, 180, 0);  // Replace with the actual rotation
-                Vector3 translation = new Vector3(0, 0, 0);  // Replace with the actual translation
-
-                for (int i = 0; i < shoulderPcl.Length; i++)
-                {
-                    // Apply the rotation and translation to each point
-                    shoulderPcl[i] = rotation * shoulderPcl[i] + translation;
-                }
-            }
         }
 
         private void PointCloudRendering()
@@ -98,7 +76,10 @@ namespace ServerConnection.RosTcpConnector.MANSURI
             }
 
             shoulderPcl = new Vector3[size];
-            pclShoulderColor = pclColor; // Set the single color for the entire point cloud
+            pclShoulderColor = pclColor;
+            pclShoulderColor.a = 1f;  // Ensure the color is fully opaque
+
+            Debug.Log("Point Cloud Color: " + pclShoulderColor); // Debug log to check the color
 
             int x_posi;
             int y_posi;
@@ -121,22 +102,20 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 shoulderPcl[n] = new Vector3(x, z, y);
             }
 
-            // Sort points by distance
             System.Array.Sort(shoulderPcl, (a, b) => a.magnitude.CompareTo(b.magnitude));
 
-            // Only take the closest maxPoints points
             if (shoulderPcl.Length > maxPoints)
             {
                 shoulderPcl = shoulderPcl.Take(maxPoints).ToArray();
             }
         }
 
-        public  Vector3[] GetShouderPCL()
+        public Vector3[] GetShouderPCL()
         {
             return shoulderPcl;
         }
 
-        public  Color GetShoulderPCLColor()
+        public Color GetShoulderPCLColor()
         {
             return pclShoulderColor;
         }
