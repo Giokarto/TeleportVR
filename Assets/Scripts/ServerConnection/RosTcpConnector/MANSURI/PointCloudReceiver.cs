@@ -23,12 +23,12 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         // Serialized color scheme for the point cloud
         [SerializeField] public List<DistanceColorPair> colorScheme = new List<DistanceColorPair>()
         {
-            new DistanceColorPair { distance = 0.35f, color = Color.red },
-            new DistanceColorPair { distance = 0.40f, color = new Color(1f, 0.5f, 0f) },
-            new DistanceColorPair { distance = 0.45f, color = new Color(1f, 0.75f, 0f) },
-            new DistanceColorPair { distance = 0.50f, color = Color.yellow },
-            new DistanceColorPair { distance = 0.55f, color = new Color(0.1f, 0.9f, 1f) },
-            new DistanceColorPair { distance = 0.60f, color = Color.blue }
+            new DistanceColorPair { distance = 0.7f, color = Color.red },
+            new DistanceColorPair { distance = 0.8f, color = new Color(1f, 0.5f, 0f) },
+            new DistanceColorPair { distance = 0.85f, color = new Color(1f, 0.75f, 0f) },
+            new DistanceColorPair { distance = 0.9f, color = Color.yellow },
+            new DistanceColorPair { distance = 0.95f, color = new Color(0.1f, 0.9f, 1f) },
+            new DistanceColorPair { distance = 1f, color = Color.blue }
         };
 
         // Maximum number of points to render

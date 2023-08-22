@@ -74,10 +74,15 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 if (rawImageComponent != null)
                 {
                     Material mat = rawImageComponent.material;
+
+                    // Convert hex color to Unity's Color format
+                    Color originalColor = new Color(0x5C / 255f, 0x66 / 255f, 0x6E / 255f, 1f); 
+
                     mat.SetColor("_ColorFrom", originalColor);
                     rawImageComponent.material = mat;
                 }
             }
+
         }
     }
 }

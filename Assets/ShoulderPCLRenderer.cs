@@ -1,24 +1,23 @@
+using System.Linq;
 using ServerConnection.RosTcpConnector;
 using ServerConnection.RosTcpConnector.MANSURI;
 using UnityEngine;
 
 public class ShoulderPCLRenderer : MonoBehaviour
 {
-    public ShoulderPCLreceiver subscriber1;
+    public ShoulderPCLreceiver subscriber;
 
-    // Point cloud mesh
     Mesh mesh;
-    // MeshRenderer for the point cloud
     MeshRenderer meshRenderer;
     MeshFilter meshFilter;
     [SerializeField]
     private Material meshMaterial;
     public float pointSize = 1f;
 
+    private Vector3[] lastPositions;
+
     void Start()
     {
-        // Add MeshRenderer and MeshFilter components to the game object
-        // and set the material of the MeshRenderer
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshFilter = gameObject.AddComponent<MeshFilter>();
         meshRenderer.material = meshMaterial;
@@ -27,50 +26,36 @@ public class ShoulderPCLRenderer : MonoBehaviour
         {
             indexFormat = UnityEngine.Rendering.IndexFormat.UInt32
         };
+        
     }
 
     void UpdateMesh()
     {
-        // Get the point cloud positions and color from the ShoulderPCLreceiver
-        Vector3[] positions1 = subscriber1.GetShouderPCL();
-        Color color1 = subscriber1.GetShoulderPCLColor();
-        Debug.Log("Color: " + color1);
+        Vector3[] positions = subscriber.GetShouderPCL();
 
-        if (positions1 == null || positions1.Length == 0)
+        if (positions == null || positions.Length == 0)
         {
             return;
         }
 
-        int totalPoints = positions1.Length;
-        Vector3[] combinedPositions = new Vector3[totalPoints];
-        Color[] combinedColors = new Color[totalPoints];
-
-        int[] indices = new int[totalPoints];
-        for (int i = 0; i < totalPoints; i++)
+        Color color = subscriber.GetShoulderPCLColor();
+        Color[] colors = new Color[positions.Length];
+        for (int i = 0; i < positions.Length; i++)
         {
-            indices[i] = i;
-        }
-
-        // Assign positions from the point cloud
-        positions1.CopyTo(combinedPositions, 0);
-
-        // Fill the combinedColors array with the single color value
-        for (int i = 0; i < totalPoints; i++)
-        {
-            combinedColors[i] = color1;
+            colors[i] = color;
         }
 
         mesh.Clear();
-        mesh.vertices = combinedPositions;
-        mesh.colors = combinedColors;
-        mesh.SetIndices(indices, MeshTopology.Points, 0);
-        //mesh.Optimize();
+        mesh.vertices = positions;
+        mesh.colors = colors;
+        mesh.SetIndices(System.Linq.Enumerable.Range(0, positions.Length).ToArray(), MeshTopology.Points, 0);
         meshFilter.mesh = mesh;
+
+        lastPositions = positions;
     }
 
     void Update()
     {
-        // Set the _PointSize property of the material and update the mesh
         meshRenderer.material.SetFloat("_PointSize", pointSize);
         UpdateMesh();
     }
