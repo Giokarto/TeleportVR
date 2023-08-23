@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using InputDevices.VRControllers;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -15,11 +14,17 @@ public class FollowHeadset : MonoBehaviour
     
     void Update()
     {
-        // Calculate the rotation needed to look at the VR camera
-        Quaternion targetRotation = Quaternion.LookRotation(mainCamera.transform.position - transform.position);
+        if(mainCamera != null) 
+        {
+            // Calculate the direction to the VR camera
+            Vector3 direction = mainCamera.transform.position - transform.position;
+            
+            // Compute the angle between the forward direction of the object and the direction to the VR camera
+            float targetZRotation = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
 
-        // Smoothly rotate towards the target rotation
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, speed * Time.deltaTime);
+            //  Rotate towards the target Z rotation
+            float zRotation = Mathf.LerpAngle(transform.eulerAngles.z, targetZRotation, speed * Time.deltaTime);
+            transform.eulerAngles = new Vector3(0, 0, zRotation);
+        }
     }
 }
-
