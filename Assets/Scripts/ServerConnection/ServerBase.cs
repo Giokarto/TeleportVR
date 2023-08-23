@@ -57,8 +57,6 @@ namespace ServerConnection
             InputSystem.OnLeftPrimaryButton -= SendHearts;
             Destroy(LeftEye);
             Destroy(RightEye);
-            Destroy(LeftReverseEye);
-            Destroy(RightReverseEye);
         }
 
         /// <summary>
@@ -72,8 +70,6 @@ namespace ServerConnection
             SetPresenceIndicatorOn(embody);
             LeftEye.SetActive(embody);
             RightEye.SetActive(embody);
-            LeftReverseEye.SetActive(embody);
-            RightReverseEye.SetActive(embody);
         }
         
         #endregion
@@ -83,11 +79,9 @@ namespace ServerConnection
         /// <summary>
         /// Object to whose texture the vision textures from the server will be projected.
         /// </summary>
-        /// RightReverseEyePrefab
-        public GameObject LeftReverseEyePrefab, RightReverseEyePrefab;
         public GameObject LeftEyePrefab, RightEyePrefab;
+        public GameObject anchor;
         [NonSerialized] public GameObject LeftEye, RightEye;
-        [NonSerialized] public GameObject LeftReverseEye, RightReverseEye;
 
         
 
@@ -100,15 +94,17 @@ namespace ServerConnection
         /// </summary>
         public void CreateEyeGameObjects()
         {
-            var anchor = GameObject.Find("LeftEyeAnchor");
             if (LeftEyePrefab == null)
             {
                 Debug.Log("LeftEyePrefab not set, loading default plane");
                 LeftEyePrefab = Resources.Load<GameObject>("EyePlanes/LeftEye");
             }
-            LeftEye = Instantiate(LeftEyePrefab, new Vector3(0,1.068f,0) ,anchor.transform.rotation);
+            anchor = GameObject.Find("LeftEyeAnchor");
+            LeftEye = Instantiate(LeftEyePrefab, anchor.transform);
+            LeftEye.transform.localRotation = Quaternion.identity;
+            LeftEye.transform.localPosition = Vector3.zero;
             LeftEye.SetLayerRecursively(LayerMask.NameToLayer("LeftEye"));
-            //LeftEye.transform.parent = anchor.transform;
+            //LeftEye.transform.SetParent(anchor.transform,true);
             
             anchor = GameObject.Find("RightEyeAnchor");
             if (RightEyePrefab == null)
@@ -117,20 +113,11 @@ namespace ServerConnection
                 RightEyePrefab = Resources.Load<GameObject>("EyePlanes/RightEye");
             }
 
-            RightEye = Instantiate(RightEyePrefab, new Vector3(0, 1.068f, 0), anchor.transform.rotation);
+            RightEye = Instantiate(RightEyePrefab, anchor.transform);
+            RightEye.transform.localRotation = Quaternion.identity;
+            RightEye.transform.localPosition = Vector3.zero;
             RightEye.SetLayerRecursively(LayerMask.NameToLayer("RightEye"));
-            //RightEye.transform.parent = anchor.transform;
-            
-            // Create the reverse eye game objects
-            var reverseAnchor = GameObject.Find("LeftReverseEyeAnchor");
-            var rotation = reverseAnchor.transform.rotation;
-            LeftReverseEye = Instantiate(LeftReverseEyePrefab, new Vector3(0, -1.068f, 0), rotation);
-            LeftReverseEye.SetLayerRecursively(LayerMask.NameToLayer("ReverseLeftEye"));
-
-            reverseAnchor = GameObject.Find("RightReverseEyeAnchor");
-            RightReverseEye = Instantiate(RightReverseEyePrefab, new Vector3(0, -1.068f, 0), rotation);
-            RightReverseEye.SetLayerRecursively(LayerMask.NameToLayer("ReverseRightEye"));
-        
+            //RightEye.transform.SetParent(anchor.transform,true);
         }
 
         /// <summary>
