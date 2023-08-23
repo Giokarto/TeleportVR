@@ -4,7 +4,6 @@ using System.Linq;
 using RosMessageTypes.Sensor;
 using Unity.Robotics.ROSTCPConnector;
 using UnityEngine;
-
 namespace ServerConnection.RosTcpConnector.MANSURI
 {
     [Serializable]
@@ -13,12 +12,19 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         public float distance;
         public Color color;
     }
-
+    
+    
+    
     public class PointCloudReceiver : MonoBehaviour
     {
+        [SerializeField] private GameObject maskCircleCenter;
+        [SerializeField] private float magnitudeMin;
+        [SerializeField] private float magnitudeMax;
+        [SerializeField] private float newMagnitudeMin;
+        [SerializeField] private float newMagnitudeMax;
+        [SerializeField] [Range(0f, 300f)] private float maskCircleRadius;
         ROSConnection m_Ros;
         [SerializeField] public string rosTopicPCL1 = "/left_env_pcd";
-        //[SerializeField] public string rosTopicPCL2 = "/left_env_pcd";
 
         // Serialized color scheme for the point cloud
         [SerializeField] public List<DistanceColorPair> colorScheme = new List<DistanceColorPair>()
@@ -28,7 +34,8 @@ namespace ServerConnection.RosTcpConnector.MANSURI
             new DistanceColorPair { distance = 0.85f, color = new Color(1f, 0.75f, 0f) },
             new DistanceColorPair { distance = 0.9f, color = Color.yellow },
             new DistanceColorPair { distance = 0.95f, color = new Color(0.1f, 0.9f, 1f) },
-            new DistanceColorPair { distance = 1f, color = Color.blue }
+            new DistanceColorPair { distance = 1f, color = Color.blue },
+            new DistanceColorPair { distance = 1.1f, color = new Color(0,0,0,0) }
         };
 
         // Maximum number of points to render
@@ -53,6 +60,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         private void Start()
         {
             // Get ROS connection instance and subscribe to the ROS topic
+
             m_Ros = ROSConnection.instance;
             m_Ros.Subscribe<PointCloud2Msg>(rosTopicPCL1, PointCloudCallback1);
             //m_Ros.Subscribe<PointCloud2Msg>(rosTopicPCL2, PointCloudCallback2);
@@ -102,7 +110,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
             // If this is the second camera, apply a transformation to the points
             if (camera == 2)
             {
-                // Define the rotation and translation that represent the relative position and orientation of the two cameras
+                /*// Define the rotation and translation that represent the relative position and orientation of the two cameras
                 Quaternion rotation = Quaternion.Euler(0, 180, 0);  // Replace with the actual rotation
                 Vector3 translation = new Vector3(0, 0, 0);  // Replace with the actual translation
 
@@ -110,7 +118,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 {
                     // Apply the rotation and translation to each point
                     pcl[i] = rotation * pcl[i] + translation;
-                }
+                }*/
             }
         }
 
@@ -164,7 +172,16 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         private Color ColorByDistance(Vector3 point)
         {
             float dist = point.magnitude;
+            /*float distCircle = Vector2.Distance((Vector2)Camera.main.WorldToScreenPoint(point), (Vector2)Camera.main.WorldToScreenPoint(maskCircleCenter.transform.position));*/
+            float distCircle = Vector2.Distance(point + transform.position, maskCircleCenter.transform.position);
 
+            /*dist = Vector2.Distance(Camera.main.WorldToScreenPoint(point + transform.position), Camera.main.WorldToScreenPoint(maskCircleCenter.transform.position));*/
+            //dist = Unity.Mathematics.math.remap(0.54f, 2.1f, 0, 1.5f, dist);
+            
+           /* if (distCircle > maskCircleRadius)
+            {
+                return new Color(distCircle, distCircle, 0, 0);
+            }*/
             foreach (var pair in colorScheme)
             {
                 if (dist <= pair.distance)
@@ -173,7 +190,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 }
             }
 
-            return Color.green;
+            return new Color(0,1,0,1);
         }
 
 

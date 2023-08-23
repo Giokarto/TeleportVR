@@ -7,6 +7,7 @@ public class PointCloudRenderer : MonoBehaviour
 {
     public PointCloudReceiver subscriber;
 
+    [SerializeField][Range(0f, 300f)] private float maskCircleRadius;
     Mesh mesh;
     MeshRenderer meshRenderer;
     MeshFilter meshFilter;
@@ -21,7 +22,8 @@ public class PointCloudRenderer : MonoBehaviour
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshFilter = gameObject.AddComponent<MeshFilter>();
         meshRenderer.material = meshMaterial;
-
+        //meshRenderer.material.SetVector("_ReferencePoint", transform.position);
+        //meshRenderer.material.SetFloat("_MaxDistance", maskCircleRadius);
         mesh = new Mesh
         {
             indexFormat = UnityEngine.Rendering.IndexFormat.UInt32

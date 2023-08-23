@@ -21,7 +21,6 @@ public class ShoulderPCLRenderer : MonoBehaviour
         meshRenderer = gameObject.AddComponent<MeshRenderer>();
         meshFilter = gameObject.AddComponent<MeshFilter>();
         meshRenderer.material = meshMaterial;
-
         mesh = new Mesh
         {
             indexFormat = UnityEngine.Rendering.IndexFormat.UInt32
