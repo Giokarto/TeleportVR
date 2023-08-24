@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
-using UnityEngine.XR.Interaction.Toolkit;
 
 public class FollowHeadset : MonoBehaviour
 {
@@ -12,26 +10,22 @@ public class FollowHeadset : MonoBehaviour
 
     // Rotation speed
     public float speed = 1.0f;
-    private Vector3 pos;
+
     private void Start()
     {
         mainCamera = GameObject.Find("RightEyeAnchor").GetComponent<Camera>();
-        pos = transform.position;
     }
 
     void Update()
     {
         if(mainCamera != null) 
         {
-            // Calculate the direction to the VR camera
-            Vector3 direction = mainCamera.transform.position - pos;
-            
-            // Compute the angle between the forward direction of the object and the direction to the VR camera
-            float targetZRotation = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+            // Get the yaw rotation of the VR headset
+            float targetYRotation = mainCamera.transform.eulerAngles.y;
 
-            //  Rotate towards the target Z rotation
-            float zRotation = Mathf.LerpAngle(transform.eulerAngles.z, targetZRotation, speed * Time.deltaTime);
-            transform.localEulerAngles = new Vector3(0, 0, zRotation);
+            // Rotate the Roboy head in minimap to match the yaw rotation of the VR headset
+            float yRotation = Mathf.LerpAngle(transform.eulerAngles.y, targetYRotation, speed * Time.deltaTime);
+            transform.eulerAngles = new Vector3(0, yRotation, 0);
         }
     }
 }
