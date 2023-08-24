@@ -9,18 +9,25 @@ namespace ServerConnection.RosTcpConnector.MANSURI
 {
     public class ShoulderPCLreceiver : MonoBehaviour
     {
+
+        // Establish a connection with the ROS
         ROSConnection m_Ros;
+        // ROS topic from which the Shoulder Point Cloud Data will be subscribed.
         [SerializeField] public string rosTopicPCL2 = "/left_arm_pcd";
+        // Default color for the Point Cloud Data visualization.
         [SerializeField] public Color pclColor = Color.white;
 
         // Maximum number of points to render
         [SerializeField] public int maxPoints = 10000;
 
+        // Variables to store and handle the received data.
         private byte[] byteArray;
         private bool isMessageReceived = false;
         private int size;
         private Vector3[] shoulderPcl;
         private Color pclShoulderColor;
+
+        // Metadata about the received shoulder Point Cloud.
         private int width;
         private int height;
         private int row_step;
@@ -28,6 +35,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
 
         private void Start()
         {
+            // On start, subscribe to the specified ROS topic.
             m_Ros = ROSConnection.instance;
             m_Ros.Subscribe<PointCloud2Msg>(rosTopicPCL2, PointCloudCallback2);
         }
@@ -40,12 +48,12 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 isMessageReceived = false;
             }
         }
-
+        // Callback to handle Point Cloud messages from ROS.
         private void PointCloudCallback2(PointCloud2Msg message)
         {
             ReceiveMessage(message, 2);
         }
-
+        // Process the received message and extract relevant data.
         private void ReceiveMessage(PointCloud2Msg message, int camera)
         {
             if (message.data == null)
@@ -58,6 +66,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
             byteArray = new byte[size];
             byteArray = message.data;
 
+            // Extracting metadata about the received shoulder Point Cloud.
             width = (int)message.width;
             height = (int)message.height;
             row_step = (int)message.row_step;
@@ -67,6 +76,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
             isMessageReceived = true;
         }
 
+        // Render the received shoulder Point Cloud Data.
         private void PointCloudRendering()
         {
             if (byteArray == null)
@@ -77,17 +87,14 @@ namespace ServerConnection.RosTcpConnector.MANSURI
 
             shoulderPcl = new Vector3[size];
             pclShoulderColor = pclColor;
-            pclShoulderColor.a = 1f;  // Ensure the color is fully opaque
+            // Ensure the color is fully opaque
+            pclShoulderColor.a = 1f;
 
-            Debug.Log("Point Cloud Color: " + pclShoulderColor); // Debug log to check the color
+            // Debug.Log("Point Cloud Color: " + pclShoulderColor); // Debug log to check the color
 
-            int x_posi;
-            int y_posi;
-            int z_posi;
-
-            float x;
-            float y;
-            float z;
+            // Extracting position values from the byte array and forming Vector3 points.
+            int x_posi, y_posi, z_posi;
+            float x, y, z;
 
             for (int n = 0; n < size; n++)
             {
@@ -102,19 +109,22 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 shoulderPcl[n] = new Vector3(x, z, y);
             }
 
+            // Sort points by their magnitude (distance from origin).
             System.Array.Sort(shoulderPcl, (a, b) => a.magnitude.CompareTo(b.magnitude));
 
+            // Limit the points to the max allowed for rendering.
             if (shoulderPcl.Length > maxPoints)
             {
                 shoulderPcl = shoulderPcl.Take(maxPoints).ToArray();
             }
         }
-
+        // Public method to access the shoulder point cloud data.
         public Vector3[] GetShouderPCL()
         {
             return shoulderPcl;
         }
 
+        // Public method to access the color of the shoulder point cloud data.
         public Color GetShoulderPCLColor()
         {
             return pclShoulderColor;

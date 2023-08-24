@@ -4,6 +4,7 @@ using System.Linq;
 using RosMessageTypes.Sensor;
 using Unity.Robotics.ROSTCPConnector;
 using UnityEngine;
+
 namespace ServerConnection.RosTcpConnector.MANSURI
 {
     [Serializable]
@@ -12,22 +13,21 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         public float distance;
         public Color color;
     }
-    
-    
-    
+
+
+
     public class PointCloudReceiver : MonoBehaviour
     {
         [SerializeField] private GameObject maskCircleCenter;
-        [SerializeField] private float magnitudeMin;
-        [SerializeField] private float magnitudeMax;
-        [SerializeField] private float newMagnitudeMin;
-        [SerializeField] private float newMagnitudeMax;
-        [SerializeField] [Range(0f, 300f)] private float maskCircleRadius;
+        [SerializeField][Range(0f, 300f)] private float maskCircleRadius;
+        // Establish a connection with the ROS
         ROSConnection m_Ros;
+        // ROS topic from which the Point Cloud Data will be subscribed.
         [SerializeField] public string rosTopicPCL1 = "/left_env_pcd";
 
         // Serialized color scheme for the point cloud
-        [SerializeField] public List<DistanceColorPair> colorScheme = new List<DistanceColorPair>()
+        [SerializeField]
+        public List<DistanceColorPair> colorScheme = new List<DistanceColorPair>()
         {
             new DistanceColorPair { distance = 0.7f, color = Color.red },
             new DistanceColorPair { distance = 0.8f, color = new Color(1f, 0.5f, 0f) },
@@ -41,6 +41,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         // Maximum number of points to render
         [SerializeField] public int maxPoints = 10000;
 
+        // Variables to store and handle the received data.
         private byte[] byteArray;
         private bool isMessageReceived = false;
         private int size;
@@ -48,23 +49,18 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         private Vector3[] pcl;
         // Point cloud colors
         private Color[] pcl_color;
-        // Width of the point cloud
+
+        // Metadata about the received Point Cloud.
         private int width;
-        // Height of the point cloud
         private int height;
-        // Row step of the point cloud
         private int row_step;
-        // Point step of the point cloud
         private int point_step;
 
         private void Start()
         {
             // Get ROS connection instance and subscribe to the ROS topic
-
             m_Ros = ROSConnection.instance;
             m_Ros.Subscribe<PointCloud2Msg>(rosTopicPCL1, PointCloudCallback1);
-            //m_Ros.Subscribe<PointCloud2Msg>(rosTopicPCL2, PointCloudCallback2);
-           // Debug.Log("Subscribed to point cloud topics: " + rosTopicPCL1 + ", " + rosTopicPCL2);
         }
 
         private void Update()
@@ -82,11 +78,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
             ReceiveMessage(message, 1);
         }
 
-       /*private void PointCloudCallback2(PointCloud2Msg message)
-        {
-            ReceiveMessage(message, 2);
-        }
-*/
+
         // Process the received message
         private void ReceiveMessage(PointCloud2Msg message, int camera)
         {
@@ -100,6 +92,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
             byteArray = new byte[size];
             byteArray = message.data;
 
+            // Extracting metadata about the received Point Cloud.
             width = (int)message.width;
             height = (int)message.height;
             row_step = (int)message.row_step;
@@ -107,19 +100,6 @@ namespace ServerConnection.RosTcpConnector.MANSURI
 
             size = size / point_step;
             isMessageReceived = true;
-            // If this is the second camera, apply a transformation to the points
-            if (camera == 2)
-            {
-                /*// Define the rotation and translation that represent the relative position and orientation of the two cameras
-                Quaternion rotation = Quaternion.Euler(0, 180, 0);  // Replace with the actual rotation
-                Vector3 translation = new Vector3(0, 0, 0);  // Replace with the actual translation
-
-                for (int i = 0; i < pcl.Length; i++)
-                {
-                    // Apply the rotation and translation to each point
-                    pcl[i] = rotation * pcl[i] + translation;
-                }*/
-            }
         }
 
         private void PointCloudRendering()
@@ -133,13 +113,10 @@ namespace ServerConnection.RosTcpConnector.MANSURI
             pcl = new Vector3[size];
             pcl_color = new Color[size];
 
-            int x_posi;
-            int y_posi;
-            int z_posi;
+            // Extracting position values from the byte array and forming Vector3 points.
+            int x_posi, y_posi, z_posi;
+            float x, y, z;
 
-            float x;
-            float y;
-            float z;
 
             for (int n = 0; n < size; n++)
             {
@@ -172,16 +149,9 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         private Color ColorByDistance(Vector3 point)
         {
             float dist = point.magnitude;
-            /*float distCircle = Vector2.Distance((Vector2)Camera.main.WorldToScreenPoint(point), (Vector2)Camera.main.WorldToScreenPoint(maskCircleCenter.transform.position));*/
             float distCircle = Vector2.Distance(point + transform.position, maskCircleCenter.transform.position);
 
-            /*dist = Vector2.Distance(Camera.main.WorldToScreenPoint(point + transform.position), Camera.main.WorldToScreenPoint(maskCircleCenter.transform.position));*/
-            //dist = Unity.Mathematics.math.remap(0.54f, 2.1f, 0, 1.5f, dist);
-            
-           /* if (distCircle > maskCircleRadius)
-            {
-                return new Color(distCircle, distCircle, 0, 0);
-            }*/
+
             foreach (var pair in colorScheme)
             {
                 if (dist <= pair.distance)
@@ -190,15 +160,16 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 }
             }
 
-            return new Color(0,1,0,1);
+            return new Color(0, 1, 0, 1);
         }
 
-
+        // Public method to access the point cloud data.
         public Vector3[] GetPCL()
         {
             return pcl;
         }
 
+        // Public method to access the color of the point cloud data.
         public Color[] GetPCLColor()
         {
             return pcl_color;

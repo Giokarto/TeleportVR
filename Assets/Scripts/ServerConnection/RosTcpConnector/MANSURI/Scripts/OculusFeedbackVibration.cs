@@ -1,7 +1,7 @@
 /*using UnityEngine;
 using System.Collections;
 using Oculus;
-public class ocolusFeedbackVibration : MonoBehaviour
+public class OculusFeedbackVibration : MonoBehaviour
 {
     public float proximityThreshold = 1.0f; // Adjust this value according to your needs
 

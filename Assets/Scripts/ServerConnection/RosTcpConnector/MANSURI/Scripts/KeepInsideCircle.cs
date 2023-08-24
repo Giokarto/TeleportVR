@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class KeepInsideCircle : MonoBehaviour
 {
-    public Transform pointCloud; // Reference to the point cloud object
-    public GameObject circleGameObject; // Reference to the circle's GameObject
-
+    public Transform pointCloud;
+    public GameObject circleGameObject;
     void Update()
     {
         // Get the center position of the circle
