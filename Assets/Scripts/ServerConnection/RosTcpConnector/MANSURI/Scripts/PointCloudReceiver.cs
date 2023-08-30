@@ -133,16 +133,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
                 // Assign color by distance using color scheme
                 pcl_color[n] = ColorByDistance(pcl[n]);
             }
-
-            // Sort points by distance
-            System.Array.Sort(pcl, (a, b) => a.magnitude.CompareTo(b.magnitude));
-
-            // Only take the closest maxPoints points
-            if (pcl.Length > maxPoints)
-            {
-                pcl = pcl.Take(maxPoints).ToArray();
-                pcl_color = pcl_color.Take(maxPoints).ToArray();
-            }
+            
         }
 
         // Assign a color to a point based on its distance from the origin
@@ -174,5 +165,6 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         {
             return pcl_color;
         }
+        
     }
 }

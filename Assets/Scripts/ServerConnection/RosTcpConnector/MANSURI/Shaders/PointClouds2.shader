@@ -1,4 +1,4 @@
-Shader "Custom/PointClouds2"
+ Shader "Custom/PointClouds2"
 {
     Properties
     {
@@ -7,7 +7,9 @@ Shader "Custom/PointClouds2"
     SubShader
     {
         Tags {"Queue"="Transparent" "RenderType"="Transparent" }
-        LOD 100
+               // Tags { "RenderType" = "Opaque" }
+            LOD 200
+        //LOD 100
 
         Blend SrcAlpha OneMinusSrcAlpha
         Pass
@@ -49,3 +51,4 @@ half _PointSize;
         }
     }
 }
+

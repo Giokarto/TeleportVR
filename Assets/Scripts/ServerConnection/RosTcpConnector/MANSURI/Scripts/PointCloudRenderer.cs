@@ -72,4 +72,9 @@ public class PointCloudRenderer : MonoBehaviour
         meshRenderer.material.SetFloat("_PointSize", pointSize);
         UpdateMesh();
     }
+    
+    // public Material PointCloudMaterial
+    // {
+    //     get { return meshRenderer.material; }
+    // }
 }
