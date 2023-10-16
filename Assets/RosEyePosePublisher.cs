@@ -10,7 +10,7 @@ public class RosEyePosePublisher : MonoBehaviour
 {
 
     ROSConnection ros;
-    public string topicName = "/roboy/pinky/eyes";
+    public string topicName = "/operator/eyes";
     public float publishMessageFrequency = 0.1f;
 
     public GameObject LeftEye;
@@ -59,21 +59,28 @@ public class RosEyePosePublisher : MonoBehaviour
 
     PoseStampedMsg GetLatestEyePose()
     {
+        
         targetX = LeftEye.transform.rotation.eulerAngles.y;
         targetX = (targetX > 90) ? targetX - 360 : targetX;
-        targetX *= 2;
-        msg.pose.position.x = targetX - prevX;
+        //targetX *= 2;
+        //msg.pose.position.x = targetX - prevX;
 
         targetY = LeftEye.transform.rotation.eulerAngles.x;
         targetY = (targetY > 90) ? targetY - 360 : targetY;
-        msg.pose.position.y = targetY - prevY;
+        //msg.pose.position.y = targetY - prevY;
 
-        prevX = targetX;
-        prevY = targetY;
+        //prevX = targetX;
+        //prevY = targetY;
+
 
         //widget.SetMessage($"{targetX} \n {targetY}");
         //text.text = $"x: {targetX} \n y:{targetY}";
-        Debug.Log($"x: {targetX} \n y:{targetY}");
+        //Debug.Log($"x: {targetX} \n y:{targetY}");
+
+        msg.pose.orientation.x = targetX-35; //LeftEye.transform.rotation.x;
+        msg.pose.orientation.y = targetY; // LeftEye.transform.rotation.y;
+        //msg.pose.orientation.z = LeftEye.transform.rotation.z;
+        //msg.pose.orientation.w = LeftEye.transform.rotation.w;
 
         return msg;
     }

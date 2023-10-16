@@ -3921,7 +3921,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8605f64d03e94954ea281d090f1b042a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  topicName: /roboy/pinky/eyes
+  topicName: /operator/eyes
   publishMessageFrequency: 0.1
   LeftEye: {fileID: 1894926307}
   text: {fileID: 0}

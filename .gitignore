@@ -41,6 +41,10 @@ Assets/Plugins/Editor/JetBrains*
 !/Assets/AnimusClient/Example/Scripts/UnityAnimusClient.cs*
 !/Assets/AnimusClient/Example/Scripts/ClientLogic.cs*
 
+# exclude OculusVR
+/Assets/Oculus/
+/Assets/Oculus.meta
+
 # exclude OpenCVForUnity
 /Assets/OpenCVForUnity/
 /Assets/OpenCVForUnity.meta

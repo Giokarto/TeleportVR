@@ -120,6 +120,7 @@ namespace InputDevices.VRControllers
         private Vector2 leftVec, rightVec;
         public override void Update()
         {
+            
             if (!controllersAvailable)
             {
                 if (!GetControllers())
@@ -176,8 +177,11 @@ namespace InputDevices.VRControllers
             // #endif            
             //if (!headset.TryGetFeatureValue(CommonUsages.userPresence, out bool  userActive))
             //    return false;
-            headset.TryGetFeatureValue(CommonUsages.userPresence, out bool userActive);
-            return userActive;
+
+            //headset.TryGetFeatureValue(CommonUsages.userPresence, out bool userActive);
+            //return userActive;
+
+            return true;
         }
 
         public static bool UserActivated()
