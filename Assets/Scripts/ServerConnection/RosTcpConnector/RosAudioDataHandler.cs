@@ -164,6 +164,7 @@ namespace ServerConnection.RosTcpConnector
 
         private void ProcessAudio(Int16MultiArrayMsg data)
         {
+            Debug.Log("Getting audio");
             if (!VRControllerInputSystem.IsUserActive()) return;
             //Debug.LogError($"Processing audio. user present: {VRControllerInputSystem.IsUserActive()}");
 // #if UNITY_EDITOR

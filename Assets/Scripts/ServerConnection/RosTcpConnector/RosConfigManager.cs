@@ -12,6 +12,7 @@ namespace ServerConnection.RosTcpConnector
 
         void Start()
         {
+            
             if (GameConfig.Instance.settings.RosIP != "" && UseConfigFile)
                 ROSConnection.GetOrCreateInstance().RosIPAddress = GameConfig.Instance.settings.RosIP;
             else

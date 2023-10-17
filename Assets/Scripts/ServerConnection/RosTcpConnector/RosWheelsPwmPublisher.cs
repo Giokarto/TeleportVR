@@ -66,6 +66,7 @@ namespace ServerConnection.RosTcpConnector
             double[] pwm = drive.Select(x => Math.Sign(x) * MapPwm(Math.Abs(x), PWM_MIN, PWM_MAX)).ToArray();
             leftCmd = (short)Math.Round(pwm[0]);
             rightCmd = (short)Math.Round(pwm[1]);
+            //Debug.Log($"{leftCmd} {rightCmd}");
 
         }
 

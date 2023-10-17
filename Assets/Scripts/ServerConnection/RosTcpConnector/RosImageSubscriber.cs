@@ -62,6 +62,16 @@ namespace ServerConnection.RosTcpConnector
 
         private void Update()
         {
+            // try to re-subscribe
+            if (Time.time - lastReceivedL > 5)
+            {
+                Debug.Log("Trying to re-subscribe");
+                ROSConnection.GetOrCreateInstance().Unsubscribe(LeftTopicName);
+                ROSConnection.GetOrCreateInstance().RefreshTopicsList();
+                ROSConnection.GetOrCreateInstance().Subscribe<CompressedImage>(LeftTopicName, GetImageL);                
+            }
+
+            //Debug.Log($"New images coming {newImages}");
             if (newImages)
             {
                 if (!leftMeshRenderer.gameObject.activeInHierarchy) leftMeshRenderer.gameObject.SetActive(true);
@@ -86,6 +96,8 @@ namespace ServerConnection.RosTcpConnector
                 
                 frameCount++;
                 newImages = false;
+
+                
             }
 
             UpdateFPS();
@@ -93,6 +105,7 @@ namespace ServerConnection.RosTcpConnector
 
         private void GetImageL(CompressedImage Message)
         {
+            Debug.Log("GetImageL");
             if (!VRControllerInputSystem.IsUserActive()) return;
             receivedCountL++;
             lastReceivedL = Time.time;
@@ -104,6 +117,7 @@ namespace ServerConnection.RosTcpConnector
         
         private void GetImageR(CompressedImage Message)
         {
+            Debug.Log("GetImageR");
             if (!VRControllerInputSystem.IsUserActive()) return;
             receivedCountR++;
             lastReceivedR = Time.time;

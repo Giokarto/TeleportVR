@@ -23,12 +23,12 @@ namespace Tutorial
 
         private void OnEnable()
         {
-            InputSystem.OnRightPrimaryButton += StartAutomaton;
+            //InputSystem.OnRightPrimaryButton += StartAutomaton;
         }
 
         private void OnDisable()
         {
-            InputSystem.OnRightPrimaryButton -= StartAutomaton;
+            //InputSystem.OnRightPrimaryButton -= StartAutomaton;
         }
 
     }

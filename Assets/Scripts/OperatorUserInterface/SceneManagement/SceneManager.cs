@@ -59,12 +59,14 @@ namespace OperatorUserInterface
 
         private void OnEnable()
         {
-            InputSystem.OnLeftMenuButton += SwitchScene;
+            //InputSystem.OnLeftMenuButton 
+            InputSystem.OnRightPrimaryButton += SwitchScene;
         }
 
         private void OnDisable()
         {
-            InputSystem.OnLeftMenuButton -= SwitchScene;
+            //InputSystem.OnLeftMenuButton 
+            InputSystem.OnRightPrimaryButton -= SwitchScene;
         }
 
         public void SwitchScene()

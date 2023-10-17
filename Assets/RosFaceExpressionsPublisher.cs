@@ -17,9 +17,21 @@ public class RosFaceExpressionsPublisher : MonoBehaviour
     List<float> faceExpressionsList;
     int length;
 
+    private const string FaceTrackingPermission = "com.oculus.permission.FACE_TRACKING";
+    private const string EyeTrackingPermission = "com.oculus.permission.EYE_TRACKING";
+    private const string BodyTrackingPermission = "com.oculus.permission.BODY_TRACKING";
+
+    //private void Awake()
+    //{
+    //    string[] permissions = new string[] { FaceTrackingPermission, EyeTrackingPermission };
+    //    UnityEngine.Android.Permission.RequestUserPermissions(permissions);
+    //}
+
     // Start is called before the first frame update
     void Start()
     {
+       
+
         ros = ROSConnection.GetOrCreateInstance();
         ros.RegisterPublisher<JointStateMsg>(topicName);
 
@@ -53,6 +65,8 @@ public class RosFaceExpressionsPublisher : MonoBehaviour
         //Debug.Log($"face names: {msg.name}");
 
         faceExpressions = GetComponent<OVRFaceExpressions>();
+        Debug.Log($"Face tracking enabled: {faceExpressions.FaceTrackingEnabled}");
+        
 
     }
 
@@ -79,6 +93,7 @@ public class RosFaceExpressionsPublisher : MonoBehaviour
             if (e == OVRFaceExpressions.FaceExpression.EyesClosedL || e == OVRFaceExpressions.FaceExpression.EyesClosedR)
             {
                 msg.position[i] = weight * 60.0;
+                Debug.Log($"Got last OVRFaceExpressions");
             } else
             {
                 msg.position[i] = weight * 75.0;

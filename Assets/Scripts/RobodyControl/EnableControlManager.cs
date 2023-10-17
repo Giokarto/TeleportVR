@@ -144,27 +144,44 @@ namespace RobodyControl
             //}
         }
 
+        //        void ReadControllers(BioIKGroup group, UnityEngine.XR.InputDevice controller, bool isLeft)
+        //        {
+        //            if (controller == null)
+        //            {
+        //                return;
+        //            }
+
+        //            var _enabled = 0.0f;
+        //            var trigger = false;
+        //            if (controller.isValid)
+        //            {
+        //                controller.TryGetFeatureValue(UnityEngine.XR.CommonUsages.trigger, out _enabled);
+        //                controller.TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out trigger);
+        //            }
+
+        //            int i = isLeft ? 0 : 1;
+        //            // Show that the arm is active in the state manager
+        //            //WidgetInteraction.SetBodyPartActive(53 - i, _enabled > 0.9f);
+
+        //            // Show that the fingers are active in the state manager
+        //            //WidgetInteraction.SetBodyPartActive(55 - i, trigger);
+
+        //#if SENSEGLOVE
+        //        group.WeakSetEnabled(true);
+        //#else
+        //            group.SetEnabled(_enabled > 0.9f);
+        //            group.UpdateFingers(System.Convert.ToDouble(trigger));
+        //#endif
+        //        }
+
         void ReadControllers(BioIKGroup group, UnityEngine.XR.InputDevice controller, bool isLeft)
         {
-            if (controller == null)
-            {
-                return;
-            }
-
             var _enabled = 0.0f;
-            var trigger = false;
-            if (controller.isValid)
-            {
-                controller.TryGetFeatureValue(UnityEngine.XR.CommonUsages.trigger, out _enabled);
-                controller.TryGetFeatureValue(UnityEngine.XR.CommonUsages.gripButton, out trigger);
-            }
+            var trigger = 0.0f;
 
-            int i = isLeft ? 0 : 1;
-            // Show that the arm is active in the state manager
-            //WidgetInteraction.SetBodyPartActive(53 - i, _enabled > 0.9f);
+            _enabled = isLeft ? OVRInput.Get(OVRInput.RawAxis1D.LIndexTrigger) : OVRInput.Get(OVRInput.RawAxis1D.RIndexTrigger);
+            trigger = isLeft ? OVRInput.Get(OVRInput.RawAxis1D.LHandTrigger)  : OVRInput.Get(OVRInput.RawAxis1D.RHandTrigger);
 
-            // Show that the fingers are active in the state manager
-            //WidgetInteraction.SetBodyPartActive(55 - i, trigger);
 
 #if SENSEGLOVE
         group.WeakSetEnabled(true);
