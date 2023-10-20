@@ -9,6 +9,8 @@ public class FollowHeadset : MonoBehaviour
 
     // Rotation speed
     public float speed = 2.5f; // Increased speed for faster rotation
+    public float rotationMultiplier = 1.5f;
+
 
     private void Awake()
     {
@@ -31,7 +33,7 @@ public class FollowHeadset : MonoBehaviour
             float targetYRotation = mainCamera.transform.localEulerAngles.y;
 
             // Adjusted rotation mapping for better matching with the VR headset's movement
-            float targetZRotation = -targetYRotation * 1.5f; // 1.5 is a multiplier, adjust as needed
+            float targetZRotation = -targetYRotation * rotationMultiplier; 
 
             // Rotate the 2D GameObject around the Z-axis to match the yaw rotation of the VR headset
             float zRotation = Mathf.LerpAngle(transform.eulerAngles.z, targetZRotation, speed * Time.deltaTime);
