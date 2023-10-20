@@ -19,7 +19,7 @@ public class GameConfig : Singleton<GameConfig>
         public float OperatorHorizontal = 0;
         public float OperatorVertical = 0.1432849f; //0;
         public string RobotName = null;
-        public string RosIP = "10.23.6.169";
+        public string RosIP = "10.1.0.158";
     }
 
 
@@ -44,13 +44,13 @@ public class GameConfig : Singleton<GameConfig>
             Debug.LogError($"Coud not read settings from {path}, using default");
             WriteSettings();
         }
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         // Save settings updated in the editor
         EditorApplication.playModeStateChanged += WriteSettingsOnEditorExit;
-        #endif
+#endif
     }
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     private void WriteSettingsOnEditorExit(PlayModeStateChange state)
     {
         if (state == PlayModeStateChange.ExitingEditMode)
@@ -58,7 +58,7 @@ public class GameConfig : Singleton<GameConfig>
             WriteSettings();
         }
     }
-    #endif
+#endif
 
     public void WriteSettings()
     {
