@@ -19,6 +19,12 @@ public class FollowHeadset : MonoBehaviour
 
     void Update()
     {
+        if (mainCamera == null)
+        {
+            Debug.LogWarning("Main camera is not assigned!");
+            return;
+        }
+        
         if (mainCamera != null)
         {
             // Get the yaw rotation of the VR headset
