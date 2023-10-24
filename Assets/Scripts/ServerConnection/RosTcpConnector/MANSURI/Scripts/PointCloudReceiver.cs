@@ -18,7 +18,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
 
     public class PointCloudReceiver : MonoBehaviour
     {
-        [SerializeField] private GameObject maskCircleCenter;
+       // [SerializeField] private GameObject maskCircleCenter;
         [SerializeField][Range(0f, 300f)] private float maskCircleRadius;
         // Establish a connection with the ROS
         ROSConnection m_Ros;
@@ -140,7 +140,7 @@ namespace ServerConnection.RosTcpConnector.MANSURI
         private Color ColorByDistance(Vector3 point)
         {
             float dist = point.magnitude;
-            float distCircle = Vector2.Distance(point + transform.position, maskCircleCenter.transform.position);
+            //float distCircle = Vector2.Distance(point + transform.position, maskCircleCenter.transform.position);
 
 
             foreach (var pair in colorScheme)
