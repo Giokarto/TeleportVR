@@ -175,6 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 517393082}
   speed: 1
+  rotationMultiplier: 1.5
 --- !u!114 &91678984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -339,9 +340,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6179a1d7d7cdd434886d53f3f1f3367e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointCloud: {fileID: 217699142}
-  cubeGameObject: {fileID: 1357349524}
-  pointCloudMaterial: {fileID: 2100000, guid: 737234211d12cf949b9d82d31c3645b6, type: 2}
 --- !u!114 &217699144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -655,9 +653,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6179a1d7d7cdd434886d53f3f1f3367e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointCloud: {fileID: 458309956}
-  cubeGameObject: {fileID: 0}
-  pointCloudMaterial: {fileID: 0}
 --- !u!114 &458309959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1849,7 +1844,7 @@ GameObject:
   - component: {fileID: 1350041603}
   - component: {fileID: 1350041602}
   m_Layer: 0
-  m_Name: gameConfg
+  m_Name: gameConfig
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1873,7 +1868,7 @@ MonoBehaviour:
     OperatorHorizontal: 0
     OperatorVertical: 0.1432849
     RobotName: 
-    RosIP: 10.23.5.106
+    RosIP: 10.1.0.158
 --- !u!4 &1350041603
 Transform:
   m_ObjectHideFlags: 0
@@ -2433,9 +2428,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6179a1d7d7cdd434886d53f3f1f3367e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointCloud: {fileID: 1647100729}
-  cubeGameObject: {fileID: 0}
-  pointCloudMaterial: {fileID: 0}
 --- !u!114 &1647100732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3175,7 +3167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7acef0b79454c9b4dae3f8139bc4ba77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RosIPAddress: 10.23.5.106
+  m_RosIPAddress: 10.1.0.158
   m_RosPort: 10000
   m_ConnectOnStart: 1
   m_KeepaliveTime: 1

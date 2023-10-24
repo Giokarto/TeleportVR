@@ -1,45 +1,49 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FollowHeadset : MonoBehaviour
 {
-    // Reference to the main camera (which represents the VR headset)
-    public Camera mainCamera;
+    public Transform headTransform;
+    public float speed = 0.3f;
+    private RectTransform rectTransform;
+    public float movementThreshold = 2f;
 
-    // Rotation speed
-    public float speed = 2.5f; // Increased speed for faster rotation
-    public float rotationMultiplier = 1.5f;
-
-
-    private void Awake()
+    void Start()
     {
-        // Assuming the mainCamera is attached to the same GameObject as this script
-        // If not, you can adjust this line accordingly
-        mainCamera = GetComponent<Camera>();
+        rectTransform = GetComponent<RectTransform>();
+
+        if (headTransform == null)
+        {
+            headTransform = GameObject.Find("Head")?.transform;
+
+            if (headTransform == null)
+            {
+                Debug.LogWarning("Head object not found in the scene!");
+                return;
+            }
+        }
+
+        // Ensuring the z-axis rotation starts from zero
+        Vector3 eulerRotation = rectTransform.localEulerAngles;
+        eulerRotation.z = 0;
+        rectTransform.localRotation = Quaternion.Euler(eulerRotation);
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        if (mainCamera == null)
+        if (headTransform == null || rectTransform == null)
         {
-            Debug.LogWarning("Main camera is not assigned!");
             return;
         }
-        
-        if (mainCamera != null)
+
+        // Creating the target rotation based on the headTransform's y-axis rotation
+        Quaternion targetRotation = Quaternion.Euler(0, 0, -headTransform.eulerAngles.y);
+
+        // Check the difference in rotations
+        if (Quaternion.Angle(rectTransform.localRotation, targetRotation) < movementThreshold)
         {
-            // Get the yaw rotation of the VR headset
-            float targetYRotation = mainCamera.transform.localEulerAngles.y;
-
-            // Adjusted rotation mapping for better matching with the VR headset's movement
-            float targetZRotation = -targetYRotation * rotationMultiplier; 
-
-            // Rotate the 2D GameObject around the Z-axis to match the yaw rotation of the VR headset
-            float zRotation = Mathf.LerpAngle(transform.eulerAngles.z, targetZRotation, speed * Time.deltaTime);
-
-            // Set only the Z rotation, keeping X and Y at 0
-            transform.localEulerAngles = new Vector3(0f, 0f, zRotation);
+            return;
         }
+        Quaternion newRotation = Quaternion.Slerp(rectTransform.localRotation, targetRotation, speed * Time.fixedDeltaTime);
+        rectTransform.localRotation = newRotation;
     }
 }

@@ -3,41 +3,61 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-
 public class MinimapController : MonoBehaviour
 {
     [SerializeField]
     public GameObject Minimap;  
     public GameObject WarningImage;
     public GameObject pcl;
+    public GameObject Mirror;
 
     private void Awake()
     {
-        // This ensures the GameObject this script is attached to is not destroyed when loading a new scene
         DontDestroyOnLoad(gameObject);
-        
-        // Add a listener to the sceneLoaded event
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Training")
+        if (Mirror == null) // only find the Mirror object
         {
-            Minimap.SetActive(false);  
-            WarningImage.SetActive(false);  
-            pcl.SetActive(false);  
-
+            Mirror = GameObject.Find("Mirror");
+            
+            if (Mirror == null)
+            {
+                Debug.LogError("Mirror GameObject not found in the scene.");
+            }
         }
-        else if (scene.name == "Main")
+    }
+
+    private void Update()
+    {
+        if (Mirror != null && Mirror.activeSelf)
         {
-            Minimap.SetActive(true);  
-            WarningImage.SetActive(true);  
-            pcl.SetActive(true);          }
+            DeactivateObjects();
+        }
+        else
+        {
+            ActivateObjects();
+        }
+    }
+
+    private void ActivateObjects()
+    {
+        if (WarningImage != null) WarningImage.SetActive(true);
+        if (pcl != null) pcl.SetActive(true); 
+        if (Minimap != null) Minimap.SetActive(true);
+    }
+
+    private void DeactivateObjects()
+    {
+        if (WarningImage != null) WarningImage.SetActive(false);
+        if (pcl != null) pcl.SetActive(false);
+        if (Minimap != null) Minimap.SetActive(false);
     }
 
     private void OnDestroy()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded -= OnSceneLoaded;  // Unsubscribe from the event when the GameObject is destroyed
     }
 }
