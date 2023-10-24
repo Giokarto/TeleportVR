@@ -3,7 +3,7 @@ using UnityEngine;
 public class FollowHeadset : MonoBehaviour
 {
     public Transform headTransform;
-    public float speed = 0.3f;
+    public float speed = 1f;
     private RectTransform rectTransform;
     public float movementThreshold = 2f;
 
