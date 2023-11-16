@@ -171,12 +171,13 @@ namespace InputDevices.VRControllers
         private static bool userPresentInHeadset, prevUserPresentInHeadset = true;
         public static bool IsUserActive()
         {
-// #if UNITY_EDITOR
-//             return true;
-// #endif            
-            if (!headset.TryGetFeatureValue(CommonUsages.userPresence, out userPresentInHeadset))
-                return false;
-            return userPresentInHeadset;
+            // #if UNITY_EDITOR
+            //             return true;
+            // #endif            
+            //if (!headset.TryGetFeatureValue(CommonUsages.userPresence, out bool  userActive))
+            //    return false;
+            headset.TryGetFeatureValue(CommonUsages.userPresence, out bool userActive);
+            return userActive;
         }
 
         public static bool UserActivated()
